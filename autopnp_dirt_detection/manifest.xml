@@ -1,0 +1,20 @@
+<package>
+  <description brief="autopnp_dirt_detection">
+
+     autopnp_dirt_detection
+
+  </description>
+  <author>rmb-hs</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/autopnp_dirt_detection</url>
+
+  <depend package="std_msgs"/> 
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+  <depend package="image_transport"/>
+  <depend package="opencv2"/>
+  <depend package="cv_bridge"/>
+</package>
+
+
