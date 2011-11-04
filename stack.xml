@@ -1,0 +1,13 @@
+<stack>
+  <description brief="autopnp">autopnp</description>
+  <author>Maintained by rmb-hs</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/autopnp</url>
+  <depend stack="common_msgs" /> <!-- sensor_msgs -->
+  <depend stack="image_common" /> <!-- image_transport -->
+  <depend stack="ros" />
+  <depend stack="ros_comm" /> <!-- std_msgs, roscpp -->
+  <depend stack="vision_opencv" /> <!-- opencv2, cv_bridge -->
+
+</stack>
