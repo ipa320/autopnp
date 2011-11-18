@@ -1,28 +1,152 @@
 #include <autopnp_dirt_detection/dirt_detection.h>
 
-using namespace ipa_ImageDisplay;
+using namespace ipa_DirtDetection;
 
-ImageDisplay::ImageDisplay(ros::NodeHandle node_handle)
+DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 : node_handle_(node_handle)
 {
 	it_ = 0;
 }
 
 
-ImageDisplay::~ImageDisplay()
+DirtDetection::~DirtDetection()
 {
 	if (it_ != 0) delete it_;
 }
 
 
-void ImageDisplay::init()
+void DirtDetection::init()
 {
 	it_ = new image_transport::ImageTransport(node_handle_);
-	color_camera_image_sub_ = it_->subscribe("camera/rgb/image_color", 1, boost::bind(&ImageDisplay::imageDisplayCallback, this, _1));
+	color_camera_image_sub_ = it_->subscribe("camera/rgb/image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback_empty, this, _1));
+	camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("/camera/depth/points", 1, &DirtDetection::planeDetectionCallback, this);
+}
+
+int main(int argc, char **argv)
+{
+	ros::init(argc, argv, "dirt_detection");
+
+	ros::NodeHandle n;
+
+	DirtDetection id(n);
+	id.init();
+
+
+
+	//start to look for messages (loop)
+	ros::spin();
+
+	return 0;
+}
+
+void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
+{
+	  // Convert the sensor_msgs/PointCloud2 data to pcl/PointCloud
+	  pcl::PointCloud<pcl::PointXYZ> cloud;
+	  pcl::fromROSMsg (*point_cloud2_rgb_msg, cloud);
+
+	  pcl::ModelCoefficients coefficients;
+	  pcl::PointIndices inliers;
+//	  std::vector<pcl::PointIndices> inliers;
+
+	  // Create the segmentation object
+	  pcl::SACSegmentation<pcl::PointXYZ> seg;
+
+	  // Optional
+	  seg.setOptimizeCoefficients (true);
+
+	  // Mandatory
+	  seg.setModelType (pcl::SACMODEL_PLANE);
+	  seg.setMethodType (pcl::SAC_RANSAC);
+	  seg.setDistanceThreshold (0.01);
+
+	  seg.setInputCloud (cloud.makeShared ());
+	  seg.segment (inliers, coefficients);
+
+//	  if (inliers.indices.size () == 0)
+//	  {
+//		  std::cerr << "No planar model! "  << std::endl;
+//	  }
+//	  else
+//	  {
+//
+//		  std::cerr << "Model coefficients: " << coefficients.values[0] << " "
+//												<< coefficients.values[1] << " "
+//												<< coefficients.values[2] << " "
+//												<< coefficients.values[3] << std::endl;
+//	  }
+//
+//	    std::cerr << "Model inliers: " << inliers.indices.size () << std::endl;
+//	    for (size_t i = 0; i < inliers.indices.size (); ++i)
+//	      std::cerr << inliers.indices[i] << "    " << cloud.points[inliers.indices[i]].x << " "
+//	                                                 << cloud.points[inliers.indices[i]].y << " "
+//	                                                 << cloud.points[inliers.indices[i]].z << std::endl;
+
+		pcl::PointCloud<pcl::PointXYZ> cloud_plane;
+//
+	    // Extract the planar inliers from the input cloud
+	    pcl::ExtractIndices<pcl::PointXYZ> extract;
+	    extract.setInputCloud (cloud.makeShared ());
+	    extract.setIndices (inliers);
+//	    extract.setNegative (false);
+
+//	    // Write the planar inliers to disk
+//	    extract.filter (cloud_plane); //*
+//	    std::cout << "PointCloud representing the planar component: " << cloud_plane->points.size () << " data points." << std::endl;
+//
+//	    // Remove the planar inliers, extract the rest
+//	    extract.setNegative (true);
+//	    extract.filter (*cloud.makeShared ()); //*
+
+
+//
+//		sensor_msgs::Image image;
+//
+//		try
+//		{
+//			pcl::toROSMsg (cloud_plane, image); //convert the cloud
+//		}
+//		catch (std::runtime_error)
+//		{
+//		}
+
+
+
+}
+
+void DirtDetection::imageDisplayCallback_empty(const sensor_msgs::ImageConstPtr& color_image_msg)
+{
+//	cv_bridge::CvImageConstPtr color_image_ptr;
+//	cv::Mat resultImage;
+//	DirtDetection::convertColorImageMessageToMat(color_image_msg, color_image_ptr, resultImage);
+//
+//	// remove saliency at the image border
+//	int borderX = resultImage.cols/20;
+//	int borderY = resultImage.rows/20;
+//	if (borderX > 0 && borderY > 0)
+//	{
+//	cv::Mat smallImage_ = resultImage.colRange(borderX, resultImage.cols-1-borderX);
+//	cv::Mat smallImage = smallImage_.rowRange(borderY, smallImage_.rows-1-borderY);
+//
+//	copyMakeBorder(smallImage, resultImage, borderY, borderY, borderX, borderX, cv::BORDER_CONSTANT, cv::Scalar(0));
+//	}
+//
+//	//CvMat -> cv::Mat
+//	//cv::meanStdDev();
+//
+//	//cv::Mat stainImage;
+//	// check if the image makes sense (or convert to 0...255)
+//	//resultImage.convertTo(stainImage, -1, 1.0, 0.0);
+//
+//
+//	//mThresholdHou = thresh/100.0*cvAvg(realInput).val[0];
+//
+//	cv::imshow("Plane", resultImage);
+//	cv::waitKey(10);
 }
 
 
-unsigned long ImageDisplay::convertColorImageMessageToMat(const sensor_msgs::Image::ConstPtr& color_image_msg, cv_bridge::CvImageConstPtr& color_image_ptr, cv::Mat& color_image)
+unsigned long DirtDetection::convertColorImageMessageToMat(const sensor_msgs::Image::ConstPtr& color_image_msg, cv_bridge::CvImageConstPtr& color_image_ptr, cv::Mat& color_image)
 {
 	try
 	{
@@ -38,7 +162,8 @@ unsigned long ImageDisplay::convertColorImageMessageToMat(const sensor_msgs::Ima
 	return 0;
 }
 
-void ImageDisplay::imageDisplayCallback_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg)
+
+void DirtDetection::imageDisplayCallback_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg)
 {
 	cv_bridge::CvImageConstPtr color_image_ptr;
 	cv::Mat color_image;
@@ -194,7 +319,7 @@ void ImageDisplay::imageDisplayCallback_old_cv_code(const sensor_msgs::ImageCons
 
 }
 
-void ImageDisplay::imageDisplayCallback_new_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg)
+void DirtDetection::imageDisplayCallback_new_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg)
 {
 	cv_bridge::CvImageConstPtr color_image_ptr;
 	cv::Mat color_image;
@@ -315,9 +440,9 @@ void ImageDisplay::imageDisplayCallback_new_cv_code(const sensor_msgs::ImageCons
 	cv::waitKey(10);
 }
 
-void ImageDisplay::imageDisplayCallback_channel_combination(const sensor_msgs::ImageConstPtr& color_image_msg)
+void DirtDetection::imageDisplayCallback_channel_combination(const sensor_msgs::ImageConstPtr& color_image_msg)
 {
-	//ImageDisplay::imageDisplayCallback_new_cv_code(color_image_msg);
+	//DirtDetection::imageDisplayCallback_new_cv_code(color_image_msg);
 
 	cv_bridge::CvImageConstPtr color_image_ptr;
 	cv::Mat color_image;
@@ -345,9 +470,9 @@ void ImageDisplay::imageDisplayCallback_channel_combination(const sensor_msgs::I
 	cv::Mat res_sci; // "sci"<-> second channel image
 	cv::Mat res_tci; //"tci"<-> second channel image
 
-	ImageDisplay::oneChannelTrafo(fci, res_fci);
-	ImageDisplay::oneChannelTrafo(sci, res_sci);
-	ImageDisplay::oneChannelTrafo(tci, res_tci);
+	DirtDetection::oneChannelTrafo(fci, res_fci);
+	DirtDetection::oneChannelTrafo(sci, res_sci);
+	DirtDetection::oneChannelTrafo(tci, res_tci);
 
 	cv::Mat realInput;
 
@@ -388,7 +513,7 @@ void ImageDisplay::imageDisplayCallback_channel_combination(const sensor_msgs::I
 	cv::waitKey(10);
 }
 
-void ImageDisplay::oneChannelTrafo(cv::Mat& one_channel_image, cv::Mat& result_image)
+void DirtDetection::oneChannelTrafo(cv::Mat& one_channel_image, cv::Mat& result_image)
 {
 	int scale = 6;
 
@@ -458,7 +583,7 @@ void ImageDisplay::oneChannelTrafo(cv::Mat& one_channel_image, cv::Mat& result_i
 	result_image = vec[0];
 }
 
-void ImageDisplay::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg)
+void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg)
 {
 	//ImageDisplay::imageDisplayCallback_new_cv_code(color_image_msg);
 
@@ -498,8 +623,8 @@ void ImageDisplay::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_
 
 	cv::Mat fci2;
 	cv::minMaxLoc(fci,&minv,&maxv,&minl,&maxl);
-	fci.convertTo(fci2,-1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
-	cv::imshow("fci", fci2);
+	fci.convertTo(fci2,-1, 255.0/(maxv-minv), 255.0*(minv)/(maxv-minv));
+//	cv::imshow("fci", fci2);
 
 	sci = vec[1];
 	tci = vec[2];
@@ -509,33 +634,21 @@ void ImageDisplay::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_
 	cv::Mat res_tci; //"tci"<-> second channel image
 
 
-	fci -=  140;//mean[0];
-	cv::multiply(fci,fci,fci);
-	cv::minMaxLoc(fci,&minv,&maxv,&minl,&maxl);
-	fci.convertTo(fci,-1, 1/(maxv-minv), 1*(minv)/(maxv-minv));
-	//cv::threshold(fci, fci, 0.7, 1, cv::THRESH_BINARY);
-
-	cv::imshow("fci2", fci);
+	fci -= 140;//mean[0];
+	cv::threshold(fci, fci, 20, 255, cv::THRESH_BINARY);
 
 	sci -= 140;//mean[1];
-	cv::multiply(sci,sci,sci);
-	cv::minMaxLoc(sci,&minv,&maxv,&minl,&maxl);
-	sci.convertTo(sci,-1, 1/(maxv-minv), 1*(minv)/(maxv-minv));
-	//cv::threshold(sci, sci, 0.7, 1, cv::THRESH_BINARY);
+	cv::threshold(sci, sci, 20, 255, cv::THRESH_BINARY);
 
 
 	tci -=  140;//mean[2];
-	cv::multiply(tci,tci,tci);
-	cv::minMaxLoc(tci,&minv,&maxv,&minl,&maxl);
-	tci.convertTo(tci,-1, 1/(maxv-minv), 1*(minv)/(maxv-minv));
-	//cv::threshold(tci, sci, 0.7, 1, cv::THRESH_BINARY);
+	cv::threshold(tci, tci, 20, 255, cv::THRESH_BINARY);
 
-	cv::Mat realInput = (fci+sci+tci)/3;
-	cv::threshold(realInput, realInput, 0.7, 1, cv::THRESH_BINARY);
 
-//	cv::minMaxLoc(realInput,&minv,&maxv,&minl,&maxl);
-//
-//	realInput.convertTo(realInput,-1, 255/(maxv-minv), 255*(minv)/(maxv-minv));
+	cv::Mat realInput;
+
+	realInput = fci + sci + tci;
+	cv::threshold(realInput, realInput, 430, 255, cv::THRESH_BINARY);
 
 
 	cv::Mat resultImage;
@@ -562,18 +675,3 @@ void ImageDisplay::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_
 
 }
 
-int main(int argc, char **argv)
-{
-	ros::init(argc, argv, "image_display");
-
-	ros::NodeHandle n;
-
-	ImageDisplay id(n);
-	id.init();
-
-
-	//start to look for messages (loop)
-	ros::spin();
-
-	return 0;
-}

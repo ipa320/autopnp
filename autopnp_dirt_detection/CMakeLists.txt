@@ -24,10 +24,10 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include ${PROJECT_SOURCE_DIR}/comm
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
-rosbuild_add_executable(image_display ros/src/image_display.cpp)
+rosbuild_add_executable(dirt_detection ros/src/dirt_detection.cpp)
 					#common/src/file.cpp)
 
-rosbuild_add_compile_flags(image_display -D__LINUX__)
+#rosbuild_add_compile_flags(dirt_detection -D__LINUX__)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
