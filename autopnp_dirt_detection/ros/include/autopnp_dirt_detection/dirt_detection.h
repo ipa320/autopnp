@@ -62,36 +62,41 @@ protected:
 
 	ros::NodeHandle node_handle_; ///< ROS node handle
 
+	struct bgr
+	{
+		uchar b;
+		uchar g;
+		uchar r;
+	};
+
 
 public:
 
+	//Constructor
 	DirtDetection(ros::NodeHandle node_handle);
 
+	//Destructor
 	~DirtDetection();
 
+	//create subscribers
 	void init();
 
 
-	void imageDisplayCallback_empty(const sensor_msgs::ImageConstPtr& color_image_msg);
-
+	//callback functions
 	void imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg);
-
-	void imageDisplayCallback_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
-
-	void imageDisplayCallback_new_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
-
-	void oneChannelTrafo(cv::Mat& one_channel_image, cv::Mat& result_image);
-
-
-	unsigned long convertColorImageMessageToMat(const sensor_msgs::Image::ConstPtr& color_image_msg, cv_bridge::CvImageConstPtr& color_image_ptr, cv::Mat& color_image);
-
-
-
 	void planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
-	void SaliencyDetection(const cv::Mat& color_image, const cv::Mat* mask = 0);
-	void SaliencyDetection_channel_combination(const cv::Mat& color_image, const cv::Mat* mask = 0);
+	//convert functions
+	unsigned long convertColorImageMessageToMat(const sensor_msgs::Image::ConstPtr& color_image_msg, cv_bridge::CvImageConstPtr& color_image_ptr, cv::Mat& color_image);
+	void convertPointCloudMessageToPointCloudPcl(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg, pcl::PointCloud<pcl::PointXYZRGB>::Ptr &point_cloud_XYZRGB);
 
+
+	//functions
+	void planeDetection(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud);
+
+	void SaliencyDetection_C1(cv::Mat& one_channel_image, cv::Mat& result_image);
+	void SaliencyDetection_C3(const cv::Mat& color_image, const cv::Mat* mask = 0);
+	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
 
 };
 
