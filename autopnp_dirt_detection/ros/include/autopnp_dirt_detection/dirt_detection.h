@@ -80,8 +80,6 @@ public:
 
 	void imageDisplayCallback_new_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
 
-	void imageDisplayCallback_channel_combination(const sensor_msgs::ImageConstPtr& color_image_msg);
-
 	void oneChannelTrafo(cv::Mat& one_channel_image, cv::Mat& result_image);
 
 
@@ -91,6 +89,8 @@ public:
 
 	void planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
+	void SaliencyDetection(const cv::Mat& color_image, const cv::Mat* mask = 0);
+	void SaliencyDetection_channel_combination(const cv::Mat& color_image, const cv::Mat* mask = 0);
 
 
 };

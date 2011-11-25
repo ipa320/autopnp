@@ -19,7 +19,7 @@ void DirtDetection::init()
 {
 	it_ = new image_transport::ImageTransport(node_handle_);
 	color_camera_image_sub_ = it_->subscribe("camera/rgb/image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback_empty, this, _1));
-	camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("/camera/depth/points", 1, &DirtDetection::planeDetectionCallback, this);
+	camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("/camera/rgb/points", 1, &DirtDetection::planeDetectionCallback, this);
 }
 
 int main(int argc, char **argv)
@@ -39,77 +39,71 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+
+struct bgr
+{
+	uchar b;
+	uchar g;
+	uchar r;
+};
+
+
 void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
 {
-	  // Convert the sensor_msgs/PointCloud2 data to pcl/PointCloud
-	  pcl::PointCloud<pcl::PointXYZ> cloud;
-	  pcl::fromROSMsg (*point_cloud2_rgb_msg, cloud);
 
-	  pcl::ModelCoefficients coefficients;
-	  pcl::PointIndices inliers;
-//	  std::vector<pcl::PointIndices> inliers;
+	//conversion Ros->Pcl
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+	pcl::fromROSMsg(*point_cloud2_rgb_msg, *input_cloud);
 
-	  // Create the segmentation object
-	  pcl::SACSegmentation<pcl::PointXYZ> seg;
+	// Create the segmentation object for the planar model and set all the parameters
+	pcl::SACSegmentation<pcl::PointXYZRGB> seg;
+	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+	//pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_plane (new pcl::PointCloud<pcl::PointXYZ> ());
+	pcl::PCDWriter writer;
+	seg.setOptimizeCoefficients (true);
+	seg.setModelType (pcl::SACMODEL_PLANE);
+	seg.setMethodType (pcl::SAC_RANSAC);
+	seg.setMaxIterations (100);
+	seg.setDistanceThreshold (0.02);
 
-	  // Optional
-	  seg.setOptimizeCoefficients (true);
+	// Segment planar component from the cloud
+	seg.setInputCloud(input_cloud);
+	seg.segment (*inliers, *coefficients); //*
 
-	  // Mandatory
-	  seg.setModelType (pcl::SACMODEL_PLANE);
-	  seg.setMethodType (pcl::SAC_RANSAC);
-	  seg.setDistanceThreshold (0.01);
+	cv::Mat ground_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
+	cv::Mat ground_mask = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC1);
+	for (size_t i=0; i<inliers->indices.size(); i++)
+	{
+		int v = inliers->indices[i]/input_cloud->width;	// check ob das immer abrundet
+		int u = inliers->indices[i] - v*input_cloud->width;
 
-	  seg.setInputCloud (cloud.makeShared ());
-	  seg.segment (inliers, coefficients);
+		//std::cout << "(u,v) = (" << u << ", " << v << ")" << std::endl;
 
-//	  if (inliers.indices.size () == 0)
-//	  {
-//		  std::cerr << "No planar model! "  << std::endl;
-//	  }
-//	  else
-//	  {
-//
-//		  std::cerr << "Model coefficients: " << coefficients.values[0] << " "
-//												<< coefficients.values[1] << " "
-//												<< coefficients.values[2] << " "
-//												<< coefficients.values[3] << std::endl;
-//	  }
-//
-//	    std::cerr << "Model inliers: " << inliers.indices.size () << std::endl;
-//	    for (size_t i = 0; i < inliers.indices.size (); ++i)
-//	      std::cerr << inliers.indices[i] << "    " << cloud.points[inliers.indices[i]].x << " "
-//	                                                 << cloud.points[inliers.indices[i]].y << " "
-//	                                                 << cloud.points[inliers.indices[i]].z << std::endl;
+		pcl::PointXYZRGB point = (*input_cloud)[(inliers->indices[i])];
+		bgr bgr_ = {point.b, point.g, point.r};
+		ground_image.at<bgr>(v, u) = bgr_;
+		ground_mask.at<uchar>(v, u) = 255;
+	}
 
-		pcl::PointCloud<pcl::PointXYZ> cloud_plane;
-//
-	    // Extract the planar inliers from the input cloud
-	    pcl::ExtractIndices<pcl::PointXYZ> extract;
-	    extract.setInputCloud (cloud.makeShared ());
-	    extract.setIndices (inliers);
-//	    extract.setNegative (false);
-
-//	    // Write the planar inliers to disk
-//	    extract.filter (cloud_plane); //*
-//	    std::cout << "PointCloud representing the planar component: " << cloud_plane->points.size () << " data points." << std::endl;
-//
-//	    // Remove the planar inliers, extract the rest
-//	    extract.setNegative (true);
-//	    extract.filter (*cloud.makeShared ()); //*
+	cv::Mat color_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
+	int index = 0;
+	for (int v=0; v<input_cloud->height; v++)
+	{
+		for (int u=0; u<input_cloud->width; u++, index++)
+		{
+			pcl::PointXYZRGB point = (*input_cloud)[index];
+			bgr bgr_ = {point.b, point.g, point.r};
+			color_image.at<bgr>(v, u) = bgr_;
+		}
+	}
 
 
-//
-//		sensor_msgs::Image image;
-//
-//		try
-//		{
-//			pcl::toROSMsg (cloud_plane, image); //convert the cloud
-//		}
-//		catch (std::runtime_error)
-//		{
-//		}
+	cv::imshow("color image", color_image);
+	cv::imshow("floor cropped", ground_image);
+	//cv::waitKey(10);
 
+	DirtDetection::SaliencyDetection_channel_combination(ground_image, &ground_mask);
 
 
 }
@@ -324,10 +318,16 @@ void DirtDetection::imageDisplayCallback_new_cv_code(const sensor_msgs::ImageCon
 	cv_bridge::CvImageConstPtr color_image_ptr;
 	cv::Mat color_image;
 	convertColorImageMessageToMat(color_image_msg, color_image_ptr, color_image);
+	DirtDetection::SaliencyDetection(color_image);
+
+}
+
+void DirtDetection::SaliencyDetection(const cv::Mat& color_image, const cv::Mat* mask)
+{
 
 	// color_image is now available with the current image from your camera
 
-	cv::imshow("original image", color_image);
+	//cv::imshow("original image", color_image);
 	//printf("Columns %d, Rows %d\n", color_image.cols,color_image.rows);
 
 	//int thresh = 350;
@@ -413,16 +413,29 @@ void DirtDetection::imageDisplayCallback_new_cv_code(const sensor_msgs::ImageCon
 	cv::Size2i ksize;
 	ksize.width = 3;
 	ksize.height = 3;
-	cv::GaussianBlur(realInput,realInput, ksize,0);
-	cv::GaussianBlur(realInput,realInput, ksize,0);
-
-	cv::minMaxLoc(realInput,&minv,&maxv,&minl,&maxl);
-
-	realInput.convertTo(realInput,-1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+	cv::GaussianBlur(realInput,realInput, ksize,0); //notwendig!?
+	cv::GaussianBlur(realInput,realInput, ksize,0);//notwendig!?
 
 
+	//Rand entfernen
 	cv::Mat resultImage;
 	cv::resize(realInput,resultImage,color_image.size());
+	if (mask != 0)
+	{
+		// maske erodiere
+		cv::Mat mask_eroded = mask->clone();
+		cv::dilate(*mask, mask_eroded, cv::Mat(), cv::Point(-1, -1), 2);
+		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25);
+		cv::Mat temp;
+		resultImage.copyTo(temp, mask_eroded);
+		resultImage = temp;
+
+	}
+
+	cv::minMaxLoc(resultImage,&minv,&maxv,&minl,&maxl);
+
+	resultImage.convertTo(resultImage,-1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+
 
 	// remove saliency at the image border
 	int borderX = resultImage.cols/20;
@@ -436,21 +449,12 @@ void DirtDetection::imageDisplayCallback_new_cv_code(const sensor_msgs::ImageCon
 	}
 
 
-	cv::imshow("image2", resultImage);
+	cv::imshow("dirt image", resultImage);
 	cv::waitKey(10);
 }
 
-void DirtDetection::imageDisplayCallback_channel_combination(const sensor_msgs::ImageConstPtr& color_image_msg)
+void DirtDetection::SaliencyDetection_channel_combination(const cv::Mat& color_image, const cv::Mat* mask)
 {
-	//DirtDetection::imageDisplayCallback_new_cv_code(color_image_msg);
-
-	cv_bridge::CvImageConstPtr color_image_ptr;
-	cv::Mat color_image;
-	convertColorImageMessageToMat(color_image_msg, color_image_ptr, color_image);
-
-	// color_image is now available with the current image from your camera
-	cv::imshow("original imageB", color_image);
-
 	cv::Mat fci; // "fci"<-> first channel image
 	cv::Mat sci; // "sci"<-> second channel image
 	cv::Mat tci; //"tci"<-> second channel image
@@ -479,23 +483,35 @@ void DirtDetection::imageDisplayCallback_channel_combination(const sensor_msgs::
 	realInput = (res_fci + res_sci + res_tci)/3;
 
 
-
 	double minv, maxv;
 	cv::Point2i minl, maxl;
 
 	cv::Size2i ksize;
 	ksize.width = 3;
 	ksize.height = 3;
-	cv::GaussianBlur(realInput,realInput, ksize,0);
-	cv::GaussianBlur(realInput,realInput, ksize,0);
-
-	cv::minMaxLoc(realInput,&minv,&maxv,&minl,&maxl);
-
-	realInput.convertTo(realInput,-1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+	cv::GaussianBlur(realInput,realInput, ksize,0); //notwendig!?
+	cv::GaussianBlur(realInput,realInput, ksize,0);//notwendig!?
 
 
+	//Rand entfernen
 	cv::Mat resultImage;
 	cv::resize(realInput,resultImage,color_image.size());
+	if (mask != 0)
+	{
+		// maske erodiere
+		cv::Mat mask_eroded = mask->clone();
+		cv::dilate(*mask, mask_eroded, cv::Mat(), cv::Point(-1, -1), 2);
+		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25);
+		cv::Mat temp;
+		resultImage.copyTo(temp, mask_eroded);
+		resultImage = temp;
+
+	}
+
+	cv::minMaxLoc(resultImage,&minv,&maxv,&minl,&maxl);
+
+	resultImage.convertTo(resultImage,-1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+
 
 	// remove saliency at the image border
 	int borderX = resultImage.cols/20;
@@ -509,8 +525,9 @@ void DirtDetection::imageDisplayCallback_channel_combination(const sensor_msgs::
 	}
 
 
-	cv::imshow("image2B", resultImage);
+	cv::imshow("dirt image", resultImage);
 	cv::waitKey(10);
+
 }
 
 void DirtDetection::oneChannelTrafo(cv::Mat& one_channel_image, cv::Mat& result_image)

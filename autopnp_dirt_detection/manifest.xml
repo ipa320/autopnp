@@ -16,7 +16,7 @@
   <depend package="image_transport"/>
   <depend package="opencv2"/>
   <depend package="cv_bridge"/>
-  <depend package="cv_bridge_redesign"/>
+ <!-- <depend package="cv_bridge_redesign"/> -->
 </package>
 
 
