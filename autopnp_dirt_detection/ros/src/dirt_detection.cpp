@@ -1,6 +1,8 @@
 #include <autopnp_dirt_detection/dirt_detection.h>
 
 using namespace ipa_DirtDetection;
+using namespace std;
+using namespace cv;
 
 //////////////////
 ///Constructor///
@@ -10,6 +12,8 @@ DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 : node_handle_(node_handle)
 {
 	it_ = 0;
+
+	Image_buffer_size = 5;
 }
 
 /////////////////
@@ -70,10 +74,6 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
 {
 
-//	//conversion Ros message->Pcl point cloud2
-//	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
-//	pcl::fromROSMsg(*point_cloud2_rgb_msg, *input_cloud);
-
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	DirtDetection::convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
 
@@ -112,36 +112,6 @@ unsigned long DirtDetection::convertColorImageMessageToMat(const sensor_msgs::Im
 void DirtDetection::planeDetection(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud)
 {
 
-	// Create the segmentation object for the planar model and set all the parameters
-	pcl::SACSegmentation<pcl::PointXYZRGB> seg;
-	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
-
-	pcl::PCDWriter writer;
-	seg.setOptimizeCoefficients (true);
-	seg.setModelType (pcl::SACMODEL_PLANE);
-	seg.setMethodType (pcl::SAC_RANSAC);
-	seg.setMaxIterations (100);
-	seg.setDistanceThreshold (0.02);
-
-	// Segment planar component from the cloud
-	seg.setInputCloud(input_cloud);
-	seg.segment (*inliers, *coefficients); //*
-
-	cv::Mat ground_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
-	cv::Mat ground_mask = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC1);
-	for (size_t i=0; i<inliers->indices.size(); i++)
-	{
-		int v = inliers->indices[i]/input_cloud->width;	// check ob das immer abrundet
-		int u = inliers->indices[i] - v*input_cloud->width;
-
-		pcl::PointXYZRGB point = (*input_cloud)[(inliers->indices[i])];
-		bgr bgr_ = {point.b, point.g, point.r};
-		ground_image.at<bgr>(v, u) = bgr_;
-		ground_mask.at<uchar>(v, u) = 255;
-	}
-
-
 	//recreate original color image from point cloud
 	cv::Mat color_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
 	int index = 0;
@@ -157,11 +127,46 @@ void DirtDetection::planeDetection(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_
 
 	//display original image
 	cv::imshow("color image", color_image);
-	//display detected floor
-	cv::imshow("floor cropped", ground_image);
 
-	//detect dirt on the floor
-	DirtDetection::SaliencyDetection_C3(ground_image, &ground_mask);
+
+	// Create the segmentation object for the planar model and set all the parameters
+	pcl::SACSegmentation<pcl::PointXYZRGB> seg;
+	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+
+	pcl::PCDWriter writer;
+	seg.setOptimizeCoefficients (true);
+	seg.setModelType (pcl::SACMODEL_PLANE);
+	seg.setMethodType (pcl::SAC_RANSAC);
+	seg.setMaxIterations (100);
+	seg.setDistanceThreshold (0.02);
+
+	seg.setInputCloud(input_cloud);
+	seg.segment (*inliers, *coefficients);
+
+	if (inliers->indices.size () != 0) //check if ground/floor detected
+	{
+
+		cv::Mat ground_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
+		cv::Mat ground_mask = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC1);
+		for (size_t i=0; i<inliers->indices.size(); i++)
+		{
+			int v = inliers->indices[i]/input_cloud->width;	// check ob das immer abrundet
+			int u = inliers->indices[i] - v*input_cloud->width;
+
+			pcl::PointXYZRGB point = (*input_cloud)[(inliers->indices[i])];
+			bgr bgr_ = {point.b, point.g, point.r};
+			ground_image.at<bgr>(v, u) = bgr_;
+			ground_mask.at<uchar>(v, u) = 255;
+		}
+
+		//display detected floor
+//		cv::imshow("floor cropped", ground_image);
+
+		//detect dirt on the floor
+		DirtDetection::SaliencyDetection_C3(ground_image, &ground_mask);
+
+	}
 
 
 }
@@ -307,8 +312,83 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& color_image, const cv::M
 	}
 
 
-	cv::imshow("dirt image", resultImage);
+	cv::imshow("SaliencyDetection", resultImage);
+
+	cv::Mat image_postproc = cv::Mat::zeros(resultImage.size(), CV_8UC1);
+
+	cv::Mat new_color_image = color_image;
+
+	DirtDetection::Image_Postprocessing_C1(resultImage, image_postproc, new_color_image);
+
+//	cv::imshow("dirt image", resultImage);
+	cv::imshow("image postprocessing", new_color_image);
 	cv::waitKey(10);
+
+
+}
+
+void DirtDetection::Image_Postprocessing_C1(cv::Mat input_image, cv::Mat& output_image, cv::Mat& color_image)
+{
+	//set dirt pixel to white
+	cv::Mat image_postproc = cv::Mat::zeros(input_image.size(), CV_8UC1);
+	cv::threshold(input_image, image_postproc, .5, 1, cv::THRESH_BINARY);
+
+//	std::cout << "(input_image channels) = (" << input_image.channels() << ")" << std::endl;
+
+	//insert image into fifo
+//	Image_buffer.push_back(image_postproc);
+
+	cv::Mat CV_8UC_image;
+	image_postproc.convertTo(CV_8UC_image, CV_8UC1);
+
+
+//	Mat dst = Mat::zeros(img.rows, img.cols, CV_8UC3);
+//	dst = color_image;
+
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+
+    cv::findContours(CV_8UC_image, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+    Scalar color(255, 255, 255);
+    cv::RotatedRect rec;
+
+    for (int i = 0; i < contours.size(); i++)
+    {
+		rec = minAreaRect(contours[i]);
+    	cv::ellipse(color_image, rec, color);
+    }
+
+//    Scalar color( rand()&255, rand()&255, rand()&255 );
+//    cv::drawContours( dst, contours, -1, color);
+
+
+
+//	cv::Mat picture;
+
+//	std::cout << "(height,width) = (" << image_postproc.size().height << ", " << image_postproc.size().width << ")" << std::endl;
+//
+//	for (int i = 0; i < Image_buffer.size(); i++)
+//	{
+//		if (i != 0)
+//		{
+//			picture = picture +  Image_buffer[i];
+//		}
+//		else
+//		{
+//			picture = Image_buffer[i];
+//		}
+//
+//	}
+//
+//	cv::threshold(picture, output_image, 1.5, 1, cv::THRESH_BINARY);
+//
+//	if (Image_buffer.size() > Image_buffer_size )
+//	{
+//		Image_buffer.erase(Image_buffer.begin(), Image_buffer.begin()+1);
+//	}
+
+//	std::cout << "(Image buffer size) = (" << Image_buffer.size() << ")" << std::endl;
 
 }
 

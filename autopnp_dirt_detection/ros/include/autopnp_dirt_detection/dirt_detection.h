@@ -14,6 +14,7 @@
 // standard includes
 #include <iostream>
 #include <string>
+#include <deque>
 
 // ROS includes
 #include <ros/ros.h>
@@ -50,8 +51,12 @@
 
 namespace ipa_DirtDetection {
 
-//####################
-//#### node class ####
+using namespace std;
+
+/////////////////
+///node class///
+///////////////
+
 class DirtDetection
 {
 protected:
@@ -68,6 +73,9 @@ protected:
 		uchar g;
 		uchar r;
 	};
+
+	std::vector<cv::Mat> Image_buffer;
+	int Image_buffer_size;
 
 
 public:
@@ -96,6 +104,11 @@ public:
 
 	void SaliencyDetection_C1(cv::Mat& one_channel_image, cv::Mat& result_image);
 	void SaliencyDetection_C3(const cv::Mat& color_image, const cv::Mat* mask = 0);
+
+	void Image_Postprocessing_C1(const cv::Mat input_image, cv::Mat& output_image, cv::Mat& color_image);
+
+
+	//out of date
 	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
 
 };
