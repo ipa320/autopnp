@@ -1,2 +1,14 @@
 # spectral residual component
 spectralResidualGaussianBlurIterations: 3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.35  #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.6   #3.6

@@ -68,6 +68,10 @@ protected:
 
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
+	double dirtThreshold_;
+	double spectralResidualNormalizationHighestMaxMeanRatio_;
+	double spectralResidualImageSizeRatio_;
+	double dirtCheckStdDevFactor_;
 
 	struct bgr
 	{

@@ -39,6 +39,14 @@ void DirtDetection::init()
 	std::cout << "\n--------------------------\nDirt Detection Parameters:\n--------------------------\n";
 	node_handle_.param("spectralResidualGaussianBlurIterations", spectralResidualGaussianBlurIterations_, 2);
 	std::cout << "spectralResidualGaussianBlurIterations = " << spectralResidualGaussianBlurIterations_ << std::endl;
+	node_handle_.param("dirtThreshold", dirtThreshold_, 0.5);
+	std::cout << "dirtThreshold = " << dirtThreshold_ << std::endl;
+	node_handle_.param("spectralResidualNormalizationHighestMaxMeanRatio", spectralResidualNormalizationHighestMaxMeanRatio_, 0.5);
+	std::cout << "spectralResidualNormalizationHighestMaxMeanRatio = " << spectralResidualNormalizationHighestMaxMeanRatio_ << std::endl;
+	node_handle_.param("spectralResidualImageSizeRatio", spectralResidualImageSizeRatio_, 0.25);
+	std::cout << "spectralResidualImageSizeRatio = " << spectralResidualImageSizeRatio_ << std::endl;
+	node_handle_.param("dirtCheckStdDevFactor", dirtCheckStdDevFactor_, 2.5);
+	std::cout << "dirtCheckStdDevFactor = " << dirtCheckStdDevFactor_ << std::endl;
 
 }
 
@@ -110,7 +118,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 		// post processing, dirt/stain selection
 		cv::Mat image_postproc;
-		cv::Mat new_color_image = plane_color_image;
+		cv::Mat new_color_image = plane_color_image.clone();
 		Image_Postprocessing_C1_rmb(result_image, image_postproc, new_color_image, plane_mask);
 
 		cv::imshow("image postprocessing", new_color_image);
@@ -214,7 +222,7 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& one_channel_image, cv::M
 	//given a one channel image
 	//int scale = 6;
 	//unsigned int size = (int)floor((float)pow(2.0,scale)); //the size to do the saliency at
-	unsigned int size = one_channel_image.cols/4;
+	unsigned int size = (int)(one_channel_image.cols * spectralResidualImageSizeRatio_);
 
 	//create different images
 	cv::Mat bw_im;
@@ -356,7 +364,7 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& input_image, cv::Mat&
 
 	//set dirt pixel to white
 	image_postproc = cv::Mat::zeros(input_image.size(), CV_8UC1);
-	cv::threshold(scaled_input_image, image_postproc, .5, 1, cv::THRESH_BINARY);
+	cv::threshold(scaled_input_image, image_postproc, dirtThreshold_, 1, cv::THRESH_BINARY);
 
 //	std::cout << "(input_image channels) = (" << input_image.channels() << ")" << std::endl;
 
@@ -420,24 +428,62 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& input_image, cv::Mat&
 
 void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::Mat& image_postproc, cv::Mat& color_image, const cv::Mat& mask)
 {
-	// scale input_image
+	// dirt detection on image with artificial dirt
+	cv::Mat color_image_with_artifical_dirt = color_image.clone();
+	cv::Mat mask_with_artificial_dirt = mask.clone();
+	// add dirt
+	int dirtSize = 3;
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(280,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(280,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(360,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(360,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(280,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(280,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(360,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(360,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::Mat result_image;
+	SaliencyDetection_C3(color_image_with_artifical_dirt, result_image, &mask_with_artificial_dirt, spectralResidualGaussianBlurIterations_);
+	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
+
+	// scale input_image to value obtained from input_image with artificially added dirt
+	result_image.mul(result_image);	// square result_image to emphasize the dirt and increase the gap to background response
 	cv::Mat scaled_input_image;
 	double minv, maxv;
 	cv::Point2i minl, maxl;
-	cv::minMaxLoc(input_image,&minv,&maxv,&minl,&maxl, mask);
+	cv::minMaxLoc(result_image,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
 	cv::Scalar mean, stdDev;
-	cv::meanStdDev(input_image, mean, stdDev, mask);
-	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << std::endl;
+	cv::meanStdDev(result_image, mean, stdDev, mask);
+	double newMaxVal = min(1.0, maxv/mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
+	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
 
-	double newMaxVal = min(1.0, maxv/mean.val[0] /5.);
-	//input_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
-	input_image.convertTo(scaled_input_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
+	////input_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+	cv::Mat temp = input_image.clone();	// square result_image to emphasize the dirt and increase the gap to background response
+	temp.mul(temp);
+	//scaled_input_image = temp;
+	temp.convertTo(scaled_input_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
+
+	double newMean = mean.val[0] * newMaxVal/(maxv-minv) - newMaxVal*(minv)/(maxv-minv);
+	double newStdDev = stdDev.val[0] * newMaxVal/(maxv-minv);
+
+//	// scale input_image
+//	cv::Mat scaled_input_image;
+//	double minv, maxv;
+//	cv::Point2i minl, maxl;
+//	cv::minMaxLoc(input_image,&minv,&maxv,&minl,&maxl, mask);
+//	cv::Scalar mean, stdDev;
+//	cv::meanStdDev(input_image, mean, stdDev, mask);
+//	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << std::endl;
+//
+//	double newMaxVal = min(1.0, maxv/mean.val[0] /5.);
+//	//input_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+//	input_image.convertTo(scaled_input_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
 
 	cv::imshow("SaliencyDetection", scaled_input_image);
 
 	//set dirt pixel to white
 	image_postproc = cv::Mat::zeros(input_image.size(), CV_8UC1);
-	cv::threshold(scaled_input_image, image_postproc, .75, 1, cv::THRESH_BINARY);
+	cv::threshold(scaled_input_image, image_postproc, dirtThreshold_, 1, cv::THRESH_BINARY);
+//	cv::threshold(scaled_input_image, image_postproc, mean.val[0] + stdDev.val[0] * dirtCheckStdDevFactor_, 1, cv::THRESH_BINARY);
 
 //	std::cout << "(input_image channels) = (" << input_image.channels() << ")" << std::endl;
 
@@ -456,13 +502,26 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::
 
     cv::findContours(CV_8UC_image, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
-    Scalar color(0, 255, 0);
+    cv::Scalar green(0, 255, 0);
+    cv::Scalar red(0, 0, 255);
     cv::RotatedRect rec;
 
     for (int i = 0; i < (int)contours.size(); i++)
     {
-		rec = minAreaRect(contours[i]);
-    	cv::ellipse(color_image, rec, color, 2);
+    	double meanIntensity = 0;
+    	for (int t=0; t<(int)contours[i].size(); t++)
+    		meanIntensity += scaled_input_image.at<float>(contours[i][t].y, contours[i][t].x);
+    	meanIntensity /= (double)contours[i].size();
+    	if (meanIntensity > newMean + dirtCheckStdDevFactor_ * newStdDev)
+    	{
+			rec = minAreaRect(contours[i]);
+			cv::ellipse(color_image, rec, green, 2);
+    	}
+    	else
+    	{
+    		rec = minAreaRect(contours[i]);
+    		cv::ellipse(color_image, rec, red, 2);
+    	}
     }
 
 //    Scalar color( rand()&255, rand()&255, rand()&255 );
