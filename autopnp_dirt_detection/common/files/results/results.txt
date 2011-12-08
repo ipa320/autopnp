@@ -48,6 +48,59 @@ false positives: no (few at border)
 comments:
 - problems with dark black and small black objects
 
+---------------------------------------------------------------
+
+gray carpet:
+------------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 5
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.18  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 2.8   #3.6
+
+puncher dirt: 0.8
+fuzz: 0.2
+green paper snippet: 1.0
+brown paper snippet: 0.9
+black paper snippet: 0.66
+brown flower leaf: 0.66
+green flower leaf: 1.0
+black small leaf: 0.0
+apple stick: 0.0
+black magnet: 1.0
+lead: 0.0 (invisible for human)
+fir needle: 0.0 (almost invisible for human)
+lace: 1.0
+paper clip: 0.9
+crump: 0.0 (almost invisible for human)
+pebble single black: 0.9
+pebble single bright: 0.1 (almost invisible in camera image)
+pebble cluster: 0.9
+street dirt: 0.2
+
+false positives: few (esp. at darker areas -> more camera noise)
+
+comments:
+
+
+
+
+
+
+
+
+
+
 ---------------------------------------------------
 
 
@@ -70,3 +123,7 @@ pebble single black:
 pebble single bright:
 pebble cluster:
 street dirt:
+
+false positives:
+
+comments:
