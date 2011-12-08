@@ -113,6 +113,12 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 	{
 		//cv::cvtColor(plane_color_image, plane_color_image, CV_BGR2Lab);
 
+//		cv::Mat laplace;
+//		cv::Laplacian(plane_color_image, laplace, CV_32F, 5);
+//		laplace = laplace.mul(laplace);
+//		cv::normalize(laplace, laplace, 0, 1, NORM_MINMAX);
+//		cv:imshow("laplace", laplace);
+
 		// detect dirt on the floor
 		cv::Mat result_image;
 		SaliencyDetection_C3(plane_color_image, result_image, &plane_mask, spectralResidualGaussianBlurIterations_);
@@ -261,6 +267,10 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& one_channel_image, cv::M
 	cv::Mat log_mag(size,size, CV_32FC1);
 	cv::log(image_Mag, log_mag);
 
+//	cv::Mat log_mag_;
+//	cv::normalize(log_mag, log_mag_, 0, 1, NORM_MINMAX);
+//	cv::imshow("log_mag", log_mag_);
+
 	//Box filter the magnitude, then take the difference
 	cv::Mat log_mag_Filt(size,size, CV_32FC1);
 
@@ -268,9 +278,24 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& one_channel_image, cv::M
 	//filt.convertTo(filt,-1,1.0/9.0,0);
 
 	cv::filter2D(log_mag, log_mag_Filt, -1, filt);
+	//cv::GaussianBlur(log_mag, log_mag_Filt, cv::Size2i(25,25), 0);
+	//log_mag = log_mag_Filt.clone();
+	//cv::medianBlur(log_mag, log_mag_Filt, 5);
+
+//	cv::Mat log_mag_filt_;
+//	cv::normalize(log_mag_Filt, log_mag_filt_, 0, 1, NORM_MINMAX);
+//	cv::imshow("log_mag_filt", log_mag_filt_);
 
 	//cv::subtract(log_mag, log_mag_Filt, log_mag);
 	log_mag -= log_mag_Filt;
+
+//	cv::Mat log_mag_sub_a_, log_mag_sub_;
+//	cv::normalize(log_mag, log_mag_sub_a_, 0, 1, NORM_MINMAX);
+//	cv::GaussianBlur(log_mag_sub_a_, log_mag_sub_, cv::Size2i(21,21), 0);
+//	cv::imshow("log_mag_sub", log_mag_sub_);
+//	log_mag_Filt = log_mag.clone();
+//	cv::GaussianBlur(log_mag_Filt, log_mag, cv::Size2i(21,21), 0);
+
 	cv::exp(log_mag, image_Mag);
 
 	cv::polarToCart(image_Mag, image_Phase, realInput, imaginaryInput,0);
@@ -476,8 +501,9 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::
 	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
 
 	// scale input_image to value obtained from input_image with artificially added dirt
-	result_image.mul(result_image);	// square result_image to emphasize the dirt and increase the gap to background response
-	cv::Mat scaled_input_image;
+	std::cout << "res_img: " << result_image.at<float>(300,200);
+//	result_image = result_image.mul(result_image);	// square result_image to emphasize the dirt and increase the gap to background response
+	std::cout << " -> " << result_image.at<float>(300,200) << std::endl;
 	double minv, maxv;
 	cv::Point2i minl, maxl;
 	cv::minMaxLoc(result_image,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
@@ -487,13 +513,13 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::
 	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
 
 	////input_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
-	cv::Mat temp = input_image.clone();	// square result_image to emphasize the dirt and increase the gap to background response
-	temp.mul(temp);
-	scaled_input_image = temp;
-	temp.convertTo(scaled_input_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
+	cv::Mat scaled_input_image = input_image.clone();	// square result_image to emphasize the dirt and increase the gap to background response
+	//scaled_input_image = scaled_input_image.mul(scaled_input_image);
+	scaled_input_image.convertTo(scaled_input_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
 
 	double newMean = mean.val[0] * newMaxVal/(maxv-minv) - newMaxVal*(minv)/(maxv-minv);
 	double newStdDev = stdDev.val[0] * newMaxVal/(maxv-minv);
+	std::cout << "newMean=" << newMean << "   newStdDev=" << newStdDev << std::endl;
 
 //	// scale input_image
 //	cv::Mat scaled_input_image;

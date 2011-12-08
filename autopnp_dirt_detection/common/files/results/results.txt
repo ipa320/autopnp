@@ -92,7 +92,51 @@ false positives: few (esp. at darker areas -> more camera noise)
 
 comments:
 
+-----------------------------------------------------
 
+tiles:
+------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3    #3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.30  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.0   #3.6
+
+
+puncher dirt: 1.0
+fuzz: (not in image)
+green paper snippet: 1.0
+brown paper snippet: 0.0
+black paper snippet: 0.66
+brown flower leaf: 0.1
+green flower leaf: 0.1
+black small leaf: 0.0
+apple stick: 0.1
+black magnet: 1.0
+lead: 0.0 (invisible for human)
+fir needle: 0.0
+lace: 1.0
+paper clip: 0.8
+crump:  (almost invisible for human)
+pebble single black: 0.5
+pebble single bright: 0.5
+pebble cluster: 0.6
+street dirt: 0.0
+
+false positives: very few (at groove)
+
+comments:
+-> grooves are as salient as many of the brown things
 
 
 
