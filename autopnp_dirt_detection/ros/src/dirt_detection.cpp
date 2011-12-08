@@ -92,6 +92,7 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 	Image_Postprocessing_C1(result_image, image_postproc, new_color_image);
 
 	cv::imshow("image postprocessing", new_color_image);
+	cvMoveWindow("image postprocessing", 650, 0);
 
 	cv::waitKey(10);
 }
@@ -122,6 +123,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		Image_Postprocessing_C1_rmb(result_image, image_postproc, new_color_image, plane_mask);
 
 		cv::imshow("image postprocessing", new_color_image);
+		cvMoveWindow("image postprocessing", 650, 0);
 	}
 
 	cv::waitKey(10);
@@ -173,6 +175,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 
 	//display original image
 	cv::imshow("color image", color_image);
+	cvMoveWindow("color image", 0, 490);
 
 
 	// Create the segmentation object for the planar model and set all the parameters
@@ -348,6 +351,33 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& color_image, cv::Mat& re
 
 		copyMakeBorder(smallImage, result_image, borderY, borderY, borderX, borderX, cv::BORDER_CONSTANT, cv::Scalar(0));
 	}
+
+
+	// display the individual channels
+//	for (int i=0; i<gaussianBlurCycles; i++)
+//		cv::GaussianBlur(res_fci, res_fci, ksize, 0); //necessary!? --> less noise
+//	for (int i=0; i<gaussianBlurCycles; i++)
+//		cv::GaussianBlur(res_sci, res_sci, ksize, 0); //necessary!? --> less noise
+//	for (int i=0; i<gaussianBlurCycles; i++)
+//		cv::GaussianBlur(res_tci, res_tci, ksize, 0); //necessary!? --> less noise
+//
+//	cv::resize(res_fci,res_fci,color_image.size());
+//	cv::resize(res_sci,res_sci,color_image.size());
+//	cv::resize(res_tci,res_tci,color_image.size());
+//
+//	// scale input_image
+//	double minv, maxv;
+//	cv::Point2i minl, maxl;
+//	cv::minMaxLoc(res_fci,&minv,&maxv,&minl,&maxl);
+//	res_fci.convertTo(res_fci, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+//	cv::minMaxLoc(res_sci,&minv,&maxv,&minl,&maxl);
+//	res_sci.convertTo(res_sci, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+//	cv::minMaxLoc(res_tci,&minv,&maxv,&minl,&maxl);
+//	res_tci.convertTo(res_tci, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+//
+//	cv::imshow("b", res_fci);
+//	cv::imshow("g", res_sci);
+//	cv::imshow("r", res_tci);
 }
 
 
@@ -459,7 +489,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::
 	////input_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
 	cv::Mat temp = input_image.clone();	// square result_image to emphasize the dirt and increase the gap to background response
 	temp.mul(temp);
-	//scaled_input_image = temp;
+	scaled_input_image = temp;
 	temp.convertTo(scaled_input_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
 
 	double newMean = mean.val[0] * newMaxVal/(maxv-minv) - newMaxVal*(minv)/(maxv-minv);
@@ -479,6 +509,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::
 //	input_image.convertTo(scaled_input_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
 
 	cv::imshow("SaliencyDetection", scaled_input_image);
+	cvMoveWindow("SaliencyDetection", 0, 0);
 
 	//set dirt pixel to white
 	image_postproc = cv::Mat::zeros(input_image.size(), CV_8UC1);

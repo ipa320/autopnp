@@ -1,0 +1,72 @@
+ office
+========
+
+red carpet
+----------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.35  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.6   #3.6
+
+
+
+puncher dirt: 1.0
+bright fuzz: 1.0
+green paper snippet: 1.0
+brown paper snippet: 1.0
+black paper snippet: 0.5
+brown flower leaf: 1.0
+green flower leaf: 1.0
+black small leaf: 0.0
+apple stick: 0.0
+black magnet: 0.5
+lead: 0.0
+fir needle: 0.0
+lace: 0.2
+paper clip: 1.0
+crump: 0.8
+pebble single black: 0.0
+pebble single bright: 0.9
+pebble cluster: 1.0
+street dirt: 1.0
+
+false positives: no (few at border)
+- carpet rim where red and white meet
+- few in cuts in carpet
+
+comments:
+- problems with dark black and small black objects
+
+---------------------------------------------------
+
+
+puncher dirt:
+fuzz:
+green paper snippet:
+brown paper snippet:
+black paper snippet:
+brown flower leaf:
+green flower leaf:
+black small leaf:
+apple stick:
+black magnet:
+lead:
+fir needle:
+lace:
+paper clip:
+crump:
+pebble single black:
+pebble single bright:
+pebble cluster:
+street dirt:
