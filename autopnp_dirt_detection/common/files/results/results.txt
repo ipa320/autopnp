@@ -1,0 +1,285 @@
+ office
+========
+
+red carpet
+----------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.35  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.6   #3.6
+
+
+
+puncher dirt: 1.0
+bright fuzz: 1.0
+green paper snippet: 1.0
+brown paper snippet: 1.0
+black paper snippet: 0.5
+brown flower leaf: 1.0
+green flower leaf: 1.0
+black small leaf: 0.0
+apple stick: 0.0
+black magnet: 0.5
+lead: 0.0
+fir needle: 0.0
+lace: 0.2
+paper clip: 1.0
+crump: 0.8
+pebble single black: 0.0
+pebble single bright: 0.9
+pebble cluster: 1.0
+street dirt: 1.0
+
+false positives: no (few at border)
+- carpet rim where red and white meet
+- few in cuts in carpet
+
+comments:
+- problems with dark black and small black objects
+
+---------------------------------------------------------------
+
+gray carpet:
+------------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 5
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.18  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 2.8   #3.6
+
+puncher dirt: 0.8
+fuzz: 0.2
+green paper snippet: 1.0
+brown paper snippet: 0.9
+black paper snippet: 0.66
+brown flower leaf: 0.66
+green flower leaf: 1.0
+black small leaf: 0.0
+apple stick: 0.0
+black magnet: 1.0
+lead: 0.0 (invisible for human)
+fir needle: 0.0 (almost invisible for human)
+lace: 1.0
+paper clip: 0.9
+crump: 0.0 (almost invisible for human)
+pebble single black: 0.9
+pebble single bright: 0.1 (almost invisible in camera image)
+pebble cluster: 0.9
+street dirt: 0.2
+
+false positives: few (esp. at darker areas -> more camera noise)
+
+comments:
+
+-----------------------------------------------------
+
+tiles:
+------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3    #3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.30  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.0   #3.6
+
+
+puncher dirt: 1.0
+fuzz: (not in image)
+green paper snippet: 1.0
+brown paper snippet: 0.0
+black paper snippet: 0.66
+brown flower leaf: 0.1
+green flower leaf: 0.1
+black small leaf: 0.0
+apple stick: 0.1
+black magnet: 1.0
+lead: 0.0 (invisible for human)
+fir needle: 0.0
+lace: 1.0
+paper clip: 0.8
+crump:  (almost invisible for human)
+pebble single black: 0.5
+pebble single bright: 0.5
+pebble cluster: 0.6
+street dirt: 0.0
+
+false positives: very few (at groove)
+
+comments:
+-> grooves are as salient as many of the brown things
+
+
+
+
+ home
+======
+
+kitchen1a + kitchen1b:
+----------------------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3    #3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.20  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 2.8   #3.6
+
+dirt: 1.0+0.9
+
+false positives: some (in reflection of lighting) + no
+
+comments:
+
+
+------------------------------------------------------------------
+
+
+
+wood1 + wood2:
+--------------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3    #3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.25  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.0   #3.6
+
+dirt: 0.85 + 1.0
+(needle, fuzz, small black leaf, puncher dirt, green leaf, brown paper snippet)
+
+false positives: only some inside reflections of lighting
+
+comments:
+- did not recognize very fine grained dirt
+- wood2: works even with reflection at dirt location
+
+
+
+
+carpet2 + chapter6:
+-------------------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3    #3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.25  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.0   #3.6
+
+dirt: 0.66 + 0.8
+(brown paper, puncher dirt, green leaf + same, real pale stains, small black iaccuracies in carpet(not really dirt))
+
+false positives: 1 at image border
+
+comments:
+- carpet2: does not recognize the green leaf
+
+
+carpet4:
+--------------
+
+# spectral residual component
+spectralResidualGaussianBlurIterations: 3    #3
+
+# side length of the fourier transformed image relative to the width of the original image
+spectralResidualImageSizeRatio: 0.25   #0.25
+
+# ratio max/mean can be at maximum at this number, the spectral residual image is scaled to the ratio (max/mean) / spectralResidualNormalizationHighestMaxMeanRatio
+spectralResidualNormalizationHighestMaxMeanRatio: 15  #10
+
+# dirt threshold (in [0,1])
+dirtThreshold: 0.3  #0.35 #0.5
+
+# checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+dirtCheckStdDevFactor: 3.0   #3.6
+
+dirt: 0.66
+(brown paper, puncher dirt, green leaf)
+
+false positives: no
+
+comments:
+- does not recognize the green leaf
+
+
+---------------------------------------------------
+
+
+puncher dirt:
+fuzz:
+green paper snippet:
+brown paper snippet:
+black paper snippet:
+brown flower leaf:
+green flower leaf:
+black small leaf:
+apple stick:
+black magnet:
+lead:
+fir needle:
+lace:
+paper clip:
+crump:
+pebble single black:
+pebble single bright:
+pebble cluster:
+street dirt:
+
+false positives:
+
+comments:

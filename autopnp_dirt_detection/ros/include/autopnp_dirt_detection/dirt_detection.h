@@ -64,8 +64,14 @@ protected:
 	image_transport::Subscriber color_camera_image_sub_; ///< Color camera image topic
 	ros::Subscriber camera_depth_points_sub_;
 
-
 	ros::NodeHandle node_handle_; ///< ROS node handle
+
+	//parameters
+	int spectralResidualGaussianBlurIterations_;
+	double dirtThreshold_;
+	double spectralResidualNormalizationHighestMaxMeanRatio_;
+	double spectralResidualImageSizeRatio_;
+	double dirtCheckStdDevFactor_;
 
 	struct bgr
 	{
@@ -100,12 +106,20 @@ public:
 
 
 	//functions
-	void planeDetection(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud);
+	// detects a plane in a point cloud, creates a mask for the plane pixels and sets all pixels in segmented_color_image to their color if they lie in the plane, else to black
+	// @return True if any plane could be found in the image.
+	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask);
 
-	void SaliencyDetection_C1(cv::Mat& one_channel_image, cv::Mat& result_image);
-	void SaliencyDetection_C3(const cv::Mat& color_image, const cv::Mat* mask = 0);
+	// saliency detection for spotting out dirt stains
+	// C1: for a one-channel image
+	void SaliencyDetection_C1(const cv::Mat& one_channel_image, cv::Mat& result_image);
+	// C3: for three channel images split into their 3 channels, spectral residual filtering on each channel, adding the results in the end
+	void SaliencyDetection_C3(const cv::Mat& color_image, cv::Mat& result_image, const cv::Mat* mask = 0, int gaussianBlurCycles = 2);
 
-	void Image_Postprocessing_C1(const cv::Mat input_image, cv::Mat& output_image, cv::Mat& color_image);
+	// dirt detection in saliency image
+	void Image_Postprocessing_C1(const cv::Mat& input_image, cv::Mat& image_postproc, cv::Mat& color_image);
+
+	void Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::Mat& image_postproc, cv::Mat& color_image, const cv::Mat& mask = cv::Mat());
 
 
 	//out of date
