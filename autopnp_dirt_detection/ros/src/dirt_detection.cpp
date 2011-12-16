@@ -42,8 +42,8 @@ void DirtDetection::init()
 	std::cout << "spectralResidualGaussianBlurIterations = " << spectralResidualGaussianBlurIterations_ << std::endl;
 	node_handle_.param("dirtThreshold", dirtThreshold_, 0.5);
 	std::cout << "dirtThreshold = " << dirtThreshold_ << std::endl;
-	node_handle_.param("spectralResidualNormalizationHighestMaxMeanRatio", spectralResidualNormalizationHighestMaxMeanRatio_, 0.5);
-	std::cout << "spectralResidualNormalizationHighestMaxMeanRatio = " << spectralResidualNormalizationHighestMaxMeanRatio_ << std::endl;
+	node_handle_.param("spectralResidualNormalizationHighestMaxValue", spectralResidualNormalizationHighestMaxValue_, 0.5);
+	std::cout << "spectralResidualNormalizationHighestMaxValue = " << spectralResidualNormalizationHighestMaxValue_ << std::endl;
 	node_handle_.param("spectralResidualImageSizeRatio", spectralResidualImageSizeRatio_, 0.25);
 	std::cout << "spectralResidualImageSizeRatio = " << spectralResidualImageSizeRatio_ << std::endl;
 	node_handle_.param("dirtCheckStdDevFactor", dirtCheckStdDevFactor_, 2.5);
@@ -512,7 +512,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
 	cv::Scalar mean, stdDev;
 	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
-	double newMaxVal = min(1.0, maxv/1500);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
+	double newMaxVal = min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
 	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
 
 	////C1_saliency_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));

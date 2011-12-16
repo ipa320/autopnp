@@ -84,7 +84,7 @@ protected:
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
 	double dirtThreshold_;
-	double spectralResidualNormalizationHighestMaxMeanRatio_;
+	double spectralResidualNormalizationHighestMaxValue_;
 	double spectralResidualImageSizeRatio_;
 	double dirtCheckStdDevFactor_;
 
@@ -169,8 +169,8 @@ public:
 	/**
 	 * Converts: "sensor_msgs::Image::ConstPtr" \f$ \rightarrow \f$ "cv::Mat".
 	 *	@param [in] 	color_image_msg 		Color image message from camera.
-	 *	@param [in] 	color_image_ptr			See OpenCv!
-	 *	@param [out] 	color_image 			Color image representation in PCL.
+	 *	@param [in] 	color_image_ptr			See cv_bridge message to cv::Mat converter manual.
+	 *	@param [out] 	color_image 			Color image from the message, in OpenCV representation.
 	 */
 	unsigned long convertColorImageMessageToMat(const sensor_msgs::Image::ConstPtr& color_image_msg, cv_bridge::CvImageConstPtr& color_image_ptr, cv::Mat& color_image);
 
@@ -217,7 +217,7 @@ public:
 	 * @param [in] 	C3_color_image			!!!THREE CHANNEL!!!('C3') image used to perform the saliency detection.
 	 * @param [out]	C1_saliency_image		One channel image('C1') which results from the saliency detection.
 	 * @param [in] 	mask					Determines the area of interest. Pixel of interests are white (255), all other pixels are black (0).
-	 * @param [in]	gaussianBlurCycles		Determines the size of the gaussian filter used to reduce the noise.
+	 * @param [in]	gaussianBlurCycles		Determines the number of repetitions of the gaussian filter used to reduce the noise.
 	 */
 	void SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat& C1_saliency_image, const cv::Mat* mask = 0, int gaussianBlurCycles = 2);
 
