@@ -183,7 +183,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 
 	//display original image
 	cv::imshow("color image", color_image);
-	cvMoveWindow("color image", 0, 490);
+	cvMoveWindow("color image", 0, 520);
 
 
 	// Create the segmentation object for the planar model and set all the parameters
@@ -354,9 +354,9 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat&
 		cv::GaussianBlur(realInput, realInput, ksize, 0); //necessary!? --> less noise
 
 
-	// remove borders of the ground plane because of artifacts at the border like lines
 	cv::resize(realInput,C1_saliency_image,C3_color_image.size());
 
+	// remove borders of the ground plane because of artifacts at the border like lines
 	if (mask != 0)
 	{
 		// maske erodiere
@@ -488,21 +488,16 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	// dirt detection on image with artificial dirt
 	cv::Mat color_image_with_artifical_dirt = C3_color_image.clone();
 	cv::Mat mask_with_artificial_dirt = mask.clone();
-
 	// add dirt
 	int dirtSize = 3;
 	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(280,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(280,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-
 	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(360,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(360,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-
 	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(280,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(280,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-
 	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(360,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(360,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-
 	cv::Mat C1_saliency_image_with_artifical_dirt;
 	SaliencyDetection_C3(color_image_with_artifical_dirt, C1_saliency_image_with_artifical_dirt, &mask_with_artificial_dirt, spectralResidualGaussianBlurIterations_);
 	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
@@ -516,7 +511,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
 	cv::Scalar mean, stdDev;
 	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
-	double newMaxVal = min(1.0, maxv/mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
+	double newMaxVal = min(1.0, maxv/1500);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
 	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
 
 	////C1_saliency_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
@@ -533,6 +528,10 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 //	double minv, maxv;
 //	cv::Point2i minl, maxl;
 //	cv::minMaxLoc(C1_saliency_image,&minv,&maxv,&minl,&maxl, mask);
+	cv::Mat badscale;
+	C1_saliency_image.convertTo(badscale, -1, 1.0/(maxv-minv), -1.0*(minv)/(maxv-minv));
+	cv::imshow("bad scale", badscale);
+	cvMoveWindow("bad scale", 650, 520);
 //	cv::Scalar mean, stdDev;
 //	cv::meanStdDev(C1_saliency_image, mean, stdDev, mask);
 //	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << std::endl;
