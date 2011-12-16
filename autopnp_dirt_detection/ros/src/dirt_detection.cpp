@@ -181,7 +181,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 
 	//display original image
 	cv::imshow("color image", color_image);
-	cvMoveWindow("color image", 0, 490);
+	cvMoveWindow("color image", 0, 520);
 
 
 	// Create the segmentation object for the planar model and set all the parameters
@@ -501,15 +501,15 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::
 	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
 
 	// scale input_image to value obtained from input_image with artificially added dirt
-	std::cout << "res_img: " << result_image.at<float>(300,200);
+//	std::cout << "res_img: " << result_image.at<float>(300,200);
 //	result_image = result_image.mul(result_image);	// square result_image to emphasize the dirt and increase the gap to background response
-	std::cout << " -> " << result_image.at<float>(300,200) << std::endl;
+//	std::cout << " -> " << result_image.at<float>(300,200) << std::endl;
 	double minv, maxv;
 	cv::Point2i minl, maxl;
 	cv::minMaxLoc(result_image,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
 	cv::Scalar mean, stdDev;
 	cv::meanStdDev(result_image, mean, stdDev, mask);
-	double newMaxVal = min(1.0, maxv/mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
+	double newMaxVal = min(1.0, maxv/1500);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
 	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
 
 	////input_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
@@ -525,7 +525,12 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::
 //	cv::Mat scaled_input_image;
 //	double minv, maxv;
 //	cv::Point2i minl, maxl;
-//	cv::minMaxLoc(input_image,&minv,&maxv,&minl,&maxl, mask);
+	cv::minMaxLoc(input_image,&minv,&maxv,&minl,&maxl, mask);
+	cv::Mat badscale;
+	input_image.convertTo(badscale, -1, 1.0/(maxv-minv), -1.0*(minv)/(maxv-minv));
+	cv::imshow("bad scale", badscale);
+	cvMoveWindow("bad scale", 650, 520);
+
 //	cv::Scalar mean, stdDev;
 //	cv::meanStdDev(input_image, mean, stdDev, mask);
 //	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << std::endl;
