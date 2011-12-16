@@ -18,6 +18,7 @@
 
 // ROS includes
 #include <ros/ros.h>
+#include <ros/package.h>
 
 // ROS message includes
 #include <sensor_msgs/Image.h>
@@ -30,6 +31,7 @@
 // opencv
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+#include <opencv2/ml/ml.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 
@@ -88,6 +90,13 @@ protected:
 	double spectralResidualImageSizeRatio_;
 	double dirtCheckStdDevFactor_;
 
+
+	std::vector<cv::Mat> Image_buffer;
+	int Image_buffer_size;
+
+
+public:
+
 	/**
 	 * Needed to set pixel color.
 	 */
@@ -126,12 +135,6 @@ protected:
 		int b;
 	};
 
-
-	std::vector<cv::Mat> Image_buffer;
-	int Image_buffer_size;
-
-
-public:
 
 	/**
 	 * Constructor.

@@ -64,7 +64,11 @@ int main(int argc, char **argv)
 	DirtDetection id(n);
 	id.init();
 
+	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
+	std::vector<DirtDetection::CarpetClass> carp_class_vec;
+	DirtDetection::CarpetClassifier carp_classi;
 
+	id.CreateCarpetClassiefier(carp_feat_vec, carp_class_vec, carp_classi);
 
 	//start to look for messages (loop)
 	ros::spin();
@@ -787,57 +791,130 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
 
     // Data for visual representation
     int width = 512, height = 512;
-    Mat image = Mat::zeros(height, width, CV_8UC3);
+    cv::Mat image = cv::Mat::zeros(height, width, CV_8UC3);
+
+
+    const int NUMBER_OF_TRAINING_SAMPLES = 10;
+    const int ATTRIBUTES_PER_SAMPLE = 2;
 
     // Set up training data
-    float labels[8] = {1.0, -1.0, -1.0, -1.0, 2, 2, 2, 2};
-    Mat labelsMat(3, 1, CV_32FC1, labels);
+    float labels [NUMBER_OF_TRAINING_SAMPLES] = {-1.0, 3.0, 3.0, 3.0, 2.0, 2.0, 2.0, 2.0, -1.0, -1.0};
 
-    float trainingData[4][2] = { {50, 10}, {150, 130}, {120, 190}, {170, 110}, {470, 410}, {450, 420}, {490, 430}, {480, 440} };
-    Mat trainingDataMat(3, 2, CV_32FC1, trainingData);
+    float trainingData[NUMBER_OF_TRAINING_SAMPLES][ATTRIBUTES_PER_SAMPLE] = { {50, 10}, {150, 130}, {120, 190}, {170, 110}, {470, 410}, {450, 420}, {490, 430}, {480, 440}, {40, 30}, {20, 20} };
+
+
+    cv::Mat training_data(NUMBER_OF_TRAINING_SAMPLES, ATTRIBUTES_PER_SAMPLE, CV_32FC1, trainingData);
+//    training_data.convertTo(training_data, -1, 1/width);
+    cv::Mat training_classifications(NUMBER_OF_TRAINING_SAMPLES, 1, CV_32FC1, labels);
+
 
     // Set up SVM's parameters
     CvSVMParams params;
-    params.svm_type    = CvSVM::C_SVC;
-    params.kernel_type = CvSVM::LINEAR;
+    params.svm_type    = CvSVM::NU_SVR;
+    params.kernel_type = CvSVM::RBF;
+
+    params.degree = 3.0;
+    params.gamma = 1.0;
+    params.coef0 = 1.0;
+    params.C = 1;
+    params.nu = 0.8;
+    params.p = 0.1;
+    params.class_weights = NULL;
+
+
     params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100, 1e-6);
+
 
     // Train the SVM
     CvSVM SVM;
-    SVM.train(trainingDataMat, labelsMat, Mat(), Mat(), params);
+//    SVM.train(training_data, training_classifications, Mat(), Mat(), params);
 
-    Vec3b green(0,255,0), blue (255,0,0);
+//  SVM.train_auto(const CvMat* trainData, const CvMat* responses, const CvMat* varIdx, const CvMat* sampleIdx, CvSVMParams params);
+    cv::ParamGrid gamma_grid( 0.00012207, 10, 2 );
+
+    cv::ParamGrid C_grid( 0.000976562, 5, 2 );
+
+    cv:ParamGrid nu_grid( 0.01546875, 0.99, 1.5 );
+
+    cv::ParamGrid degree_grid(1.5, 5, 1.5);
+
+    SVM.train_auto(training_data, training_classifications, cv::Mat(), cv::Mat(), params, 10, C_grid, gamma_grid, CvSVM::get_default_grid(CvSVM::P), nu_grid, CvSVM::get_default_grid(CvSVM::COEF), CvSVM::get_default_grid(CvSVM::DEGREE));
+    std::string svmpath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/svm/surface.svm";
+    std::cout << svmpath << std::endl;
+    SVM.save(svmpath.c_str());
+    params = SVM.get_params();
+    std::cout << "C=" << params.C << "\ncoeff0=" << params.coef0 << "\ndegree=" << params.degree << "\ngamma=" << params.gamma << "\nnu=" << params.nu << "\np=" << params.p << std::endl;
+
+
+    Vec3b green(0,255,0), blue (255,0,0), red (0,0,255);
     // Show the decision regions given by the SVM
     for (int i = 0; i < image.rows; ++i)
         for (int j = 0; j < image.cols; ++j)
         {
-            Mat sampleMat = (Mat_<float>(1,2) << i,j);
+            cv::Mat sampleMat = (Mat_<float>(1,2) << i,j);
+////            sampleMat.convertTo(sampleMat, -1, 1/width);
             float response = SVM.predict(sampleMat);
 
-            if (response == 1)
-                image.at<Vec3b>(j, i)  = green;
-            else if (response == -1)
-                 image.at<Vec3b>(j, i)  = blue;
+//            if (response <= 1.5)
+//            {
+//                image.at<Vec3b>(j, i)  = green;
+//            }
+//            else
+//			{
+//				if (response >= 2.5)
+//				{
+//					image.at<Vec3b>(j, i)  = blue;
+//				}
+//				else
+//				{
+//					image.at<Vec3b>(j, i)  = red;
+//				}
+//
+//			}
+
+            image.at<Vec3b>(j, i) = Vec3b((response + 2)/6 * 255, (response + 2)/6 * 255, (response + 2)/6 * 255); //Vec3b((response - 3)/2 * 255, (response + 1)/2 * 255, (response - 2)/2 * 255);
+
         }
 
+    for (int i=0; i<training_data.rows; i++)
+	{
+    	float label = training_classifications.at<float>(i);
+        if (label <= 1.5)
+        {
+        	circle( image, Point(training_data.at<float>(i, 0),  training_data.at<float>(i, 1)), 5, Scalar(  0,   255,   0), 3, 8);
+        }
+        else
+		{
+			if (label >= 2.5)
+			{
+				circle( image, Point(training_data.at<float>(i, 0),  training_data.at<float>(i, 1)), 5, Scalar(  255,   0,   0), 3, 8);
+			}
+			else
+			{
+				circle( image, Point(training_data.at<float>(i, 0),  training_data.at<float>(i, 1)), 5, Scalar(  0,   0,   255), 3, 8);
+			}
+
+		}
+	}
+
     // Show the training data
-    int thickness = -1;
-    int lineType = 8;
-    circle( image, Point(501,  10), 5, Scalar(  0,   0,   0), thickness, lineType);
-    circle( image, Point(255,  10), 5, Scalar(255, 255, 255), thickness, lineType);
-    circle( image, Point(501, 255), 5, Scalar(255, 255, 255), thickness, lineType);
-    circle( image, Point( 10, 501), 5, Scalar(255, 255, 255), thickness, lineType);
+//    int thickness = -1;
+//    int lineType = 8;
+//    circle( image, Point(501,  10), 5, Scalar(  0,   0,   0), thickness, lineType);
+//    circle( image, Point(255,  10), 5, Scalar(255, 255, 255), thickness, lineType);
+//    circle( image, Point(501, 255), 5, Scalar(255, 255, 255), thickness, lineType);
+//    circle( image, Point( 10, 501), 5, Scalar(255, 255, 255), thickness, lineType);
 
-    // Show support vectors
-    thickness = 2;
-    lineType  = 8;
-    int c     = SVM.get_support_vector_count();
-
-    for (int i = 0; i < c; ++i)
-    {
-        const float* v = SVM.get_support_vector(i);
-        circle( image,  Point( (int) v[0], (int) v[1]),   6,  Scalar(128, 128, 128), thickness, lineType);
-    }
+//    // Show support vectors
+//    thickness = 2;
+//    lineType  = 8;
+//    int c     = SVM.get_support_vector_count();
+//
+//    for (int i = 0; i < c; ++i)
+//    {
+//        const float* v = SVM.get_support_vector(i);
+//        circle( image,  Point( (int) v[0], (int) v[1]),   6,  Scalar(128, 128, 128), thickness, lineType);
+//    }
 
     imwrite("result.png", image);        // save the image
 
