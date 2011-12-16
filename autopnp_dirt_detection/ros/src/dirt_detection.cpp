@@ -64,11 +64,15 @@ int main(int argc, char **argv)
 	DirtDetection id(n);
 	id.init();
 
-	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
-	std::vector<DirtDetection::CarpetClass> carp_class_vec;
-	DirtDetection::CarpetClassifier carp_classi;
+//	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
+//	std::vector<DirtDetection::CarpetClass> carp_class_vec;
+//
+//	id.ReadDataFromCarpetFile(carp_feat_vec, carp_class_vec);
 
-	id.CreateCarpetClassiefier(carp_feat_vec, carp_class_vec, carp_classi);
+
+//	CvSVM carp_classi;
+//
+//	id.CreateCarpetClassiefier(carp_feat_vec, carp_class_vec, carp_classi);
 
 	//start to look for messages (loop)
 	ros::spin();
@@ -124,6 +128,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 //		laplace = laplace.mul(laplace);
 //		cv::normalize(laplace, laplace, 0, 1, NORM_MINMAX);
 //		cv:imshow("laplace", laplace);
+
 
 		// detect dirt on the floor
 		cv::Mat C1_saliency_image;
@@ -487,6 +492,58 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
 
 }
 
+void  DirtDetection::ReadDataFromCarpetFile(std::vector<CarpetFeatures>& carp_feat_vec, std::vector<CarpetClass>& carp_class_vec)
+{
+	CarpetFeatures features;
+	CarpetClass cc;
+
+	std::ifstream indata;
+	float data; // variable for input value
+
+	std::string svmpath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/svm/carpet-gray.tepp";
+	indata.open(svmpath.c_str()); // opens the file
+	if(!indata) { // file couldn't be opened
+	  cerr << "Error: file could not be opened" << endl;
+	}
+
+	int count = 1;
+	indata >>data;
+	while ( !indata.eof() ) { // keep reading until end-of-file
+		switch ( count )
+		{
+			case 1:
+				cc.dirtThreshold = data;
+				count++;
+			  break;
+			case 2:
+				features.min = data;
+				count++;
+			  break;
+			case 3:
+				features.max = data;
+				count++;
+			  break;
+			case 4:
+				features.mean = data;
+				count++;
+			  break;
+			case 5:
+				features.stdDev = data;
+				count = 1;
+
+				carp_feat_vec.push_back(features);
+				carp_class_vec.push_back(cc);
+
+			  break;
+		} //switch
+//	  cout << "The next number is " << data << endl;
+	  indata >> data; // sets EOF flag if no value found
+	} //while
+
+	indata.close();
+//	cout << "End-of-file reached.." << endl;
+}
+
 
 void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, const cv::Mat& mask)
 {
@@ -518,6 +575,15 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
 	double newMaxVal = min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
 	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
+
+
+	//determine ros package path
+	std::string svmpath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/svm/Teppich1.tepp";
+	ofstream teppichfile;
+	teppichfile.open (svmpath.c_str(), ios::out| ios::app);
+	teppichfile << dirtThreshold_ << "\t\t" << minv << "\t\t" << maxv << "\t\t" << mean.val[0] << "\t\t" << stdDev.val[0] << "\n";
+	teppichfile.close();
+
 
 	////C1_saliency_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
 	cv::Mat scaled_C1_saliency_image = C1_saliency_image.clone();	// square C1_saliency_image_with_artifical_dirt to emphasize the dirt and increase the gap to background response
@@ -787,7 +853,88 @@ void DirtDetection::ExtractCarpetFeatures(const cv::Mat& C3_carpet_image, Carpet
 
 }
 
-void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CarpetClassifier& carp_classi)
+void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvSVM &carpet_SVM)
+{
+	//number of carpet features
+	int NCarpetFeatures = 4;
+
+	//Convert 	car_feat_vec	into cv::Mat and
+	//convert 	carp_class_vec	into cv::Mat
+	int Nges = carp_feat_vec.size();
+
+	cv::Mat TrainingData  		= cv::Mat::zeros(Nges, NCarpetFeatures, CV_32FC1);
+	cv::Mat TrainingDataLabel  	= cv::Mat::zeros(Nges, 1, CV_32FC1);
+
+	for (int k = 0; k < Nges; k++)
+	{
+		TrainingData.at<float>(k, 0) = carp_feat_vec[k].min;
+		TrainingData.at<float>(k, 1) = carp_feat_vec[k].max;
+		TrainingData.at<float>(k, 2) = carp_feat_vec[k].mean;
+		TrainingData.at<float>(k, 3) = carp_feat_vec[k].stdDev;
+
+
+		TrainingDataLabel.at<float>(k) = carp_class_vec[k].dirtThreshold;
+	}
+
+	///////////////
+	//Create-SVM//
+	/////////////
+
+    // Set up SVM's parameters
+    CvSVMParams params;
+    params.svm_type    = CvSVM::NU_SVR;
+    params.kernel_type = CvSVM::RBF;
+
+    params.degree = 3.0;
+    params.gamma = 1.0;
+    params.coef0 = 1.0;
+    params.C = 1;
+    params.nu = 0.8;
+    params.p = 0.1;
+    params.class_weights = NULL;
+    params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100, 1e-6);
+
+    //define testing area for "train_auto()":
+    cv::ParamGrid gamma_grid( 0.00012207, 10, 2 );
+    cv::ParamGrid C_grid( 0.000976562, 5, 2 );
+    cv::ParamGrid nu_grid( 0.01546875, 0.99, 1.5 );
+    cv::ParamGrid degree_grid(1.5, 5, 1.5);
+
+    //determine optimal parameters and train SVM
+    //Comment: It's important to define all input parameters because otherwise "SVM.train_auto" might not work properly!!!
+    carpet_SVM.train_auto(	TrainingData, TrainingDataLabel, cv::Mat(), cv::Mat(), params, 10,
+							C_grid,
+							gamma_grid,
+							CvSVM::get_default_grid(CvSVM::P),
+							nu_grid,
+							CvSVM::get_default_grid(CvSVM::COEF),
+							CvSVM::get_default_grid(CvSVM::DEGREE) );
+
+
+    //determine ros package path
+    std::string svmpath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/svm/surface.svm";
+//    std::cout << svmpath << std::endl;
+
+    //save SVM parameters to file
+    carpet_SVM.save(svmpath.c_str());
+    params = carpet_SVM.get_params();
+    //display SVM parameters on screen
+    std::cout << "C = " << params.C << "\ncoeff0 = " << params.coef0 << "\ndegree = " << params.degree << "\ngamma = " << params.gamma << "\nnu = " << params.nu << "\np = " << params.p << std::endl;
+
+	//////////////
+	//Check-SVM//
+	////////////
+
+    //-> do something
+
+}
+
+void DirtDetection::ClassifyCarpet(const CarpetFeatures& carp_feat, const CvSVM &carpet_SVM, const CarpetClass& carp_class)
+{
+
+}
+
+void DirtDetection::SVMExampleCode()
 {
 
     // Data for visual representation
@@ -804,8 +951,8 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
     float trainingData[NUMBER_OF_TRAINING_SAMPLES][ATTRIBUTES_PER_SAMPLE] = { {50, 10}, {150, 130}, {120, 190}, {170, 110}, {470, 410}, {450, 420}, {490, 430}, {480, 440}, {40, 30}, {20, 20} };
 
 
+    // create data and label matrix
     cv::Mat training_data(NUMBER_OF_TRAINING_SAMPLES, ATTRIBUTES_PER_SAMPLE, CV_32FC1, trainingData);
-//    training_data.convertTo(training_data, -1, 1/width);
     cv::Mat training_classifications(NUMBER_OF_TRAINING_SAMPLES, 1, CV_32FC1, labels);
 
 
@@ -828,32 +975,38 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
 
     // Train the SVM
     CvSVM SVM;
+
+    //training if parameters are known
 //    SVM.train(training_data, training_classifications, Mat(), Mat(), params);
 
-//  SVM.train_auto(const CvMat* trainData, const CvMat* responses, const CvMat* varIdx, const CvMat* sampleIdx, CvSVMParams params);
+
+    //define training area:
     cv::ParamGrid gamma_grid( 0.00012207, 10, 2 );
-
     cv::ParamGrid C_grid( 0.000976562, 5, 2 );
-
-    cv:ParamGrid nu_grid( 0.01546875, 0.99, 1.5 );
-
+    cv::ParamGrid nu_grid( 0.01546875, 0.99, 1.5 );
     cv::ParamGrid degree_grid(1.5, 5, 1.5);
 
+    //determine optimal parameters and train SVM
+    //Comment: It's important to define all input parameters because otherwise "SVM.train_auto" might not work properly!!!
     SVM.train_auto(training_data, training_classifications, cv::Mat(), cv::Mat(), params, 10, C_grid, gamma_grid, CvSVM::get_default_grid(CvSVM::P), nu_grid, CvSVM::get_default_grid(CvSVM::COEF), CvSVM::get_default_grid(CvSVM::DEGREE));
+
+    //determine ros package path
     std::string svmpath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/svm/surface.svm";
-    std::cout << svmpath << std::endl;
+//    std::cout << svmpath << std::endl;
+    //save SVM parameters to file
     SVM.save(svmpath.c_str());
     params = SVM.get_params();
+    //display SVM parameters on screen
     std::cout << "C=" << params.C << "\ncoeff0=" << params.coef0 << "\ndegree=" << params.degree << "\ngamma=" << params.gamma << "\nnu=" << params.nu << "\np=" << params.p << std::endl;
 
 
     Vec3b green(0,255,0), blue (255,0,0), red (0,0,255);
+
     // Show the decision regions given by the SVM
     for (int i = 0; i < image.rows; ++i)
         for (int j = 0; j < image.cols; ++j)
         {
             cv::Mat sampleMat = (Mat_<float>(1,2) << i,j);
-////            sampleMat.convertTo(sampleMat, -1, 1/width);
             float response = SVM.predict(sampleMat);
 
 //            if (response <= 1.5)
@@ -873,10 +1026,11 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
 //
 //			}
 
-            image.at<Vec3b>(j, i) = Vec3b((response + 2)/6 * 255, (response + 2)/6 * 255, (response + 2)/6 * 255); //Vec3b((response - 3)/2 * 255, (response + 1)/2 * 255, (response - 2)/2 * 255);
+            image.at<Vec3b>(j, i) = Vec3b((response + 2)/6 * 255, (response + 2)/6 * 255, (response + 2)/6 * 255);
 
         }
 
+    //show training data
     for (int i=0; i<training_data.rows; i++)
 	{
     	float label = training_classifications.at<float>(i);
@@ -898,38 +1052,10 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
 		}
 	}
 
-    // Show the training data
-//    int thickness = -1;
-//    int lineType = 8;
-//    circle( image, Point(501,  10), 5, Scalar(  0,   0,   0), thickness, lineType);
-//    circle( image, Point(255,  10), 5, Scalar(255, 255, 255), thickness, lineType);
-//    circle( image, Point(501, 255), 5, Scalar(255, 255, 255), thickness, lineType);
-//    circle( image, Point( 10, 501), 5, Scalar(255, 255, 255), thickness, lineType);
 
-//    // Show support vectors
-//    thickness = 2;
-//    lineType  = 8;
-//    int c     = SVM.get_support_vector_count();
-//
-//    for (int i = 0; i < c; ++i)
-//    {
-//        const float* v = SVM.get_support_vector(i);
-//        circle( image,  Point( (int) v[0], (int) v[1]),   6,  Scalar(128, 128, 128), thickness, lineType);
-//    }
-
-    imwrite("result.png", image);        // save the image
-
-    imshow("SVM Simple Example", image); // show it to the user
+    //show image on screen
+    imshow("SVM Simple Example", image);
     waitKey(0);
-
-
-
-
-
-}
-
-void DirtDetection::ClassifyCarpet(const CarpetFeatures& carp_feat, const CarpetClassifier& carp_classi, CarpetClass& carp_class)
-{
 
 }
 
