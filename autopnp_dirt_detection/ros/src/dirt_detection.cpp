@@ -233,40 +233,41 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 	//given a one channel image
 	//int scale = 6;
 	//unsigned int size = (int)floor((float)pow(2.0,scale)); //the size to do the saliency at
-	unsigned int size = (int)(C1_image.cols * spectralResidualImageSizeRatio_);
+	unsigned int size_cols = (int)(C1_image.cols * spectralResidualImageSizeRatio_);
+	unsigned int size_rows = (int)(C1_image.rows * spectralResidualImageSizeRatio_);
 
 	//create different images
 	cv::Mat bw_im;
-	cv::resize(C1_image,bw_im,cv::Size(size,size));
+	cv::resize(C1_image,bw_im,cv::Size(size_cols,size_rows));
 
-	cv::Mat realInput(size,size, CV_32FC1);
-	cv::Mat imaginaryInput(size,size, CV_32FC1);
-	cv::Mat complexInput(size,size, CV_32FC2);
+	cv::Mat realInput(size_rows,size_cols, CV_32FC1);
+	cv::Mat imaginaryInput(size_rows,size_cols, CV_32FC1);
+	cv::Mat complexInput(size_rows,size_cols, CV_32FC2);
 
 	bw_im.convertTo(realInput,CV_32F,1.0/255,0);
-	imaginaryInput = cv::Mat::zeros(size,size,CV_32F);
+	imaginaryInput = cv::Mat::zeros(size_rows,size_cols,CV_32F);
 
 	std::vector<cv::Mat> vec;
 	vec.push_back(realInput);
 	vec.push_back(imaginaryInput);
 	cv::merge(vec, complexInput);
 
-	cv::Mat dft_A(size,size,CV_32FC2);
+	cv::Mat dft_A(size_rows,size_cols,CV_32FC2);
 
-	cv::dft(complexInput, dft_A, cv::DFT_COMPLEX_OUTPUT,size);
+	cv::dft(complexInput, dft_A, cv::DFT_COMPLEX_OUTPUT,size_rows);
 	vec.clear();
 	cv::split(dft_A,vec);
 	realInput = vec[0];
 	imaginaryInput = vec[1];
 
 	// Compute the phase angle
-	cv::Mat image_Mag(size,size, CV_32FC1);
-	cv::Mat image_Phase(size,size, CV_32FC1);
+	cv::Mat image_Mag(size_rows,size_cols, CV_32FC1);
+	cv::Mat image_Phase(size_rows,size_cols, CV_32FC1);
 
 	//compute the phase of the spectrum
 	cv::cartToPolar(realInput, imaginaryInput, image_Mag, image_Phase,0);
 
-	cv::Mat log_mag(size,size, CV_32FC1);
+	cv::Mat log_mag(size_rows,size_cols, CV_32FC1);
 	cv::log(image_Mag, log_mag);
 
 //	cv::Mat log_mag_;
@@ -274,7 +275,7 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 //	cv::imshow("log_mag", log_mag_);
 
 	//Box filter the magnitude, then take the difference
-	cv::Mat log_mag_Filt(size,size, CV_32FC1);
+	cv::Mat log_mag_Filt(size_rows,size_cols, CV_32FC1);
 
 	cv::Mat filt = cv::Mat::ones(3, 3, CV_32FC1) * 1./9.;
 	//filt.convertTo(filt,-1,1.0/9.0,0);
@@ -307,7 +308,7 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 	vec.push_back(imaginaryInput);
 	cv::merge(vec, dft_A);
 
-	cv::dft(dft_A, dft_A, cv::DFT_INVERSE,size);
+	cv::dft(dft_A, dft_A, cv::DFT_INVERSE,size_rows);
 
 	dft_A = abs(dft_A);
 	dft_A.mul(dft_A);
