@@ -786,6 +786,69 @@ void DirtDetection::ExtractCarpetFeatures(const cv::Mat& C3_carpet_image, Carpet
 void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CarpetClassifier& carp_classi)
 {
 
+    // Data for visual representation
+    int width = 512, height = 512;
+    Mat image = Mat::zeros(height, width, CV_8UC3);
+
+    // Set up training data
+    float labels[8] = {1.0, -1.0, -1.0, -1.0, 2, 2, 2, 2};
+    Mat labelsMat(3, 1, CV_32FC1, labels);
+
+    float trainingData[4][2] = { {50, 10}, {150, 130}, {120, 190}, {170, 110}, {470, 410}, {450, 420}, {490, 430}, {480, 440} };
+    Mat trainingDataMat(3, 2, CV_32FC1, trainingData);
+
+    // Set up SVM's parameters
+    CvSVMParams params;
+    params.svm_type    = CvSVM::C_SVC;
+    params.kernel_type = CvSVM::LINEAR;
+    params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100, 1e-6);
+
+    // Train the SVM
+    CvSVM SVM;
+    SVM.train(trainingDataMat, labelsMat, Mat(), Mat(), params);
+
+    Vec3b green(0,255,0), blue (255,0,0);
+    // Show the decision regions given by the SVM
+    for (int i = 0; i < image.rows; ++i)
+        for (int j = 0; j < image.cols; ++j)
+        {
+            Mat sampleMat = (Mat_<float>(1,2) << i,j);
+            float response = SVM.predict(sampleMat);
+
+            if (response == 1)
+                image.at<Vec3b>(j, i)  = green;
+            else if (response == -1)
+                 image.at<Vec3b>(j, i)  = blue;
+        }
+
+    // Show the training data
+    int thickness = -1;
+    int lineType = 8;
+    circle( image, Point(501,  10), 5, Scalar(  0,   0,   0), thickness, lineType);
+    circle( image, Point(255,  10), 5, Scalar(255, 255, 255), thickness, lineType);
+    circle( image, Point(501, 255), 5, Scalar(255, 255, 255), thickness, lineType);
+    circle( image, Point( 10, 501), 5, Scalar(255, 255, 255), thickness, lineType);
+
+    // Show support vectors
+    thickness = 2;
+    lineType  = 8;
+    int c     = SVM.get_support_vector_count();
+
+    for (int i = 0; i < c; ++i)
+    {
+        const float* v = SVM.get_support_vector(i);
+        circle( image,  Point( (int) v[0], (int) v[1]),   6,  Scalar(128, 128, 128), thickness, lineType);
+    }
+
+    imwrite("result.png", image);        // save the image
+
+    imshow("SVM Simple Example", image); // show it to the user
+    waitKey(0);
+
+
+
+
+
 }
 
 void DirtDetection::ClassifyCarpet(const CarpetFeatures& carp_feat, const CarpetClassifier& carp_classi, CarpetClass& carp_class)
