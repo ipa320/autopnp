@@ -53,18 +53,33 @@ namespace ipa_DirtDetection {
 
 using namespace std;
 
-/////////////////
-///node class///
-///////////////
 
+
+/**
+ *  Detects dirt from color image.
+ */
 class DirtDetection
 {
 protected:
+
+	/**
+	 * Used to subscribe and publish images.
+	 */
 	image_transport::ImageTransport* it_;
-	image_transport::Subscriber color_camera_image_sub_; ///< Color camera image topic
+
+	/**
+	 * Used to receive color image topic from camera.
+	 */
+	image_transport::Subscriber color_camera_image_sub_;
+	/**
+	 * Used to receive point cloud topic from camera.
+	 */
 	ros::Subscriber camera_depth_points_sub_;
 
-	ros::NodeHandle node_handle_; ///< ROS node handle
+	/**
+	 * ROS node handle.
+	 */
+	ros::NodeHandle node_handle_;
 
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
@@ -73,12 +88,44 @@ protected:
 	double spectralResidualImageSizeRatio_;
 	double dirtCheckStdDevFactor_;
 
+	/**
+	 * Needed to set pixel color.
+	 */
 	struct bgr
 	{
-		uchar b;
-		uchar g;
-		uchar r;
+		uchar b; /**< Blue channel value. */
+		uchar g; /**< Green channel value. */
+		uchar r; /**< Red channel value. */
 	};
+
+
+	/**
+	 * Used to describe a carpet.
+	 */
+	struct CarpetFeatures
+	{
+		int a;
+		int b;
+	};
+
+	/**
+	 * Determines the class of a carpet.
+	 */
+	struct CarpetClass
+	{
+		int a;
+		int b;
+	};
+
+	/**
+	 * Used to describe the carpet classifier.
+	 */
+	struct CarpetClassifier
+	{
+		int a;
+		int b;
+	};
+
 
 	std::vector<cv::Mat> Image_buffer;
 	int Image_buffer_size;
@@ -86,48 +133,164 @@ protected:
 
 public:
 
-	//Constructor
+	/**
+	 * Constructor.
+	 */
 	DirtDetection(ros::NodeHandle node_handle);
 
-	//Destructor
+	/**
+	 * Destructor.
+	 */
 	~DirtDetection();
 
-	//create subscribers
+	/**
+	 * Create subscribers.
+	 */
 	void init();
 
 
-	//callback functions
+	/**
+	 * Function is called if color image topic is received.
+	 *
+	 * @param [in] color_image_msg	Color image message from camera.
+	 *
+	 */
 	void imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg);
+
+	/**
+	 * Function is called if point cloud topic is received.
+	 *
+	 * @param [in] point_cloud2_rgb_msg	Point cloude message from camera.
+	 *
+	 */
 	void planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
-	//convert functions
+
+	/**
+	 * Converts: "sensor_msgs::Image::ConstPtr" \f$ \rightarrow \f$ "cv::Mat".
+	 *	@param [in] 	color_image_msg 		Color image message from camera.
+	 *	@param [in] 	color_image_ptr			See OpenCv!
+	 *	@param [out] 	color_image 			Color image representation in PCL.
+	 */
 	unsigned long convertColorImageMessageToMat(const sensor_msgs::Image::ConstPtr& color_image_msg, cv_bridge::CvImageConstPtr& color_image_ptr, cv::Mat& color_image);
+
+
+	/**
+	 * Converts: "sensor_msgs::PointCloud2" \f$ \rightarrow \f$ "pcl::PointCloud<pcl::PointXYZRGB>::Ptr".
+	 *	@param [in] 	point_cloud2_rgb_msg 		Point cloud message from camera.
+	 *	@param [out] 	point_cloud_XYZRG 			Point cloud representation in PCL.
+	 */
 	void convertPointCloudMessageToPointCloudPcl(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg, pcl::PointCloud<pcl::PointXYZRGB>::Ptr &point_cloud_XYZRGB);
 
 
-	//functions
-	// detects a plane in a point cloud, creates a mask for the plane pixels and sets all pixels in segmented_color_image to their color if they lie in the plane, else to black
-	// @return True if any plane could be found in the image.
+	/**
+	 * Converts: "sensor_msgs::PointCloud2" \f$ \rightarrow \f$ "pcl::PointCloud<pcl::PointXYZRGB>::Ptr".
+	 *
+	 * The function detects a plane in the point cloud, creates a mask for the plane pixels and sets all pixels in
+	 * "plane_color_image" to their color if they lie in the plane, else to black.
+	 *
+	 *	@param [in] 	input_cloud 				Point cloud for plane detection.
+	 *	@param [out] 	plane_color_image 			Shows the true color of all pixel within the plane. The size of the image is determined with the help of the point cloud!
+	 *	@param [out]	plane_mask					Mask to separate plane pixels. Plane pixels are white (255), all other pixels are black (0).
+	 *	@return 		True if any plane could be found in the image.
+	 */
 	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask);
 
-	// saliency detection for spotting out dirt stains
-	// C1: for a one-channel image
-	void SaliencyDetection_C1(const cv::Mat& one_channel_image, cv::Mat& result_image);
-	// C3: for three channel images split into their 3 channels, spectral residual filtering on each channel, adding the results in the end
-	void SaliencyDetection_C3(const cv::Mat& color_image, cv::Mat& result_image, const cv::Mat* mask = 0, int gaussianBlurCycles = 2);
 
-	// dirt detection in saliency image
-	void Image_Postprocessing_C1(const cv::Mat& input_image, cv::Mat& image_postproc, cv::Mat& color_image);
-
-	void Image_Postprocessing_C1_rmb(const cv::Mat& input_image, cv::Mat& image_postproc, cv::Mat& color_image, const cv::Mat& mask = cv::Mat());
+	/**
+	 * This function performs the saliency detection to spot dirt stains.
+	 *
+	 * @param [in] 	C1_image				!!!ONE CHANNEL!!!('C1') image used to perfom the salciency detection.
+	 * @param [out]	C1_saliency_image		One channel image('C1') which results from the saliency detection.
+	 */
+	void SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_saliency_image);
 
 
-	//out of date
+	/**
+	 * This function performs a saliency detection for a  3 channel color image.
+	 *
+	 * The function proceeds as follows:
+	 * 						1.) The 3 channel image is split into their 3 channels.
+	 * 						2.) The saliency detection is performed for each channel.
+	 * 						3.) The resulting images are add up.
+	 *
+	 * @param [in] 	C3_color_image			!!!THREE CHANNEL!!!('C3') image used to perform the saliency detection.
+	 * @param [out]	C1_saliency_image		One channel image('C1') which results from the saliency detection.
+	 * @param [in] 	mask					Determines the area of interest. Pixel of interests are white (255), all other pixels are black (0).
+	 * @param [in]	gaussianBlurCycles		Determines the size of the gaussian filter used to reduce the noise.
+	 */
+	void SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat& C1_saliency_image, const cv::Mat* mask = 0, int gaussianBlurCycles = 2);
+
+	/**
+	 * This function uses the "C1_saliency_image" to mark the dirt in the "C3_color_image".
+	 * Furthermore, it returns an image ("C1_BlackWhite_image") in which all dirt pixels are white (255) and all other pixels are black (0).
+	 *
+	 *
+	 * @param [in]		C1_saliency_image		One channel('C1') saliency image used for postprocessing.
+	 * @param [out] 	C1_BlackWhite_image		One channel('C1') image in which all dirt pixels are white (255) and all other pixels are black (0).
+	 * @param [in,out]	C3_color_image			Three channel('C3') color which corresponds to the "C1_saliency_image".
+	 */
+	void Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image);
+
+
+	/**
+	 *
+	 * This function avoids the false detections if no dirt is on the floor.
+	 * Furthermore, it returns an image ("C1_BlackWhite_image") in which all dirt pixels are white (255) and all other pixels are black (0).
+	 * It also the "C1_saliency_image" to mark the dirt in the "C3_color_image".
+	 *
+	 * @param [in] 		C1_saliency_image		One channel('C1') saliency image used for postprocessing.
+	 * @param [out]		C1_BlackWhite_image		One channel('C1') image in which all dirt pixels are white (255) and all other pixels are black (0).
+	 * @param [in,out] 	C3_color_image			Three channel('C3') color which corresponds to the "C1_saliency_image".
+	 * @param [in]		mask					Determines the area of interest. Pixel of interests are white (255), all other pixels are black (0).
+	 *
+	 */
+	void Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, const cv::Mat& mask = cv::Mat());
+
+
+	/**
+	 * This function is out of date and must not be used! The function is kept as backup copy.
+	 *
+	 * @param [in] color_image_msg		Color image message from camera.
+	 */
 	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
 
-};
+	/**
+	 * This function determines the carpet-features from the "C3_carpet_image".
+	 *
+	 * @param [in] 	C3_carpet_image		Three channel('C3') image from the carpet.
+	 * @param [out]	carp_feat			Features of the carpet.
+	 *
+	 */
+	void ExtractCarpetFeatures(const cv::Mat& C3_carpet_image, CarpetFeatures& carp_feat);
 
-};
+
+	/**
+	 * This function creates/calculates a carpet-classifier for the given carpets.
+	 *
+	 * @param [in]	carp_feat_vec
+	 * @param [in]	carp_feat
+	 * @param [in]  carp_class_vec
+	 * @param [out]	carp_classi
+	 *
+	 */
+	void CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CarpetClassifier& carp_classi);
+
+	/**
+	 * This function determines the carpet-class of a carpet.
+	 *
+	 * @param [in]	carp_feat
+	 * @param [in]	carp_classi
+	 * @param [out]	carp_class
+	 *
+	 */
+	void ClassifyCarpet(const CarpetFeatures& carp_feat, const CarpetClassifier& carp_classi, CarpetClass& carp_class);
+
+
+
+};	//end-class
+
+}; //end-namespace
 
 
 #endif /* DIRT_DETECTION_H_ */
