@@ -16,6 +16,8 @@
 #include <fstream>
 #include <string>
 #include <deque>
+#include <time.h>
+#include <math.h>
 
 // ROS includes
 #include <ros/ros.h>
@@ -114,10 +116,10 @@ public:
 	 */
 	struct CarpetFeatures
 	{
-		float min; 	/**< Minimum value in the "C1_saliency_image_with_artifical_dirt". */
-		float max; 	/**< Maximum value in the "C1_saliency_image_with_artifical_dirt". */
-		float mean; 	/**< Mean value in the "C1_saliency_image_with_artifical_dirt". */
-		float stdDev; 	/**< Standard deviation in the "C1_saliency_image_with_artifical_dirt". */
+		float min; 	/**< Minimum value in the "C1_saliency_image_with_artifical_dirt" image. */
+		float max; 	/**< Maximum value in the "C1_saliency_image_with_artifical_dirt" image. */
+		float mean; 	/**< Mean value in the "C1_saliency_image_with_artifical_dirt" image. */
+		float stdDev; 	/**< Standard deviation in the "C1_saliency_image_with_artifical_dirt" image. */
 
 	};
 
@@ -127,6 +129,12 @@ public:
 	struct CarpetClass
 	{
 		float dirtThreshold;	/**< Carpet-label. */
+	};
+
+	struct NumStruc
+	{
+		int correctnum; /**< Number of correct classified samples. */
+		int totalnum;	/**< Total number of samples of this class. */
 	};
 
 
@@ -289,7 +297,14 @@ public:
 	 */
 	void SVMExampleCode();
 
-	void  ReadDataFromCarpetFile(std::vector<CarpetFeatures>& carp_feat_vec, std::vector<CarpetClass>& carp_class_vec);
+	void ReadDataFromCarpetFile(std::vector<CarpetFeatures>& carp_feat_vec, std::vector<CarpetClass>& carp_class_vec, std::string filename);
+
+	void SplitIntoTrainAndTestSamples(	int percentage_testdata,
+										std::vector<CarpetFeatures>& input_feat_vec, std::vector<CarpetClass>& input_class_vec,
+										std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+										std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec);
+
+	void SVMEvaluation(std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec, CvSVM &carpet_SVM);
 
 
 
