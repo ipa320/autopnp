@@ -281,6 +281,9 @@ public:
 	 */
 	void CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvSVM &carpet_SVM);
 
+	void CreateCarpetClassiefierTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvRTrees &carpet_Tree);
+
+
 	/**
 	 * This function determines the carpet-class of a carpet.
 	 *
@@ -304,7 +307,13 @@ public:
 										std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 										std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec);
 
-	void SVMEvaluation(std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec, CvSVM &carpet_SVM);
+	void SVMEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
+						CvSVM &carpet_SVM);
+
+	void TreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
+						CvRTrees &carpet_Tree);
 
 
 
