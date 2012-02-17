@@ -129,6 +129,7 @@ public:
 	struct CarpetClass
 	{
 		float dirtThreshold;	/**< Carpet-label. */
+		int K;					/**< Carpet-label. */
 	};
 
 	struct NumStruc
@@ -271,25 +272,47 @@ public:
 
 
 	/**
-	 * This function creates/calculates a carpet-classifier for the given carpets.
+	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv support vector machine
+	 * is used as carpet-classifier. PLEASE NOTE THAT THE OPENCV SUPPORT VECTOR MACHINE LEARNING ALGORITHMS DO NOT WORK PROPERLY!
 	 *
-	 * @param [in]	carp_feat_vec
-	 * @param [in]	carp_feat
-	 * @param [in]  carp_class_vec
-	 * @param [out]	carpet_SVM
+	 * @param [in]	carp_feat_vec	Vector which contains the features of the different carpets.
+	 * @param [in]  carp_class_vec	Vector containing the class specifier of the carpets.
+	 * @param [out]	carpet_SVM		Returns an opencv support vector machine.
 	 *
 	 */
 	void CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvSVM &carpet_SVM);
 
+
+	/**
+	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv tree model
+	 * is used as carpet-classifier. PLEASE NOTE THAT THE OPENCV TREE LEARGNING ALGORITHMS DO NOT WORK PROPERLY!
+	 *
+	 * @param [in]	carp_feat_vec	Vector which contains the features of the different carpets.
+	 * @param [in]  carp_class_vec	Vector containing the class specifier of the carpets.
+	 * @param [out]	carpet_Tree		Returns an opencv tree model.
+	 *
+	 */
 	void CreateCarpetClassiefierTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvRTrees &carpet_Tree);
+
+	/**
+	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv gradient boosted tree model
+	 * is used as carpet-classifier. PLEASE NOTE THAT THE OPENCV TREE LEARGNING ALGORITHMS DO NOT WORK PROPERLY!
+	 *
+	 * @param [in]	carp_feat_vec	Vector which contains the features of the different carpets.
+	 * @param [in]  carp_class_vec	Vector containing the class specifier of the carpets.
+	 * @param [out]	carpet_GBTree	Returns an opencv gradient boosted tree model.
+	 *
+	 */
+	void CreateCarpetClassiefierGBTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec,
+			CvGBTrees &carpet_GBTree);
 
 
 	/**
-	 * This function determines the carpet-class of a carpet.
+	 * This function uses a trained, opencv support vector machine to determine the class of the given carpet. The carpet is given by it's features.
 	 *
-	 * @param [in]	carp_feat
-	 * @param [in]	carpet_SVM
-	 * @param [out]	carp_class
+	 * @param [in]	carp_feat	Contains the features of the carpet.
+	 * @param [in]	carpet_SVM  An opencv support vector machine.
+	 * @param [out]	carp_class	The class of the given carpet.
 	 *
 	 */
 	void ClassifyCarpet(const CarpetFeatures& carp_feat, const CvSVM &carpet_SVM, const CarpetClass& carp_class);
@@ -300,21 +323,100 @@ public:
 	 */
 	void SVMExampleCode();
 
-	void ReadDataFromCarpetFile(std::vector<CarpetFeatures>& carp_feat_vec, std::vector<CarpetClass>& carp_class_vec, std::string filename);
 
-	void SplitIntoTrainAndTestSamples(	int percentage_testdata,
+	/**
+	 * This function illustrates how to use/implement openCV-SVM.
+	 * The function has no other purpose than to illustrate how to use/implement openCV-SVM.
+	 */
+	void SVMTestFunction();
+
+	/**
+	 * Reads the carpet features and the class of the carpet from a file and saves them to the corresponding vectors.
+	 * Please note that the data are added to the given vectors, in other words, the vectors are not reset!
+	 *
+	 * @param [in,out]	carp_feat_vec	Vector which contains the features of the different carpets.
+	 * @param [in,out]	carp_class_vec 	Vector which saves the class of each carpet.
+	 * @param [in]		filepath		The path to the given file.
+	 * @param [in] 		filename		Name of the file which contains the different carpet data.
+	 *
+	 */
+	void ReadDataFromCarpetFile(std::vector<CarpetFeatures>& carp_feat_vec, std::vector<CarpetClass>& carp_class_vec, std::string filepath, std::string filename);
+
+	/**
+	 * Splits the carpets, given by the corresponding feature and class vector, into: \n
+	 * 1.) carpets which are used to train the different machine learning algorithms and \n
+	 * 2.) carpets which are used to test the different algorithms.
+	 *
+	 * @param [in]		NumTestSamples	Number of carpets which are used to test the algorithms.
+	 * @param [in]		input_feat_vec	Vector containing the features of the carpets which have to be split.
+	 * @param [in]		input_class_vec Vector containing the class specifier of the carpets which have to be split..
+	 * @param [in,out]	train_feat_vec	Vector containing the features of the carpets which are used to train the different algorithms. Please note that the data are added to the already existing data in the vector!
+	 * @param [in,out] 	train_class_vec	Vector containing the class specifier of the carpets which are used to train the different algorithms. Please note that the data are added to the already existing data in the vector!
+	 * @param [in,out]	test_feat_vec	Vector containing the features of the carpets which are used to test the different algorithms. Please note that the data are added to the already existing data in the vector!
+	 * @param [in,out] 	test_class_vec	Vector containing the class specifier of the carpets which are used to test the different algorithms. Please note that the data are added to the already existing data in the vector!
+	 *
+	 */
+	void SplitIntoTrainAndTestSamples(	int NumTestSamples,
 										std::vector<CarpetFeatures>& input_feat_vec, std::vector<CarpetClass>& input_class_vec,
 										std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 										std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec);
 
+	/**
+	 * This function can be used to test a specific opencv support vector machine. The function, however, is only usable if only one or two features are used to classify
+	 * a carpet. For more features it is necessary to adapt the function!
+	 *
+	 * @param [in]	train_feat_vec	Vector containing the features of the carpets which are used to train the different algorithms.
+	 * @param [in] 	train_class_vec	Vector containing the class specifier of the carpets which are used to train the different algorithms.
+	 * @param [in]	test_feat_vec	Vector containing the features of the carpets which are used to test the different algorithms.
+	 * @param [in] 	test_class_vec	Vector containing the class specifier of the carpets which are used to test the different algorithms.
+	 * @param [in]	carpet_SVM		Opencv support vector machine.
+	 *
+	 */
 	void SVMEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
-						CvSVM &carpet_SVM);
+						CvSVM &carpet_SVM, double ScaleMean, double ScaleStd);
 
+
+	/**
+	 * This function can be used to test a specific opencv tree model. The function, however, is only usable if only one or two features are used to classify
+	 * a carpet. For more features it is necessary to adapt the function!
+	 *
+	 * @param [in]	train_feat_vec	Vector containing the features of the carpets which are used to train the different algorithms.
+	 * @param [in] 	train_class_vec	Vector containing the class specifier of the carpets which are used to train the different algorithms.
+	 * @param [in]	test_feat_vec	Vector containing the features of the carpets which are used to test the different algorithms.
+	 * @param [in] 	test_class_vec	Vector containing the class specifier of the carpets which are used to test the different algorithms.
+	 * @param [in]	carpet_Tree		Opencv tree model.
+	 *
+	 */
 	void TreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
 						CvRTrees &carpet_Tree);
 
+	/**
+	 * This function can be used to test a specific opencv gradient boosted tree model. The function, however, is only usable if only one or two features are used to classify
+	 * a carpet. For more features it is necessary to adapt the function!
+	 *
+	 * @param [in]	train_feat_vec	Vector containing the features of the carpets which are used to train the different algorithms.
+	 * @param [in] 	train_class_vec	Vector containing the class specifier of the carpets which are used to train the different algorithms.
+	 * @param [in]	test_feat_vec	Vector containing the features of the carpets which are used to test the different algorithms.
+	 * @param [in] 	test_class_vec	Vector containing the class specifier of the carpets which are used to test the different algorithms.
+	 * @param [in]	carpet_GBTree	Opencv gradient boosted tree model.
+	 *
+	 */
+	void GBTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
+						CvGBTrees &carpet_GBTree);
+
+	/**
+	 * This function scales the features to the interval [0,1]. It returns the scaled features and the
+	 * scaling parameters.
+	 *
+	 * @param [in, out]	feat_vec 	Features which have to be scaled.
+	 * @param [out]	maxMean			Scaling parameter for the mean values.
+	 * @param [out]	maxStd			Scaling parameter for the standard deviation values.
+	 *
+	 */
+	void ScaleSamples(std::vector<CarpetFeatures>& feat_vec,double & maxMean, double & maxStd);
 
 
 };	//end-class
