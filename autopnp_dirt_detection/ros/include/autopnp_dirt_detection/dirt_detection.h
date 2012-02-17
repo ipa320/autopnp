@@ -125,7 +125,6 @@ public:
 	struct CarpetClass
 	{
 		float dirtThreshold;	/**< Carpet-label. */
-		int K;					/**< Carpet-label. */
 	};
 
 	struct NumStruc
@@ -268,15 +267,15 @@ public:
 
 
 	/**
-	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv support vector machine
-	 * is used as carpet-classifier. PLEASE NOTE THAT THE OPENCV SUPPORT VECTOR MACHINE LEARNING ALGORITHMS DO NOT WORK PROPERLY!
+	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv support vector machine (SVM)
+	 * is used as carpet-classifier.
 	 *
 	 * @param [in]	carp_feat_vec	Vector which contains the features of the different carpets.
 	 * @param [in]  carp_class_vec	Vector containing the class specifier of the carpets.
 	 * @param [out]	carpet_SVM		Returns an opencv support vector machine.
 	 *
 	 */
-	void CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvSVM &carpet_SVM);
+	void CreateCarpetClassiefierSVM(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvSVM &carpet_SVM);
 
 
 	/**
@@ -288,7 +287,7 @@ public:
 	 * @param [out]	carpet_Tree		Returns an opencv tree model.
 	 *
 	 */
-	void CreateCarpetClassiefierTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvRTrees &carpet_Tree);
+	void CreateCarpetClassiefierRTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvRTrees &carpet_Tree);
 
 	/**
 	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv gradient boosted tree model
@@ -374,17 +373,17 @@ public:
 
 
 	/**
-	 * This function can be used to test a specific opencv tree model. The function, however, is only usable if only one or two features are used to classify
+	 * This function can be used to test a specific opencv random tree model. The function, however, is only usable if only one or two features are used to classify
 	 * a carpet. For more features it is necessary to adapt the function!
 	 *
 	 * @param [in]	train_feat_vec	Vector containing the features of the carpets which are used to train the different algorithms.
 	 * @param [in] 	train_class_vec	Vector containing the class specifier of the carpets which are used to train the different algorithms.
 	 * @param [in]	test_feat_vec	Vector containing the features of the carpets which are used to test the different algorithms.
 	 * @param [in] 	test_class_vec	Vector containing the class specifier of the carpets which are used to test the different algorithms.
-	 * @param [in]	carpet_Tree		Opencv tree model.
+	 * @param [in]	carpet_Tree		Opencv random tree model.
 	 *
 	 */
-	void TreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+	void RTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
 						CvRTrees &carpet_Tree);
 
