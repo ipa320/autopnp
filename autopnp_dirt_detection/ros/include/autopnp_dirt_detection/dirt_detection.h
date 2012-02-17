@@ -94,10 +94,6 @@ protected:
 	double dirtCheckStdDevFactor_;
 
 
-	std::vector<cv::Mat> Image_buffer;
-	int Image_buffer_size;
-
-
 public:
 
 	/**

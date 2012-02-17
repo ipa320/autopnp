@@ -14,7 +14,6 @@ DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 {
 	it_ = 0;
 
-	Image_buffer_size = 5;
 }
 
 /////////////////////////////////////////////////
@@ -65,9 +64,6 @@ int main(int argc, char **argv)
 	DirtDetection id(n);
 	id.init();
 
-//	id.SVMTestFunction();
-
-
 	printf("Read samples and split them into train-samples and test-samples.\n");
 	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
 	std::vector<DirtDetection::CarpetClass> carp_class_vec;
@@ -88,32 +84,34 @@ int main(int argc, char **argv)
 	//vector of carpet file names
 	std::vector<std::string> name_vec;
 
-//	name = "carpet-gray.tepp";
-//	name_vec.push_back(name);
-
-	name = "carpet2.tepp";
+	name = "carpet-gray.tepp"; //threshold=0.18
 	name_vec.push_back(name);
-//
-//	name = "carpet4.tepp";
-//	name_vec.push_back(name);
-//
-//	name = "carpet6.tepp";
-//	name_vec.push_back(name);
-//
-//	name = "kitchen1a.tepp";
-//	name_vec.push_back(name);
-//
-//	name = "kitchen1b.tepp";
-//	name_vec.push_back(name);
 
-	name = "redblackpattern.tepp";
+	name = "carpet2.tepp"; //threshold=0.25
 	name_vec.push_back(name);
-//
-//	name = "wood1.tepp";
-//	name_vec.push_back(name);
-//
-//	name = "wood2.tepp";
-//	name_vec.push_back(name);
+
+	name = "kitchen1a.tepp"; //threshold=0.2
+	name_vec.push_back(name);
+
+	name = "kitchen1b.tepp"; //threshold=0.2
+	name_vec.push_back(name);
+
+	name = "wood1.tepp"; //threshold=0.25
+	name_vec.push_back(name);
+
+	name = "wood2.tepp"; //threshold=0.25
+	name_vec.push_back(name);
+
+
+	name = "carpet6.tepp"; //threshold=0.25
+	name_vec.push_back(name);
+
+	name = "carpet4.tepp"; //threshold=0.3
+	name_vec.push_back(name);
+
+	name = "redblackpattern.tepp"; //threshold=0.35
+	name_vec.push_back(name);
+
 
 	for (unsigned int i = 0; i<name_vec.size(); i++)
 	{
@@ -138,7 +136,6 @@ int main(int argc, char **argv)
 	// switchflag = 1; <-> SVM
 	// switchflag = 2; <-> normal tree
 	// switchflag = 3; <-> gradient boosted tree
-	// switchflag = 4; <-> decision tree
 	int switchflag = 1;
 
 	switch (switchflag)
@@ -179,19 +176,6 @@ int main(int argc, char **argv)
 			printf("Check gradient boosted tree model...\n");
 			id.GBTreeEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, GBtree);
 			printf("Check gradient boosted tree model done.\n");
-
-			break;
-		}
-		case 4: //<-> decision tree
-		{
-			printf("Create decision tree model...\n");
-			CvDTree Dtree;
-			id.CreateCarpetClassiefierDTree(train_feat_vec, train_class_vec, Dtree);
-			printf("Decision tree model created.\n");
-
-			printf("Check decision tree model...\n");
-			id.DTreeEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, Dtree, maxMean);
-			printf("Check decision tree model done.\n");
 
 			break;
 		}
@@ -683,9 +667,6 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
 
 //	std::cout << "(C1_saliency_image channels) = (" << C1_saliency_image.channels() << ")" << std::endl;
 
-	//insert image into fifo
-//	Image_buffer.push_back(C1_BlackWhite_image);
-
 	cv::Mat CV_8UC_image;
 	C1_BlackWhite_image.convertTo(CV_8UC_image, CV_8UC1);
 
@@ -708,37 +689,6 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
     }	//calculate number of test samples
 	int NumTestSamples = 10; //ceil(NumSamples*percentage_testdata);
 	printf("Anzahl zu ziehender test samples: %d \n", NumTestSamples);
-
-//    Scalar color( rand()&255, rand()&255, rand()&255 );
-//    cv::drawContours( dst, contours, -1, color);
-
-
-
-//	cv::Mat picture;
-
-//	std::cout << "(height,width) = (" << C1_BlackWhite_image.size().height << ", " << C1_BlackWhite_image.size().width << ")" << std::endl;
-//
-//	for (int i = 0; i < Image_buffer.size(); i++)
-//	{
-//		if (i != 0)
-//		{
-//			picture = picture +  Image_buffer[i];
-//		}
-//		else
-//		{
-//			picture = Image_buffer[i];
-//		}
-//
-//	}
-//
-//	cv::threshold(picture, output_image, 1.5, 1, cv::THRESH_BINARY);
-//
-//	if (Image_buffer.size() > Image_buffer_size )
-//	{
-//		Image_buffer.erase(Image_buffer.begin(), Image_buffer.begin()+1);
-//	}
-
-//	std::cout << "(Image buffer size) = (" << Image_buffer.size() << ")" << std::endl;
 
 }
 
@@ -1020,9 +970,6 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 
 //	std::cout << "(C1_saliency_image channels) = (" << C1_saliency_image.channels() << ")" << std::endl;
 
-	//insert image into fifo
-//	Image_buffer.push_back(C1_BlackWhite_image);
-
 	cv::Mat CV_8UC_image;
 	C1_BlackWhite_image.convertTo(CV_8UC_image, CV_8UC1);
 
@@ -1056,37 +1003,6 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
     		cv::ellipse(C3_color_image, rec, red, 2);
     	}
     }
-
-//    Scalar color( rand()&255, rand()&255, rand()&255 );
-//    cv::drawContours( dst, contours, -1, color);
-
-
-
-//	cv::Mat picture;
-
-//	std::cout << "(height,width) = (" << C1_BlackWhite_image.size().height << ", " << C1_BlackWhite_image.size().width << ")" << std::endl;
-//
-//	for (int i = 0; i < Image_buffer.size(); i++)
-//	{
-//		if (i != 0)
-//		{
-//			picture = picture +  Image_buffer[i];
-//		}
-//		else
-//		{
-//			picture = Image_buffer[i];
-//		}
-//
-//	}
-//
-//	cv::threshold(picture, output_image, 1.5, 1, cv::THRESH_BINARY);
-//
-//	if (Image_buffer.size() > Image_buffer_size )
-//	{
-//		Image_buffer.erase(Image_buffer.begin(), Image_buffer.begin()+1);
-//	}
-
-//	std::cout << "(Image buffer size) = (" << Image_buffer.size() << ")" << std::endl;
 
 }
 
@@ -1257,62 +1173,37 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
 											CvSVM &carpet_SVM)
 {
 
-	//////////////////////////
-	///Old style TEST code///
-	////////////////////////
-
-
-//    const int s = 171;
-//    int i;
-//    CvSVMParams param;
-//    CvTermCriteria criteria;
-//    float data[s * 2];
-//    int res[s];
-//    CvMat data_mat, res_mat;
-//
-//
-//    for (i = 0; i < s; i++) {
-//      data[i * 2] = float(carp_feat_vec[i].mean);
-//      data[i * 2 + 1] = float(carp_feat_vec[i].stdDev);
-//      res[i] = carp_class_vec[i].K;
-//    }
-//    cvInitMatHeader (&data_mat, s, 2, CV_32FC1, data);
-//    cvInitMatHeader (&res_mat, s, 1, CV_32SC1, res);
-//
-//    criteria = cvTermCriteria (CV_TERMCRIT_EPS, 1000, FLT_EPSILON);
-//    param = CvSVMParams (CvSVM::C_SVC, CvSVM::RBF, 10.0, 8.0, 1.0, 10.0, 0.5, 0.1, NULL, criteria);
-//
-//    carpet_SVM.train (&data_mat, &res_mat, NULL, NULL, param);
-////////////////////////////////////////////////////////////////////////////////////
-
-	/////////////////////
-	///Old style code///
-	///////////////////
+	/////////////////////////////////////////////////////////////////////////////
+	///Old style code-> necessary because svm does not work with c++ style!!!///
+	///////////////////////////////////////////////////////////////////////////
 
 	//determine number of samples
-//	int Nges = carp_feat_vec.size();
+	int Nges = carp_feat_vec.size();
 
 	//number of features
 	int NCarpetFeatures = 2;
 
-	const int s = 171; //Correct this value if necessary!
 	int i;
-	float data[s * 2];
-	float res[s];
+	float *data = 0;
+	data = new float [Nges*2];
+
+	float *res = 0;
+	res = new float [Nges];
+
 	CvMat data_mat, res_mat;
 
-	for (i = 0; i < s; i++) {
+	for (i = 0; i < Nges; i++)
+	{
 	  data[i * 2] = float(carp_feat_vec[i].mean);
 	  data[i * 2 + 1] = float(carp_feat_vec[i].stdDev);
 	  res[i] = carp_class_vec[i].dirtThreshold;
-
 //	  std::cout << 	"threshold= " << res[i] << std::endl;
 	}
-	cvInitMatHeader (&data_mat, s, NCarpetFeatures, CV_32FC1, data);
-	cvInitMatHeader (&res_mat, s, 1, CV_32FC1, res);
+
+	cvInitMatHeader (&data_mat, Nges, NCarpetFeatures, CV_32FC1, data);
+	cvInitMatHeader (&res_mat, Nges, 1, CV_32FC1, res);
 
 //    // Set up SVM's parameters
-
     CvSVMParams params;
     params.svm_type    = CvSVM::NU_SVR;
     params.kernel_type = CvSVM::RBF;//POLY;
@@ -1325,12 +1216,12 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
     params.p = 1;
     params.class_weights = NULL;
     params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100, 1e-6);
-//    params.term_crit = cvTermCriteria (CV_TERMCRIT_EPS, 1000, FLT_EPSILON);
+//    params.term_crit = cvTermCriteria (CV_TERMCRIT_EPS, 100, FLT_EPSILON);
 
-	//define testing area for "train_auto()":
+
 //    carpet_SVM.train(&data_mat, &res_mat, NULL, NULL, params);
 
-
+	//define testing area for "train_auto()":
     cv::ParamGrid gamma_grid(0.1, 1, 2);
     cv::ParamGrid C_grid(1, 10, 2 );
     cv::ParamGrid nu_grid(0.01, 0.2, 2 );
@@ -1355,76 +1246,12 @@ void DirtDetection::CreateCarpetClassiefier(const std::vector<CarpetFeatures>& c
 					params.degree << "\ngamma = " << params.gamma << "\nnu = " << params.nu <<
 					"\np = " << params.p << std::endl;
 
+	//freigabe
+	delete[] data;
+	data = 0;
 
-	//////////////////////////////////////////////////////////////////
-	///New style code (does not work properly->problem: opencv!!!)///
-	////////////////////////////////////////////////////////////////
-
-//	//number of carpet features
-//	int NCarpetFeatures = 2;
-//
-//	//Convert 	car_feat_vec	into cv::Mat and
-//	//convert 	carp_class_vec	into cv::Mat
-//	int Nges = carp_feat_vec.size();
-//
-//	cv::Mat TrainingData  		= cv::Mat::zeros(Nges, NCarpetFeatures, CV_32FC1);
-//	cv::Mat TrainingDataLabel  	= cv::Mat::zeros(Nges, 1, CV_32SC1);
-//
-//
-//	for (int k = 0; k < Nges; k++)
-//	{
-//		TrainingData.at<float>(k, 1) = float(carp_feat_vec[k].mean);
-//		TrainingData.at<float>(k, 2) = float(carp_feat_vec[k].stdDev);
-//
-//		TrainingDataLabel.at<int>(k) = carp_class_vec[k].K;
-//	}
-
-//	///////////////
-//	//Create-SVM//
-//	/////////////
-//
-//    // Set up SVM's parameters
-//
-//    CvSVMParams params;
-//    params.svm_type    = CvSVM::C_SVC; //CvSVM::EPS_SVR;
-//    params.kernel_type = CvSVM::RBF; //CvSVM::POLY;
-//
-//    params.degree = 10.0;
-//    params.gamma = 8.0;
-//    params.coef0 = 1.0;
-//    params.C = 10;
-//    params.nu = 0.5;
-//    params.p = 0.1;
-//    params.class_weights = NULL;
-////    params.term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100, 1e-6);
-//    params.term_crit = cvTermCriteria (CV_TERMCRIT_EPS, 1000, FLT_EPSILON);
-
-    //define testing area for "train_auto()":
-//    cv::ParamGrid gamma_grid( 1, 20, 1.2 );
-//    cv::ParamGrid C_grid(1, 10, 1.5 );
-//    cv::ParamGrid nu_grid( 0.1, 0.99, 1.5 );
-//    cv::ParamGrid degree_grid(0, 5, 1.5);
-
-//    //determine optimal parameters and train SVM
-//    //Comment: It's important to define all input parameters because otherwise "SVM.train_auto" might not work properly!!!
-//    carpet_SVM.train_auto(	TrainingData, TrainingDataLabel, cv::Mat(), cv::Mat(), params, 10,
-//							CvSVM::get_default_grid(CvSVM::C), //C_grid,
-//							CvSVM::get_default_grid(CvSVM::GAMMA), //gamma_grid,
-//							CvSVM::get_default_grid(CvSVM::P),
-//							CvSVM::get_default_grid(CvSVM::NU), //nu_grid,
-//							CvSVM::get_default_grid(CvSVM::COEF),
-//							CvSVM::get_default_grid(CvSVM::DEGREE) );
-//
-//
-//    //determine ros package path
-//    std::string svmpath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/svm/surface.svm";
-////    std::cout << svmpath << std::endl;
-//
-//    //save SVM parameters to file
-//    carpet_SVM.save(svmpath.c_str());
-//    params = carpet_SVM.get_params();
-//    //display SVM parameters on screen
-//    std::cout << "C = " << params.C << "\ncoeff0 = " << params.coef0 << "\ndegree = " << params.degree << "\ngamma = " << params.gamma << "\nnu = " << params.nu << "\np = " << params.p << std::endl;
+	delete[] res;
+	res = 0;
 
 }
 
