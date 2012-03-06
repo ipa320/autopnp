@@ -4,6 +4,34 @@ using namespace ipa_DirtDetection;
 using namespace std;
 using namespace cv;
 
+
+
+/////////////////////////////////////////////////
+// Main functions
+/////////////////////////////////////////////////
+
+int main(int argc, char **argv)
+{
+	ros::init(argc, argv, "dirt_detection");
+
+	ros::NodeHandle n;
+
+	DirtDetection id(n);
+	id.init();
+
+	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
+	std::vector<DirtDetection::CarpetClass> carp_class_vec;
+	DirtDetection::CarpetClassifier carp_classi;
+
+	//id.CreateCarpetClassiefier(carp_feat_vec, carp_class_vec, carp_classi);
+
+	//start to look for messages (loop)
+	ros::spin();
+
+	return 0;
+}
+
+
 /////////////////////////////////////////////////
 // Constructor
 /////////////////////////////////////////////////
@@ -50,32 +78,6 @@ void DirtDetection::init()
 	std::cout << "dirtCheckStdDevFactor = " << dirtCheckStdDevFactor_ << std::endl;
 
 }
-
-/////////////////////////////////////////////////
-// Main functions
-/////////////////////////////////////////////////
-
-int main(int argc, char **argv)
-{
-	ros::init(argc, argv, "dirt_detection");
-
-	ros::NodeHandle n;
-
-	DirtDetection id(n);
-	id.init();
-
-	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
-	std::vector<DirtDetection::CarpetClass> carp_class_vec;
-	DirtDetection::CarpetClassifier carp_classi;
-
-	id.CreateCarpetClassiefier(carp_feat_vec, carp_class_vec, carp_classi);
-
-	//start to look for messages (loop)
-	ros::spin();
-
-	return 0;
-}
-
 
 /////////////////////////////////////////////////
 // Callback functions
@@ -517,7 +519,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::Scalar mean, stdDev;
 	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
 	double newMaxVal = min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
-	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
+	std::cout << "dirtThreshold=" << dirtThreshold_ << "\tmin=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
 
 	////C1_saliency_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
 	cv::Mat scaled_C1_saliency_image = C1_saliency_image.clone();	// square C1_saliency_image_with_artifical_dirt to emphasize the dirt and increase the gap to background response
