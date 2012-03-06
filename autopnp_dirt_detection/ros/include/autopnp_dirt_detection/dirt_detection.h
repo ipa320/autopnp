@@ -13,8 +13,11 @@
 
 // standard includes
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <deque>
+#include <time.h>
+#include <math.h>
 
 // ROS includes
 #include <ros/ros.h>
@@ -113,8 +116,11 @@ public:
 	 */
 	struct CarpetFeatures
 	{
-		int a;
-		int b;
+		float min; 	/**< Minimum value in the "C1_saliency_image_with_artifical_dirt" image. */
+		float max; 	/**< Maximum value in the "C1_saliency_image_with_artifical_dirt" image. */
+		float mean; 	/**< Mean value in the "C1_saliency_image_with_artifical_dirt" image. */
+		float stdDev; 	/**< Standard deviation in the "C1_saliency_image_with_artifical_dirt" image. */
+
 	};
 
 	/**
@@ -122,17 +128,13 @@ public:
 	 */
 	struct CarpetClass
 	{
-		int a;
-		int b;
+		float dirtThreshold;	/**< Carpet-label. */
 	};
 
-	/**
-	 * Used to describe the carpet classifier.
-	 */
-	struct CarpetClassifier
+	struct NumStruc
 	{
-		int a;
-		int b;
+		int correctnum; /**< Number of correct classified samples. */
+		int totalnum;	/**< Total number of samples of this class. */
 	};
 
 
@@ -274,20 +276,44 @@ public:
 	 * @param [in]	carp_feat_vec
 	 * @param [in]	carp_feat
 	 * @param [in]  carp_class_vec
-	 * @param [out]	carp_classi
+	 * @param [out]	carpet_SVM
 	 *
 	 */
-	void CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CarpetClassifier& carp_classi);
+	void CreateCarpetClassiefier(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvSVM &carpet_SVM);
+
+	void CreateCarpetClassiefierTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec, CvRTrees &carpet_Tree);
+
 
 	/**
 	 * This function determines the carpet-class of a carpet.
 	 *
 	 * @param [in]	carp_feat
-	 * @param [in]	carp_classi
+	 * @param [in]	carpet_SVM
 	 * @param [out]	carp_class
 	 *
 	 */
-	void ClassifyCarpet(const CarpetFeatures& carp_feat, const CarpetClassifier& carp_classi, CarpetClass& carp_class);
+	void ClassifyCarpet(const CarpetFeatures& carp_feat, const CvSVM &carpet_SVM, const CarpetClass& carp_class);
+
+	/**
+	 * This function illustrates how to use/implement openCV-SVM.
+	 * The function has no other purpose than to illustrate how to use/implement openCV-SVM.
+	 */
+	void SVMExampleCode();
+
+	void ReadDataFromCarpetFile(std::vector<CarpetFeatures>& carp_feat_vec, std::vector<CarpetClass>& carp_class_vec, std::string filename);
+
+	void SplitIntoTrainAndTestSamples(	int percentage_testdata,
+										std::vector<CarpetFeatures>& input_feat_vec, std::vector<CarpetClass>& input_class_vec,
+										std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+										std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec);
+
+	void SVMEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
+						CvSVM &carpet_SVM);
+
+	void TreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
+						CvRTrees &carpet_Tree);
 
 
 

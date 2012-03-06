@@ -8,7 +8,7 @@ spectralResidualImageSizeRatio: 0.25   #0.25
 spectralResidualNormalizationHighestMaxValue: 1500
 
 # dirt threshold (in [0,1])
-dirtThreshold: 0.30  #0.35 #0.5
+dirtThreshold: 0.3  #0.35 #0.5
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
 dirtCheckStdDevFactor: 3.0   #3.6
