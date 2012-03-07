@@ -257,16 +257,6 @@ public:
 	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
 
 	/**
-	 * This function determines the carpet-features from the "C3_carpet_image".
-	 *
-	 * @param [in] 	C3_carpet_image		Three channel('C3') image from the carpet.
-	 * @param [out]	carp_feat			Features of the carpet.
-	 *
-	 */
-	void ExtractCarpetFeatures(const cv::Mat& C3_carpet_image, CarpetFeatures& carp_feat);
-
-
-	/**
 	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv support vector machine (SVM)
 	 * is used as carpet-classifier.
 	 *
@@ -301,16 +291,6 @@ public:
 	void CreateCarpetClassiefierGBTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec,
 			CvGBTrees &carpet_GBTree);
 
-
-	/**
-	 * This function uses a trained, opencv support vector machine to determine the class of the given carpet. The carpet is given by it's features.
-	 *
-	 * @param [in]	carp_feat	Contains the features of the carpet.
-	 * @param [in]	carpet_SVM  An opencv support vector machine.
-	 * @param [out]	carp_class	The class of the given carpet.
-	 *
-	 */
-	void ClassifyCarpet(const CarpetFeatures& carp_feat, const CvSVM &carpet_SVM, const CarpetClass& carp_class);
 
 	/**
 	 * This function illustrates how to use/implement openCV-SVM.
@@ -385,7 +365,7 @@ public:
 	 */
 	void RTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
-						CvRTrees &carpet_Tree);
+						CvRTrees &carpet_Tree, double ScaleMean, double ScaleStd);
 
 	/**
 	 * This function can be used to test a specific opencv gradient boosted tree model. The function, however, is only usable if only one or two features are used to classify
@@ -400,7 +380,7 @@ public:
 	 */
 	void GBTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
-						CvGBTrees &carpet_GBTree);
+						CvGBTrees &carpet_GBTree, double ScaleMean, double ScaleStd);
 
 	/**
 	 * This function scales the features to the interval [0,1]. It returns the scaled features and the
