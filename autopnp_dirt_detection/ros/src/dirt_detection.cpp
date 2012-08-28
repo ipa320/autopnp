@@ -64,6 +64,7 @@ int main(int argc, char **argv)
 	DirtDetection id(n);
 	id.init();
 
+/*
 	printf("Read samples and split them into train-samples and test-samples.\n");
 	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
 	std::vector<DirtDetection::CarpetClass> carp_class_vec;
@@ -185,6 +186,7 @@ int main(int argc, char **argv)
 			break;
 		}
 	}
+*/
 
 	//start to look for messages (loop)
 	ros::spin();
@@ -214,7 +216,7 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 	Image_Postprocessing_C1(result_image, image_postproc, new_color_image);
 
 	cv::imshow("image postprocessing", new_color_image);
-	cvMoveWindow("image postprocessing", 650, 0);
+	cvMoveWindow("image postprocessing", 0, 520);
 
 	cv::waitKey(10);
 }
@@ -252,7 +254,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		Image_Postprocessing_C1_rmb(C1_saliency_image, C1_BlackWhite_image, new_plane_color_image, plane_mask);
 
 		cv::imshow("image postprocessing", new_plane_color_image);
-		cvMoveWindow("image postprocessing", 650, 0);
+		cvMoveWindow("image postprocessing", 0, 520);
 	}
 
 	cv::waitKey(10);
@@ -304,7 +306,8 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 
 	//display original image
 	cv::imshow("color image", color_image);
-	cvMoveWindow("color image", 0, 520);
+	cvMoveWindow("color image", 0, 0);
+	//cvMoveWindow("color image", 0, 520);
 
 
 	// Create the segmentation object for the planar model and set all the parameters
@@ -792,6 +795,15 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	SaliencyDetection_C3(color_image_with_artifical_dirt, C1_saliency_image_with_artifical_dirt, &mask_with_artificial_dirt, spectralResidualGaussianBlurIterations_);
 	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
 
+	// display of images with artificial dirt
+	cv::imshow("color with artificial dirt", color_image_with_artifical_dirt);
+	cv::Mat C1_saliency_image_with_artifical_dirt_scaled;
+	double salminv, salmaxv;
+	cv::Point2i salminl, salmaxl;
+	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&salminv,&salmaxv,&salminl,&salmaxl, mask_with_artificial_dirt);
+	C1_saliency_image_with_artifical_dirt.convertTo(C1_saliency_image_with_artifical_dirt_scaled, -1, 1.0/(salmaxv-salminv), -1.0*(salminv)/(salmaxv-salminv));
+	cv::imshow("saliency with artificial dirt", C1_saliency_image_with_artifical_dirt_scaled);
+
 	// scale C1_saliency_image to value obtained from C1_saliency_image with artificially added dirt
 	std::cout << "res_img: " << C1_saliency_image_with_artifical_dirt.at<float>(300,200);
 //	C1_saliency_image_with_artifical_dirt = C1_saliency_image_with_artifical_dirt.mul(C1_saliency_image_with_artifical_dirt);	// square C1_saliency_image_with_artifical_dirt to emphasize the dirt and increase the gap to background response
@@ -802,7 +814,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::Scalar mean, stdDev;
 	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
 	double newMaxVal = min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
-	std::cout << "dirtThreshold=" << dirtThreshold_ << "\tmin=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal=" << newMaxVal << std::endl;
+	std::cout << "dirtThreshold=" << dirtThreshold_ << "\tmin=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal (r)=" << newMaxVal << std::endl;
 
 
 	//determine ros package path
@@ -828,9 +840,14 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 //	cv::Point2i minl, maxl;
 //	cv::minMaxLoc(C1_saliency_image,&minv,&maxv,&minl,&maxl, mask);
 	cv::Mat badscale;
-	C1_saliency_image.convertTo(badscale, -1, 1.0/(maxv-minv), -1.0*(minv)/(maxv-minv));
+	double badminv, badmaxv;
+	cv::Point2i badminl, badmaxl;
+	cv::minMaxLoc(C1_saliency_image,&badminv,&badmaxv,&badminl,&badmaxl, mask);
+	C1_saliency_image.convertTo(badscale, -1, 1.0/(badmaxv-badminv), -1.0*(badminv)/(badmaxv-badminv));
+	std::cout << "bad scale:   " << "\tmin=" << badminv << "\tmax=" << badmaxv << std::endl;
 	cv::imshow("bad scale", badscale);
-	cvMoveWindow("bad scale", 650, 520);
+	cvMoveWindow("bad scale", 650, 0);
+	//cvMoveWindow("bad scale", 650, 520);
 //	cv::Scalar mean, stdDev;
 //	cv::meanStdDev(C1_saliency_image, mean, stdDev, mask);
 //	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << std::endl;
@@ -840,7 +857,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 //	C1_saliency_image.convertTo(scaled_C1_saliency_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
 
 	cv::imshow("SaliencyDetection", scaled_C1_saliency_image);
-	cvMoveWindow("SaliencyDetection", 0, 0);
+	cvMoveWindow("SaliencyDetection", 650, 520);
 
 	//set dirt pixel to white
 	C1_BlackWhite_image = cv::Mat::zeros(C1_saliency_image.size(), CV_8UC1);
