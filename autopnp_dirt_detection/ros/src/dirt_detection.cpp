@@ -325,6 +325,8 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		// compute two normalized directions
 		cv::Point3d dirS, dirT, normal(a,b,c);
 		double lengthNormal = cv::norm(normal);
+		if (c<0.)
+			lengthNormal *= -1;
 		normal.x /= lengthNormal;
 		normal.y /= lengthNormal;
 		normal.z /= lengthNormal;
@@ -356,7 +358,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		// 2. select data segment and compute final transformation of camera coordinates to scaled and centered plane coordinates
 		std::vector<cv::Point2f> pointsCamera, pointsPlane;
 		const double max_distance_to_camera = 3.00;	// max distance of plane points to the camera in [m]
-		cv::Point2f minPlane(1e20,1e20);//, maxPlane(-1e20,-1e20);
+		cv::Point2f minPlane(1e20,1e20), maxPlane(-1e20,-1e20);
 		cv::Mat RTt = R.t()*t;
 		for (int v=0; v<plane_color_image.rows; v++)
 		{
@@ -380,8 +382,12 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 				if (minPlane.x>pointPlane.at<double>(0))
 					minPlane.x=pointPlane.at<double>(0);
+				if (maxPlane.x<pointPlane.at<double>(0))
+					maxPlane.x=pointPlane.at<double>(0);
 				if (minPlane.y>pointPlane.at<double>(1))
 					minPlane.y=pointPlane.at<double>(1);
+				if (maxPlane.y<pointPlane.at<double>(1))
+					maxPlane.y=pointPlane.at<double>(1);
 			}
 		}
 
@@ -389,39 +395,40 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		// a) collect point correspondences
 		double step = std::max(1.0, (double)pointsCamera.size()/100.0);
 		std::vector<cv::Point2f> correspondencePointsCamera, correspondencePointsPlane;
-		double s = 300;		// scale factor in [pixel/m]
+		double s = 300;	//300	// scale factor in [pixel/m]
+		cv::Point2f centerPoint((maxPlane.x+minPlane.x)/2 - (double)plane_color_image.cols/(2*s), (maxPlane.y+minPlane.y)/2 - (double)plane_color_image.rows/(2*s));
 		for (double i=0; i<(double)pointsCamera.size(); i+=step)
 		{
 			correspondencePointsCamera.push_back(pointsCamera[(int)i]);
-			correspondencePointsPlane.push_back(s*(pointsPlane[(int)i]-minPlane));
+			correspondencePointsPlane.push_back(s*(pointsPlane[(int)i]-centerPoint));
 		}
 		// b) compute homography
 		cv::Mat H = cv::findHomography(correspondencePointsCamera, correspondencePointsPlane);
-		correspondencePointsCamera.push_back(cv::Point2f(160,400));
-		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-		correspondencePointsCamera.push_back(cv::Point2f(320,400));
-		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-		correspondencePointsCamera.push_back(cv::Point2f(480,400));
-		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-		correspondencePointsCamera.push_back(cv::Point2f(160,200));
-		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-		correspondencePointsCamera.push_back(cv::Point2f(320,200));
-		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-		correspondencePointsCamera.push_back(cv::Point2f(480,200));
-		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-		for (int i=0; i<(int)correspondencePointsCamera.size(); i++)
-		{
-			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)correspondencePointsCamera[i].x, (double)correspondencePointsCamera[i].y, 1.0);
-			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)correspondencePointsPlane[i].x, (double)correspondencePointsPlane[i].y, 1.0);
-
-			cv::Mat Hp = H*pc;
-			Hp.at<double>(0) /= Hp.at<double>(2);
-			Hp.at<double>(1) /= Hp.at<double>(2);
-			Hp.at<double>(2) = 1.0;
-			cv::Mat r = pp - Hp;
-
-			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
-		}
+//		correspondencePointsCamera.push_back(cv::Point2f(160,400));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(320,400));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(480,400));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(160,200));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(320,200));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(480,200));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		for (int i=0; i<(int)correspondencePointsCamera.size(); i++)
+//		{
+//			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)correspondencePointsCamera[i].x, (double)correspondencePointsCamera[i].y, 1.0);
+//			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)correspondencePointsPlane[i].x, (double)correspondencePointsPlane[i].y, 1.0);
+//
+//			cv::Mat Hp = H*pc;
+//			Hp.at<double>(0) /= Hp.at<double>(2);
+//			Hp.at<double>(1) /= Hp.at<double>(2);
+//			Hp.at<double>(2) = 1.0;
+//			cv::Mat r = pp - Hp;
+//
+//			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
+//		}
 
 		// 4. warp perspective
 		cv::Mat plane_color_image_warped;
@@ -545,7 +552,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 	seg.setModelType (pcl::SACMODEL_PLANE);
 	seg.setMethodType (pcl::SAC_RANSAC);
 	seg.setMaxIterations (100);
-	seg.setDistanceThreshold (0.03);
+	seg.setDistanceThreshold (0.05);
 
 	seg.setInputCloud(input_cloud);
 	seg.segment (*inliers, plane_model);
