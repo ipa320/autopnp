@@ -93,6 +93,8 @@ protected:
 	double spectralResidualImageSizeRatio_;
 	double dirtCheckStdDevFactor_;
 
+	std::map<std::string, bool> debug_;
+
 
 public:
 
@@ -195,7 +197,7 @@ public:
 	 *	@param [out]	plane_mask					Mask to separate plane pixels. Plane pixels are white (255), all other pixels are black (0).
 	 *	@return 		True if any plane could be found in the image.
 	 */
-	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask);
+	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model);
 
 
 	/**

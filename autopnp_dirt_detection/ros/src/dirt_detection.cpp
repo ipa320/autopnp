@@ -13,7 +13,6 @@ DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 : node_handle_(node_handle)
 {
 	it_ = 0;
-
 }
 
 /////////////////////////////////////////////////
@@ -31,10 +30,6 @@ DirtDetection::~DirtDetection()
 
 void DirtDetection::init()
 {
-	it_ = new image_transport::ImageTransport(node_handle_);
-//	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
-	camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::planeDetectionCallback, this);
-
 	// Parameters
 	std::cout << "\n--------------------------\nDirt Detection Parameters:\n--------------------------\n";
 	node_handle_.param("spectralResidualGaussianBlurIterations", spectralResidualGaussianBlurIterations_, 2);
@@ -47,6 +42,13 @@ void DirtDetection::init()
 	std::cout << "spectralResidualImageSizeRatio = " << spectralResidualImageSizeRatio_ << std::endl;
 	node_handle_.param("dirtCheckStdDevFactor", dirtCheckStdDevFactor_, 2.5);
 	std::cout << "dirtCheckStdDevFactor = " << dirtCheckStdDevFactor_ << std::endl;
+
+	// todo: debug parameters
+	debug_["showOriginalImage"] = false;
+
+	it_ = new image_transport::ImageTransport(node_handle_);
+//	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
+	camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::planeDetectionCallback, this);
 
 }
 
@@ -230,7 +232,8 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 	// find ground plane
 	cv::Mat plane_color_image = cv::Mat();
 	cv::Mat plane_mask = cv::Mat();
-	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask);
+	pcl::ModelCoefficients plane_model;
+	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model);
 
 	// check if a ground plane could be found
 	if (found_plane == true)
@@ -244,14 +247,234 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 //		cv:imshow("laplace", laplace);
 
 
+		// test with half-scale image
+//		cv::Mat temp = plane_color_image;
+//		cv::resize(temp, plane_color_image, cv::Size(), 0.5, 0.5);
+//		temp = plane_mask;
+//		cv::resize(temp, plane_mask, cv::Size(), 0.5, 0.5);
+
+		// remove perspective from image
+		// 1. compute parameter representation of plane, construct plane coordinate system and compute transformation from camera frame (x,y,z) to plane frame (x,y,z)
+		// a) parameter form of plane equation
+		// choose two arbitrary points on the plane
+		cv::Point3d p1, p2;
+		double a=plane_model.values[0], b=plane_model.values[1], c=plane_model.values[2], d=plane_model.values[3];
+		if (a==0. && b==0.)
+		{
+			p1.x = 0;
+			p1.y = 0;
+			p1.z = -d/c;
+			p2.x = 1;
+			p2.y = 0;
+			p2.z = -d/c;
+		}
+		else if (a==0. && c==0.)
+		{
+			p1.x = 0;
+			p1.y = -d/b;
+			p1.z = 0;
+			p2.x = 1;
+			p2.y = -d/b;
+			p2.z = 0;
+		}
+		else if (b==0. && c==0.)
+		{
+			p1.x = -d/a;
+			p1.y = 0;
+			p1.z = 0;
+			p2.x = -d/a;
+			p2.y = 1;
+			p2.z = 0;
+		}
+		else if (a==0.)
+		{
+			p1.x = 0;
+			p1.y = 0;
+			p1.z = -d/c;
+			p2.x = 1;
+			p2.y = 0;
+			p2.z = -d/c;
+		}
+		else if (b==0.)
+		{
+			p1.x = 0;
+			p1.y = 0;
+			p1.z = -d/c;
+			p2.x = 0;
+			p2.y = 1;
+			p2.z = -d/c;
+		}
+		else if (c==0.)
+		{
+			p1.x = -d/a;
+			p1.y = 0;
+			p1.z = 0;
+			p2.x = -d/a;
+			p2.y = 0;
+			p2.z = 1;
+		}
+		else
+		{
+			p1.x = 0;
+			p1.y = 0;
+			p1.z = -d/c;
+			p2.x = 1;
+			p2.y = 0;
+			p2.z = (-d-a)/c;
+		}
+		// compute two normalized directions
+		cv::Point3d dirS, dirT, normal(a,b,c);
+		double lengthNormal = cv::norm(normal);
+		normal.x /= lengthNormal;
+		normal.y /= lengthNormal;
+		normal.z /= lengthNormal;
+		dirS = p2-p1;
+		double lengthS = cv::norm(dirS);
+		dirS.x /= lengthS;
+		dirS.y /= lengthS;
+		dirS.z /= lengthS;
+		dirT.x = normal.y*dirS.z - normal.z*dirS.y;
+		dirT.y = normal.z*dirS.x - normal.x*dirS.z;
+		dirT.z = normal.x*dirS.y - normal.y*dirS.x;
+		double lengthT = cv::norm(dirT);
+		dirT.x /= lengthT;
+		dirT.y /= lengthT;
+		dirT.z /= lengthT;
+
+		// b) construct plane coordinate system
+		// plane coordinate frame has center p1 and x-axis=dirS, y-axis=dirT, z-axis=normal
+
+		// c) compute transformation from camera frame (x,y,z) to plane frame (x,y,z)
+		cv::Mat t = (cv::Mat_<double>(3,1) << p1.x, p1.y, p1.z);
+		cv::Mat R = (cv::Mat_<double>(3,3) << dirS.x, dirT.x, normal.x, dirS.y, dirT.y, normal.y, dirS.z, dirT.z, normal.z);
+
+//		std::cout << "t: " << p1.x << ", " << p1.y << ", " << p1.z << std::endl;
+//		std::cout << "dirS: " << dirS.x << ", " << dirS.y << ", " << dirS.z << std::endl;
+//		std::cout << "dirT: " << dirT.x << ", " << dirT.y << ", " << dirT.z << std::endl;
+//		std::cout << "normal: " << normal.x << ", " << normal.y << ", " << normal.z << std::endl;
+
+		// 2. select data segment and compute final transformation of camera coordinates to scaled and centered plane coordinates
+		std::vector<cv::Point2f> pointsCamera, pointsPlane;
+		const double max_distance_to_camera = 3.00;	// max distance of plane points to the camera in [m]
+		cv::Point2f minPlane(1e20,1e20);//, maxPlane(-1e20,-1e20);
+		cv::Mat RTt = R.t()*t;
+		for (int v=0; v<plane_color_image.rows; v++)
+		{
+			for (int u=0; u<plane_color_image.cols; u++)
+			{
+				// black pixels are not part of the plane
+				bgr color = plane_color_image.at<bgr>(v,u);
+				if (color.r==0 && color.g==0 && color.b==0)
+					continue;
+
+				// distance to camera has to be below a maximum distance
+				pcl::PointXYZRGB point = (*input_cloud)[v*plane_color_image.cols+u];
+				if (point.x*point.x + point.y*point.y + point.z*point.z > max_distance_to_camera*max_distance_to_camera)
+					continue;
+
+				// determine max and min x and y coordinates of the plane
+				cv::Mat pointCamera = (cv::Mat_<double>(3,1) << point.x, point.y, point.z);
+				pointsCamera.push_back(cv::Point2f(u,v));
+				cv::Mat pointPlane = R.t()*pointCamera - RTt;
+				pointsPlane.push_back(cv::Point2f(pointPlane.at<double>(0),pointPlane.at<double>(1)));
+
+				if (minPlane.x>pointPlane.at<double>(0))
+					minPlane.x=pointPlane.at<double>(0);
+				if (minPlane.y>pointPlane.at<double>(1))
+					minPlane.y=pointPlane.at<double>(1);
+			}
+		}
+
+		// 3. find homography between image plane and plane coordinates
+		// a) collect point correspondences
+		double step = std::max(1.0, (double)pointsCamera.size()/100.0);
+		std::vector<cv::Point2f> correspondencePointsCamera, correspondencePointsPlane;
+		double s = 300;		// scale factor in [pixel/m]
+		for (double i=0; i<(double)pointsCamera.size(); i+=step)
+		{
+			correspondencePointsCamera.push_back(pointsCamera[(int)i]);
+			correspondencePointsPlane.push_back(s*(pointsPlane[(int)i]-minPlane));
+		}
+		// b) compute homography
+		cv::Mat H = cv::findHomography(correspondencePointsCamera, correspondencePointsPlane);
+		correspondencePointsCamera.push_back(cv::Point2f(160,400));
+		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+		correspondencePointsCamera.push_back(cv::Point2f(320,400));
+		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+		correspondencePointsCamera.push_back(cv::Point2f(480,400));
+		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+		correspondencePointsCamera.push_back(cv::Point2f(160,200));
+		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+		correspondencePointsCamera.push_back(cv::Point2f(320,200));
+		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+		correspondencePointsCamera.push_back(cv::Point2f(480,200));
+		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+		for (int i=0; i<(int)correspondencePointsCamera.size(); i++)
+		{
+			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)correspondencePointsCamera[i].x, (double)correspondencePointsCamera[i].y, 1.0);
+			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)correspondencePointsPlane[i].x, (double)correspondencePointsPlane[i].y, 1.0);
+
+			cv::Mat Hp = H*pc;
+			Hp.at<double>(0) /= Hp.at<double>(2);
+			Hp.at<double>(1) /= Hp.at<double>(2);
+			Hp.at<double>(2) = 1.0;
+			cv::Mat r = pp - Hp;
+
+			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
+		}
+
+		// 4. warp perspective
+		cv::Mat plane_color_image_warped;
+		cv::warpPerspective(plane_color_image, plane_color_image_warped, H, plane_color_image.size());
+		cv::Mat plane_mask_warped;
+		cv::warpPerspective(plane_mask, plane_mask_warped, H, plane_mask.size());
+
+		cv::imshow("original color image", plane_color_image);
+
+//		// this example is correct, H transforms world points into the image coordinate system
+//		std::vector<cv::Point2f> c1, c2;
+//		c1.push_back(cv::Point2f(885,1362));
+//		c2.push_back(cv::Point2f(0,0));
+//		c1.push_back(cv::Point2f(880,1080));
+//		c2.push_back(cv::Point2f(0, 142.7));
+//		c1.push_back(cv::Point2f(945,1089));
+//		c2.push_back(cv::Point2f(83.7,142.7));
+//		c1.push_back(cv::Point2f(948,1350));
+//		c2.push_back(cv::Point2f(83.7,0));
+//		cv::Mat Hcc = cv::findHomography(c2, c1);
+//		std::cout << "H: " << std::endl;
+//		for (int v=0;v<3; v++)
+//		{
+//			for (int u=0; u<3; u++)
+//				std::cout << Hcc.at<double>(v,u) << "\t";
+//			std::cout << std::endl;
+//		}
+//		// add test points
+//		c1.push_back(cv::Point2f(1010, 1338));
+//		c2.push_back(cv::Point2f(167.4,0));
+//		c1.push_back(cv::Point2f(1010, 1098));
+//		c2.push_back(cv::Point2f(167.4,142.7));
+//		for (int i=0; i<(int)c1.size(); i++)
+//		{
+//			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)c1[i].x, (double)c1[i].y, 1.0);
+//			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)c2[i].x, (double)c2[i].y, 1.0);
+//			cv::Mat Hccpp = Hcc*pp;
+//			Hccpp.at<double>(0) /= Hccpp.at<double>(2);
+//			Hccpp.at<double>(1) /= Hccpp.at<double>(2);
+//			Hccpp.at<double>(2) = 1.0;
+//			cv::Mat r = pc - Hccpp;
+//			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
+//		}
+
+
 		// detect dirt on the floor
 		cv::Mat C1_saliency_image;
-		SaliencyDetection_C3(plane_color_image, C1_saliency_image, &plane_mask, spectralResidualGaussianBlurIterations_);
+		SaliencyDetection_C3(plane_color_image_warped, C1_saliency_image, &plane_mask_warped, spectralResidualGaussianBlurIterations_);
 
 		// post processing, dirt/stain selection
 		cv::Mat C1_BlackWhite_image;
-		cv::Mat new_plane_color_image = plane_color_image.clone();
-		Image_Postprocessing_C1_rmb(C1_saliency_image, C1_BlackWhite_image, new_plane_color_image, plane_mask);
+		cv::Mat new_plane_color_image = plane_color_image_warped.clone();
+		Image_Postprocessing_C1_rmb(C1_saliency_image, C1_BlackWhite_image, new_plane_color_image, plane_mask_warped);
 
 		cv::imshow("image postprocessing", new_plane_color_image);
 		cvMoveWindow("image postprocessing", 0, 520);
@@ -288,42 +511,44 @@ unsigned long DirtDetection::convertColorImageMessageToMat(const sensor_msgs::Im
 }
 
 
-bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask)
+bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model)
 {
 
 	//recreate original color image from point cloud
-	cv::Mat color_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
-	int index = 0;
-	for (int v=0; v<(int)input_cloud->height; v++)
+	if (debug_["showOriginalImage"] == true)
 	{
-		for (int u=0; u<(int)input_cloud->width; u++, index++)
+		cv::Mat color_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
+		int index = 0;
+		for (int v=0; v<(int)input_cloud->height; v++)
 		{
-			pcl::PointXYZRGB point = (*input_cloud)[index];
-			bgr bgr_ = {point.b, point.g, point.r};
-			color_image.at<bgr>(v, u) = bgr_;
+			for (int u=0; u<(int)input_cloud->width; u++, index++)
+			{
+				pcl::PointXYZRGB point = (*input_cloud)[index];
+				bgr bgr_ = {point.b, point.g, point.r};
+				color_image.at<bgr>(v, u) = bgr_;
+			}
 		}
+		//display original image
+		cv::imshow("color image", color_image);
+		cvMoveWindow("color image", 0, 0);
+		//cvMoveWindow("color image", 0, 520);
 	}
 
-	//display original image
-	cv::imshow("color image", color_image);
-	cvMoveWindow("color image", 0, 0);
-	//cvMoveWindow("color image", 0, 520);
 
 
 	// Create the segmentation object for the planar model and set all the parameters
 	pcl::SACSegmentation<pcl::PointXYZRGB> seg;
 	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
 
 	pcl::PCDWriter writer;
 	seg.setOptimizeCoefficients (true);
 	seg.setModelType (pcl::SACMODEL_PLANE);
 	seg.setMethodType (pcl::SAC_RANSAC);
 	seg.setMaxIterations (100);
-	seg.setDistanceThreshold (0.02);
+	seg.setDistanceThreshold (0.03);
 
 	seg.setInputCloud(input_cloud);
-	seg.segment (*inliers, *coefficients);
+	seg.segment (*inliers, plane_model);
 
 	bool found_plane = false;
 	if (inliers->indices.size () != 0) //check if ground/floor detected
@@ -499,7 +724,7 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat&
 		// maske erodiere
 		cv::Mat mask_eroded = mask->clone();
 		cv::dilate(*mask, mask_eroded, cv::Mat(), cv::Point(-1, -1), 2);
-		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25);
+		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25.0/640.0*C3_color_image.cols);
 		cv::Mat temp;
 		C1_saliency_image.copyTo(temp, mask_eroded);
 		C1_saliency_image = temp;
@@ -782,15 +1007,19 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::Mat color_image_with_artifical_dirt = C3_color_image.clone();
 	cv::Mat mask_with_artificial_dirt = mask.clone();
 	// add dirt
-	int dirtSize = 3;
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(280,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(280,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(360,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(360,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(280,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
-	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(280,280), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(cv::Point2f(360,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
-	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(cv::Point2f(360,200), cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	int dirtSize = cvRound(3.0/640.0 * C3_color_image.cols);
+	cv::Point2f ul(0.4375*C3_color_image.cols, 0.416666667*C3_color_image.rows);
+	cv::Point2f ur(0.5625*C3_color_image.cols, 0.416666667*C3_color_image.rows);
+	cv::Point2f ll(0.4375*C3_color_image.cols, 0.583333333*C3_color_image.rows);
+	cv::Point2f lr(0.5625*C3_color_image.cols, 0.583333333*C3_color_image.rows);
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(ul, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(ul, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(lr, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(lr, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(ll, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(ll, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(ur, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
+	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(ur, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
 	cv::Mat C1_saliency_image_with_artifical_dirt;
 	SaliencyDetection_C3(color_image_with_artifical_dirt, C1_saliency_image_with_artifical_dirt, &mask_with_artificial_dirt, spectralResidualGaussianBlurIterations_);
 	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
