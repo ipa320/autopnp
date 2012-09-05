@@ -24,8 +24,8 @@ rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
-rosbuild_add_executable(dirt_detection ros/src/dirt_detection.cpp)
-					#common/src/file.cpp)
+rosbuild_add_executable(dirt_detection  ros/src/dirt_detection.cpp
+					ros/src/label_box.cpp)
 
 #rosbuild_add_compile_flags(dirt_detection -D__LINUX__)
 

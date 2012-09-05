@@ -26,6 +26,8 @@
 // ROS message includes
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <geometry_msgs/PointStamped.h>
+#include <tf/transform_listener.h>
 
 // topics
 #include <image_transport/image_transport.h>
@@ -54,6 +56,10 @@
 #include <cv_bridge/cv_bridge.h>
 //#include <cv_bridge/CvBridge.h>
 
+#include <time.h>
+#include "autopnp_dirt_detection/label_box.h"
+
+
 namespace ipa_DirtDetection {
 
 using namespace std;
@@ -68,9 +74,16 @@ class DirtDetection
 protected:
 
 	/**
+	 * ROS node handle.
+	 */
+	ros::NodeHandle node_handle_;
+
+	/**
 	 * Used to subscribe and publish images.
 	 */
 	image_transport::ImageTransport* it_;
+
+	tf::TransformListener transform_listener_;
 
 	/**
 	 * Used to receive color image topic from camera.
@@ -81,10 +94,9 @@ protected:
 	 */
 	ros::Subscriber camera_depth_points_sub_;
 
-	/**
-	 * ROS node handle.
-	 */
-	ros::NodeHandle node_handle_;
+	// labeling
+	bool labelingStarted_;
+	std::vector<labelImage> labeledImages_;
 
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
@@ -92,8 +104,14 @@ protected:
 	double spectralResidualNormalizationHighestMaxValue_;
 	double spectralResidualImageSizeRatio_;
 	double dirtCheckStdDevFactor_;
+	int modeOfOperation_;
+
+	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
 
 	std::map<std::string, bool> debug_;
+
+	// further
+	ros::Time lastIncomingMessage_;
 
 
 public:
@@ -199,8 +217,16 @@ public:
 	 */
 	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model);
 
+	void planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
-	void computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped);
+	/// remove perspective from image
+	/// @param H Homography that maps points from the camera plane to the floor plane, i.e. pp = H*pc
+	/// @param R Rotation matrix for transformation between floor plane and world coordinates, i.e. [xw,yw,zw] = R*[xp,yp,0]+t and [xp,yp,0] = R^T*[xw,yw,zw] - R^T*t
+	/// @param t Translation vector. See Rotation matrix.
+	/// @param cameraImagePlaneOffset Offset in the camera image plane. Conversion from floor plane to  [xc, yc]
+	void computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& R, cv::Mat& t, cv::Point2f& cameraImagePlaneOffset, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped);
+
+	void transformPointFromCameraToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
 
 	/**
 	 * This function performs the saliency detection to spot dirt stains.

@@ -12,3 +12,11 @@ dirtThreshold: 0.3 #0.2  #0.35 #0.5
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
 dirtCheckStdDevFactor: 3.0   #3.6
+
+# chooses a mode of operation: 0=detection, 1=labeling
+# int
+modeOfOperation: 1
+
+# resolution for bird eye's perspective [pixel/m]
+# double
+birdEyeResolution: 300.0
