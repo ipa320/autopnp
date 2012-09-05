@@ -254,224 +254,10 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 //		cv::resize(temp, plane_mask, cv::Size(), 0.5, 0.5);
 
 		// remove perspective from image
-		// 1. compute parameter representation of plane, construct plane coordinate system and compute transformation from camera frame (x,y,z) to plane frame (x,y,z)
-		// a) parameter form of plane equation
-		// choose two arbitrary points on the plane
-		cv::Point3d p1, p2;
-		double a=plane_model.values[0], b=plane_model.values[1], c=plane_model.values[2], d=plane_model.values[3];
-		if (a==0. && b==0.)
-		{
-			p1.x = 0;
-			p1.y = 0;
-			p1.z = -d/c;
-			p2.x = 1;
-			p2.y = 0;
-			p2.z = -d/c;
-		}
-		else if (a==0. && c==0.)
-		{
-			p1.x = 0;
-			p1.y = -d/b;
-			p1.z = 0;
-			p2.x = 1;
-			p2.y = -d/b;
-			p2.z = 0;
-		}
-		else if (b==0. && c==0.)
-		{
-			p1.x = -d/a;
-			p1.y = 0;
-			p1.z = 0;
-			p2.x = -d/a;
-			p2.y = 1;
-			p2.z = 0;
-		}
-		else if (a==0.)
-		{
-			p1.x = 0;
-			p1.y = 0;
-			p1.z = -d/c;
-			p2.x = 1;
-			p2.y = 0;
-			p2.z = -d/c;
-		}
-		else if (b==0.)
-		{
-			p1.x = 0;
-			p1.y = 0;
-			p1.z = -d/c;
-			p2.x = 0;
-			p2.y = 1;
-			p2.z = -d/c;
-		}
-		else if (c==0.)
-		{
-			p1.x = -d/a;
-			p1.y = 0;
-			p1.z = 0;
-			p2.x = -d/a;
-			p2.y = 0;
-			p2.z = 1;
-		}
-		else
-		{
-			p1.x = 0;
-			p1.y = 0;
-			p1.z = -d/c;
-			p2.x = 1;
-			p2.y = 0;
-			p2.z = (-d-a)/c;
-		}
-		// compute two normalized directions
-		cv::Point3d dirS, dirT, normal(a,b,c);
-		double lengthNormal = cv::norm(normal);
-		if (c<0.)
-			lengthNormal *= -1;
-		normal.x /= lengthNormal;
-		normal.y /= lengthNormal;
-		normal.z /= lengthNormal;
-		dirS = p2-p1;
-		double lengthS = cv::norm(dirS);
-		dirS.x /= lengthS;
-		dirS.y /= lengthS;
-		dirS.z /= lengthS;
-		dirT.x = normal.y*dirS.z - normal.z*dirS.y;
-		dirT.y = normal.z*dirS.x - normal.x*dirS.z;
-		dirT.z = normal.x*dirS.y - normal.y*dirS.x;
-		double lengthT = cv::norm(dirT);
-		dirT.x /= lengthT;
-		dirT.y /= lengthT;
-		dirT.z /= lengthT;
-
-		// b) construct plane coordinate system
-		// plane coordinate frame has center p1 and x-axis=dirS, y-axis=dirT, z-axis=normal
-
-		// c) compute transformation from camera frame (x,y,z) to plane frame (x,y,z)
-		cv::Mat t = (cv::Mat_<double>(3,1) << p1.x, p1.y, p1.z);
-		cv::Mat R = (cv::Mat_<double>(3,3) << dirS.x, dirT.x, normal.x, dirS.y, dirT.y, normal.y, dirS.z, dirT.z, normal.z);
-
-//		std::cout << "t: " << p1.x << ", " << p1.y << ", " << p1.z << std::endl;
-//		std::cout << "dirS: " << dirS.x << ", " << dirS.y << ", " << dirS.z << std::endl;
-//		std::cout << "dirT: " << dirT.x << ", " << dirT.y << ", " << dirT.z << std::endl;
-//		std::cout << "normal: " << normal.x << ", " << normal.y << ", " << normal.z << std::endl;
-
-		// 2. select data segment and compute final transformation of camera coordinates to scaled and centered plane coordinates
-		std::vector<cv::Point2f> pointsCamera, pointsPlane;
-		const double max_distance_to_camera = 3.00;	// max distance of plane points to the camera in [m]
-		cv::Point2f minPlane(1e20,1e20), maxPlane(-1e20,-1e20);
-		cv::Mat RTt = R.t()*t;
-		for (int v=0; v<plane_color_image.rows; v++)
-		{
-			for (int u=0; u<plane_color_image.cols; u++)
-			{
-				// black pixels are not part of the plane
-				bgr color = plane_color_image.at<bgr>(v,u);
-				if (color.r==0 && color.g==0 && color.b==0)
-					continue;
-
-				// distance to camera has to be below a maximum distance
-				pcl::PointXYZRGB point = (*input_cloud)[v*plane_color_image.cols+u];
-				if (point.x*point.x + point.y*point.y + point.z*point.z > max_distance_to_camera*max_distance_to_camera)
-					continue;
-
-				// determine max and min x and y coordinates of the plane
-				cv::Mat pointCamera = (cv::Mat_<double>(3,1) << point.x, point.y, point.z);
-				pointsCamera.push_back(cv::Point2f(u,v));
-				cv::Mat pointPlane = R.t()*pointCamera - RTt;
-				pointsPlane.push_back(cv::Point2f(pointPlane.at<double>(0),pointPlane.at<double>(1)));
-
-				if (minPlane.x>pointPlane.at<double>(0))
-					minPlane.x=pointPlane.at<double>(0);
-				if (maxPlane.x<pointPlane.at<double>(0))
-					maxPlane.x=pointPlane.at<double>(0);
-				if (minPlane.y>pointPlane.at<double>(1))
-					minPlane.y=pointPlane.at<double>(1);
-				if (maxPlane.y<pointPlane.at<double>(1))
-					maxPlane.y=pointPlane.at<double>(1);
-			}
-		}
-
-		// 3. find homography between image plane and plane coordinates
-		// a) collect point correspondences
-		double step = std::max(1.0, (double)pointsCamera.size()/100.0);
-		std::vector<cv::Point2f> correspondencePointsCamera, correspondencePointsPlane;
-		double s = 300;	//300	// scale factor in [pixel/m]
-		cv::Point2f centerPoint((maxPlane.x+minPlane.x)/2 - (double)plane_color_image.cols/(2*s), (maxPlane.y+minPlane.y)/2 - (double)plane_color_image.rows/(2*s));
-		for (double i=0; i<(double)pointsCamera.size(); i+=step)
-		{
-			correspondencePointsCamera.push_back(pointsCamera[(int)i]);
-			correspondencePointsPlane.push_back(s*(pointsPlane[(int)i]-centerPoint));
-		}
-		// b) compute homography
-		cv::Mat H = cv::findHomography(correspondencePointsCamera, correspondencePointsPlane);
-//		correspondencePointsCamera.push_back(cv::Point2f(160,400));
-//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-//		correspondencePointsCamera.push_back(cv::Point2f(320,400));
-//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-//		correspondencePointsCamera.push_back(cv::Point2f(480,400));
-//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-//		correspondencePointsCamera.push_back(cv::Point2f(160,200));
-//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-//		correspondencePointsCamera.push_back(cv::Point2f(320,200));
-//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-//		correspondencePointsCamera.push_back(cv::Point2f(480,200));
-//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
-//		for (int i=0; i<(int)correspondencePointsCamera.size(); i++)
-//		{
-//			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)correspondencePointsCamera[i].x, (double)correspondencePointsCamera[i].y, 1.0);
-//			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)correspondencePointsPlane[i].x, (double)correspondencePointsPlane[i].y, 1.0);
-//
-//			cv::Mat Hp = H*pc;
-//			Hp.at<double>(0) /= Hp.at<double>(2);
-//			Hp.at<double>(1) /= Hp.at<double>(2);
-//			Hp.at<double>(2) = 1.0;
-//			cv::Mat r = pp - Hp;
-//
-//			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
-//		}
-
-		// 4. warp perspective
+		cv::Mat H;			// homography between floor plane in image and bird's eye perspective
 		cv::Mat plane_color_image_warped;
-		cv::warpPerspective(plane_color_image, plane_color_image_warped, H, plane_color_image.size());
 		cv::Mat plane_mask_warped;
-		cv::warpPerspective(plane_mask, plane_mask_warped, H, plane_mask.size());
-
-		cv::imshow("original color image", plane_color_image);
-
-//		// this example is correct, H transforms world points into the image coordinate system
-//		std::vector<cv::Point2f> c1, c2;
-//		c1.push_back(cv::Point2f(885,1362));
-//		c2.push_back(cv::Point2f(0,0));
-//		c1.push_back(cv::Point2f(880,1080));
-//		c2.push_back(cv::Point2f(0, 142.7));
-//		c1.push_back(cv::Point2f(945,1089));
-//		c2.push_back(cv::Point2f(83.7,142.7));
-//		c1.push_back(cv::Point2f(948,1350));
-//		c2.push_back(cv::Point2f(83.7,0));
-//		cv::Mat Hcc = cv::findHomography(c2, c1);
-//		std::cout << "H: " << std::endl;
-//		for (int v=0;v<3; v++)
-//		{
-//			for (int u=0; u<3; u++)
-//				std::cout << Hcc.at<double>(v,u) << "\t";
-//			std::cout << std::endl;
-//		}
-//		// add test points
-//		c1.push_back(cv::Point2f(1010, 1338));
-//		c2.push_back(cv::Point2f(167.4,0));
-//		c1.push_back(cv::Point2f(1010, 1098));
-//		c2.push_back(cv::Point2f(167.4,142.7));
-//		for (int i=0; i<(int)c1.size(); i++)
-//		{
-//			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)c1[i].x, (double)c1[i].y, 1.0);
-//			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)c2[i].x, (double)c2[i].y, 1.0);
-//			cv::Mat Hccpp = Hcc*pp;
-//			Hccpp.at<double>(0) /= Hccpp.at<double>(2);
-//			Hccpp.at<double>(1) /= Hccpp.at<double>(2);
-//			Hccpp.at<double>(2) = 1.0;
-//			cv::Mat r = pc - Hccpp;
-//			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
-//		}
+		computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, plane_color_image_warped, plane_mask_warped);
 
 
 		// detect dirt on the floor
@@ -581,6 +367,227 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 	}
 
 	return found_plane;
+}
+
+
+void DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped)
+{
+	// 1. compute parameter representation of plane, construct plane coordinate system and compute transformation from camera frame (x,y,z) to plane frame (x,y,z)
+	// a) parameter form of plane equation
+	// choose two arbitrary points on the plane
+	cv::Point3d p1, p2;
+	double a=plane_model.values[0], b=plane_model.values[1], c=plane_model.values[2], d=plane_model.values[3];
+	if (a==0. && b==0.)
+	{
+		p1.x = 0;
+		p1.y = 0;
+		p1.z = -d/c;
+		p2.x = 1;
+		p2.y = 0;
+		p2.z = -d/c;
+	}
+	else if (a==0. && c==0.)
+	{
+		p1.x = 0;
+		p1.y = -d/b;
+		p1.z = 0;
+		p2.x = 1;
+		p2.y = -d/b;
+		p2.z = 0;
+	}
+	else if (b==0. && c==0.)
+	{
+		p1.x = -d/a;
+		p1.y = 0;
+		p1.z = 0;
+		p2.x = -d/a;
+		p2.y = 1;
+		p2.z = 0;
+	}
+	else if (a==0.)
+	{
+		p1.x = 0;
+		p1.y = 0;
+		p1.z = -d/c;
+		p2.x = 1;
+		p2.y = 0;
+		p2.z = -d/c;
+	}
+	else if (b==0.)
+	{
+		p1.x = 0;
+		p1.y = 0;
+		p1.z = -d/c;
+		p2.x = 0;
+		p2.y = 1;
+		p2.z = -d/c;
+	}
+	else if (c==0.)
+	{
+		p1.x = -d/a;
+		p1.y = 0;
+		p1.z = 0;
+		p2.x = -d/a;
+		p2.y = 0;
+		p2.z = 1;
+	}
+	else
+	{
+		p1.x = 0;
+		p1.y = 0;
+		p1.z = -d/c;
+		p2.x = 1;
+		p2.y = 0;
+		p2.z = (-d-a)/c;
+	}
+	// compute two normalized directions
+	cv::Point3d dirS, dirT, normal(a,b,c);
+	double lengthNormal = cv::norm(normal);
+	if (c<0.)
+		lengthNormal *= -1;
+	normal.x /= lengthNormal;
+	normal.y /= lengthNormal;
+	normal.z /= lengthNormal;
+	dirS = p2-p1;
+	double lengthS = cv::norm(dirS);
+	dirS.x /= lengthS;
+	dirS.y /= lengthS;
+	dirS.z /= lengthS;
+	dirT.x = normal.y*dirS.z - normal.z*dirS.y;
+	dirT.y = normal.z*dirS.x - normal.x*dirS.z;
+	dirT.z = normal.x*dirS.y - normal.y*dirS.x;
+	double lengthT = cv::norm(dirT);
+	dirT.x /= lengthT;
+	dirT.y /= lengthT;
+	dirT.z /= lengthT;
+
+	// b) construct plane coordinate system
+	// plane coordinate frame has center p1 and x-axis=dirS, y-axis=dirT, z-axis=normal
+
+	// c) compute transformation from camera frame (x,y,z) to plane frame (x,y,z)
+	cv::Mat t = (cv::Mat_<double>(3,1) << p1.x, p1.y, p1.z);
+	cv::Mat R = (cv::Mat_<double>(3,3) << dirS.x, dirT.x, normal.x, dirS.y, dirT.y, normal.y, dirS.z, dirT.z, normal.z);
+
+//		std::cout << "t: " << p1.x << ", " << p1.y << ", " << p1.z << std::endl;
+//		std::cout << "dirS: " << dirS.x << ", " << dirS.y << ", " << dirS.z << std::endl;
+//		std::cout << "dirT: " << dirT.x << ", " << dirT.y << ", " << dirT.z << std::endl;
+//		std::cout << "normal: " << normal.x << ", " << normal.y << ", " << normal.z << std::endl;
+
+	// 2. select data segment and compute final transformation of camera coordinates to scaled and centered plane coordinates
+	std::vector<cv::Point2f> pointsCamera, pointsPlane;
+	const double max_distance_to_camera = 3.00;	// max distance of plane points to the camera in [m]  todo: param
+	cv::Point2f minPlane(1e20,1e20), maxPlane(-1e20,-1e20);
+	cv::Mat RTt = R.t()*t;
+	for (int v=0; v<plane_color_image.rows; v++)
+	{
+		for (int u=0; u<plane_color_image.cols; u++)
+		{
+			// black pixels are not part of the plane
+			bgr color = plane_color_image.at<bgr>(v,u);
+			if (color.r==0 && color.g==0 && color.b==0)
+				continue;
+
+			// distance to camera has to be below a maximum distance
+			pcl::PointXYZRGB point = (*input_cloud)[v*plane_color_image.cols+u];
+			if (point.x*point.x + point.y*point.y + point.z*point.z > max_distance_to_camera*max_distance_to_camera)
+				continue;
+
+			// determine max and min x and y coordinates of the plane
+			cv::Mat pointCamera = (cv::Mat_<double>(3,1) << point.x, point.y, point.z);
+			pointsCamera.push_back(cv::Point2f(u,v));
+			cv::Mat pointPlane = R.t()*pointCamera - RTt;
+			pointsPlane.push_back(cv::Point2f(pointPlane.at<double>(0),pointPlane.at<double>(1)));
+
+			if (minPlane.x>pointPlane.at<double>(0))
+				minPlane.x=pointPlane.at<double>(0);
+			if (maxPlane.x<pointPlane.at<double>(0))
+				maxPlane.x=pointPlane.at<double>(0);
+			if (minPlane.y>pointPlane.at<double>(1))
+				minPlane.y=pointPlane.at<double>(1);
+			if (maxPlane.y<pointPlane.at<double>(1))
+				maxPlane.y=pointPlane.at<double>(1);
+		}
+	}
+
+	// 3. find homography between image plane and plane coordinates
+	// a) collect point correspondences
+	double step = std::max(1.0, (double)pointsCamera.size()/100.0);
+	std::vector<cv::Point2f> correspondencePointsCamera, correspondencePointsPlane;
+	double s = 300;	//300	// scale factor in [pixel/m]
+	cv::Point2f centerPoint((maxPlane.x+minPlane.x)/2 - (double)plane_color_image.cols/(2*s), (maxPlane.y+minPlane.y)/2 - (double)plane_color_image.rows/(2*s));
+	for (double i=0; i<(double)pointsCamera.size(); i+=step)
+	{
+		correspondencePointsCamera.push_back(pointsCamera[(int)i]);
+		correspondencePointsPlane.push_back(s*(pointsPlane[(int)i]-centerPoint));
+	}
+	// b) compute homography
+	H = cv::findHomography(correspondencePointsCamera, correspondencePointsPlane);
+//		correspondencePointsCamera.push_back(cv::Point2f(160,400));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(320,400));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(480,400));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(160,200));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(320,200));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		correspondencePointsCamera.push_back(cv::Point2f(480,200));
+//		correspondencePointsPlane.push_back(cv::Point2f(0,0));
+//		for (int i=0; i<(int)correspondencePointsCamera.size(); i++)
+//		{
+//			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)correspondencePointsCamera[i].x, (double)correspondencePointsCamera[i].y, 1.0);
+//			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)correspondencePointsPlane[i].x, (double)correspondencePointsPlane[i].y, 1.0);
+//
+//			cv::Mat Hp = H*pc;
+//			Hp.at<double>(0) /= Hp.at<double>(2);
+//			Hp.at<double>(1) /= Hp.at<double>(2);
+//			Hp.at<double>(2) = 1.0;
+//			cv::Mat r = pp - Hp;
+//
+//			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
+//		}
+
+	// 4. warp perspective
+	cv::warpPerspective(plane_color_image, plane_color_image_warped, H, plane_color_image.size());
+	cv::warpPerspective(plane_mask, plane_mask_warped, H, plane_mask.size());
+
+	cv::imshow("original color image", plane_color_image);
+
+//		// this example is correct, H transforms world points into the image coordinate system
+//		std::vector<cv::Point2f> c1, c2;
+//		c1.push_back(cv::Point2f(885,1362));
+//		c2.push_back(cv::Point2f(0,0));
+//		c1.push_back(cv::Point2f(880,1080));
+//		c2.push_back(cv::Point2f(0, 142.7));
+//		c1.push_back(cv::Point2f(945,1089));
+//		c2.push_back(cv::Point2f(83.7,142.7));
+//		c1.push_back(cv::Point2f(948,1350));
+//		c2.push_back(cv::Point2f(83.7,0));
+//		cv::Mat Hcc = cv::findHomography(c2, c1);
+//		std::cout << "H: " << std::endl;
+//		for (int v=0;v<3; v++)
+//		{
+//			for (int u=0; u<3; u++)
+//				std::cout << Hcc.at<double>(v,u) << "\t";
+//			std::cout << std::endl;
+//		}
+//		// add test points
+//		c1.push_back(cv::Point2f(1010, 1338));
+//		c2.push_back(cv::Point2f(167.4,0));
+//		c1.push_back(cv::Point2f(1010, 1098));
+//		c2.push_back(cv::Point2f(167.4,142.7));
+//		for (int i=0; i<(int)c1.size(); i++)
+//		{
+//			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)c1[i].x, (double)c1[i].y, 1.0);
+//			cv::Mat pp = (cv::Mat_<double>(3,1) << (double)c2[i].x, (double)c2[i].y, 1.0);
+//			cv::Mat Hccpp = Hcc*pp;
+//			Hccpp.at<double>(0) /= Hccpp.at<double>(2);
+//			Hccpp.at<double>(1) /= Hccpp.at<double>(2);
+//			Hccpp.at<double>(2) = 1.0;
+//			cv::Mat r = pc - Hccpp;
+//			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
+//		}
 }
 
 

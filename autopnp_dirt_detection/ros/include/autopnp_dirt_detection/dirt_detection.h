@@ -200,6 +200,8 @@ public:
 	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model);
 
 
+	void computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped);
+
 	/**
 	 * This function performs the saliency detection to spot dirt stains.
 	 *
