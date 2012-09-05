@@ -290,10 +290,10 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
 {
-	if ((ros::Time::now() - lastIncomingMessage_).toSec() < 1.0)
-		return;
-
-	lastIncomingMessage_ = ros::Time::now();
+//	if ((ros::Time::now() - lastIncomingMessage_).toSec() < 1.0)
+//		return;
+//
+//	lastIncomingMessage_ = ros::Time::now();
 
 	// get tf between camera and map as well
 	tf::StampedTransform transformMapCamera;
@@ -340,7 +340,7 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 		pp.at<double>(2) = 1.;
 		cv::Mat pc = H.inv()*pp;
 		cv::Point po(pc.at<double>(0)/pc.at<double>(2), pc.at<double>(1)/pc.at<double>(2));
-		std::cout << "pp: " << pp.at<double>(0) << " " << pp.at<double>(1) << " " << pp.at<double>(2) << "   po: " << po.x << " " << po.y << std::endl;
+		//std::cout << "pp: " << pp.at<double>(0) << " " << pp.at<double>(1) << " " << pp.at<double>(2) << "   po: " << po.x << " " << po.y << std::endl;
 		cv::circle(plane_color_image_warped, po, 3, CV_RGB(0,255,0), 2);
 
 		cv::imshow("birds eye perspective", plane_color_image_warped);
@@ -387,33 +387,6 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 				pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x-cos((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f,
 											   (double)rectCameraCoordinates.center.y-sin((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f, 1.0);
 				transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
-
-//				// width
-//				pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x+cos(-rectCameraCoordinates.angle*3.14159265359/180.f)*rectCameraCoordinates.size.width/2.f,
-//											   (double)rectCameraCoordinates.center.y-sin(-rectCameraCoordinates.angle*3.14159265359/180.f)*rectCameraCoordinates.size.width/2.f, 1.0);
-//				Hp = H*pc;
-//				cv::Point2f p1(Hp.at<double>(0)/Hp.at<double>(2), Hp.at<double>(1)/Hp.at<double>(2));
-//				pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x-cos(-rectCameraCoordinates.angle*3.14159265359/180.f)*rectCameraCoordinates.size.width/2.f,
-//											   (double)rectCameraCoordinates.center.y+sin(-rectCameraCoordinates.angle*3.14159265359/180.f)*rectCameraCoordinates.size.width/2.f, 1.0);
-//				Hp = H*pc;
-//				cv::Point2f p2(Hp.at<double>(0)/Hp.at<double>(2), Hp.at<double>(1)/Hp.at<double>(2));
-//				cv::Point2f lWidth = p1-p2;
-//				rectPlaneCoordinates.size.width = sqrt(lWidth.x*lWidth.x+lWidth.y*lWidth.y)/2.f;
-//
-//				// alpha
-//				rectPlaneCoordinates.angle = -atan2(lWidth.y, lWidth.x);
-//
-//				// height
-//				pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x+cos((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f,
-//											   (double)rectCameraCoordinates.center.y+sin((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f, 1.0);
-//				Hp = H*pc;
-//				cv::Point2f p3(Hp.at<double>(0)/Hp.at<double>(2), Hp.at<double>(1)/Hp.at<double>(2));
-//				pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x-cos((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f,
-//											   (double)rectCameraCoordinates.center.y-sin((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f, 1.0);
-//				Hp = H*pc;
-//				cv::Point2f p4(Hp.at<double>(0)/Hp.at<double>(2), Hp.at<double>(1)/Hp.at<double>(2));
-//				cv::Point2f lHeight = p4-p3;
-//				rectPlaneCoordinates.size.height = sqrt(lHeight.x*lHeight.x+lHeight.y*lHeight.y)/2.f;
 			}
 		}
 		else if (key == 'f')
