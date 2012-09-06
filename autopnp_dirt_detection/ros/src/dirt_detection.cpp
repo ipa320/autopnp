@@ -1,5 +1,7 @@
 #include <autopnp_dirt_detection/dirt_detection.h>
 
+#include <set>
+
 using namespace ipa_DirtDetection;
 using namespace std;
 using namespace cv;
@@ -51,6 +53,10 @@ void DirtDetection::init()
 
 	// todo: debug parameters
 	debug_["showOriginalImage"] = false;
+	// todo: grid parameters
+	gridResolution_ = 80.;
+	gridOrigin_ = cv::Point2d(0.6,-4.0);
+	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
 
 	it_ = new image_transport::ImageTransport(node_handle_);
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
@@ -235,6 +241,18 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 
 void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
 {
+	// get tf between camera and map
+	tf::StampedTransform transformMapCamera;
+	transformMapCamera.setIdentity();
+	try
+	{
+		transform_listener_.lookupTransform("/map", point_cloud2_rgb_msg->header.frame_id, point_cloud2_rgb_msg->header.stamp, transformMapCamera);
+//		std::cout << "xyz: " << transformMapCamera.getOrigin().getX() << " " << transformMapCamera.getOrigin().getY() << " " << transformMapCamera.getOrigin().getZ() << "\n";
+//		std::cout << "abcw: " << transformMapCamera.getRotation().getX() << " " << transformMapCamera.getRotation().getY() << " " << transformMapCamera.getRotation().getZ() << " " << transformMapCamera.getRotation().getW() << "\n";
+//		std::cout << "frame_id: " << transformMapCamera.frame_id_ << "  child_frame_id: " << transformMapCamera.child_frame_id_ << std::endl;
+	}
+	catch (tf::TransformException ex)
+	{ ROS_WARN("%s Dirt Detection will move on with identity transformation.",ex.what()); return; }
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
@@ -279,7 +297,34 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		// post processing, dirt/stain selection
 		cv::Mat C1_BlackWhite_image;
 		cv::Mat new_plane_color_image = plane_color_image_warped.clone();
-		Image_Postprocessing_C1_rmb(C1_saliency_image, C1_BlackWhite_image, new_plane_color_image, plane_mask_warped);
+		std::vector<cv::RotatedRect> dirtDetections;
+		Image_Postprocessing_C1_rmb(C1_saliency_image, C1_BlackWhite_image, new_plane_color_image, dirtDetections, plane_mask_warped);
+
+		// convert detections to map coordinates and mark dirt regions in map
+		for (int i=0; i<(int)dirtDetections.size(); i++)
+		{
+			labelImage::RegionPointTriple pointsWorldMap;
+
+			// center point
+			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x, (double)dirtDetections[i].center.y, 1.0);
+			transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
+			//std::cout << "---------- world.x=" << pointsWorldMap.center.x << "   world.y=" << pointsWorldMap.center.y << "   world.z=" << pointsWorldMap.center.z << std::endl;
+
+			// point in width direction
+			pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f,
+										   (double)dirtDetections[i].center.y-sin(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f, 1.0);
+			transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p1);
+
+			// point in height direction
+			pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x-cos((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f,
+										   (double)dirtDetections[i].center.y-sin((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f, 1.0);
+			transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
+
+			putDetectionIntoGrid(gridPositiveVotes_, pointsWorldMap);
+		}
+		cv::Mat gridPositiveVotesDisplay;
+		cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
+		cv::imshow("dirt grid", gridPositiveVotesDisplay);
 
 		cv::imshow("image postprocessing", new_plane_color_image);
 		cvMoveWindow("image postprocessing", 0, 520);
@@ -738,6 +783,58 @@ void DirtDetection::transformPointFromCameraToWorld(const cv::Mat& pointCamera, 
 }
 
 
+struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
+{
+	bool operator()(const cv::Point2i& a, const cv::Point2i& b) const
+	{ return (a.x<b.x || a.y<b.y); }
+};
+
+void DirtDetection::putDetectionIntoGrid(cv::Mat& grid, const labelImage::RegionPointTriple& detection)
+{
+	//// convert three map points to RotatedRect, neglect z-coordinates
+	//cv::Point3f lWidth = detection.p1-detection.center;
+	//double width = 2.*sqrt(lWidth.x*lWidth.x + lWidth.y*lWidth.y + lWidth.z*lWidth.z);
+	//cv::Point3f lHeight = detection.p2-detection.center;
+	//double height = 2.*sqrt(lHeight.x*lHeight.x + lHeight.y*lHeight.y + lHeight.z*lHeight.z);
+	//double alpha = -atan2(lWidth.y, lWidth.x);
+	//cv::RotatedRect detectionRect(cv::Point2f(detection.center.x, detection.center.y), cv::Size(width, height), alpha);
+
+	// sample all points along the principal axis and count dirt detection in each grid cell of the map once
+	cv::Point3f lWidth = detection.p1-detection.center;
+	cv::Point3f lHeight = detection.p2-detection.center;
+	std::set<cv::Point2i, lessPoint2i> visitedGridCells;
+	//std::cout << "lW: " << lWidth.x << ", " << lWidth.y << "  lH: " << lHeight.x << ", " << lHeight.y << std::endl;
+	for (double scaleW=-1.; scaleW<=1.; scaleW+=0.2)
+	{
+		for (double scaleH=-1.; scaleH<=1.; scaleH+=0.2)
+		{
+			cv::Point2i offset(gridPositiveVotes_.cols/2, gridPositiveVotes_.rows/2);
+			cv::Point2i coordinates[2];
+			coordinates[0] = cv::Point2i(-(detection.center.x+scaleW*lWidth.x-gridOrigin_.x)*gridResolution_+offset.x, (detection.center.y+scaleW*lWidth.y-gridOrigin_.y)*gridResolution_+offset.y);
+			coordinates[1] = cv::Point2i(-(detection.center.x+scaleH*lHeight.x-gridOrigin_.x)*gridResolution_+offset.x, (detection.center.y+scaleH*lHeight.y-gridOrigin_.y)*gridResolution_+offset.y);
+			for (int i=0; i<2; i++)
+			{
+				for (int v=-4; v<=4; v++)
+				{
+					for (int u=-4; u<=4; u++)
+					{
+						cv::Point2i co(coordinates[i].x+u,coordinates[i].y+v);
+						//cv::Point2i co(coordinates[i].x,coordinates[i].y);
+						if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<gridPositiveVotes_.cols && co.y>=0 && co.y<gridPositiveVotes_.rows)
+						{
+							//std::cout << "sW,sH: " << scaleW << ", " << scaleH << "  co: " << co.x << ", " << co.y << std::endl;
+							// grid cell has not been incremented, yet
+							visitedGridCells.insert(co);
+							gridPositiveVotes_.at<int>(co) = gridPositiveVotes_.at<int>(co) + 1;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
 void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_saliency_image)
 {
 	//given a one channel image
@@ -752,7 +849,7 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 
 	cv::Mat realInput(size_rows,size_cols, CV_32FC1);	//calculate number of test samples
 	int NumTestSamples = 10; //ceil(NumSamples*percentage_testdata);
-	printf("Anzahl zu ziehender test samples: %d \n", NumTestSamples);
+	//printf("Anzahl zu ziehender test samples: %d \n", NumTestSamples);
 	cv::Mat imaginaryInput(size_rows,size_cols, CV_32FC1);
 	cv::Mat complexInput(size_rows,size_cols, CV_32FC2);
 
@@ -909,7 +1006,7 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat&
 //	for (int i=0; i<gaussianBlurCycles; i++)
 //		cv::GaussianBlur(res_sci, res_sci, ksize, 0); //necessary!? --> less noise	//calculate number of test samples
 	int NumTestSamples = 10; //ceil(NumSamples*percentage_testdata);
-	printf("Anzahl zu ziehender test samples: %d \n", NumTestSamples);
+//	printf("Anzahl zu ziehender test samples: %d \n", NumTestSamples);
 //	for (int i=0; i<gaussianBlurCycles; i++)
 //		cv::GaussianBlur(res_tci, res_tci, ksize, 0); //necessary!? --> less noise
 //
@@ -1162,7 +1259,7 @@ void DirtDetection::SplitIntoTrainAndTestSamples(	int NumTestSamples,
 
 }
 
-void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, const cv::Mat& mask)
+void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, std::vector<cv::RotatedRect>& dirtDetections, const cv::Mat& mask)
 {
 	// dirt detection on image with artificial dirt
 	cv::Mat color_image_with_artifical_dirt = C3_color_image.clone();
@@ -1195,16 +1292,16 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::imshow("saliency with artificial dirt", C1_saliency_image_with_artifical_dirt_scaled);
 
 	// scale C1_saliency_image to value obtained from C1_saliency_image with artificially added dirt
-	std::cout << "res_img: " << C1_saliency_image_with_artifical_dirt.at<float>(300,200);
+//	std::cout << "res_img: " << C1_saliency_image_with_artifical_dirt.at<float>(300,200);
 //	C1_saliency_image_with_artifical_dirt = C1_saliency_image_with_artifical_dirt.mul(C1_saliency_image_with_artifical_dirt);	// square C1_saliency_image_with_artifical_dirt to emphasize the dirt and increase the gap to background response
-	std::cout << " -> " << C1_saliency_image_with_artifical_dirt.at<float>(300,200) << std::endl;
+//	std::cout << " -> " << C1_saliency_image_with_artifical_dirt.at<float>(300,200) << std::endl;
 	double minv, maxv;
 	cv::Point2i minl, maxl;
 	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
 	cv::Scalar mean, stdDev;
 	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
 	double newMaxVal = min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
-	std::cout << "dirtThreshold=" << dirtThreshold_ << "\tmin=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal (r)=" << newMaxVal << std::endl;
+//	std::cout << "dirtThreshold=" << dirtThreshold_ << "\tmin=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal (r)=" << newMaxVal << std::endl;
 
 
 	//determine ros package path
@@ -1222,7 +1319,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 
 	double newMean = mean.val[0] * newMaxVal/(maxv-minv) - newMaxVal*(minv)/(maxv-minv);
 	double newStdDev = stdDev.val[0] * newMaxVal/(maxv-minv);
-	std::cout << "newMean=" << newMean << "   newStdDev=" << newStdDev << std::endl;
+//	std::cout << "newMean=" << newMean << "   newStdDev=" << newStdDev << std::endl;
 
 //	// scale C1_saliency_image
 //	cv::Mat scaled_C1_saliency_image;
@@ -1234,7 +1331,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::Point2i badminl, badmaxl;
 	cv::minMaxLoc(C1_saliency_image,&badminv,&badmaxv,&badminl,&badmaxl, mask);
 	C1_saliency_image.convertTo(badscale, -1, 1.0/(badmaxv-badminv), -1.0*(badminv)/(badmaxv-badminv));
-	std::cout << "bad scale:   " << "\tmin=" << badminv << "\tmax=" << badmaxv << std::endl;
+//	std::cout << "bad scale:   " << "\tmin=" << badminv << "\tmax=" << badmaxv << std::endl;
 	cv::imshow("bad scale", badscale);
 	cvMoveWindow("bad scale", 650, 0);
 	//cvMoveWindow("bad scale", 650, 520);
@@ -1270,26 +1367,19 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 
     cv::Scalar green(0, 255, 0);
     cv::Scalar red(0, 0, 255);
-    cv::RotatedRect rec;
-
     for (int i = 0; i < (int)contours.size(); i++)
     {
+    	cv::RotatedRect rec = minAreaRect(contours[i]);
     	double meanIntensity = 0;
     	for (int t=0; t<(int)contours[i].size(); t++)
     		meanIntensity += scaled_C1_saliency_image.at<float>(contours[i][t].y, contours[i][t].x);
     	meanIntensity /= (double)contours[i].size();
     	if (meanIntensity > newMean + dirtCheckStdDevFactor_ * newStdDev)
-    	{
-			rec = minAreaRect(contours[i]);
 			cv::ellipse(C3_color_image, rec, green, 2);
-    	}
     	else
-    	{
-    		rec = minAreaRect(contours[i]);
     		cv::ellipse(C3_color_image, rec, red, 2);
-    	}
-    }
-
+    	dirtDetections.push_back(rec);
+	}
 }
 
 

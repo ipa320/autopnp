@@ -28,6 +28,7 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/PointStamped.h>
 #include <tf/transform_listener.h>
+#include <nav_msgs/OccupancyGrid.h>
 
 // topics
 #include <image_transport/image_transport.h>
@@ -97,6 +98,11 @@ protected:
 	// labeling
 	bool labelingStarted_;
 	std::vector<labelImage> labeledImages_;
+
+	// grid map
+	double gridResolution_;		// resolution of the grid in [cells/m]
+	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
+	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
 
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
@@ -228,6 +234,8 @@ public:
 
 	void transformPointFromCameraToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
 
+	void putDetectionIntoGrid(cv::Mat& grid, const labelImage::RegionPointTriple& detection);
+
 	/**
 	 * This function performs the saliency detection to spot dirt stains.
 	 *
@@ -276,7 +284,7 @@ public:
 	 * @param [in]		mask					Determines the area of interest. Pixel of interests are white (255), all other pixels are black (0).
 	 *
 	 */
-	void Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, const cv::Mat& mask = cv::Mat());
+	void Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, std::vector<cv::RotatedRect>& dirtDetections, const cv::Mat& mask = cv::Mat());
 
 
 	/**
