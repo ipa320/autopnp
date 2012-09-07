@@ -55,7 +55,7 @@ void DirtDetection::init()
 	debug_["showOriginalImage"] = false;
 	// todo: grid parameters
 	gridResolution_ = 80.;
-	gridOrigin_ = cv::Point2d(0.6,-4.0);
+	gridOrigin_ = cv::Point2d(2.0, 2.0);
 	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
 
 	it_ = new image_transport::ImageTransport(node_handle_);
@@ -376,7 +376,8 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 		cv::Mat plane_mask_warped;
 		computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
 
-		btVector3 pointWorldMapBt(0.45, -4.25, 0.20);
+		//btVector3 pointWorldMapBt(0.45, -4.25, 0.20);
+		btVector3 pointWorldMapBt(2.0, -2.0, 0.20);
 		btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
 		cv::Mat pw = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
 		cv::Mat pp = (R.t()*pw-R.t()*t);
