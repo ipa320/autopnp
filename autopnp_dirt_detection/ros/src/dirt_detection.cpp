@@ -66,6 +66,7 @@ void DirtDetection::init()
 	else
 		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::planeLabelingCallback, this);
 
+//	floor_plane_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("floor_plane", 1);
 }
 
 /////////////////////////////////////////////////
@@ -263,8 +264,15 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 	pcl::ModelCoefficients plane_model;
 	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model);
 
+	// verify that plane is a valid ground plane
+	tf::StampedTransform rotationMapCamera = transformMapCamera;
+	rotationMapCamera.setOrigin(btVector3(0,0,0));
+	btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+	btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+	//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << std::endl;
+
 	// check if a ground plane could be found
-	if (found_plane == true)
+	if (found_plane == true && planeNormalWorld.getZ()<-0.5)
 	{
 		//cv::cvtColor(plane_color_image, plane_color_image, CV_BGR2Lab);
 
@@ -273,7 +281,6 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 //		laplace = laplace.mul(laplace);
 //		cv::normalize(laplace, laplace, 0, 1, NORM_MINMAX);
 //		cv:imshow("laplace", laplace);
-
 
 		// test with half-scale image
 //		cv::Mat temp = plane_color_image;
@@ -307,18 +314,18 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 			// center point
 			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x, (double)dirtDetections[i].center.y, 1.0);
-			transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
+			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
 			//std::cout << "---------- world.x=" << pointsWorldMap.center.x << "   world.y=" << pointsWorldMap.center.y << "   world.z=" << pointsWorldMap.center.z << std::endl;
 
 			// point in width direction
 			pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f,
 										   (double)dirtDetections[i].center.y-sin(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f, 1.0);
-			transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p1);
+			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p1);
 
 			// point in height direction
 			pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x-cos((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f,
 										   (double)dirtDetections[i].center.y-sin((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f, 1.0);
-			transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
+			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
 
 			putDetectionIntoGrid(gridPositiveVotes_, pointsWorldMap);
 		}
@@ -329,6 +336,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		cv::imshow("image postprocessing", new_plane_color_image);
 		cvMoveWindow("image postprocessing", 0, 520);
 	}
+	cv::imshow("original color image", plane_color_image);
 
 	cv::waitKey(10);
 }
@@ -365,8 +373,15 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 	pcl::ModelCoefficients plane_model;
 	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model);
 
+	// verify that plane is a valid ground plane
+	tf::StampedTransform rotationMapCamera = transformMapCamera;
+	rotationMapCamera.setOrigin(btVector3(0,0,0));
+	btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+	btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+	//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << std::endl;
+
 	// check if a ground plane could be found
-	if (found_plane == true)
+	if (found_plane == true && planeNormalWorld.getZ()<-0.5)
 	{
 		// remove perspective from image
 		cv::Mat H;			// homography between floor plane in image and bird's eye perspective
@@ -376,19 +391,23 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 		cv::Mat plane_mask_warped;
 		computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
 
-		//btVector3 pointWorldMapBt(0.45, -4.25, 0.20);
-		btVector3 pointWorldMapBt(2.0, -2.0, 0.20);
-		btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
-		cv::Mat pw = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
-		cv::Mat pp = (R.t()*pw-R.t()*t);
-		pp.at<double>(0) = birdEyeResolution_*(pp.at<double>(0)-cameraImagePlaneOffset.x);
-		pp.at<double>(1) = birdEyeResolution_*(pp.at<double>(1)-cameraImagePlaneOffset.y);
-		pp.at<double>(2) = 1.;
-		cv::Mat pc = H.inv()*pp;
-		cv::Point po(pc.at<double>(0)/pc.at<double>(2), pc.at<double>(1)/pc.at<double>(2));
-		//std::cout << "pp: " << pp.at<double>(0) << " " << pp.at<double>(1) << " " << pp.at<double>(2) << "   po: " << po.x << " " << po.y << std::endl;
-		cv::circle(plane_color_image_warped, po, 3, CV_RGB(0,255,0), 2);
+//		//btVector3 pointWorldMapBt(0.45, -4.25, 0.20);
+//		//btVector3 pointWorldMapBt(0.11, -1.23, 0.11);
+//		btVector3 pointWorldMapBt(2.77, 1.61, 0.11);
+//		btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
+//		cv::Mat pw = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
+//		cv::Mat pp = (R.t()*pw-R.t()*t);
+//		pp.at<double>(0) = birdEyeResolution_*(pp.at<double>(0)-cameraImagePlaneOffset.x);
+//		pp.at<double>(1) = birdEyeResolution_*(pp.at<double>(1)-cameraImagePlaneOffset.y);
+//		pp.at<double>(2) = 1.;
+//		cv::Mat pc = H.inv()*pp;
+//		cv::Point po(pc.at<double>(0)/pc.at<double>(2), pc.at<double>(1)/pc.at<double>(2));
+//		//std::cout << "pp: " << pp.at<double>(0) << ", " << pp.at<double>(1) << ", " << pp.at<double>(2) << "   po: " << po.x << ", " << po.y << std::endl;
+//		cv::circle(plane_color_image, po, 3, CV_RGB(0,255,0), 2);
+//		cv::circle(plane_color_image_warped, cv::Point((int)pp.at<double>(0),(int)pp.at<double>(1)), 3, CV_RGB(0,255,0), 2);
 
+
+		cv::imshow("original color image", plane_color_image);
 		cv::imshow("birds eye perspective", plane_color_image_warped);
 		cvMoveWindow("birds eye perspective", 0, 520);
 		int key = cv::waitKey(20);
@@ -421,18 +440,18 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 
 				// center point
 				cv::Mat pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x, (double)rectCameraCoordinates.center.y, 1.0);
-				transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
+				transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
 				std::cout << "---------- world.x=" << pointsWorldMap.center.x << "   world.y=" << pointsWorldMap.center.y << "   world.z=" << pointsWorldMap.center.z << std::endl;
 
 				// point in width direction
 				pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x+cos(-rectCameraCoordinates.angle*3.14159265359/180.f)*rectCameraCoordinates.size.width/2.f,
 											   (double)rectCameraCoordinates.center.y-sin(-rectCameraCoordinates.angle*3.14159265359/180.f)*rectCameraCoordinates.size.width/2.f, 1.0);
-				transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p1);
+				transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p1);
 
 				// point in height direction
 				pc = (cv::Mat_<double>(3,1) << (double)rectCameraCoordinates.center.x-cos((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f,
 											   (double)rectCameraCoordinates.center.y-sin((-rectCameraCoordinates.angle-90)*3.14159265359/180.f)*rectCameraCoordinates.size.height/2.f, 1.0);
-				transformPointFromCameraToWorld(pc, H, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
+				transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
 			}
 		}
 		else if (key == 'f')
@@ -524,9 +543,19 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 	seg.setInputCloud(input_cloud);
 	seg.segment (*inliers, plane_model);
 
+	// keep plane_normal upright
+	if (plane_model.values[2] < 0.)
+	{
+		plane_model.values[0] *= -1;
+		plane_model.values[1] *= -1;
+		plane_model.values[2] *= -1;
+		plane_model.values[3] *= -1;
+	}
+
 	bool found_plane = false;
 	if (inliers->indices.size () != 0) //check if ground/floor detected
 	{
+//		pcl::PointCloud<pcl::PointXYZRGB> floor_plane;
 
 		plane_color_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
 		plane_mask = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC1);
@@ -539,10 +568,20 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			bgr bgr_ = {point.b, point.g, point.r};
 			plane_color_image.at<bgr>(v, u) = bgr_;
 			plane_mask.at<uchar>(v, u) = 255;
+
+//			point.z = -(plane_model.values[0]*point.x+plane_model.values[1]*point.y+plane_model.values[3])/plane_model.values[2];
+//			floor_plane.push_back(point);
 		}
 
 		//display detected floor
 		//cv::imshow("floor cropped", ground_image);
+
+
+//		sensor_msgs::PointCloud2 floor_cloud;
+//		pcl::toROSMsg(floor_plane, floor_cloud);
+//		floor_cloud.header.stamp = input_cloud->header.stamp;
+//		floor_cloud.header.frame_id = input_cloud->header.frame_id;
+//		floor_plane_pub_.publish(floor_cloud);
 
 		found_plane = true;
 	}
@@ -624,8 +663,8 @@ void DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 	// compute two normalized directions
 	cv::Point3d dirS, dirT, normal(a,b,c);
 	double lengthNormal = cv::norm(normal);
-	if (c<0.)
-		lengthNormal *= -1;
+//	if (c<0.)
+//		lengthNormal *= -1;
 	normal.x /= lengthNormal;
 	normal.y /= lengthNormal;
 	normal.z /= lengthNormal;
@@ -732,8 +771,6 @@ void DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 	cv::warpPerspective(plane_color_image, plane_color_image_warped, H, plane_color_image.size());
 	cv::warpPerspective(plane_mask, plane_mask_warped, H, plane_mask.size());
 
-	cv::imshow("original color image", plane_color_image);
-
 //		// this example is correct, H transforms world points into the image coordinate system
 //		std::vector<cv::Point2f> c1, c2;
 //		c1.push_back(cv::Point2f(885,1362));
@@ -771,7 +808,7 @@ void DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 }
 
 
-void DirtDetection::transformPointFromCameraToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld)
+void DirtDetection::transformPointFromCameraImageToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld)
 {
 	cv::Mat Hp = H*pointCamera;	// transformation from image plane to floor plane
 	cv::Mat pointFloor = (cv::Mat_<double>(3,1) << Hp.at<double>(0)/Hp.at<double>(2)/birdEyeResolution_+cameraImagePlaneOffset.x, Hp.at<double>(1)/Hp.at<double>(2)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
@@ -783,6 +820,16 @@ void DirtDetection::transformPointFromCameraToWorld(const cv::Mat& pointCamera, 
 	pointWorld.z = pointWorldMapBt.getZ();
 }
 
+void DirtDetection::transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld)
+{
+	cv::Mat pointFloor = (cv::Mat_<double>(3,1) << pointPlane.at<double>(0)/birdEyeResolution_+cameraImagePlaneOffset.x, pointPlane.at<double>(1)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
+	cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
+	btVector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
+	btVector3 pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
+	pointWorld.x = pointWorldMapBt.getX();
+	pointWorld.y = pointWorldMapBt.getY();
+	pointWorld.z = pointWorldMapBt.getZ();
+}
 
 struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
 {

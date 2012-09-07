@@ -95,6 +95,8 @@ protected:
 	 */
 	ros::Subscriber camera_depth_points_sub_;
 
+	ros::Publisher floor_plane_pub_;
+
 	// labeling
 	bool labelingStarted_;
 	std::vector<labelImage> labeledImages_;
@@ -232,7 +234,11 @@ public:
 	/// @param cameraImagePlaneOffset Offset in the camera image plane. Conversion from floor plane to  [xc, yc]
 	void computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& R, cv::Mat& t, cv::Point2f& cameraImagePlaneOffset, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped);
 
-	void transformPointFromCameraToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
+	/// converts point pointCamera, that lies within the floor plane and is provided in coordinates of the original camera image, into map coordinates
+	void transformPointFromCameraImageToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
+
+	/// converts point pointPlane, that lies within the floor plane and is provided in coordinates of the warped camera image, into map coordinates
+	void transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
 
 	void putDetectionIntoGrid(cv::Mat& grid, const labelImage::RegionPointTriple& detection);
 
