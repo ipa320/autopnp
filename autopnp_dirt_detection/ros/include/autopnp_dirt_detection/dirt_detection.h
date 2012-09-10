@@ -22,12 +22,16 @@
 // ROS includes
 #include <ros/ros.h>
 #include <ros/package.h>
+#include <rosbag/bag.h>
+#include <rosbag/view.h>
 
 // ROS message includes
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/PointStamped.h>
+#include <rosgraph_msgs/Clock.h>
 #include <tf/transform_listener.h>
+#include <tf/transform_broadcaster.h>
 #include <nav_msgs/OccupancyGrid.h>
 
 // topics
@@ -57,6 +61,9 @@
 #include <cv_bridge/cv_bridge.h>
 //#include <cv_bridge/CvBridge.h>
 
+//boost
+#include <boost/foreach.hpp>
+
 #include <time.h>
 #include "autopnp_dirt_detection/label_box.h"
 
@@ -85,6 +92,7 @@ protected:
 	image_transport::ImageTransport* it_;
 
 	tf::TransformListener transform_listener_;
+	tf::TransformBroadcaster transform_broadcaster_;
 
 	/**
 	 * Used to receive color image topic from camera.
@@ -96,6 +104,8 @@ protected:
 	ros::Subscriber camera_depth_points_sub_;
 
 	ros::Publisher floor_plane_pub_;
+	ros::Publisher camera_depth_points_bagpub_;
+	ros::Publisher clock_pub_;
 
 	// labeling
 	bool labelingStarted_;
@@ -106,6 +116,9 @@ protected:
 	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
 	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
 
+	// evaluation
+	int rosbagMessagesProcessed_;	// number of ros messages received by the program
+
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
 	double dirtThreshold_;
@@ -113,8 +126,9 @@ protected:
 	double spectralResidualImageSizeRatio_;
 	double dirtCheckStdDevFactor_;
 	int modeOfOperation_;
-
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
+	double rosbagPlaybackRate_;		// playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
+
 
 	std::map<std::string, bool> debug_;
 
@@ -194,6 +208,9 @@ public:
 	 */
 	void planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
+	void planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
+
+	void databaseTest();
 
 	/**
 	 * Converts: "sensor_msgs::Image::ConstPtr" \f$ \rightarrow \f$ "cv::Mat".
@@ -224,8 +241,6 @@ public:
 	 *	@return 		True if any plane could be found in the image.
 	 */
 	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model);
-
-	void planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
 	/// remove perspective from image
 	/// @param H Homography that maps points from the camera plane to the floor plane, i.e. pp = H*pc

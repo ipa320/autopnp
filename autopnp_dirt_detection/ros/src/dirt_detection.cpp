@@ -1,10 +1,28 @@
 #include <autopnp_dirt_detection/dirt_detection.h>
+#include <autopnp_dirt_detection/timer.h>
 
 #include <set>
+#include <time.h>
 
 using namespace ipa_DirtDetection;
 using namespace std;
 using namespace cv;
+
+
+
+
+// todo:
+// evaluation:
+// - use self adapting rate for bag-file playback, i.e. check whether all contained frames were processed and repeat slower if necessary
+// - needs a way to figure out number of messages in bag-file
+
+
+
+
+
+
+
+
 
 /////////////////////////////////////////////////
 // Constructor
@@ -15,6 +33,7 @@ DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 : node_handle_(node_handle), transform_listener_(node_handle)
 {
 	it_ = 0;
+	rosbagMessagesProcessed_ = 0;
 	labelingStarted_ = false;
 	lastIncomingMessage_ = ros::Time::now();
 }
@@ -50,6 +69,8 @@ void DirtDetection::init()
 	std::cout << "modeOfOperation = " << modeOfOperation_ << std::endl;
 	node_handle_.param("birdEyeResolution", birdEyeResolution_, 300.0);
 	std::cout << "birdEyeResolution = " << birdEyeResolution_ << std::endl;
+	node_handle_.param("rosbagPlaybackRate", rosbagPlaybackRate_, 1.0);
+	std::cout << "rosbagPlaybackRate = " << rosbagPlaybackRate_ << std::endl;
 
 	// todo: debug parameters
 	debug_["showOriginalImage"] = false;
@@ -61,10 +82,17 @@ void DirtDetection::init()
 	it_ = new image_transport::ImageTransport(node_handle_);
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
 
-	if (modeOfOperation_ == 0)
+	if (modeOfOperation_ == 0)	// detection
 		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::planeDetectionCallback, this);
-	else
+	else if (modeOfOperation_ == 1)		// labeling
 		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::planeLabelingCallback, this);
+	else if (modeOfOperation_ == 2)		// database evaluation
+	{
+		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 5, &DirtDetection::planeDetectionCallback, this);
+		camera_depth_points_bagpub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("colored_point_cloud_bagpub", 1);
+		clock_pub_ = node_handle_.advertise<rosgraph_msgs::Clock>("/clock", 1);
+		databaseTest();
+	}
 
 //	floor_plane_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("floor_plane", 1);
 }
@@ -329,6 +357,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 			putDetectionIntoGrid(gridPositiveVotes_, pointsWorldMap);
 		}
+
 		cv::Mat gridPositiveVotesDisplay;
 		cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
 		cv::imshow("dirt grid", gridPositiveVotesDisplay);
@@ -336,6 +365,8 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		cv::imshow("image postprocessing", new_plane_color_image);
 		cvMoveWindow("image postprocessing", 0, 520);
 	}
+	rosbagMessagesProcessed_++;
+
 	cv::imshow("original color image", plane_color_image);
 
 	cv::waitKey(10);
@@ -473,6 +504,67 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 			ros::shutdown();
 		}
 	}
+}
+
+void DirtDetection::databaseTest()
+{
+	// read in file with information about the bag files to use
+
+
+	// play bag file
+	for (int i=0; i<3; i++)
+	{
+	rosbag::Bag bag;
+	std::string path = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.bag";
+	bag.open(path, rosbag::bagmode::Read);
+
+	std::vector<std::string> topics;
+	topics.push_back(std::string("/tf"));
+	topics.push_back(std::string("/cam3d/rgb/points"));
+
+	rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+	std::cout << "Reading messages from bag file " << path << " ..." << std::endl;
+
+	Timer timer;
+	timer.start();
+	int rosbagMessagesSent = 0;
+	rosbagMessagesProcessed_ = 0;
+	BOOST_FOREACH(rosbag::MessageInstance const m, view)
+	{
+		rosgraph_msgs::Clock clock;
+		clock.clock = ros::Time(timer.getElapsedTimeInSec());
+		clock_pub_.publish(clock);
+
+		tf::tfMessage::ConstPtr transform = m.instantiate<tf::tfMessage>();
+		if (transform != NULL)
+			transform_broadcaster_.sendTransform(transform->transforms);
+
+		sensor_msgs::PointCloud2::ConstPtr cloud = m.instantiate<sensor_msgs::PointCloud2>();
+		if (cloud != NULL)
+		{
+			if (rosbagMessagesSent % 100 == 0)
+				std::cout << ".";
+			//std::cout << "proc: " << rosbagMessagesProcessed_ << "/" << rosbagMessagesSent << std::endl;
+			rosbagMessagesSent++;
+			camera_depth_points_bagpub_.publish(cloud);
+		}
+
+		//while (rosbagMessagesProcessed_ < rosbagMessagesSent)
+		ros::spinOnce();
+	}
+
+	std::cout << "\nfinished after " << timer.getElapsedTimeInSec() << "s." << std::endl;
+
+	if (rosbagMessagesProcessed_ != rosbagMessagesSent)
+		ROS_ERROR("DirtDetection::databaseTest: Only %d/%d messages processed from the provided bag file.", rosbagMessagesProcessed_, rosbagMessagesSent);
+	else
+		ROS_INFO("DirtDetection::databaseTest: %d messages processed from the provided bag file.", rosbagMessagesProcessed_);
+
+	bag.close();
+	}
+
+	return;
 }
 
 
@@ -896,7 +988,7 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 	cv::resize(C1_image,bw_im,cv::Size(size_cols,size_rows));
 
 	cv::Mat realInput(size_rows,size_cols, CV_32FC1);	//calculate number of test samples
-	int NumTestSamples = 10; //ceil(NumSamples*percentage_testdata);
+	//int NumTestSamples = 10; //ceil(NumSamples*percentage_testdata);
 	//printf("Anzahl zu ziehender test samples: %d \n", NumTestSamples);
 	cv::Mat imaginaryInput(size_rows,size_cols, CV_32FC1);
 	cv::Mat complexInput(size_rows,size_cols, CV_32FC2);
@@ -1053,7 +1145,7 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat&
 //		cv::GaussianBlur(res_fci, res_fci, ksize, 0); //necessary!? --> less noise
 //	for (int i=0; i<gaussianBlurCycles; i++)
 //		cv::GaussianBlur(res_sci, res_sci, ksize, 0); //necessary!? --> less noise	//calculate number of test samples
-	int NumTestSamples = 10; //ceil(NumSamples*percentage_testdata);
+//	int NumTestSamples = 10; //ceil(NumSamples*percentage_testdata);
 //	printf("Anzahl zu ziehender test samples: %d \n", NumTestSamples);
 //	for (int i=0; i<gaussianBlurCycles; i++)
 //		cv::GaussianBlur(res_tci, res_tci, ksize, 0); //necessary!? --> less noise
