@@ -106,6 +106,8 @@ protected:
 	ros::Publisher floor_plane_pub_;
 	ros::Publisher camera_depth_points_bagpub_;
 	ros::Publisher clock_pub_;
+	ros::Publisher ground_truth_map_;
+	ros::Publisher detection_map_;
 
 	// labeling
 	bool labelingStarted_;
@@ -115,6 +117,7 @@ protected:
 	double gridResolution_;		// resolution of the grid in [cells/m]
 	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
 	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
+	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
 
 	// evaluation
 	int rosbagMessagesProcessed_;	// number of ros messages received by the program
@@ -240,14 +243,14 @@ public:
 	 *	@param [out]	plane_mask					Mask to separate plane pixels. Plane pixels are white (255), all other pixels are black (0).
 	 *	@return 		True if any plane could be found in the image.
 	 */
-	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model);
+	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, const tf::StampedTransform& transform_map_camera, cv::Mat& grid_number_observations);
 
 	/// remove perspective from image
 	/// @param H Homography that maps points from the camera plane to the floor plane, i.e. pp = H*pc
 	/// @param R Rotation matrix for transformation between floor plane and world coordinates, i.e. [xw,yw,zw] = R*[xp,yp,0]+t and [xp,yp,0] = R^T*[xw,yw,zw] - R^T*t
 	/// @param t Translation vector. See Rotation matrix.
 	/// @param cameraImagePlaneOffset Offset in the camera image plane. Conversion from floor plane to  [xc, yc]
-	void computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& R, cv::Mat& t, cv::Point2f& cameraImagePlaneOffset, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped);
+	bool computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& R, cv::Mat& t, cv::Point2f& cameraImagePlaneOffset, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped);
 
 	/// converts point pointCamera, that lies within the floor plane and is provided in coordinates of the original camera image, into map coordinates
 	void transformPointFromCameraImageToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);

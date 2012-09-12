@@ -9,19 +9,11 @@ using namespace std;
 using namespace cv;
 
 
-
-
-// todo:
-// evaluation:
-// - use self adapting rate for bag-file playback, i.e. check whether all contained frames were processed and repeat slower if necessary
-// - needs a way to figure out number of messages in bag-file
-
-
-
-
-
-
-
+struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
+{
+	bool operator()(const cv::Point2i& a, const cv::Point2i& b) const
+	{ return (a.x<b.x || a.y<b.y); }
+};
 
 
 /////////////////////////////////////////////////
@@ -75,9 +67,10 @@ void DirtDetection::init()
 	// todo: debug parameters
 	debug_["showOriginalImage"] = false;
 	// todo: grid parameters
-	gridResolution_ = 80.;
+	gridResolution_ = 20.;
 	gridOrigin_ = cv::Point2d(2.0, 2.0);
 	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
+	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
 	it_ = new image_transport::ImageTransport(node_handle_);
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
@@ -91,6 +84,8 @@ void DirtDetection::init()
 		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 5, &DirtDetection::planeDetectionCallback, this);
 		camera_depth_points_bagpub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("colored_point_cloud_bagpub", 1);
 		clock_pub_ = node_handle_.advertise<rosgraph_msgs::Clock>("/clock", 1);
+		ground_truth_map_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("ground_truth_map", 1);
+		detection_map_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("detection_map", 1);
 		databaseTest();
 	}
 
@@ -275,13 +270,20 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 	transformMapCamera.setIdentity();
 	try
 	{
-		transform_listener_.lookupTransform("/map", point_cloud2_rgb_msg->header.frame_id, point_cloud2_rgb_msg->header.stamp, transformMapCamera);
+		ros::Time time = point_cloud2_rgb_msg->header.stamp;
+		std::string err;
+		//std::cout << "Latest common time: " << transform_listener_.getLatestCommonTime("/map", point_cloud2_rgb_msg->header.frame_id, time, &err) << std::endl;
+		transform_listener_.getLatestCommonTime("/map", point_cloud2_rgb_msg->header.frame_id, time, &err);
+		transform_listener_.lookupTransform("/map", point_cloud2_rgb_msg->header.frame_id, time, transformMapCamera);
 //		std::cout << "xyz: " << transformMapCamera.getOrigin().getX() << " " << transformMapCamera.getOrigin().getY() << " " << transformMapCamera.getOrigin().getZ() << "\n";
 //		std::cout << "abcw: " << transformMapCamera.getRotation().getX() << " " << transformMapCamera.getRotation().getY() << " " << transformMapCamera.getRotation().getZ() << " " << transformMapCamera.getRotation().getW() << "\n";
 //		std::cout << "frame_id: " << transformMapCamera.frame_id_ << "  child_frame_id: " << transformMapCamera.child_frame_id_ << std::endl;
 	}
 	catch (tf::TransformException ex)
-	{ ROS_WARN("%s Dirt Detection will move on with identity transformation.",ex.what()); return; }
+	{
+		ROS_WARN("%s",ex.what());
+		return;
+	}
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
@@ -290,17 +292,10 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 	cv::Mat plane_color_image = cv::Mat();
 	cv::Mat plane_mask = cv::Mat();
 	pcl::ModelCoefficients plane_model;
-	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model);
-
-	// verify that plane is a valid ground plane
-	tf::StampedTransform rotationMapCamera = transformMapCamera;
-	rotationMapCamera.setOrigin(btVector3(0,0,0));
-	btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
-	btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
-	//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << std::endl;
+	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model, transformMapCamera, gridNumberObservations_);
 
 	// check if a ground plane could be found
-	if (found_plane == true && planeNormalWorld.getZ()<-0.5)
+	if (found_plane == true)
 	{
 		//cv::cvtColor(plane_color_image, plane_color_image, CV_BGR2Lab);
 
@@ -322,8 +317,9 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		cv::Point2f cameraImagePlaneOffset;		// offset in the camera image plane. Conversion from floor plane to  [xc, yc]
 		cv::Mat plane_color_image_warped;
 		cv::Mat plane_mask_warped;
-		computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
-
+		bool transformSuccessful = computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
+		if (transformSuccessful == false)
+			return;
 
 		// detect dirt on the floor
 		cv::Mat C1_saliency_image;
@@ -364,10 +360,10 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 		cv::imshow("image postprocessing", new_plane_color_image);
 		cvMoveWindow("image postprocessing", 0, 520);
+
+		cv::imshow("original color image", plane_color_image);
 	}
 	rosbagMessagesProcessed_++;
-
-	cv::imshow("original color image", plane_color_image);
 
 	cv::waitKey(10);
 }
@@ -384,7 +380,11 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 	transformMapCamera.setIdentity();
 	try
 	{
-		transform_listener_.lookupTransform("/map", point_cloud2_rgb_msg->header.frame_id, point_cloud2_rgb_msg->header.stamp, transformMapCamera);
+		ros::Time time = point_cloud2_rgb_msg->header.stamp;
+		std::string err;
+		//std::cout << "Latest common time: " << transform_listener_.getLatestCommonTime("/map", point_cloud2_rgb_msg->header.frame_id, time, &err) << std::endl;
+		transform_listener_.getLatestCommonTime("/map", point_cloud2_rgb_msg->header.frame_id, time, &err);
+		transform_listener_.lookupTransform("/map", point_cloud2_rgb_msg->header.frame_id, time, transformMapCamera);
 //		std::cout << "xyz: " << transformMapCamera.getOrigin().getX() << " " << transformMapCamera.getOrigin().getY() << " " << transformMapCamera.getOrigin().getZ() << "\n";
 //		std::cout << "abcw: " << transformMapCamera.getRotation().getX() << " " << transformMapCamera.getRotation().getY() << " " << transformMapCamera.getRotation().getZ() << " " << transformMapCamera.getRotation().getW() << "\n";
 //		std::cout << "frame_id: " << transformMapCamera.frame_id_ << "  child_frame_id: " << transformMapCamera.child_frame_id_ << std::endl;
@@ -402,17 +402,17 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 	cv::Mat plane_color_image = cv::Mat();
 	cv::Mat plane_mask = cv::Mat();
 	pcl::ModelCoefficients plane_model;
-	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model);
+	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model, transformMapCamera, gridNumberObservations_);
 
-	// verify that plane is a valid ground plane
-	tf::StampedTransform rotationMapCamera = transformMapCamera;
-	rotationMapCamera.setOrigin(btVector3(0,0,0));
-	btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
-	btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+//	// verify that plane is a valid ground plane
+//	tf::StampedTransform rotationMapCamera = transformMapCamera;
+//	rotationMapCamera.setOrigin(btVector3(0,0,0));
+//	btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+//	btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
 	//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << std::endl;
 
 	// check if a ground plane could be found
-	if (found_plane == true && planeNormalWorld.getZ()<-0.5)
+	if (found_plane == true)
 	{
 		// remove perspective from image
 		cv::Mat H;			// homography between floor plane in image and bird's eye perspective
@@ -420,7 +420,9 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 		cv::Point2f cameraImagePlaneOffset;		// offset in the camera image plane. Conversion from floor plane to  [xc, yc]
 		cv::Mat plane_color_image_warped;
 		cv::Mat plane_mask_warped;
-		computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
+		bool transformSuccessful = computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
+		if (transformSuccessful == false)
+			return;
 
 //		//btVector3 pointWorldMapBt(0.45, -4.25, 0.20);
 //		//btVector3 pointWorldMapBt(0.11, -1.23, 0.11);
@@ -508,23 +510,36 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 
 void DirtDetection::databaseTest()
 {
+
 	// read in file with information about the bag files to use
+	// read in individual gridOrigin
 
 
-	// play bag file
-	for (int i=0; i<3; i++)
-	{
+	std::string bagFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.bag";
+//	std::string path = "/media/SAMSUNG/rmb/dirt_detection/apartment/kitchen-clean.bag";
+	std::string xmlFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.xml";
+	std::cout << "Reading messages from bag file " << bagFilename << " ..." << std::endl;
+
+	// load ground truth for the current bag file
+	std::vector<labelImage> groundTruthData;
+	labelImage::readTxt3d(groundTruthData, xmlFilename);
+	for (int i=0; i<(int)groundTruthData.size(); i++)
+		for (int j=0; j<(int)groundTruthData[i].allTexts.size(); j++)
+			std::cout << "gt (" << i << ": " << j << "): \t" << groundTruthData[i].allTexts[j] << "\t center (" << groundTruthData[i].allRects3d[j].center.x << "," << groundTruthData[i].allRects3d[j].center.y << "," << groundTruthData[i].allRects3d[j].center.z << ")\t width (" << groundTruthData[i].allRects3d[j].p1.x << "," << groundTruthData[i].allRects3d[j].p1.y << "," << groundTruthData[i].allRects3d[j].p1.z << ")\t height (" << groundTruthData[i].allRects3d[j].p2.x << "," << groundTruthData[i].allRects3d[j].p2.y << "," << groundTruthData[i].allRects3d[j].p2.z << ")" << std::endl;
+
+	// reset results
+	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
+	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+
+	// play bag file, collect detections
 	rosbag::Bag bag;
-	std::string path = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.bag";
-	bag.open(path, rosbag::bagmode::Read);
+	bag.open(bagFilename, rosbag::bagmode::Read);
 
 	std::vector<std::string> topics;
 	topics.push_back(std::string("/tf"));
 	topics.push_back(std::string("/cam3d/rgb/points"));
 
 	rosbag::View view(bag, rosbag::TopicQuery(topics));
-
-	std::cout << "Reading messages from bag file " << path << " ..." << std::endl;
 
 	Timer timer;
 	timer.start();
@@ -538,7 +553,10 @@ void DirtDetection::databaseTest()
 
 		tf::tfMessage::ConstPtr transform = m.instantiate<tf::tfMessage>();
 		if (transform != NULL)
+		{
 			transform_broadcaster_.sendTransform(transform->transforms);
+			//ROS_INFO_STREAM(transform_listener_.allFramesAsString());
+		}
 
 		sensor_msgs::PointCloud2::ConstPtr cloud = m.instantiate<sensor_msgs::PointCloud2>();
 		if (cloud != NULL)
@@ -547,11 +565,12 @@ void DirtDetection::databaseTest()
 				std::cout << ".";
 			//std::cout << "proc: " << rosbagMessagesProcessed_ << "/" << rosbagMessagesSent << std::endl;
 			rosbagMessagesSent++;
-			camera_depth_points_bagpub_.publish(cloud);
-		}
+			if (rosbagMessagesSent % 20 == 0)
+				camera_depth_points_bagpub_.publish(cloud);
 
-		//while (rosbagMessagesProcessed_ < rosbagMessagesSent)
-		ros::spinOnce();
+			//while (rosbagMessagesProcessed_ < rosbagMessagesSent)
+			ros::spinOnce();
+		}
 	}
 
 	std::cout << "\nfinished after " << timer.getElapsedTimeInSec() << "s." << std::endl;
@@ -562,10 +581,78 @@ void DirtDetection::databaseTest()
 		ROS_INFO("DirtDetection::databaseTest: %d messages processed from the provided bag file.", rosbagMessagesProcessed_);
 
 	bag.close();
+
+	// create ground truth occupancy grid
+	// todo
+	cv::Mat groundTruthGrid = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);;
+	for (int i=0; i<(int)groundTruthData.size(); i++)
+		for (int j=0; j<(int)groundTruthData[i].allTexts.size(); j++)
+			putDetectionIntoGrid(groundTruthGrid, groundTruthData[i].allRects3d[j]);
+	nav_msgs::OccupancyGrid groundTruthMap;
+	groundTruthMap.header.stamp = ros::Time::now();
+	groundTruthMap.header.frame_id = "/map";
+	groundTruthMap.info.resolution = 1.0/gridResolution_;
+	groundTruthMap.info.width = groundTruthGrid.cols;
+	groundTruthMap.info.height = groundTruthGrid.rows;
+	groundTruthMap.info.origin.position.x = -groundTruthGrid.cols/2 / (-gridResolution_) + gridOrigin_.x;
+	groundTruthMap.info.origin.position.y = -groundTruthGrid.rows/2 / gridResolution_ + gridOrigin_.y;
+	groundTruthMap.info.origin.position.z = 0;
+	btQuaternion rot(0,3.14159265359,0);
+	groundTruthMap.info.origin.orientation.x = rot.getX();
+	groundTruthMap.info.origin.orientation.y = rot.getY();
+	groundTruthMap.info.origin.orientation.z = rot.getZ();
+	groundTruthMap.info.origin.orientation.w = rot.getW();
+	groundTruthMap.data.resize(groundTruthGrid.cols*groundTruthGrid.rows);
+	for (int v=0, i=0; v<groundTruthGrid.rows; v++)
+		for (int u=0; u<groundTruthGrid.cols; u++, i++)
+			groundTruthMap.data[i] = (groundTruthGrid.at<int>(v,u)==0) ? (int8_t)0 : (int8_t)100;
+	ground_truth_map_.publish(groundTruthMap);
+
+	// create occupancy grid map from detections
+	nav_msgs::OccupancyGrid detectionMap;
+	detectionMap.header.stamp = ros::Time::now();
+	detectionMap.header.frame_id = "/map";
+	detectionMap.info.resolution = 1.0/gridResolution_;
+	detectionMap.info.width = gridPositiveVotes_.cols;
+	detectionMap.info.height = gridPositiveVotes_.rows;
+	detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
+	detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
+	detectionMap.info.origin.position.z = 0.02;
+	detectionMap.info.origin.orientation.x = rot.getX();
+	detectionMap.info.origin.orientation.y = rot.getY();
+	detectionMap.info.origin.orientation.z = rot.getZ();
+	detectionMap.info.origin.orientation.w = rot.getW();
+	detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
+	for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
+		for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+			detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridPositiveVotes_.at<int>(v,u)+(double)gridNumberObservations_.at<int>(v,u)));
+	detection_map_.publish(detectionMap);
+
+	// generate statistics on detection results
+	int tp=0,fp=0,fn=0,tn=0;
+	int8_t dirtThreshold = 50;
+	for (int v=0,i=0; v<groundTruthGrid.rows; v++)
+	{
+		for (int u=0; u<groundTruthGrid.cols; u++, i++)
+		{
+			if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]<dirtThreshold)
+				tn++;
+			else if (groundTruthMap.data[i]==(int8_t)100 && detectionMap.data[i]>=dirtThreshold)
+				tp++;
+			else if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]>=dirtThreshold)
+				fp++;
+			else
+				fn++;
+		}
 	}
+
+	// todo: provide relaxed statistics where neighbors of hits count as hits or reduce resolution
+
+	std::cout << "tp=" << tp << "\tfp=" << fp << "\tfn=" << fn << "\ttn=" << tn << "\trecall=" << (double)tp/(tp+fn) << "\tprecision=" << (double)tp/(tp+fp) << std::endl;
 
 	return;
 }
+
 
 
 /////////////////////////////////////////////////
@@ -596,7 +683,7 @@ unsigned long DirtDetection::convertColorImageMessageToMat(const sensor_msgs::Im
 }
 
 
-bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model)
+bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, const tf::StampedTransform& transform_map_camera, cv::Mat& grid_number_observations)
 {
 
 	//recreate original color image from point cloud
@@ -620,46 +707,110 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 	}
 
 
-
-	// Create the segmentation object for the planar model and set all the parameters
-	pcl::SACSegmentation<pcl::PointXYZRGB> seg;
+	// try several times to find the ground plane
+	bool found_plane = false;
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+	*filtered_input_cloud = *input_cloud;
 	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-
-	pcl::PCDWriter writer;
-	seg.setOptimizeCoefficients (true);
-	seg.setModelType (pcl::SACMODEL_PLANE);
-	seg.setMethodType (pcl::SAC_RANSAC);
-	seg.setMaxIterations (100);
-	seg.setDistanceThreshold (0.05);
-
-	seg.setInputCloud(input_cloud);
-	seg.segment (*inliers, plane_model);
-
-	// keep plane_normal upright
-	if (plane_model.values[2] < 0.)
+	// todo: make number of trials a parameter
+	for (int trial=0; trial<2; trial++)
 	{
-		plane_model.values[0] *= -1;
-		plane_model.values[1] *= -1;
-		plane_model.values[2] *= -1;
-		plane_model.values[3] *= -1;
+		// Create the segmentation object for the planar model and set all the parameters
+		inliers->indices.clear();
+		pcl::SACSegmentation<pcl::PointXYZRGB> seg;
+		seg.setOptimizeCoefficients (true);
+		seg.setModelType (pcl::SACMODEL_PLANE);
+		seg.setMethodType (pcl::SAC_RANSAC);
+		seg.setMaxIterations (100);
+		seg.setDistanceThreshold (0.05);
+
+		seg.setInputCloud(filtered_input_cloud);
+		seg.segment (*inliers, plane_model);
+
+		// keep plane_normal upright
+		if (plane_model.values[2] < 0.)
+		{
+			plane_model.values[0] *= -1;
+			plane_model.values[1] *= -1;
+			plane_model.values[2] *= -1;
+			plane_model.values[3] *= -1;
+		}
+
+		// verify that plane is a valid ground plane
+		if (inliers->indices.size()!=0)
+		{
+			tf::StampedTransform rotationMapCamera = transform_map_camera;
+			rotationMapCamera.setOrigin(btVector3(0,0,0));
+			btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+			btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+
+			pcl::PointXYZRGB point = (*filtered_input_cloud)[(inliers->indices[inliers->indices.size()/2])];
+			btVector3 planePointCamera(point.x, point.y, point.z);
+			btVector3 planePointWorld = transform_map_camera * planePointCamera;
+			//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << "   point[half]: " << planePointWorld.getX() << ", " << planePointWorld.getY() << ", " << planePointWorld.getZ() << std::endl;
+
+			// todo: make these criteria a parameter
+			// verify that the found plane is a valid ground plane
+			if (inliers->indices.size()>100 && planeNormalWorld.getZ()<-0.5 && abs(planePointWorld.getZ())<0.3)
+			{
+				found_plane=true;
+				break;
+			}
+			else
+			{
+				std::cout << "nan: " << (*filtered_input_cloud)[0].x << " " << (*filtered_input_cloud)[0].y << " " << (*filtered_input_cloud)[0].z << std::endl;
+				// the plane is not the ground plane -> remove that plane from the point cloud
+				for (size_t i=0; i<inliers->indices.size(); i++)
+				{
+					// set all inliers to invalid
+					pcl::PointXYZRGB& point = (*filtered_input_cloud)[(inliers->indices[i])];
+					point.x = 0;
+					point.y = 0;
+					point.z = 0;
+				}
+
+//				// Extract the planar inliers from the input cloud
+//				pcl::ExtractIndices<pcl::PointXYZRGB> extract;
+//				extract.setInputCloud (filtered_input_cloud);
+//				extract.setIndices (inliers);
+//
+//				// Remove the planar inliers, extract the rest
+//				pcl::PointCloud<pcl::PointXYZRGB>::Ptr temp (new pcl::PointCloud<pcl::PointXYZRGB>);
+//				extract.setNegative (true);
+//				extract.filter(*temp);
+//				filtered_input_cloud = temp;
+			}
+		}
 	}
 
-	bool found_plane = false;
-	if (inliers->indices.size () != 0) //check if ground/floor detected
+	// if the ground plane was found, write the respective data to the images
+	if (found_plane == true)
 	{
 //		pcl::PointCloud<pcl::PointXYZRGB> floor_plane;
 
 		plane_color_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
 		plane_mask = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC1);
+		std::set<cv::Point2i, lessPoint2i> visitedGridCells;	// secures that no two observations can count twice for the same grid cell
+		cv::Point2i grid_offset(grid_number_observations.cols/2, grid_number_observations.rows/2);
 		for (size_t i=0; i<inliers->indices.size(); i++)
 		{
 			int v = inliers->indices[i]/input_cloud->width;	// check ob das immer abrundet ->noch offen!!!
 			int u = inliers->indices[i] - v*input_cloud->width;
 
-			pcl::PointXYZRGB point = (*input_cloud)[(inliers->indices[i])];
+			// cropped color image and mask
+			pcl::PointXYZRGB point = (*filtered_input_cloud)[(inliers->indices[i])];
 			bgr bgr_ = {point.b, point.g, point.r};
 			plane_color_image.at<bgr>(v, u) = bgr_;
 			plane_mask.at<uchar>(v, u) = 255;
+
+			// populate visibility grid
+			cv::Point2i co(-(point.x-gridOrigin_.x)*gridResolution_+grid_offset.x, (point.y-gridOrigin_.y)*gridResolution_+grid_offset.y);
+			if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<grid_number_observations.cols && co.y>=0 && co.y<grid_number_observations.rows)
+			{
+				// grid cell has not been incremented, yet
+				visitedGridCells.insert(co);
+				grid_number_observations.at<int>(co) = grid_number_observations.at<int>(co) + 1;
+			}
 
 //			point.z = -(plane_model.values[0]*point.x+plane_model.values[1]*point.y+plane_model.values[3])/plane_model.values[2];
 //			floor_plane.push_back(point);
@@ -682,7 +833,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 }
 
 
-void DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& R, cv::Mat& t, cv::Point2f& cameraImagePlaneOffset, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped)
+bool DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& R, cv::Mat& t, cv::Point2f& cameraImagePlaneOffset, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped)
 {
 	// 1. compute parameter representation of plane, construct plane coordinate system and compute transformation from camera frame (x,y,z) to plane frame (x,y,z)
 	// a) parameter form of plane equation
@@ -823,6 +974,8 @@ void DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 
 	// 3. find homography between image plane and plane coordinates
 	// a) collect point correspondences
+	if (pointsCamera.size()<100)
+		return false;
 	double step = std::max(1.0, (double)pointsCamera.size()/100.0);
 	std::vector<cv::Point2f> correspondencePointsCamera, correspondencePointsPlane;
 	cameraImagePlaneOffset = cv::Point2f((maxPlane.x+minPlane.x)/2.f - (double)plane_color_image.cols/(2*birdEyeResolution_), (maxPlane.y+minPlane.y)/2.f - (double)plane_color_image.rows/(2*birdEyeResolution_));
@@ -897,6 +1050,8 @@ void DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 //			cv::Mat r = pc - Hccpp;
 //			std::cout << "H - " << i << ": " << r.at<double>(0) << ", " << r.at<double>(1) << ", " << r.at<double>(2) << std::endl;
 //		}
+
+	return true;
 }
 
 
@@ -923,11 +1078,6 @@ void DirtDetection::transformPointFromCameraWarpedToWorld(const cv::Mat& pointPl
 	pointWorld.z = pointWorldMapBt.getZ();
 }
 
-struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
-{
-	bool operator()(const cv::Point2i& a, const cv::Point2i& b) const
-	{ return (a.x<b.x || a.y<b.y); }
-};
 
 void DirtDetection::putDetectionIntoGrid(cv::Mat& grid, const labelImage::RegionPointTriple& detection)
 {
@@ -948,24 +1098,24 @@ void DirtDetection::putDetectionIntoGrid(cv::Mat& grid, const labelImage::Region
 	{
 		for (double scaleH=-1.; scaleH<=1.; scaleH+=0.2)
 		{
-			cv::Point2i offset(gridPositiveVotes_.cols/2, gridPositiveVotes_.rows/2);
+			cv::Point2i offset(grid.cols/2, grid.rows/2);
 			cv::Point2i coordinates[2];
 			coordinates[0] = cv::Point2i(-(detection.center.x+scaleW*lWidth.x-gridOrigin_.x)*gridResolution_+offset.x, (detection.center.y+scaleW*lWidth.y-gridOrigin_.y)*gridResolution_+offset.y);
 			coordinates[1] = cv::Point2i(-(detection.center.x+scaleH*lHeight.x-gridOrigin_.x)*gridResolution_+offset.x, (detection.center.y+scaleH*lHeight.y-gridOrigin_.y)*gridResolution_+offset.y);
 			for (int i=0; i<2; i++)
 			{
-				for (int v=-4; v<=4; v++)
+				for (int v=0; v<=0; v++)
 				{
-					for (int u=-4; u<=4; u++)
+					for (int u=0; u<=0; u++)
 					{
 						cv::Point2i co(coordinates[i].x+u,coordinates[i].y+v);
 						//cv::Point2i co(coordinates[i].x,coordinates[i].y);
-						if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<gridPositiveVotes_.cols && co.y>=0 && co.y<gridPositiveVotes_.rows)
+						if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<grid.cols && co.y>=0 && co.y<grid.rows)
 						{
 							//std::cout << "sW,sH: " << scaleW << ", " << scaleH << "  co: " << co.x << ", " << co.y << std::endl;
 							// grid cell has not been incremented, yet
 							visitedGridCells.insert(co);
-							gridPositiveVotes_.at<int>(co) = gridPositiveVotes_.at<int>(co) + 1;
+							grid.at<int>(co) = grid.at<int>(co) + 1;
 						}
 					}
 				}

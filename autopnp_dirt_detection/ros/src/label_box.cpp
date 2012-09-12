@@ -145,7 +145,7 @@ void labelImage::writeTxt(std::vector<labelImage> all, std::string path, std::st
 }
 
 
-void labelImage::writeTxt3d(std::vector<labelImage> all, std::string path, std::string actTime)
+void labelImage::writeTxt3d(const std::vector<labelImage>& all, std::string path, std::string actTime)
 {
 	std::ifstream inn;
 	std::string str;
@@ -180,6 +180,95 @@ void labelImage::writeTxt3d(std::vector<labelImage> all, std::string path, std::
 		newFile << "</taggedRectangles>" << std::endl << "</image>" << std::endl;
 	}
 	newFile << "</tagset>";
+}
+
+
+void labelImage::readTxt3d(std::vector<labelImage>& groundTruthData, std::string filename)
+{
+	std::ifstream imgxml;
+	imgxml.open(filename.c_str());
+	if (imgxml.is_open())
+	{
+		while (!imgxml.eof())
+		{
+			std::string output;
+			imgxml >> output;
+
+			// label[0] = "<imageName>"  => new image is described in xmlfile, copy filename
+			if (output.find("<imageName>") != std::string::npos)
+			{
+				// new scene
+				labelImage img("groundtruth", cv::Mat(), cv::Mat(), cv::Scalar(0,0,0));
+//				img.name = output.substr(output.find(label[0]) + label[0].length(), output.length() - 2 * label[0].length() - 1); label[0]="<imageName>";
+				groundTruthData.push_back(img);
+			}
+			else if (output.find("<taggedRectangles>") != std::string::npos || output.find("</taggedRectangles>") != std::string::npos)
+			{
+			}
+			else if (output.find("taggedRectangle") != std::string::npos)
+			{
+				// new detection
+				labelImage::RegionPointTriple rpt;
+				groundTruthData[groundTruthData.size()-1].allRects3d.push_back(rpt);
+				std::string s;
+				groundTruthData[groundTruthData.size()-1].allTexts.push_back(s);
+			}
+			else if (groundTruthData.size()>0 && groundTruthData[groundTruthData.size()-1].allRects3d.size()>0)
+			{
+				RegionPointTriple& rpt = groundTruthData[groundTruthData.size()-1].allRects3d[groundTruthData[groundTruthData.size()-1].allRects3d.size()-1];
+
+				cutout("center_x=", output, rpt.center.x);
+				cutout("center_y=", output, rpt.center.y);
+				cutout("center_z=", output, rpt.center.z);
+				cutout("width_x=", output, rpt.p1.x);
+				cutout("width_y=", output, rpt.p1.y);
+				cutout("width_z=", output, rpt.p1.z);
+				cutout("height_x=", output, rpt.p2.x);
+				cutout("height_y=", output, rpt.p2.y);
+				cutout("height_z=", output, rpt.p2.z);
+
+
+				std::string textTag = "text=";	//text= in xmlfile
+				if (output.find(textTag) != std::string::npos)
+				{
+					std::string text;
+					if ((output[output.length() - 1] != '"'))
+					{
+						text.append(output.substr(output.find(textTag) + textTag.length() + 1, output.length() - textTag.length() - 1));
+						text.append(" ");
+						imgxml >> output;
+						while ((output[output.length() - 1] != '"'))
+						{
+							text.append(output);
+							text.append(" ");
+							imgxml >> output;
+						}
+						text.append(output.substr(0, output.length() - 1));
+					}
+					else
+						text.append(output.substr(output.find(textTag) + textTag.length() + 1, output.length() - textTag.length() - 2));
+
+					groundTruthData[groundTruthData.size()-1].allTexts[groundTruthData[groundTruthData.size()-1].allTexts.size()-1] = text;
+				}
+			}
+		}
+		imgxml.close();
+	}
+}
+
+
+bool labelImage::cutout(std::string label, std::string output, float& value)
+{
+	//cutout x,y,width,height
+	if (output.find(label) != std::string::npos)
+	{
+		std::stringstream ss;
+		ss << output.substr(output.find(label) + label.length() + 1, output.length() - 2 - label.length());
+		ss >> value;
+		return true;
+	}
+	else
+		return false;
 }
 
 

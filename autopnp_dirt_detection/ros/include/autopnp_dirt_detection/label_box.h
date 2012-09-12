@@ -25,6 +25,8 @@ class labelImage
 protected:
 	int input_text(cv::Mat img, std::string winName, std::string * text, cv::Rect rect);
 
+	static bool cutout(std::string label, std::string output, float& value);
+
 	// ASCII KEY CODES
 	const static int LEFT = 1113937;
 	const static int LEFT2 = 65361;
@@ -77,7 +79,9 @@ public:
 
 	static void writeTxt(std::vector<labelImage> all, std::string path, std::string actTime);
 
-	static void writeTxt3d(std::vector<labelImage> all, std::string path, std::string actTime);
+	static void writeTxt3d(const std::vector<labelImage>& all, std::string path, std::string actTime);
+
+	static void readTxt3d(std::vector<labelImage>& groundTruthData, std::string filename);
 
 	static bool checkPointInsideRect(cv::RotatedRect rect, cv::Point2f p);
 
