@@ -15,7 +15,7 @@ dirtCheckStdDevFactor: 3.0   #3.6
 
 # chooses a mode of operation: 0=detection, 1=labeling, 2=database test
 # int
-modeOfOperation: 0
+modeOfOperation: 1
 
 # resolution for bird eye's perspective [pixel/m]
 # double

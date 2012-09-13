@@ -12,7 +12,7 @@ using namespace cv;
 struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
 {
 	bool operator()(const cv::Point2i& a, const cv::Point2i& b) const
-	{ return (a.x<b.x || a.y<b.y); }
+	{ return ((a.x<b.x) || ((a.x==b.x) && (a.y<b.y))); }
 };
 
 
@@ -358,6 +358,10 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
 		cv::imshow("dirt grid", gridPositiveVotesDisplay);
 
+		cv::Mat gridObservationsDisplay;
+		cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
+		cv::imshow("observations grid", gridObservationsDisplay);
+
 		cv::imshow("image postprocessing", new_plane_color_image);
 		cvMoveWindow("image postprocessing", 0, 520);
 
@@ -513,142 +517,214 @@ void DirtDetection::databaseTest()
 
 	// read in file with information about the bag files to use
 	// read in individual gridOrigin
-
-
-	std::string bagFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.bag";
-//	std::string path = "/media/SAMSUNG/rmb/dirt_detection/apartment/kitchen-clean.bag";
-	std::string xmlFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.xml";
-	std::cout << "Reading messages from bag file " << bagFilename << " ..." << std::endl;
-
-	// load ground truth for the current bag file
-	std::vector<labelImage> groundTruthData;
-	labelImage::readTxt3d(groundTruthData, xmlFilename);
-	for (int i=0; i<(int)groundTruthData.size(); i++)
-		for (int j=0; j<(int)groundTruthData[i].allTexts.size(); j++)
-			std::cout << "gt (" << i << ": " << j << "): \t" << groundTruthData[i].allTexts[j] << "\t center (" << groundTruthData[i].allRects3d[j].center.x << "," << groundTruthData[i].allRects3d[j].center.y << "," << groundTruthData[i].allRects3d[j].center.z << ")\t width (" << groundTruthData[i].allRects3d[j].p1.x << "," << groundTruthData[i].allRects3d[j].p1.y << "," << groundTruthData[i].allRects3d[j].p1.z << ")\t height (" << groundTruthData[i].allRects3d[j].p2.x << "," << groundTruthData[i].allRects3d[j].p2.y << "," << groundTruthData[i].allRects3d[j].p2.z << ")" << std::endl;
-
-	// reset results
-	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
-	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
-
-	// play bag file, collect detections
-	rosbag::Bag bag;
-	bag.open(bagFilename, rosbag::bagmode::Read);
-
-	std::vector<std::string> topics;
-	topics.push_back(std::string("/tf"));
-	topics.push_back(std::string("/cam3d/rgb/points"));
-
-	rosbag::View view(bag, rosbag::TopicQuery(topics));
-
-	Timer timer;
-	timer.start();
-	int rosbagMessagesSent = 0;
-	rosbagMessagesProcessed_ = 0;
-	BOOST_FOREACH(rosbag::MessageInstance const m, view)
+	// todo make this a parameter
+	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";
+	std::string statsFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats.txt";
+	std::ifstream dbFile(databaseFilename.c_str());
+	if (dbFile.is_open()==false)
 	{
-		rosgraph_msgs::Clock clock;
-		clock.clock = ros::Time(timer.getElapsedTimeInSec());
-		clock_pub_.publish(clock);
-
-		tf::tfMessage::ConstPtr transform = m.instantiate<tf::tfMessage>();
-		if (transform != NULL)
-		{
-			transform_broadcaster_.sendTransform(transform->transforms);
-			//ROS_INFO_STREAM(transform_listener_.allFramesAsString());
-		}
-
-		sensor_msgs::PointCloud2::ConstPtr cloud = m.instantiate<sensor_msgs::PointCloud2>();
-		if (cloud != NULL)
-		{
-			if (rosbagMessagesSent % 100 == 0)
-				std::cout << ".";
-			//std::cout << "proc: " << rosbagMessagesProcessed_ << "/" << rosbagMessagesSent << std::endl;
-			rosbagMessagesSent++;
-			if (rosbagMessagesSent % 20 == 0)
-				camera_depth_points_bagpub_.publish(cloud);
-
-			//while (rosbagMessagesProcessed_ < rosbagMessagesSent)
-			ros::spinOnce();
-		}
+		ROS_ERROR("Database '%s' could not be opened.", databaseFilename.c_str());
+		return;
 	}
 
-	std::cout << "\nfinished after " << timer.getElapsedTimeInSec() << "s." << std::endl;
+	std::string dbPath;
+	dbFile >> dbPath;
+	int numberBagFiles = 0;
+	dbFile >> numberBagFiles;
 
-	if (rosbagMessagesProcessed_ != rosbagMessagesSent)
-		ROS_ERROR("DirtDetection::databaseTest: Only %d/%d messages processed from the provided bag file.", rosbagMessagesProcessed_, rosbagMessagesSent);
-	else
-		ROS_INFO("DirtDetection::databaseTest: %d messages processed from the provided bag file.", rosbagMessagesProcessed_);
-
-	bag.close();
-
-	// create ground truth occupancy grid
-	// todo
-	cv::Mat groundTruthGrid = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);;
-	for (int i=0; i<(int)groundTruthData.size(); i++)
-		for (int j=0; j<(int)groundTruthData[i].allTexts.size(); j++)
-			putDetectionIntoGrid(groundTruthGrid, groundTruthData[i].allRects3d[j]);
-	nav_msgs::OccupancyGrid groundTruthMap;
-	groundTruthMap.header.stamp = ros::Time::now();
-	groundTruthMap.header.frame_id = "/map";
-	groundTruthMap.info.resolution = 1.0/gridResolution_;
-	groundTruthMap.info.width = groundTruthGrid.cols;
-	groundTruthMap.info.height = groundTruthGrid.rows;
-	groundTruthMap.info.origin.position.x = -groundTruthGrid.cols/2 / (-gridResolution_) + gridOrigin_.x;
-	groundTruthMap.info.origin.position.y = -groundTruthGrid.rows/2 / gridResolution_ + gridOrigin_.y;
-	groundTruthMap.info.origin.position.z = 0;
-	btQuaternion rot(0,3.14159265359,0);
-	groundTruthMap.info.origin.orientation.x = rot.getX();
-	groundTruthMap.info.origin.orientation.y = rot.getY();
-	groundTruthMap.info.origin.orientation.z = rot.getZ();
-	groundTruthMap.info.origin.orientation.w = rot.getW();
-	groundTruthMap.data.resize(groundTruthGrid.cols*groundTruthGrid.rows);
-	for (int v=0, i=0; v<groundTruthGrid.rows; v++)
-		for (int u=0; u<groundTruthGrid.cols; u++, i++)
-			groundTruthMap.data[i] = (groundTruthGrid.at<int>(v,u)==0) ? (int8_t)0 : (int8_t)100;
-	ground_truth_map_.publish(groundTruthMap);
-
-	// create occupancy grid map from detections
-	nav_msgs::OccupancyGrid detectionMap;
-	detectionMap.header.stamp = ros::Time::now();
-	detectionMap.header.frame_id = "/map";
-	detectionMap.info.resolution = 1.0/gridResolution_;
-	detectionMap.info.width = gridPositiveVotes_.cols;
-	detectionMap.info.height = gridPositiveVotes_.rows;
-	detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
-	detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
-	detectionMap.info.origin.position.z = 0.02;
-	detectionMap.info.origin.orientation.x = rot.getX();
-	detectionMap.info.origin.orientation.y = rot.getY();
-	detectionMap.info.origin.orientation.z = rot.getZ();
-	detectionMap.info.origin.orientation.w = rot.getW();
-	detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
-	for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
-		for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
-			detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridPositiveVotes_.at<int>(v,u)+(double)gridNumberObservations_.at<int>(v,u)));
-	detection_map_.publish(detectionMap);
-
-	// generate statistics on detection results
-	int tp=0,fp=0,fn=0,tn=0;
-	int8_t dirtThreshold = 50;
-	for (int v=0,i=0; v<groundTruthGrid.rows; v++)
+	std::map<std::string, std::map<int, Statistics> > statistics;
+	for (int bagIndex=0; bagIndex<numberBagFiles; bagIndex++)
 	{
-		for (int u=0; u<groundTruthGrid.cols; u++, i++)
+		std::string filename;
+		dbFile >> filename;
+		std::string bagFilename = dbPath + filename + ".bag";
+		std::string xmlFilename = dbPath + filename + ".xml";
+		double dx=0, dy=0;
+		dbFile >> dx;
+		dbFile >> dy;
+		gridOrigin_.x = dx;
+		gridOrigin_.y = dy;
+	//	std::string bagFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.bag";
+	//	std::string path = "/media/SAMSUNG/rmb/dirt_detection/apartment/kitchen-clean.bag";
+	//	std::string xmlFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/linoleum_apartment_paper_slam_2012-09-07-09-37-13.xml";
+		std::cout << "Reading messages from bag file " << bagFilename << " ..." << std::endl;
+
+		// load ground truth for the current bag file
+		std::vector<labelImage> groundTruthData;
+		labelImage::readTxt3d(groundTruthData, xmlFilename);
+		for (int i=0; i<(int)groundTruthData.size(); i++)
+			for (int j=0; j<(int)groundTruthData[i].allTexts.size(); j++)
+				std::cout << "gt (" << i << ": " << j << "): \t" << groundTruthData[i].allTexts[j] << "\t center (" << groundTruthData[i].allRects3d[j].center.x << "," << groundTruthData[i].allRects3d[j].center.y << "," << groundTruthData[i].allRects3d[j].center.z << ")\t width (" << groundTruthData[i].allRects3d[j].p1.x << "," << groundTruthData[i].allRects3d[j].p1.y << "," << groundTruthData[i].allRects3d[j].p1.z << ")\t height (" << groundTruthData[i].allRects3d[j].p2.x << "," << groundTruthData[i].allRects3d[j].p2.y << "," << groundTruthData[i].allRects3d[j].p2.z << ")" << std::endl;
+
+		// ------- begin of for loop for changing parameter
+
+		// reset results
+		gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
+		gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+
+		// play bag file, collect detections
+		rosbag::Bag bag;
+		bag.open(bagFilename, rosbag::bagmode::Read);
+
+		std::vector<std::string> topics;
+		topics.push_back(std::string("/tf"));
+		topics.push_back(std::string("/cam3d/rgb/points"));
+
+		rosbag::View view(bag, rosbag::TopicQuery(topics));
+
+		Timer timer;
+		timer.start();
+		int rosbagMessagesSent = 0;
+		rosbagMessagesProcessed_ = 0;
+		BOOST_FOREACH(rosbag::MessageInstance const m, view)
 		{
-			if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]<dirtThreshold)
-				tn++;
-			else if (groundTruthMap.data[i]==(int8_t)100 && detectionMap.data[i]>=dirtThreshold)
-				tp++;
-			else if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]>=dirtThreshold)
-				fp++;
-			else
-				fn++;
+			rosgraph_msgs::Clock clock;
+			clock.clock = ros::Time(timer.getElapsedTimeInSec());
+			clock_pub_.publish(clock);
+
+			tf::tfMessage::ConstPtr transform = m.instantiate<tf::tfMessage>();
+			if (transform != NULL)
+			{
+				transform_broadcaster_.sendTransform(transform->transforms);
+				//ROS_INFO_STREAM(transform_listener_.allFramesAsString());
+			}
+
+			sensor_msgs::PointCloud2::ConstPtr cloud = m.instantiate<sensor_msgs::PointCloud2>();
+			if (cloud != NULL)
+			{
+				if (rosbagMessagesSent % 100 == 0)
+					std::cout << ".";
+				//std::cout << "proc: " << rosbagMessagesProcessed_ << "/" << rosbagMessagesSent << std::endl;
+				rosbagMessagesSent++;
+				if (rosbagMessagesSent % 20 == 0)
+					camera_depth_points_bagpub_.publish(cloud);
+
+				//while (rosbagMessagesProcessed_ < rosbagMessagesSent)
+				ros::spinOnce();
+			}
 		}
+
+		std::cout << "\nfinished after " << timer.getElapsedTimeInSec() << "s." << std::endl;
+
+		if (rosbagMessagesProcessed_ != rosbagMessagesSent)
+			ROS_ERROR("DirtDetection::databaseTest: Only %d/%d messages processed from the provided bag file.", rosbagMessagesProcessed_, rosbagMessagesSent);
+		else
+			ROS_INFO("DirtDetection::databaseTest: %d messages processed from the provided bag file.", rosbagMessagesProcessed_);
+
+		bag.close();
+
+		// create ground truth occupancy grid
+		// todo
+		cv::Mat groundTruthGrid = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);;
+		for (int i=0; i<(int)groundTruthData.size(); i++)
+			for (int j=0; j<(int)groundTruthData[i].allTexts.size(); j++)
+				putDetectionIntoGrid(groundTruthGrid, groundTruthData[i].allRects3d[j]);
+		nav_msgs::OccupancyGrid groundTruthMap;
+		groundTruthMap.header.stamp = ros::Time::now();
+		groundTruthMap.header.frame_id = "/map";
+		groundTruthMap.info.resolution = 1.0/gridResolution_;
+		groundTruthMap.info.width = groundTruthGrid.cols;
+		groundTruthMap.info.height = groundTruthGrid.rows;
+		groundTruthMap.info.origin.position.x = -groundTruthGrid.cols/2 / (-gridResolution_) + gridOrigin_.x;
+		groundTruthMap.info.origin.position.y = -groundTruthGrid.rows/2 / gridResolution_ + gridOrigin_.y;
+		groundTruthMap.info.origin.position.z = 0;
+		btQuaternion rot(0,3.14159265359,0);
+		groundTruthMap.info.origin.orientation.x = rot.getX();
+		groundTruthMap.info.origin.orientation.y = rot.getY();
+		groundTruthMap.info.origin.orientation.z = rot.getZ();
+		groundTruthMap.info.origin.orientation.w = rot.getW();
+		groundTruthMap.data.resize(groundTruthGrid.cols*groundTruthGrid.rows);
+		for (int v=0, i=0; v<groundTruthGrid.rows; v++)
+			for (int u=0; u<groundTruthGrid.cols; u++, i++)
+				groundTruthMap.data[i] = (groundTruthGrid.at<int>(v,u)==0) ? (int8_t)0 : (int8_t)100;
+		ground_truth_map_.publish(groundTruthMap);
+
+		// create occupancy grid map from detections
+		nav_msgs::OccupancyGrid detectionMap;
+		detectionMap.header.stamp = ros::Time::now();
+		detectionMap.header.frame_id = "/map";
+		detectionMap.info.resolution = 1.0/gridResolution_;
+		detectionMap.info.width = gridPositiveVotes_.cols;
+		detectionMap.info.height = gridPositiveVotes_.rows;
+		detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
+		detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
+		detectionMap.info.origin.position.z = 0.02;
+		detectionMap.info.origin.orientation.x = rot.getX();
+		detectionMap.info.origin.orientation.y = rot.getY();
+		detectionMap.info.origin.orientation.z = rot.getZ();
+		detectionMap.info.origin.orientation.w = rot.getW();
+		detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
+		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
+			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+			{
+//				if (gridPositiveVotes_.at<int>(v,u) > 0)
+//					std::cout << "p:" << gridPositiveVotes_.at<int>(v,u) << " o:" << gridNumberObservations_.at<int>(v,u) << " a:" << (100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u))) << "   " << (int)(int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u))) << std::endl;
+				detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
+			}
+		detection_map_.publish(detectionMap);
+
+		// generate statistics on detection results
+		for (int8_t dirtThreshold=10; dirtThreshold<=100; dirtThreshold+=10)
+		{
+			Statistics stat;
+			stat.setZero();
+			for (int v=0,i=0; v<groundTruthGrid.rows; v++)
+			{
+				for (int u=0; u<groundTruthGrid.cols; u++, i++)
+				{
+					// normal statistics
+					if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]<dirtThreshold)
+						stat.tn++;
+					else if (groundTruthMap.data[i]==(int8_t)100 && detectionMap.data[i]>=dirtThreshold)
+						stat.tp++;
+					else if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]>=dirtThreshold)
+						stat.fp++;
+					else
+						stat.fn++;
+
+					// neighborhood relaxed statistics
+					bool relaxedDirt = false;
+					for (int dv=-1; dv<=1; dv++)
+						for (int du=-1; du<=1; du++)
+							if (groundTruthMap.data[(v+dv)*groundTruthGrid.cols+u+du]==(int8_t)100)
+								relaxedDirt = true;
+					if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]<dirtThreshold)
+						stat.tnr++;
+					else if (relaxedDirt==true && detectionMap.data[i]>=dirtThreshold)
+						stat.tpr++;
+					else if (relaxedDirt==false && detectionMap.data[i]>=dirtThreshold)
+						stat.fpr++;
+					else
+						stat.fnr++;
+				}
+			}
+
+			std::cout << filename << "\tdirtThreshold=" << (int)dirtThreshold << "\trecall=" << (double)stat.tp/(stat.tp+stat.fn) << "\tprecision=" << (double)stat.tp/(stat.tp+stat.fp) << "\ttp=" << stat.tp << "\tfp=" << stat.fp << "\tfn=" << stat.fn << "\ttn=" << stat.tn << std::endl;
+			std::cout << filename << "\tdirtThreshold=" << (int)dirtThreshold << "\trecallr=" << (double)stat.tpr/(stat.tpr+stat.fnr) << "\tprecisionr=" << (double)stat.tpr/(stat.tpr+stat.fpr) << "\ttpr=" << stat.tpr << "\tfpr=" << stat.fpr << "\tfnr=" << stat.fnr << "\ttnr=" << stat.tnr << std::endl;
+
+			statistics[filename][(int)dirtThreshold] = stat;
+		}	// ------- end of for loop for changing parameter
 	}
 
-	// todo: provide relaxed statistics where neighbors of hits count as hits or reduce resolution
+	dbFile.close();
 
-	std::cout << "tp=" << tp << "\tfp=" << fp << "\tfn=" << fn << "\ttn=" << tn << "\trecall=" << (double)tp/(tp+fn) << "\tprecision=" << (double)tp/(tp+fp) << std::endl;
+	// save statistics
+	std::ofstream statsFile(statsFilename.c_str());
+	if (statsFile.is_open()==false)
+	{
+		ROS_ERROR("Statistics file '%s' could not be opened.", statsFilename.c_str());
+		return;
+	}
+	for (std::map<std::string, std::map<int, Statistics> >::iterator itFile = statistics.begin(); itFile!=statistics.end(); itFile++)
+	{
+		for (std::map<int, Statistics>::iterator itThreshold = itFile->second.begin(); itThreshold!=itFile->second.end(); itThreshold++)
+		{
+			statsFile << itFile->first << "\t" << itThreshold->first << "\t" << itThreshold->second.tp << "\t" << itThreshold->second.fp << "\t" << itThreshold->second.fn << "\t" << itThreshold->second.tn
+					 << "\t" << itThreshold->second.tpr << "\t" << itThreshold->second.fpr << "\t" << itThreshold->second.fnr << "\t" << itThreshold->second.tnr <<std::endl;
+		}
+	}
+	std::cout << "Statistics saved at '" << statsFilename << "'." << std::endl;
+
 
 	return;
 }
@@ -758,7 +834,6 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			}
 			else
 			{
-				std::cout << "nan: " << (*filtered_input_cloud)[0].x << " " << (*filtered_input_cloud)[0].y << " " << (*filtered_input_cloud)[0].z << std::endl;
 				// the plane is not the ground plane -> remove that plane from the point cloud
 				for (size_t i=0; i<inliers->indices.size(); i++)
 				{
@@ -804,10 +879,21 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			plane_mask.at<uchar>(v, u) = 255;
 
 			// populate visibility grid
-			cv::Point2i co(-(point.x-gridOrigin_.x)*gridResolution_+grid_offset.x, (point.y-gridOrigin_.y)*gridResolution_+grid_offset.y);
+			btVector3 planePointCamera(point.x, point.y, point.z);
+			btVector3 planePointWorld = transform_map_camera * planePointCamera;
+			cv::Point2i co(-(planePointWorld.getX()-gridOrigin_.x)*gridResolution_+grid_offset.x, (planePointWorld.getY()-gridOrigin_.y)*gridResolution_+grid_offset.y);
 			if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<grid_number_observations.cols && co.y>=0 && co.y<grid_number_observations.rows)
 			{
 				// grid cell has not been incremented, yet
+//				for (std::set<cv::Point2i, lessPoint2i>::iterator it=visitedGridCells.begin(); it!=visitedGridCells.end(); it++)
+//				{
+//					if (it->x==co.x && it->y==co.y)
+//					{
+//						std::cout << "co: " << co.x << " " << co.y << std::endl;
+//						std::cout << "p:" << it->x << " " << it->y << std::endl;
+//						getchar();
+//					}
+//				}
 				visitedGridCells.insert(co);
 				grid_number_observations.at<int>(co) = grid_number_observations.at<int>(co) + 1;
 			}

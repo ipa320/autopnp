@@ -178,6 +178,19 @@ public:
 		int totalnum;	/**< Total number of samples of this class. */
 	};
 
+	struct Statistics
+	{
+		int tp;
+		int fp;
+		int fn;
+		int tn;
+		int tpr;
+		int fpr;
+		int fnr;
+		int tnr;
+		void setZero() {tp=0; fp=0; fn=0; tn=0; tpr=0; fpr=0; fnr=0; tnr=0;};
+	};
+
 
 	/**
 	 * Constructor.
