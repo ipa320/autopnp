@@ -66,6 +66,15 @@ void DirtDetection::init()
 
 	// todo: debug parameters
 	debug_["showOriginalImage"] = false;
+	debug_["showObservationsGrid"] = true;
+	debug_["showDirtGrid"] = true;
+	debug_["showPlaneColorImage"] = true;
+	debug_["showImagePostprocessing"] = true;
+	debug_["showSaliencyDetection"] = false;
+	debug_["showColorWithArtificialDirt"] = false;
+	debug_["showSaliencyWithArtificialDirt"] = false;
+	debug_["showSaliencyBadScale"] = false;
+
 	// todo: grid parameters
 	gridResolution_ = 20.;
 	gridOrigin_ = cv::Point2d(2.0, 2.0);
@@ -257,9 +266,11 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 	cv::Mat new_color_image = color_image;
 	Image_Postprocessing_C1(result_image, image_postproc, new_color_image);
 
-	cv::imshow("image postprocessing", new_color_image);
-	cvMoveWindow("image postprocessing", 0, 520);
-
+	if (debug_["showImagePostprocessing"] == true)
+	{
+		cv::imshow("image postprocessing", new_color_image);
+		cvMoveWindow("image postprocessing", 0, 520);
+	}
 	cv::waitKey(10);
 }
 
@@ -354,18 +365,33 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			putDetectionIntoGrid(gridPositiveVotes_, pointsWorldMap);
 		}
 
-		cv::Mat gridPositiveVotesDisplay;
-		cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
-		cv::imshow("dirt grid", gridPositiveVotesDisplay);
+		if (debug_["showDirtGrid"] == true)
+		{
+			cv::Mat gridPositiveVotesDisplay;
+			cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
+			cv::imshow("dirt grid", gridPositiveVotesDisplay);
+			cvMoveWindow("dirt grid", 0, 0);
+		}
 
-		cv::Mat gridObservationsDisplay;
-		cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
-		cv::imshow("observations grid", gridObservationsDisplay);
+		if (debug_["showObservationsGrid"] == true)
+		{
+			cv::Mat gridObservationsDisplay;
+			cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
+			cv::imshow("observations grid", gridObservationsDisplay);
+			cvMoveWindow("observations grid", 340, 0);
+		}
 
-		cv::imshow("image postprocessing", new_plane_color_image);
-		cvMoveWindow("image postprocessing", 0, 520);
+		if (debug_["showImagePostprocessing"] == true)
+		{
+			cv::imshow("image postprocessing", new_plane_color_image);
+			cvMoveWindow("image postprocessing", 0, 520);
+		}
 
-		cv::imshow("original color image", plane_color_image);
+		if (debug_["showPlaneColorImage"] == true)
+		{
+			cv::imshow("original color image", plane_color_image);
+			cvMoveWindow("original color image", 680, 0);
+		}
 	}
 	rosbagMessagesProcessed_++;
 
@@ -445,12 +471,15 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 
 
 		cv::imshow("original color image", plane_color_image);
+		cvMoveWindow("original color image", 680, 0);
 		cv::imshow("birds eye perspective", plane_color_image_warped);
 		cvMoveWindow("birds eye perspective", 0, 520);
 		int key = cv::waitKey(20);
 
+		//std::cout << "key: " << key << std::endl;
+
 		std::string winName = "labeling image";
-		if (key == 'l')
+		if (key == 'l' || key == 1048684)
 		{
 			// start labeling at current image
 			cv::imshow(winName.c_str(), plane_color_image_warped);
@@ -491,7 +520,7 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 				transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
 			}
 		}
-		else if (key == 'f')
+		else if (key == 'f' || key == 1048678)
 		{
 			// finish labeling, write label file
 			time_t t;
@@ -504,7 +533,7 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 			labelImage::writeTxt3d(labeledImages_, path, currentTime);
 			labelingStarted_ = false;
 		}
-		else if (key == 'q')
+		else if (key == 'q' || key == 1048689)
 		{
 			// quit
 			ros::shutdown();
@@ -518,7 +547,7 @@ void DirtDetection::databaseTest()
 	// read in file with information about the bag files to use
 	// read in individual gridOrigin
 	// todo make this a parameter
-	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";
+	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";	// /home/rmb/dirt_detection/
 	std::string statsFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats.txt";
 	std::string statsFilenameMatlab = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats_matlab.txt";
 	std::ifstream dbFile(databaseFilename.c_str());
@@ -597,7 +626,7 @@ void DirtDetection::databaseTest()
 					std::cout << ".";
 				//std::cout << "proc: " << rosbagMessagesProcessed_ << "/" << rosbagMessagesSent << std::endl;
 				rosbagMessagesSent++;
-				if (rosbagMessagesSent % 20 == 0)
+				//if (rosbagMessagesSent % 20 == 0)
 					camera_depth_points_bagpub_.publish(cloud);
 
 				//while (rosbagMessagesProcessed_ < rosbagMessagesSent)
@@ -664,6 +693,16 @@ void DirtDetection::databaseTest()
 			}
 		detection_map_.publish(detectionMap);
 
+		// todo: grayscale output desired
+		// write result as image file (only black and white)
+		cv::Mat temp;
+		cv::normalize(groundTruthGrid, temp, 0., 255*256., cv::NORM_MINMAX);
+		std::string nameGt = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + filename + "_gt.png";
+		cv::imwrite(nameGt, temp);
+		cv::normalize(gridPositiveVotes_, temp, 0., 255*256., cv::NORM_MINMAX);
+		std::string nameDet = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + filename + "_det.png";
+		cv::imwrite(nameDet, temp);
+
 		// generate statistics on detection results
 		for (int8_t dirtThreshold=10; dirtThreshold<=100; dirtThreshold+=10)
 		{
@@ -685,8 +724,8 @@ void DirtDetection::databaseTest()
 
 					// neighborhood relaxed statistics
 					bool relaxedDirt = false;
-					for (int dv=-1; dv<=1; dv++)
-						for (int du=-1; du<=1; du++)
+					for (int dv=-2; dv<=2; dv++)
+						for (int du=-2; du<=2; du++)
 							if (groundTruthMap.data[(v+dv)*groundTruthGrid.cols+u+du]==(int8_t)100)
 								relaxedDirt = true;
 					if (groundTruthMap.data[i]==(int8_t)0 && detectionMap.data[i]<dirtThreshold)
@@ -704,6 +743,7 @@ void DirtDetection::databaseTest()
 			std::cout << filename << "\tdirtThreshold=" << (int)dirtThreshold << "\trecallr=" << (double)stat.tpr/(stat.tpr+stat.fnr) << "\tprecisionr=" << (double)stat.tpr/(stat.tpr+stat.fpr) << "\ttpr=" << stat.tpr << "\tfpr=" << stat.fpr << "\tfnr=" << stat.fnr << "\ttnr=" << stat.tnr << std::endl;
 
 			statistics[filename][(int)dirtThreshold] = stat;
+
 		}	// ------- end of for loop for changing parameter
 	}
 
@@ -1369,7 +1409,8 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat&
 		// maske erodiere
 		cv::Mat mask_eroded = mask->clone();
 		cv::dilate(*mask, mask_eroded, cv::Mat(), cv::Point(-1, -1), 2);
-		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25.0/640.0*C3_color_image.cols);
+		//cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25.0/640.0*C3_color_image.cols);
+		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 35.0/640.0*C3_color_image.cols);
 		cv::Mat temp;
 		C1_saliency_image.copyTo(temp, mask_eroded);
 		C1_saliency_image = temp;
@@ -1426,7 +1467,8 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
 	cv::minMaxLoc(C1_saliency_image,&minv,&maxv,&minl,&maxl);
 	C1_saliency_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
 
-	cv::imshow("SaliencyDetection", scaled_input_image);
+	if (debug_["showSaliencyDetection"] == true)
+		cv::imshow("SaliencyDetection", scaled_input_image);
 
 	//set dirt pixel to white
 	C1_BlackWhite_image = cv::Mat::zeros(C1_saliency_image.size(), CV_8UC1);
@@ -1670,13 +1712,15 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
 
 	// display of images with artificial dirt
-	cv::imshow("color with artificial dirt", color_image_with_artifical_dirt);
+	if (debug_["showColorWithArtificialDirt"] == true)
+		cv::imshow("color with artificial dirt", color_image_with_artifical_dirt);
 	cv::Mat C1_saliency_image_with_artifical_dirt_scaled;
 	double salminv, salmaxv;
 	cv::Point2i salminl, salmaxl;
 	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&salminv,&salmaxv,&salminl,&salmaxl, mask_with_artificial_dirt);
 	C1_saliency_image_with_artifical_dirt.convertTo(C1_saliency_image_with_artifical_dirt_scaled, -1, 1.0/(salmaxv-salminv), -1.0*(salminv)/(salmaxv-salminv));
-	cv::imshow("saliency with artificial dirt", C1_saliency_image_with_artifical_dirt_scaled);
+	if (debug_["showSaliencyWithArtificialDirt"] == true)
+		cv::imshow("saliency with artificial dirt", C1_saliency_image_with_artifical_dirt_scaled);
 
 	// scale C1_saliency_image to value obtained from C1_saliency_image with artificially added dirt
 //	std::cout << "res_img: " << C1_saliency_image_with_artifical_dirt.at<float>(300,200);
@@ -1719,8 +1763,11 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::minMaxLoc(C1_saliency_image,&badminv,&badmaxv,&badminl,&badmaxl, mask);
 	C1_saliency_image.convertTo(badscale, -1, 1.0/(badmaxv-badminv), -1.0*(badminv)/(badmaxv-badminv));
 //	std::cout << "bad scale:   " << "\tmin=" << badminv << "\tmax=" << badmaxv << std::endl;
-	cv::imshow("bad scale", badscale);
-	cvMoveWindow("bad scale", 650, 0);
+	if (debug_["showSaliencyBadScale"] == true)
+	{
+		cv::imshow("bad scale", badscale);
+		cvMoveWindow("bad scale", 650, 0);
+	}
 	//cvMoveWindow("bad scale", 650, 520);
 //	cv::Scalar mean, stdDev;
 //	cv::meanStdDev(C1_saliency_image, mean, stdDev, mask);
@@ -1730,8 +1777,11 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 //	//C1_saliency_image.convertTo(scaled_C1_saliency_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
 //	C1_saliency_image.convertTo(scaled_C1_saliency_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
 
-	cv::imshow("SaliencyDetection", scaled_C1_saliency_image);
-	cvMoveWindow("SaliencyDetection", 650, 520);
+	if (debug_["showSaliencyDetection"] == true)
+	{
+		cv::imshow("SaliencyDetection", scaled_C1_saliency_image);
+		cvMoveWindow("SaliencyDetection", 650, 520);
+	}
 
 	//set dirt pixel to white
 	C1_BlackWhite_image = cv::Mat::zeros(C1_saliency_image.size(), CV_8UC1);
@@ -1770,159 +1820,160 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 }
 
 
-void DirtDetection::SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg)
-{
-	cv_bridge::CvImageConstPtr color_image_ptr;
-	cv::Mat color_image;
-	convertColorImageMessageToMat(color_image_msg, color_image_ptr, color_image);
 
-	// color_image is now available with the current image from your camera
-
-	cv::imshow("image", color_image);
-	//cv::waitKey(10);
-
-	//int thresh = 350;
-	int scale = 6;
-
-	//convert color image to one channel gray-scale image
-	//color_image -> gray_image
-    IplImage hsrc = color_image;
-    IplImage *src = &hsrc;
-
-    /* get image properties */
-    int width  = src->width;
-    int height = src->height;
-
-    /* create new image for the grayscale version */
-    IplImage * gray_image = cvCreateImage( cvSize( width, height ), IPL_DEPTH_8U, 1 );
-
-    /* CV_RGB2GRAY: convert RGB image to grayscale */
-    cvCvtColor( src, gray_image, CV_RGB2GRAY );
-
-
-    cv::Mat bild(gray_image);
-
-	cv::imshow("image3", bild);
-	//cv::waitKey(10);
-
-
-	//IplImage imageIpl = (IplImage) gray_image;
-	IplImage* image = gray_image; //& imageIpl;
-
-	//given a one channel image
-	unsigned int size = (int)floor((float)pow(2.0,scale)); //the size to do the saliency at
-
-	IplImage* bw_im = cvCreateImage(cvSize(size,size), IPL_DEPTH_8U,1);
-	cvResize(image, bw_im);
-	IplImage* realInput = cvCreateImage( cvGetSize(bw_im), IPL_DEPTH_32F, 1);
-	IplImage* imaginaryInput = cvCreateImage( cvGetSize(bw_im), IPL_DEPTH_32F, 1);
-	IplImage* complexInput = cvCreateImage( cvGetSize(bw_im), IPL_DEPTH_32F, 2);
-
-	cvScale(bw_im, realInput, 1.0/255.0);
-	cvZero(imaginaryInput);
-	cvMerge(realInput, imaginaryInput, NULL, NULL, complexInput);
-	CvMat* dft_A = cvCreateMat( size, size, CV_32FC2 );
-
-	// copy A to dft_A and pad dft_A with zeros
-	CvMat tmp;
-	cvGetSubRect( dft_A, &tmp, cvRect(0,0, size,size));
-	cvCopy( complexInput, &tmp );
-	// cvZero(&tmp);
-
-	cvDFT( dft_A, dft_A, CV_DXT_FORWARD, size );
-	cvSplit( dft_A, realInput, imaginaryInput, NULL, NULL );
-	// Compute the phase angle
-	IplImage* image_Mag = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
-	IplImage* image_Phase = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
-
-
-	//compute the phase of the spectrum
-	cvCartToPolar(realInput, imaginaryInput, image_Mag, image_Phase, 0);
-
-	IplImage* log_mag = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
-	cvLog(image_Mag, log_mag);
-
-	//Box filter the magnitude, then take the difference
-	IplImage* log_mag_Filt = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
-	CvMat* filt = cvCreateMat(3,3, CV_32FC1);
-	cvSet(filt,cvScalarAll(1.0/9.0));
-	cvFilter2D(log_mag, log_mag_Filt, filt);
-	cvReleaseMat(&filt);
-
-	cvSub(log_mag, log_mag_Filt, log_mag);
-
-	cvExp(log_mag, image_Mag);
-
-	cvPolarToCart(image_Mag, image_Phase, realInput, imaginaryInput,0);
-	//cvExp(log_mag, image_Mag);
-
-	cvMerge(realInput, imaginaryInput, NULL, NULL, dft_A);
-	cvDFT( dft_A, dft_A, CV_DXT_INV_SCALE, size);
-
-	cvAbs(dft_A, dft_A);
-	cvMul(dft_A,dft_A, dft_A);
-	cvGetSubRect( dft_A, &tmp, cvRect(0,0, size,size));
-	cvCopy( &tmp, complexInput);
-	cvSplit(complexInput, realInput, imaginaryInput, NULL,NULL);
-
-	IplImage* result_image = cvCreateImage(cvGetSize(image),IPL_DEPTH_32F, 1);
-	double minv, maxv;
-	CvPoint minl, maxl;
-	cvSmooth(realInput,realInput);
-	cvSmooth(realInput,realInput);
-	cvMinMaxLoc(realInput,&minv,&maxv,&minl,&maxl);
-	//printf("Max value %lf, min %lf\n", maxv,minv);
-	maxv= 0.03;
-	cvScale(realInput, realInput, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
-	cvResize(realInput, result_image);
-
-
-	cv::Mat resultImage(result_image);
-
-
-	// remove saliency at the image border
-	int borderX = resultImage.cols/20;
-	int borderY = resultImage.rows/20;
-	if (borderX > 0 && borderY > 0)
-	{
-	cv::Mat smallImage_ = resultImage.colRange(borderX, resultImage.cols-1-borderX);
-	cv::Mat smallImage = smallImage_.rowRange(borderY, smallImage_.rows-1-borderY);
-
-	copyMakeBorder(smallImage, resultImage, borderY, borderY, borderX, borderX, cv::BORDER_CONSTANT, cv::Scalar(0));
-	}
-
-	//CvMat -> cv::Mat
-	//cv::meanStdDev();
-
-	//cv::Mat stainImage;
-	// check if the image makes sense (or convert to 0...255)
-	//resultImage.convertTo(stainImage, -1, 1.0, 0.0);
-
-
-	//mThresholdHou = thresh/100.0*cvAvg(realInput).val[0];
-
-	cv::imshow("image2", resultImage);
-	cv::waitKey(10);
-
-
-	//stainImage.release();
-
-	resultImage.release();
-	cvReleaseImage(&result_image);
-	cvReleaseImage(&realInput);
-	cvReleaseImage(&imaginaryInput);
-	cvReleaseImage(&complexInput);
-	cvReleaseMat(&dft_A);
-	cvReleaseImage(&bw_im);
-
-	cvReleaseImage(&image_Mag);
-	cvReleaseImage(&image_Phase);
-
-	cvReleaseImage(&log_mag);
-	cvReleaseImage(&log_mag_Filt);
-	cvReleaseImage(&bw_im);
-
-}
+//void DirtDetection::SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg)
+//{
+//	cv_bridge::CvImageConstPtr color_image_ptr;
+//	cv::Mat color_image;
+//	convertColorImageMessageToMat(color_image_msg, color_image_ptr, color_image);
+//
+//	// color_image is now available with the current image from your camera
+//
+//	cv::imshow("image", color_image);
+//	//cv::waitKey(10);
+//
+//	//int thresh = 350;
+//	int scale = 6;
+//
+//	//convert color image to one channel gray-scale image
+//	//color_image -> gray_image
+//    IplImage hsrc = color_image;
+//    IplImage *src = &hsrc;
+//
+//    /* get image properties */
+//    int width  = src->width;
+//    int height = src->height;
+//
+//    /* create new image for the grayscale version */
+//    IplImage * gray_image = cvCreateImage( cvSize( width, height ), IPL_DEPTH_8U, 1 );
+//
+//    /* CV_RGB2GRAY: convert RGB image to grayscale */
+//    cvCvtColor( src, gray_image, CV_RGB2GRAY );
+//
+//
+//    cv::Mat bild(gray_image);
+//
+//	cv::imshow("image3", bild);
+//	//cv::waitKey(10);
+//
+//
+//	//IplImage imageIpl = (IplImage) gray_image;
+//	IplImage* image = gray_image; //& imageIpl;
+//
+//	//given a one channel image
+//	unsigned int size = (int)floor((float)pow(2.0,scale)); //the size to do the saliency at
+//
+//	IplImage* bw_im = cvCreateImage(cvSize(size,size), IPL_DEPTH_8U,1);
+//	cvResize(image, bw_im);
+//	IplImage* realInput = cvCreateImage( cvGetSize(bw_im), IPL_DEPTH_32F, 1);
+//	IplImage* imaginaryInput = cvCreateImage( cvGetSize(bw_im), IPL_DEPTH_32F, 1);
+//	IplImage* complexInput = cvCreateImage( cvGetSize(bw_im), IPL_DEPTH_32F, 2);
+//
+//	cvScale(bw_im, realInput, 1.0/255.0);
+//	cvZero(imaginaryInput);
+//	cvMerge(realInput, imaginaryInput, NULL, NULL, complexInput);
+//	CvMat* dft_A = cvCreateMat( size, size, CV_32FC2 );
+//
+//	// copy A to dft_A and pad dft_A with zeros
+//	CvMat tmp;
+//	cvGetSubRect( dft_A, &tmp, cvRect(0,0, size,size));
+//	cvCopy( complexInput, &tmp );
+//	// cvZero(&tmp);
+//
+//	cvDFT( dft_A, dft_A, CV_DXT_FORWARD, size );
+//	cvSplit( dft_A, realInput, imaginaryInput, NULL, NULL );
+//	// Compute the phase angle
+//	IplImage* image_Mag = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
+//	IplImage* image_Phase = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
+//
+//
+//	//compute the phase of the spectrum
+//	cvCartToPolar(realInput, imaginaryInput, image_Mag, image_Phase, 0);
+//
+//	IplImage* log_mag = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
+//	cvLog(image_Mag, log_mag);
+//
+//	//Box filter the magnitude, then take the difference
+//	IplImage* log_mag_Filt = cvCreateImage(cvSize(size, size), IPL_DEPTH_32F, 1);
+//	CvMat* filt = cvCreateMat(3,3, CV_32FC1);
+//	cvSet(filt,cvScalarAll(1.0/9.0));
+//	cvFilter2D(log_mag, log_mag_Filt, filt);
+//	cvReleaseMat(&filt);
+//
+//	cvSub(log_mag, log_mag_Filt, log_mag);
+//
+//	cvExp(log_mag, image_Mag);
+//
+//	cvPolarToCart(image_Mag, image_Phase, realInput, imaginaryInput,0);
+//	//cvExp(log_mag, image_Mag);
+//
+//	cvMerge(realInput, imaginaryInput, NULL, NULL, dft_A);
+//	cvDFT( dft_A, dft_A, CV_DXT_INV_SCALE, size);
+//
+//	cvAbs(dft_A, dft_A);
+//	cvMul(dft_A,dft_A, dft_A);
+//	cvGetSubRect( dft_A, &tmp, cvRect(0,0, size,size));
+//	cvCopy( &tmp, complexInput);
+//	cvSplit(complexInput, realInput, imaginaryInput, NULL,NULL);
+//
+//	IplImage* result_image = cvCreateImage(cvGetSize(image),IPL_DEPTH_32F, 1);
+//	double minv, maxv;
+//	CvPoint minl, maxl;
+//	cvSmooth(realInput,realInput);
+//	cvSmooth(realInput,realInput);
+//	cvMinMaxLoc(realInput,&minv,&maxv,&minl,&maxl);
+//	//printf("Max value %lf, min %lf\n", maxv,minv);
+//	maxv= 0.03;
+//	cvScale(realInput, realInput, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
+//	cvResize(realInput, result_image);
+//
+//
+//	cv::Mat resultImage(result_image);
+//
+//
+//	// remove saliency at the image border
+//	int borderX = resultImage.cols/20;
+//	int borderY = resultImage.rows/20;
+//	if (borderX > 0 && borderY > 0)
+//	{
+//	cv::Mat smallImage_ = resultImage.colRange(borderX, resultImage.cols-1-borderX);
+//	cv::Mat smallImage = smallImage_.rowRange(borderY, smallImage_.rows-1-borderY);
+//
+//	copyMakeBorder(smallImage, resultImage, borderY, borderY, borderX, borderX, cv::BORDER_CONSTANT, cv::Scalar(0));
+//	}
+//
+//	//CvMat -> cv::Mat
+//	//cv::meanStdDev();
+//
+//	//cv::Mat stainImage;
+//	// check if the image makes sense (or convert to 0...255)
+//	//resultImage.convertTo(stainImage, -1, 1.0, 0.0);
+//
+//
+//	//mThresholdHou = thresh/100.0*cvAvg(realInput).val[0];
+//
+//	cv::imshow("image2", resultImage);
+//	cv::waitKey(10);
+//
+//
+//	//stainImage.release();
+//
+//	resultImage.release();
+//	cvReleaseImage(&result_image);
+//	cvReleaseImage(&realInput);
+//	cvReleaseImage(&imaginaryInput);
+//	cvReleaseImage(&complexInput);
+//	cvReleaseMat(&dft_A);
+//	cvReleaseImage(&bw_im);
+//
+//	cvReleaseImage(&image_Mag);
+//	cvReleaseImage(&image_Phase);
+//
+//	cvReleaseImage(&log_mag);
+//	cvReleaseImage(&log_mag_Filt);
+//	cvReleaseImage(&bw_im);
+//
+//}
 
 void DirtDetection::CreateCarpetClassiefierSVM(const std::vector<CarpetFeatures>& carp_feat_vec,
 											const std::vector<CarpetClass>& carp_class_vec,
