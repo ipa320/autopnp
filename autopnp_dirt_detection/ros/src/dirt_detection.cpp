@@ -520,6 +520,7 @@ void DirtDetection::databaseTest()
 	// todo make this a parameter
 	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";
 	std::string statsFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats.txt";
+	std::string statsFilenameMatlab = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats_matlab.txt";
 	std::ifstream dbFile(databaseFilename.c_str());
 	if (dbFile.is_open()==false)
 	{
@@ -710,9 +711,15 @@ void DirtDetection::databaseTest()
 
 	// save statistics
 	std::ofstream statsFile(statsFilename.c_str());
+	std::ofstream statsFileMatlab(statsFilenameMatlab.c_str());
 	if (statsFile.is_open()==false)
 	{
 		ROS_ERROR("Statistics file '%s' could not be opened.", statsFilename.c_str());
+		return;
+	}
+	if (statsFileMatlab.is_open()==false)
+	{
+		ROS_ERROR("Statistics file '%s' could not be opened.", statsFilenameMatlab.c_str());
 		return;
 	}
 	for (std::map<std::string, std::map<int, Statistics> >::iterator itFile = statistics.begin(); itFile!=statistics.end(); itFile++)
@@ -720,10 +727,14 @@ void DirtDetection::databaseTest()
 		for (std::map<int, Statistics>::iterator itThreshold = itFile->second.begin(); itThreshold!=itFile->second.end(); itThreshold++)
 		{
 			statsFile << itFile->first << "\t" << itThreshold->first << "\t" << itThreshold->second.tp << "\t" << itThreshold->second.fp << "\t" << itThreshold->second.fn << "\t" << itThreshold->second.tn
-					 << "\t" << itThreshold->second.tpr << "\t" << itThreshold->second.fpr << "\t" << itThreshold->second.fnr << "\t" << itThreshold->second.tnr <<std::endl;
+					 << "\t" << itThreshold->second.tpr << "\t" << itThreshold->second.fpr << "\t" << itThreshold->second.fnr << "\t" << itThreshold->second.tnr << std::endl;
+			statsFileMatlab << itThreshold->first << "\t" << itThreshold->second.tp << "\t" << itThreshold->second.fp << "\t" << itThreshold->second.fn << "\t" << itThreshold->second.tn
+								 << "\t" << itThreshold->second.tpr << "\t" << itThreshold->second.fpr << "\t" << itThreshold->second.fnr << "\t" << itThreshold->second.tnr << std::endl;
 		}
 	}
 	std::cout << "Statistics saved at '" << statsFilename << "'." << std::endl;
+	statsFile.close();
+	statsFileMatlab.close();
 
 
 	return;
@@ -789,7 +800,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 	*filtered_input_cloud = *input_cloud;
 	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
 	// todo: make number of trials a parameter
-	for (int trial=0; trial<2; trial++)
+	for (int trial=0; trial<3; trial++)
 	{
 		// Create the segmentation object for the planar model and set all the parameters
 		inliers->indices.clear();
