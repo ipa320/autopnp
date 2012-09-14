@@ -329,7 +329,7 @@ public:
 	 *
 	 * @param [in] color_image_msg		Color image message from camera.
 	 */
-	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
+//	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
 
 	/**
 	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv support vector machine (SVM)

@@ -59,9 +59,9 @@ protected:
 	const static int SPACE = 32;
 	const static int SPACE2 = 1048608;
 	const static int A = 97;
-	const static int A2 = 666665;
+	const static int A2 = 1048673;
 	const static int D = 100;
-	const static int D2 = 666666;
+	const static int D2 = 1048676;
 
 public:
 	labelImage(std::string winName, cv::Mat imageWithRects, cv::Mat originalImage, cv::Scalar clr) :

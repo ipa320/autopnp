@@ -31,7 +31,7 @@ int labelImage::input_text(cv::Mat img, std::string winName, std::string * text,
 		{
 			std::stringstream ss;
 			std::string s;
-			if (c == SPACE)
+			if (c == SPACE || c == SPACE2)
 				s = " ";
 			else
 			{
