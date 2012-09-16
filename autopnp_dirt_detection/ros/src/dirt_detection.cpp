@@ -59,10 +59,14 @@ void DirtDetection::init()
 	std::cout << "dirtCheckStdDevFactor = " << dirtCheckStdDevFactor_ << std::endl;
 	node_handle_.param("modeOfOperation", modeOfOperation_, 0);
 	std::cout << "modeOfOperation = " << modeOfOperation_ << std::endl;
+	node_handle_.param("warpImage", warpImage_, true);
+	std::cout << "warpImage = " << warpImage_ << std::endl;
 	node_handle_.param("birdEyeResolution", birdEyeResolution_, 300.0);
 	std::cout << "birdEyeResolution = " << birdEyeResolution_ << std::endl;
-	node_handle_.param("rosbagPlaybackRate", rosbagPlaybackRate_, 1.0);
-	std::cout << "rosbagPlaybackRate = " << rosbagPlaybackRate_ << std::endl;
+	node_handle_.param("databaseFilename", databaseFilename_, std::string(""));
+	std::cout << "databaseFilename = " << databaseFilename_ << std::endl;
+	node_handle_.param("experimentSubFolder", experimentSubFolder_, std::string(""));
+	std::cout << "experimentSubFolder = " << experimentSubFolder_ << std::endl;
 
 	// todo: debug parameters
 	debug_["showOriginalImage"] = false;
@@ -76,8 +80,7 @@ void DirtDetection::init()
 	debug_["showSaliencyWithArtificialDirt"] = false;
 	debug_["showSaliencyBadScale"] = false;
 
-	// todo:param
-	warpImage_ = false;
+
 
 	// todo: grid parameters
 	gridResolution_ = 20.;
@@ -257,13 +260,13 @@ void DirtDetection::databaseTest()
 	// read in individual gridOrigin
 	// todo make this a parameter
 //	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";
-	std::string databaseFilename = "/home/rmb/dirt_detection/dirt_database.txt";
+//	std::string databaseFilename_ = "/home/rmb/dirt_detection/dirt_database.txt";
 //	std::string statsFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats.txt";
 //	std::string statsFilenameMatlab = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats_matlab.txt";
-	std::ifstream dbFile(databaseFilename.c_str());
+	std::ifstream dbFile(databaseFilename_.c_str());
 	if (dbFile.is_open()==false)
 	{
-		ROS_ERROR("Database '%s' could not be opened.", databaseFilename.c_str());
+		ROS_ERROR("Database '%s' could not be opened.", databaseFilename_.c_str());
 		return;
 	}
 
@@ -302,8 +305,8 @@ void DirtDetection::databaseTest()
 			for (int j=0; j<(int)groundTruthData[i].allTexts.size(); j++)
 				putDetectionIntoGrid(groundTruthGrid, groundTruthData[i].allRects3d[j]);
 
-		// write groudn truth to file
-		std::string savePath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/dbtest/";
+		// write ground truth to file
+		std::string savePath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/";
 		std::string groundTruthFile = savePath + filename + "-gt.map";
 		std::ofstream outGt(groundTruthFile.c_str());
 		if (outGt.is_open() == false)
@@ -430,10 +433,10 @@ void DirtDetection::databaseTest()
 			// write result as image file (only black and white)
 			cv::Mat temp;
 			cv::normalize(groundTruthGrid, temp, 0., 255*256., cv::NORM_MINMAX);
-			std::string nameGt = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + filename + "_gt.png";
+			std::string nameGt = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/" + filename + "_gt.png";
 			cv::imwrite(nameGt, temp);
 			cv::normalize(gridPositiveVotes_, temp, 0., 255*256., cv::NORM_MINMAX);
-			std::string nameDet = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + filename + "_det.png";
+			std::string nameDet = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/" + filename + "_det.png";
 			cv::imwrite(nameDet, temp);
 
 			// save matlab readable outputs
@@ -665,26 +668,30 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			if (warpImage_ == true)
 				pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x, (double)dirtDetections[i].center.y, 1.0);
 			else
-				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
+				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
 			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
 			//std::cout << "---------- world.x=" << pointsWorldMap.center.x << "   world.y=" << pointsWorldMap.center.y << "   world.z=" << pointsWorldMap.center.z << std::endl;
 
 			// point in width direction
 			double u = (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f;
-			double v = (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f;
+			double v = (double)dirtDetections[i].center.y-sin(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f;
+			//std::cout << "dd: " << dirtDetections[i].center.x << " " << dirtDetections[i].center.y << "  u:" << u << "  v:" << v;
 			if (warpImage_ == true)
 				pc = (cv::Mat_<double>(3,1) << u, v, 1.0);
 			else
-				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
+				//pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[(int)v*input_cloud->width+(int)u].x, (double)(*input_cloud)[(int)v*input_cloud->width+(int)u].y, (double)(*input_cloud)[(int)v*input_cloud->width+(int)u].z);
+				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
 			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p1);
 
 			// point in height direction
 			u = (double)dirtDetections[i].center.x-cos((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f;
 			v = (double)dirtDetections[i].center.y-sin((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f;
+			//std::cout << "   uh:" << u << "   vh:" << v << std::endl;
 			if (warpImage_ == true)
 				pc = (cv::Mat_<double>(3,1) << u, v, 1.0);
 			else
-				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
+				//pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[(int)v*input_cloud->width+(int)u].x, (double)(*input_cloud)[(int)v*input_cloud->width+(int)u].y, (double)(*input_cloud)[(int)v*input_cloud->width+(int)u].z);
+				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
 			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
 
 			putDetectionIntoGrid(gridPositiveVotes_, pointsWorldMap);

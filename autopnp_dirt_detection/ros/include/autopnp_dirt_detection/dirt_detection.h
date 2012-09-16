@@ -130,11 +130,13 @@ protected:
 	double dirtCheckStdDevFactor_;
 	int modeOfOperation_;
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
-	double rosbagPlaybackRate_;		// playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
+
+	std::string databaseFilename_;		// path and name of the database index file
+	std::string experimentSubFolder_;	// subfolder name for the storage of results
 
 	std::map<std::string, bool> debug_;
 
-	bool warpImage_;
+	bool warpImage_;	// if true, image warping to a bird's eye perspective is enabled
 
 	// further
 	ros::Time lastIncomingMessage_;

@@ -31,8 +31,8 @@ rosbagPlaybackRate: 1.0
 
 # database path and filename
 # string
-databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/with_line_removal/dirt_database.txt
+databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/without_warp/dirt_database.txt
 
 # subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
-experimentSubFolder: with_line_removal
+experimentSubFolder: without_warp
