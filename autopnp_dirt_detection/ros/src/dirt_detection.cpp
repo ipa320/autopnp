@@ -69,6 +69,7 @@ void DirtDetection::init()
 	debug_["showObservationsGrid"] = true;
 	debug_["showDirtGrid"] = true;
 	debug_["showPlaneColorImage"] = true;
+	debug_["showWarpedOriginalImage"] = false;
 	debug_["showImagePostprocessing"] = true;
 	debug_["showSaliencyDetection"] = true;
 	debug_["showColorWithArtificialDirt"] = false;
@@ -77,7 +78,7 @@ void DirtDetection::init()
 
 	// todo: grid parameters
 	gridResolution_ = 20.;
-	gridOrigin_ = cv::Point2d(2.0, 2.0);
+	gridOrigin_ = cv::Point2d(-1.0, 2.0);
 	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
 	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
@@ -674,6 +675,12 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
 			cv::imshow("observations grid", gridObservationsDisplay);
 			cvMoveWindow("observations grid", 340, 0);
+		}
+
+		if (debug_["showWarpedOriginalImage"] == true)
+		{
+			cv::imshow("warped original image", plane_color_image_warped);
+			//cvMoveWindow("dirt grid", 0, 0);
 		}
 
 		if (debug_["showImagePostprocessing"] == true)
