@@ -132,8 +132,9 @@ protected:
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
 	double rosbagPlaybackRate_;		// playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
 
-
 	std::map<std::string, bool> debug_;
+
+	bool warpImage_;
 
 	// further
 	ros::Time lastIncomingMessage_;

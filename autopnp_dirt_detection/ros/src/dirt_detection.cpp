@@ -76,6 +76,9 @@ void DirtDetection::init()
 	debug_["showSaliencyWithArtificialDirt"] = false;
 	debug_["showSaliencyBadScale"] = false;
 
+	// todo:param
+	warpImage_ = false;
+
 	// todo: grid parameters
 	gridResolution_ = 20.;
 	gridOrigin_ = cv::Point2d(-1.0, 2.0);
@@ -253,7 +256,8 @@ void DirtDetection::databaseTest()
 	// read in file with information about the bag files to use
 	// read in individual gridOrigin
 	// todo make this a parameter
-	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";	// /home/rmb/dirt_detection/
+//	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";
+	std::string databaseFilename = "/home/rmb/dirt_detection/dirt_database.txt";
 //	std::string statsFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats.txt";
 //	std::string statsFilenameMatlab = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats_matlab.txt";
 	std::ifstream dbFile(databaseFilename.c_str());
@@ -624,9 +628,22 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		cv::Point2f cameraImagePlaneOffset;		// offset in the camera image plane. Conversion from floor plane to  [xc, yc]
 		cv::Mat plane_color_image_warped;
 		cv::Mat plane_mask_warped;
-		bool transformSuccessful = computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
-		if (transformSuccessful == false)
-			return;
+		if (warpImage_ == true)
+		{
+			bool transformSuccessful = computeBirdsEyePerspective(input_cloud, plane_color_image, plane_mask, plane_model, H, R, t, cameraImagePlaneOffset, plane_color_image_warped, plane_mask_warped);
+			if (transformSuccessful == false)
+				return;
+		}
+		else
+		{
+			H = (cv::Mat_<double>(3,3) << 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+			R = H;
+			t = (cv::Mat_<double>(3,1) << 0.0, 0.0, 0.0);
+			cameraImagePlaneOffset.x = 0.f;
+			cameraImagePlaneOffset.y = 0.f;
+			plane_color_image_warped = plane_color_image;
+			plane_mask_warped = plane_mask;
+		}
 
 		// detect dirt on the floor
 		cv::Mat C1_saliency_image;
@@ -644,18 +661,30 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			labelImage::RegionPointTriple pointsWorldMap;
 
 			// center point
-			cv::Mat pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x, (double)dirtDetections[i].center.y, 1.0);
+			cv::Mat pc;
+			if (warpImage_ == true)
+				pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x, (double)dirtDetections[i].center.y, 1.0);
+			else
+				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
 			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
 			//std::cout << "---------- world.x=" << pointsWorldMap.center.x << "   world.y=" << pointsWorldMap.center.y << "   world.z=" << pointsWorldMap.center.z << std::endl;
 
 			// point in width direction
-			pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f,
-										   (double)dirtDetections[i].center.y-sin(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f, 1.0);
+			double u = (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f;
+			double v = (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f;
+			if (warpImage_ == true)
+				pc = (cv::Mat_<double>(3,1) << u, v, 1.0);
+			else
+				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
 			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p1);
 
 			// point in height direction
-			pc = (cv::Mat_<double>(3,1) << (double)dirtDetections[i].center.x-cos((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f,
-										   (double)dirtDetections[i].center.y-sin((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f, 1.0);
+			u = (double)dirtDetections[i].center.x-cos((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f;
+			v = (double)dirtDetections[i].center.y-sin((-dirtDetections[i].angle-90)*3.14159265359/180.f)*dirtDetections[i].size.height/2.f;
+			if (warpImage_ == true)
+				pc = (cv::Mat_<double>(3,1) << u, v, 1.0);
+			else
+				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
 			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.p2);
 
 			putDetectionIntoGrid(gridPositiveVotes_, pointsWorldMap);
@@ -1268,10 +1297,20 @@ void DirtDetection::transformPointFromCameraImageToWorld(const cv::Mat& pointCam
 
 void DirtDetection::transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld)
 {
-	cv::Mat pointFloor = (cv::Mat_<double>(3,1) << pointPlane.at<double>(0)/birdEyeResolution_+cameraImagePlaneOffset.x, pointPlane.at<double>(1)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
-	cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
-	btVector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
-	btVector3 pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
+	btVector3 pointWorldMapBt;
+	if (warpImage_ == true)
+	{
+		cv::Mat pointFloor = (cv::Mat_<double>(3,1) << pointPlane.at<double>(0)/birdEyeResolution_+cameraImagePlaneOffset.x, pointPlane.at<double>(1)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
+		cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
+		btVector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
+		pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
+
+	}
+	else
+	{
+		btVector3 pointWorldCameraBt(pointPlane.at<double>(0), pointPlane.at<double>(1), pointPlane.at<double>(2));
+		pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
+	}
 	pointWorld.x = pointWorldMapBt.getX();
 	pointWorld.y = pointWorldMapBt.getY();
 	pointWorld.z = pointWorldMapBt.getZ();
