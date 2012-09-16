@@ -19,24 +19,24 @@ modeOfOperation: 2
 
 # if true, image warping to a bird's eye perspective is enabled
 # bool
-warpImage: false
+warpImage: true
 
 # resolution for bird eye's perspective [pixel/m]
 # double
 birdEyeResolution: 300.0
 
+# if true, strong lines in the image will not produce dirt responses
+# bool
+removeLines: true
+
 # playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
 # double
 rosbagPlaybackRate: 1.0
 
-# if true, strong lines in the image will not produce dirt responses
-# bool
-removeLines: false
-
 # database path and filename
 # string
-databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/without_warp/dirt_database.txt
+databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/with_line_removal/dirt_database.txt
 
 # subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
-experimentSubFolder: without_warp
+experimentSubFolder: with_line_removal

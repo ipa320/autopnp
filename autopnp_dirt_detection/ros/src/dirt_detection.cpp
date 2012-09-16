@@ -63,10 +63,14 @@ void DirtDetection::init()
 	std::cout << "warpImage = " << warpImage_ << std::endl;
 	node_handle_.param("birdEyeResolution", birdEyeResolution_, 300.0);
 	std::cout << "birdEyeResolution = " << birdEyeResolution_ << std::endl;
+	node_handle_.param("removeLines", removeLines_, true);
+	std::cout << "removeLines = " << removeLines_ << std::endl;
 	node_handle_.param("databaseFilename", databaseFilename_, std::string(""));
 	std::cout << "databaseFilename = " << databaseFilename_ << std::endl;
 	node_handle_.param("experimentSubFolder", experimentSubFolder_, std::string(""));
 	std::cout << "experimentSubFolder = " << experimentSubFolder_ << std::endl;
+
+
 
 	// todo: debug parameters
 	debug_["showOriginalImage"] = false;
@@ -79,7 +83,7 @@ void DirtDetection::init()
 	debug_["showColorWithArtificialDirt"] = false;
 	debug_["showSaliencyWithArtificialDirt"] = false;
 	debug_["showSaliencyBadScale"] = false;
-
+	debug_["showDetectedLines"] = true;
 
 
 	// todo: grid parameters
@@ -431,13 +435,13 @@ void DirtDetection::databaseTest()
 
 			// todo: grayscale output desired
 			// write result as image file (only black and white)
-			cv::Mat temp;
-			cv::normalize(groundTruthGrid, temp, 0., 255*256., cv::NORM_MINMAX);
-			std::string nameGt = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/" + filename + "_gt.png";
-			cv::imwrite(nameGt, temp);
-			cv::normalize(gridPositiveVotes_, temp, 0., 255*256., cv::NORM_MINMAX);
-			std::string nameDet = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/" + filename + "_det.png";
-			cv::imwrite(nameDet, temp);
+//			cv::Mat temp;
+//			cv::normalize(groundTruthGrid, temp, 0., 255*256., cv::NORM_MINMAX);
+//			std::string nameGt = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/" + filename + "_gt.png";
+//			cv::imwrite(nameGt, temp);
+//			cv::normalize(gridPositiveVotes_, temp, 0., 255*256., cv::NORM_MINMAX);
+//			std::string nameDet = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/" + filename + "_det.png";
+//			cv::imwrite(nameDet, temp);
 
 			// save matlab readable outputs
 			std::stringstream gridPositiveVotesFile;
@@ -1885,6 +1889,31 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 //	double newMaxVal = min(1.0, maxv/mean.val[0] /5.);
 //	//C1_saliency_image.convertTo(scaled_C1_saliency_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
 //	C1_saliency_image.convertTo(scaled_C1_saliency_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
+
+	// remove responses that lie on lines
+	if (removeLines_ == true)
+	{
+		cv::Mat src, dst, color_dst;
+
+		cv::cvtColor(C3_color_image, src, CV_BGR2GRAY);
+
+		cv::Canny(src, dst, 150, 200, 3);
+		cv::cvtColor(dst, color_dst, CV_GRAY2BGR);
+
+		std::vector<cv::Vec4i> lines;
+		cv::HoughLinesP(dst, lines, 1, CV_PI/180, 80, 30, 10);
+		for( size_t i = 0; i < lines.size(); i++ )
+		{
+			line(color_dst, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,255), 3, 8);
+			line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 13, 8);
+		}
+
+		if (debug_["showDetectedLines"] == true)
+		{
+			cv::namedWindow("Detected Lines", 1);
+			cv::imshow("Detected Lines", color_dst);
+		}
+	}
 
 	if (debug_["showSaliencyDetection"] == true)
 	{

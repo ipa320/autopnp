@@ -137,6 +137,7 @@ protected:
 	std::map<std::string, bool> debug_;
 
 	bool warpImage_;	// if true, image warping to a bird's eye perspective is enabled
+	bool removeLines_;	// if true, strong lines in the image will not produce dirt responses
 
 	// further
 	ros::Time lastIncomingMessage_;
