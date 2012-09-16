@@ -744,6 +744,7 @@ void DirtDetection::databaseTest()
 			statistics[filename][(int)dirtThreshold] = stat;
 
 		}	// ------- end of for loop for changing parameter
+		cv::waitKey();
 	}
 
 	dbFile.close();
