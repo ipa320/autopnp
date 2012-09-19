@@ -22,10 +22,17 @@
 // ROS includes
 #include <ros/ros.h>
 #include <ros/package.h>
+#include <rosbag/bag.h>
+#include <rosbag/view.h>
 
 // ROS message includes
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <geometry_msgs/PointStamped.h>
+#include <rosgraph_msgs/Clock.h>
+#include <tf/transform_listener.h>
+#include <tf/transform_broadcaster.h>
+#include <nav_msgs/OccupancyGrid.h>
 
 // topics
 #include <image_transport/image_transport.h>
@@ -54,6 +61,13 @@
 #include <cv_bridge/cv_bridge.h>
 //#include <cv_bridge/CvBridge.h>
 
+//boost
+#include <boost/foreach.hpp>
+
+#include <time.h>
+#include "autopnp_dirt_detection/label_box.h"
+
+
 namespace ipa_DirtDetection {
 
 using namespace std;
@@ -68,9 +82,17 @@ class DirtDetection
 protected:
 
 	/**
+	 * ROS node handle.
+	 */
+	ros::NodeHandle node_handle_;
+
+	/**
 	 * Used to subscribe and publish images.
 	 */
 	image_transport::ImageTransport* it_;
+
+	tf::TransformListener transform_listener_;
+	tf::TransformBroadcaster transform_broadcaster_;
 
 	/**
 	 * Used to receive color image topic from camera.
@@ -81,10 +103,24 @@ protected:
 	 */
 	ros::Subscriber camera_depth_points_sub_;
 
-	/**
-	 * ROS node handle.
-	 */
-	ros::NodeHandle node_handle_;
+	ros::Publisher floor_plane_pub_;
+	ros::Publisher camera_depth_points_bagpub_;
+	ros::Publisher clock_pub_;
+	ros::Publisher ground_truth_map_;
+	ros::Publisher detection_map_;
+
+	// labeling
+	bool labelingStarted_;
+	std::vector<labelImage> labeledImages_;
+
+	// grid map
+	double gridResolution_;		// resolution of the grid in [cells/m]
+	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
+	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
+	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
+
+	// evaluation
+	int rosbagMessagesProcessed_;	// number of ros messages received by the program
 
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
@@ -92,6 +128,19 @@ protected:
 	double spectralResidualNormalizationHighestMaxValue_;
 	double spectralResidualImageSizeRatio_;
 	double dirtCheckStdDevFactor_;
+	int modeOfOperation_;
+	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
+
+	std::string databaseFilename_;		// path and name of the database index file
+	std::string experimentSubFolder_;	// subfolder name for the storage of results
+
+	std::map<std::string, bool> debug_;
+
+	bool warpImage_;	// if true, image warping to a bird's eye perspective is enabled
+	bool removeLines_;	// if true, strong lines in the image will not produce dirt responses
+
+	// further
+	ros::Time lastIncomingMessage_;
 
 
 public:
@@ -133,6 +182,19 @@ public:
 		int totalnum;	/**< Total number of samples of this class. */
 	};
 
+	struct Statistics
+	{
+		int tp;
+		int fp;
+		int fn;
+		int tn;
+		int tpr;
+		int fpr;
+		int fnr;
+		int tnr;
+		void setZero() {tp=0; fp=0; fn=0; tn=0; tpr=0; fpr=0; fnr=0; tnr=0;};
+	};
+
 
 	/**
 	 * Constructor.
@@ -166,6 +228,9 @@ public:
 	 */
 	void planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
+	void planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
+
+	void databaseTest();
 
 	/**
 	 * Converts: "sensor_msgs::Image::ConstPtr" \f$ \rightarrow \f$ "cv::Mat".
@@ -195,8 +260,22 @@ public:
 	 *	@param [out]	plane_mask					Mask to separate plane pixels. Plane pixels are white (255), all other pixels are black (0).
 	 *	@return 		True if any plane could be found in the image.
 	 */
-	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask);
+	bool planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, const tf::StampedTransform& transform_map_camera, cv::Mat& grid_number_observations);
 
+	/// remove perspective from image
+	/// @param H Homography that maps points from the camera plane to the floor plane, i.e. pp = H*pc
+	/// @param R Rotation matrix for transformation between floor plane and world coordinates, i.e. [xw,yw,zw] = R*[xp,yp,0]+t and [xp,yp,0] = R^T*[xw,yw,zw] - R^T*t
+	/// @param t Translation vector. See Rotation matrix.
+	/// @param cameraImagePlaneOffset Offset in the camera image plane. Conversion from floor plane to  [xc, yc]
+	bool computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud, cv::Mat& plane_color_image, cv::Mat& plane_mask, pcl::ModelCoefficients& plane_model, cv::Mat& H, cv::Mat& R, cv::Mat& t, cv::Point2f& cameraImagePlaneOffset, cv::Mat& plane_color_image_warped, cv::Mat& plane_mask_warped);
+
+	/// converts point pointCamera, that lies within the floor plane and is provided in coordinates of the original camera image, into map coordinates
+	void transformPointFromCameraImageToWorld(const cv::Mat& pointCamera, const cv::Mat& H, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
+
+	/// converts point pointPlane, that lies within the floor plane and is provided in coordinates of the warped camera image, into map coordinates
+	void transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
+
+	void putDetectionIntoGrid(cv::Mat& grid, const labelImage::RegionPointTriple& detection);
 
 	/**
 	 * This function performs the saliency detection to spot dirt stains.
@@ -246,7 +325,7 @@ public:
 	 * @param [in]		mask					Determines the area of interest. Pixel of interests are white (255), all other pixels are black (0).
 	 *
 	 */
-	void Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, const cv::Mat& mask = cv::Mat());
+	void Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, std::vector<cv::RotatedRect>& dirtDetections, const cv::Mat& mask = cv::Mat());
 
 
 	/**
@@ -254,17 +333,7 @@ public:
 	 *
 	 * @param [in] color_image_msg		Color image message from camera.
 	 */
-	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
-
-	/**
-	 * This function determines the carpet-features from the "C3_carpet_image".
-	 *
-	 * @param [in] 	C3_carpet_image		Three channel('C3') image from the carpet.
-	 * @param [out]	carp_feat			Features of the carpet.
-	 *
-	 */
-	void ExtractCarpetFeatures(const cv::Mat& C3_carpet_image, CarpetFeatures& carp_feat);
-
+//	void SaliencyDetection_C1_old_cv_code(const sensor_msgs::ImageConstPtr& color_image_msg);
 
 	/**
 	 * This function creates/calculates a carpet-classifier for the given carpets. In this case an opencv support vector machine (SVM)
@@ -301,16 +370,6 @@ public:
 	void CreateCarpetClassiefierGBTree(const std::vector<CarpetFeatures>& carp_feat_vec, const std::vector<CarpetClass>& carp_class_vec,
 			CvGBTrees &carpet_GBTree);
 
-
-	/**
-	 * This function uses a trained, opencv support vector machine to determine the class of the given carpet. The carpet is given by it's features.
-	 *
-	 * @param [in]	carp_feat	Contains the features of the carpet.
-	 * @param [in]	carpet_SVM  An opencv support vector machine.
-	 * @param [out]	carp_class	The class of the given carpet.
-	 *
-	 */
-	void ClassifyCarpet(const CarpetFeatures& carp_feat, const CvSVM &carpet_SVM, const CarpetClass& carp_class);
 
 	/**
 	 * This function illustrates how to use/implement openCV-SVM.
@@ -385,7 +444,7 @@ public:
 	 */
 	void RTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
-						CvRTrees &carpet_Tree);
+						CvRTrees &carpet_Tree, double ScaleMean, double ScaleStd);
 
 	/**
 	 * This function can be used to test a specific opencv gradient boosted tree model. The function, however, is only usable if only one or two features are used to classify
@@ -400,7 +459,7 @@ public:
 	 */
 	void GBTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
 						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
-						CvGBTrees &carpet_GBTree);
+						CvGBTrees &carpet_GBTree, double ScaleMean, double ScaleStd);
 
 	/**
 	 * This function scales the features to the interval [0,1]. It returns the scaled features and the

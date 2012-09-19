@@ -2,8 +2,10 @@
 <launch>
 
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.yaml"/>
+  <rosparam command="load" ns="dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection_labeling.yaml"/>
 
+  <!-- use clock from bag files -->
+  <param name="/use_sim_time" type="bool" value="true" />
 
   <!--  -->
   <node pkg="autopnp_dirt_detection" ns="dirt_detection" type="dirt_detection" name="dirt_detection" output="screen">	<!-- ns=namespace (arbitrary), type=name of executable, name=node name (arbitrary) -->

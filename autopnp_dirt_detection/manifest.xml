@@ -1,11 +1,11 @@
 <package>
   <description brief="autopnp_dirt_detection">
 
-     autopnp_dirt_detection
+     This component is part of the cleaning scenario of the AutoPnP project. It provides an algorithm for dirt detection at the floor and the mapping of dirty areas.
 
   </description>
-  <author>rmb-hs</author>
-  <license>BSD</license>
+  <author>Richard Bormann</author>
+  <license>LGPL, Fraunhofer IPA</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/autopnp_dirt_detection</url>
   <depend package="pcl"/>
@@ -16,6 +16,7 @@
   <depend package="image_transport"/>
   <depend package="opencv2"/>
   <depend package="cv_bridge"/>
+  <depend package="nav_msgs"/>
  <!-- <depend package="cv_bridge_redesign"/> -->
 </package>
 
