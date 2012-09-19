@@ -8,19 +8,35 @@ spectralResidualImageSizeRatio: 0.25   #0.25
 spectralResidualNormalizationHighestMaxValue: 1500
 
 # dirt threshold (in [0,1])
-dirtThreshold: 0.25 #0.2  #0.35 #0.5
+dirtThreshold: 0.2 #0.2  #0.35 #0.5
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
 dirtCheckStdDevFactor: 3.0   #3.6
 
 # chooses a mode of operation: 0=detection, 1=labeling, 2=database test
 # int
-modeOfOperation: 0
+modeOfOperation: 2
+
+# if true, image warping to a bird's eye perspective is enabled
+# bool
+warpImage: true
 
 # resolution for bird eye's perspective [pixel/m]
 # double
 birdEyeResolution: 300.0
 
+# if true, strong lines in the image will not produce dirt responses
+# bool
+removeLines: false
+
 # playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
 # double
 rosbagPlaybackRate: 1.0
+
+# database path and filename
+# string
+databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/test/dirt_database.txt
+
+# subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
+# string
+experimentSubFolder: test
