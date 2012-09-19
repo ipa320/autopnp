@@ -1,7 +1,9 @@
 <stack>
-  <description brief="autopnp">autopnp</description>
-  <author>Maintained by rmb-hs</author>
-  <license>BSD</license>  
+  <description brief="autopnp">
+    The autopnp stack contains packages developed in the scope of the AutoPnP research project whose goal is to enable a mobile service robot like Care-O-bot 3 to clean a dirty floor.
+  </description>
+  <author>Richard Bormann</author>
+  <license>LGPL, Fraunhofer IPA</license>  
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/autopnp</url>
   <depend stack="common_msgs" /> <!-- sensor_msgs -->

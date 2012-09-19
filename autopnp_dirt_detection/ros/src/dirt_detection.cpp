@@ -73,7 +73,7 @@ void DirtDetection::init()
 
 
 	// todo: debug parameters
-	debug_["showOriginalImage"] = false;
+	debug_["showOriginalImage"] = true;
 	debug_["showObservationsGrid"] = true;
 	debug_["showDirtGrid"] = true;
 	debug_["showPlaneColorImage"] = true;
@@ -751,14 +751,14 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 		if (debug_["showImagePostprocessing"] == true)
 		{
-			cv::imshow("image postprocessing", new_plane_color_image);
-			cvMoveWindow("image postprocessing", 0, 520);
+			cv::imshow("dirt detections", new_plane_color_image);
+			cvMoveWindow("dirt detections", 0, 530);
 		}
 
 		if (debug_["showPlaneColorImage"] == true)
 		{
 			cv::imshow("original color image", plane_color_image);
-			cvMoveWindow("original color image", 680, 0);
+			cvMoveWindow("original color image", 650, 0);
 		}
 	}
 	rosbagMessagesProcessed_++;
@@ -957,7 +957,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 		}
 		//display original image
 		cv::imshow("color image", color_image);
-		cvMoveWindow("color image", 0, 0);
+		cvMoveWindow("color image", 650, 0);
 		//cvMoveWindow("color image", 0, 520);
 	}
 
@@ -1606,7 +1606,10 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
 	C1_saliency_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
 
 	if (debug_["showSaliencyDetection"] == true)
-		cv::imshow("SaliencyDetection", scaled_input_image);
+	{
+		cv::imshow("saliency detection", scaled_input_image);
+		cvMoveWindow("saliency detection", 650, 530);
+	}
 
 	//set dirt pixel to white
 	C1_BlackWhite_image = cv::Mat::zeros(C1_saliency_image.size(), CV_8UC1);
@@ -1943,8 +1946,8 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 
 	if (debug_["showSaliencyDetection"] == true)
 	{
-		cv::imshow("SaliencyDetection", scaled_C1_saliency_image);
-		cvMoveWindow("SaliencyDetection", 650, 520);
+		cv::imshow("saliency detection", scaled_C1_saliency_image);
+		cvMoveWindow("saliency detection", 650, 530);
 	}
 
 	//set dirt pixel to white
