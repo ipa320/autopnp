@@ -47,44 +47,51 @@ void DirtDetection::init()
 {
 	// Parameters
 	std::cout << "\n--------------------------\nDirt Detection Parameters:\n--------------------------\n";
-	node_handle_.param("spectralResidualGaussianBlurIterations", spectralResidualGaussianBlurIterations_, 2);
+	node_handle_.param("dirt_detection/spectralResidualGaussianBlurIterations", spectralResidualGaussianBlurIterations_, 2);
 	std::cout << "spectralResidualGaussianBlurIterations = " << spectralResidualGaussianBlurIterations_ << std::endl;
-	node_handle_.param("dirtThreshold", dirtThreshold_, 0.5);
+	node_handle_.param("dirt_detection/dirtThreshold", dirtThreshold_, 0.5);
 	std::cout << "dirtThreshold = " << dirtThreshold_ << std::endl;
-	node_handle_.param("spectralResidualNormalizationHighestMaxValue", spectralResidualNormalizationHighestMaxValue_, 0.5);
+	node_handle_.param("dirt_detection/spectralResidualNormalizationHighestMaxValue", spectralResidualNormalizationHighestMaxValue_, 0.5);
 	std::cout << "spectralResidualNormalizationHighestMaxValue = " << spectralResidualNormalizationHighestMaxValue_ << std::endl;
-	node_handle_.param("spectralResidualImageSizeRatio", spectralResidualImageSizeRatio_, 0.25);
+	node_handle_.param("dirt_detection/spectralResidualImageSizeRatio", spectralResidualImageSizeRatio_, 0.25);
 	std::cout << "spectralResidualImageSizeRatio = " << spectralResidualImageSizeRatio_ << std::endl;
-	node_handle_.param("dirtCheckStdDevFactor", dirtCheckStdDevFactor_, 2.5);
+	node_handle_.param("dirt_detection/dirtCheckStdDevFactor", dirtCheckStdDevFactor_, 2.5);
 	std::cout << "dirtCheckStdDevFactor = " << dirtCheckStdDevFactor_ << std::endl;
-	node_handle_.param("modeOfOperation", modeOfOperation_, 0);
+	node_handle_.param("dirt_detection/modeOfOperation", modeOfOperation_, 0);
 	std::cout << "modeOfOperation = " << modeOfOperation_ << std::endl;
-	node_handle_.param("warpImage", warpImage_, true);
+	node_handle_.param("dirt_detection/warpImage", warpImage_, true);
 	std::cout << "warpImage = " << warpImage_ << std::endl;
-	node_handle_.param("birdEyeResolution", birdEyeResolution_, 300.0);
+	node_handle_.param("dirt_detection/birdEyeResolution", birdEyeResolution_, 300.0);
 	std::cout << "birdEyeResolution = " << birdEyeResolution_ << std::endl;
-	node_handle_.param("removeLines", removeLines_, true);
+	node_handle_.param("dirt_detection/removeLines", removeLines_, true);
 	std::cout << "removeLines = " << removeLines_ << std::endl;
-	node_handle_.param("databaseFilename", databaseFilename_, std::string(""));
+	node_handle_.param("dirt_detection/databaseFilename", databaseFilename_, std::string(""));
 	std::cout << "databaseFilename = " << databaseFilename_ << std::endl;
-	node_handle_.param("experimentSubFolder", experimentSubFolder_, std::string(""));
+	node_handle_.param("dirt_detection/experimentSubFolder", experimentSubFolder_, std::string(""));
 	std::cout << "experimentSubFolder = " << experimentSubFolder_ << std::endl;
 
-
-
-	// todo: debug parameters
-	debug_["showOriginalImage"] = true;
-	debug_["showObservationsGrid"] = true;
-	debug_["showDirtGrid"] = true;
-	debug_["showPlaneColorImage"] = true;
-	debug_["showWarpedOriginalImage"] = false;
-	debug_["showImagePostprocessing"] = true;
-	debug_["showSaliencyDetection"] = true;
-	debug_["showColorWithArtificialDirt"] = false;
-	debug_["showSaliencyWithArtificialDirt"] = false;
-	debug_["showSaliencyBadScale"] = false;
-	debug_["showDetectedLines"] = true;
-
+	node_handle_.param("dirt_detection/showOriginalImage", debug_["showOriginalImage"], true);
+	std::cout << "showOriginalImage = " << debug_["showOriginalImage"] << std::endl;
+	node_handle_.param("dirt_detection/showPlaneColorImage", debug_["showPlaneColorImage"], true);
+	std::cout << "showPlaneColorImage = " << debug_["showPlaneColorImage"] << std::endl;
+	node_handle_.param("dirt_detection/showWarpedOriginalImage", debug_["showWarpedOriginalImage"], false);
+	std::cout << "showWarpedOriginalImage = " << debug_["showWarpedOriginalImage"] << std::endl;
+	node_handle_.param("dirt_detection/showSaliencyBadScale", debug_["showSaliencyBadScale"], false);
+	std::cout << "showSaliencyBadScale = " << debug_["showSaliencyBadScale"] << std::endl;
+	node_handle_.param("dirt_detection/showColorWithArtificialDirt", debug_["showColorWithArtificialDirt"], false);
+	std::cout << "showColorWithArtificialDirt = " << debug_["showColorWithArtificialDirt"] << std::endl;
+	node_handle_.param("dirt_detection/showSaliencyWithArtificialDirt", debug_["showSaliencyWithArtificialDirt"], false);
+	std::cout << "showSaliencyWithArtificialDirt = " << debug_["showSaliencyWithArtificialDirt"] << std::endl;
+	node_handle_.param("dirt_detection/showSaliencyDetection", debug_["showSaliencyDetection"], true);
+	std::cout << "showSaliencyDetection = " << debug_["showSaliencyDetection"] << std::endl;
+	node_handle_.param("dirt_detection/showDetectedLines", debug_["showDetectedLines"], true);
+	std::cout << "showDetectedLines = " << debug_["showDetectedLines"] << std::endl;
+	node_handle_.param("dirt_detection/showDirtDetections", debug_["showDirtDetections"], true);
+	std::cout << "showDirtDetections = " << debug_["showDirtDetections"] << std::endl;
+	node_handle_.param("dirt_detection/showObservationsGrid", debug_["showObservationsGrid"], true);
+	std::cout << "showObservationsGrid = " << debug_["showObservationsGrid"] << std::endl;
+	node_handle_.param("dirt_detection/showDirtGrid", debug_["showDirtGrid"], true);
+	std::cout << "showDirtGrid = " << debug_["showDirtGrid"] << std::endl;
 
 	// todo: grid parameters
 	gridResolution_ = 20.;
@@ -98,7 +105,7 @@ void DirtDetection::init()
 	if (modeOfOperation_ == 0)	// detection
 	{
 		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::planeDetectionCallback, this);
-		detection_map_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("detection_map", 1);
+		detection_map_pub_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("detection_map", 1);
 	}
 	else if (modeOfOperation_ == 1)		// labeling
 	{
@@ -107,10 +114,10 @@ void DirtDetection::init()
 	else if (modeOfOperation_ == 2)		// database evaluation
 	{
 		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 5, &DirtDetection::planeDetectionCallback, this);
-		camera_depth_points_bagpub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("colored_point_cloud_bagpub", 1);
+		camera_depth_points_from_bag_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("colored_point_cloud_bagpub", 1);
 		clock_pub_ = node_handle_.advertise<rosgraph_msgs::Clock>("/clock", 1);
-		ground_truth_map_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("ground_truth_map", 1);
-		detection_map_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("detection_map", 1);
+		ground_truth_map_pub_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("ground_truth_map", 1);
+		detection_map_pub_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("detection_map", 1);
 		databaseTest();
 	}
 
@@ -376,7 +383,7 @@ void DirtDetection::databaseTest()
 					//std::cout << "proc: " << rosbagMessagesProcessed_ << "/" << rosbagMessagesSent << std::endl;
 					rosbagMessagesSent++;
 					//if (rosbagMessagesSent % 20 == 0)
-						camera_depth_points_bagpub_.publish(cloud);
+						camera_depth_points_from_bag_pub_.publish(cloud);
 
 					//while (rosbagMessagesProcessed_ < rosbagMessagesSent)
 					ros::spinOnce();
@@ -412,7 +419,7 @@ void DirtDetection::databaseTest()
 			for (int v=0, i=0; v<groundTruthGrid.rows; v++)
 				for (int u=0; u<groundTruthGrid.cols; u++, i++)
 					groundTruthMap.data[i] = (groundTruthGrid.at<int>(v,u)==0) ? (int8_t)0 : (int8_t)100;
-			ground_truth_map_.publish(groundTruthMap);
+			ground_truth_map_pub_.publish(groundTruthMap);
 
 			// create occupancy grid map from detections
 			nav_msgs::OccupancyGrid detectionMap;
@@ -436,7 +443,7 @@ void DirtDetection::databaseTest()
 	//					std::cout << "p:" << gridPositiveVotes_.at<int>(v,u) << " o:" << gridNumberObservations_.at<int>(v,u) << " a:" << (100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u))) << "   " << (int)(int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u))) << std::endl;
 					detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 				}
-			detection_map_.publish(detectionMap);
+			detection_map_pub_.publish(detectionMap);
 
 			// todo: grayscale output desired
 			// write result as image file (only black and white)
@@ -578,10 +585,10 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 	cv::Mat new_color_image = color_image;
 	Image_Postprocessing_C1(result_image, image_postproc, new_color_image);
 
-	if (debug_["showImagePostprocessing"] == true)
+	if (debug_["showDirtDetections"] == true)
 	{
-		cv::imshow("image postprocessing", new_color_image);
-		cvMoveWindow("image postprocessing", 0, 520);
+		cv::imshow("dirt detections", new_color_image);
+		cvMoveWindow("dirt detections", 0, 520);
 	}
 	cv::waitKey(10);
 }
@@ -732,7 +739,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
 				for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
 					detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
-			detection_map_.publish(detectionMap);
+			detection_map_pub_.publish(detectionMap);
 		}
 
 		if (debug_["showObservationsGrid"] == true)
@@ -749,7 +756,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			//cvMoveWindow("dirt grid", 0, 0);
 		}
 
-		if (debug_["showImagePostprocessing"] == true)
+		if (debug_["showDirtDetections"] == true)
 		{
 			cv::imshow("dirt detections", new_plane_color_image);
 			cvMoveWindow("dirt detections", 0, 530);

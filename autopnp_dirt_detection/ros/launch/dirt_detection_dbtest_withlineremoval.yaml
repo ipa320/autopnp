@@ -29,14 +29,6 @@ birdEyeResolution: 300.0
 # bool
 removeLines: true
 
-# playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
-# double
-rosbagPlaybackRate: 1.0
-
-# database path and filename
-# string
-databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/with_line_removal/dirt_database.txt
-
 # subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
 experimentSubFolder: with_line_removal

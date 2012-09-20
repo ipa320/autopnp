@@ -29,14 +29,43 @@ birdEyeResolution: 300.0
 # bool
 removeLines: false
 
-# playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
-# double
-rosbagPlaybackRate: 1.0
-
-# database path and filename
-# string
-databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/test/dirt_database.txt
-
 # subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
 experimentSubFolder: test
+
+##### debug display switches - enable or disable the display of several kinds of images
+# all flags are of type bool
+
+# displays the original source image that comes with the point cloud data
+showOriginalImage: false
+
+# shows only the part of the color image that belongs to the plane, the remainder is masked black
+showPlaneColorImage: true
+
+# shows the warped color image of the plane
+showWarpedOriginalImage: false
+
+# displays the saliency image before rescaling
+showSaliencyBadScale: false
+
+# displays the color image with the artificial dirt added
+showColorWithArtificialDirt: false
+
+# displays the filter response to the image with artificial dirt
+showSaliencyWithArtificialDirt: false
+
+# displays the rescaled saliency image
+showSaliencyDetection: true
+
+# displays the detected lines in the image that might be used to shadow false positives
+showDetectedLines: false
+
+# displays the dirt detection results drawn into the color image
+showDirtDetections: true
+
+# displays the grid that illustrates the number of observations of each floor cell (the image might be displayed rotated)
+showObservationsGrid: true
+
+# displays the grid that illustrates the dirt detections at each floor cell (the image might be displayed rotated)
+showDirtGrid: true
+##### end debug display section

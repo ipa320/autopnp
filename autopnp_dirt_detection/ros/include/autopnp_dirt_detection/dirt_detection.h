@@ -104,10 +104,10 @@ protected:
 	ros::Subscriber camera_depth_points_sub_;
 
 	ros::Publisher floor_plane_pub_;
-	ros::Publisher camera_depth_points_bagpub_;
+	ros::Publisher camera_depth_points_from_bag_pub_;
 	ros::Publisher clock_pub_;
-	ros::Publisher ground_truth_map_;
-	ros::Publisher detection_map_;
+	ros::Publisher ground_truth_map_pub_;
+	ros::Publisher detection_map_pub_;
 
 	// labeling
 	bool labelingStarted_;

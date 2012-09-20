@@ -2,7 +2,7 @@
 <launch>
 
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection_labeling.yaml"/>
+  <rosparam command="load" ns="dirt_detection/dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection_labeling.yaml"/>
 
   <!-- use clock from bag files -->
   <param name="/use_sim_time" type="bool" value="true" />

@@ -25,17 +25,9 @@ warpImage: false
 # double
 birdEyeResolution: 300.0
 
-# playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
-# double
-rosbagPlaybackRate: 1.0
-
 # if true, strong lines in the image will not produce dirt responses
 # bool
 removeLines: false
-
-# database path and filename
-# string
-databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/without_warp/dirt_database.txt
 
 # subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
