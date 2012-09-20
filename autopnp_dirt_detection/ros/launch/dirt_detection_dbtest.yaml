@@ -29,6 +29,15 @@ birdEyeResolution: 300.0
 # bool
 removeLines: false
 
+# spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
+# double
+gridResolution: 20.0
+
+# these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode
+# double
+gridOrigin_x: 1.5
+gridOrigin_y: -4.0
+
 # subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
 experimentSubFolder: test

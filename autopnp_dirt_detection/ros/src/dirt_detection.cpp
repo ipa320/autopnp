@@ -65,6 +65,14 @@ void DirtDetection::init()
 	std::cout << "birdEyeResolution = " << birdEyeResolution_ << std::endl;
 	node_handle_.param("dirt_detection/removeLines", removeLines_, true);
 	std::cout << "removeLines = " << removeLines_ << std::endl;
+	node_handle_.param("dirt_detection/gridResolution", gridResolution_, 20.0);
+	std::cout << "gridResolution = " << gridResolution_ << std::endl;
+	double gox, goy;
+	node_handle_.param("dirt_detection/gridOrigin_x", gox, 0.0);
+	std::cout << "gridOrigin_x = " << gox << std::endl;
+	node_handle_.param("dirt_detection/gridOrigin_y", goy, 0.0);
+	std::cout << "gridOrigin_y = " << goy << std::endl;
+	gridOrigin_ = cv::Point2d(gox, goy);
 	node_handle_.param("dirt_detection/databaseFilename", databaseFilename_, std::string(""));
 	std::cout << "databaseFilename = " << databaseFilename_ << std::endl;
 	node_handle_.param("dirt_detection/experimentSubFolder", experimentSubFolder_, std::string(""));
@@ -93,9 +101,7 @@ void DirtDetection::init()
 	node_handle_.param("dirt_detection/showDirtGrid", debug_["showDirtGrid"], true);
 	std::cout << "showDirtGrid = " << debug_["showDirtGrid"] << std::endl;
 
-	// todo: grid parameters
-	gridResolution_ = 20.;
-	gridOrigin_ = cv::Point2d(1.5, -4.0);
+	// prepare grid for dirt detection and observations
 	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
 	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
@@ -274,9 +280,6 @@ void DirtDetection::databaseTest()
 
 	// read in file with information about the bag files to use
 	// read in individual gridOrigin
-	// todo make this a parameter
-//	std::string databaseFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/dirt_database.txt";
-//	std::string databaseFilename_ = "/home/rmb/dirt_detection/dirt_database.txt";
 //	std::string statsFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats.txt";
 //	std::string statsFilenameMatlab = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats_matlab.txt";
 	std::ifstream dbFile(databaseFilename_.c_str());
@@ -400,7 +403,6 @@ void DirtDetection::databaseTest()
 			bag.close();
 
 			// create ground truth occupancy grid
-			// todo
 			nav_msgs::OccupancyGrid groundTruthMap;
 			groundTruthMap.header.stamp = ros::Time::now();
 			groundTruthMap.header.frame_id = "/map";
@@ -445,7 +447,6 @@ void DirtDetection::databaseTest()
 				}
 			detection_map_pub_.publish(detectionMap);
 
-			// todo: grayscale output desired
 			// write result as image file (only black and white)
 //			cv::Mat temp;
 //			cv::normalize(groundTruthGrid, temp, 0., 255*256., cv::NORM_MINMAX);
@@ -1884,7 +1885,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 
 
 	//determine ros package path
-	// todo
+	// todo: learning part
 //	std::string svmpath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/svm/Teppich1.tepp";
 //	ofstream teppichfile;
 //	teppichfile.open (svmpath.c_str(), ios::out| ios::app);
