@@ -63,6 +63,8 @@ void DirtDetection::init()
 	std::cout << "warpImage = " << warpImage_ << std::endl;
 	node_handle_.param("dirt_detection/birdEyeResolution", birdEyeResolution_, 300.0);
 	std::cout << "birdEyeResolution = " << birdEyeResolution_ << std::endl;
+	node_handle_.param("dirt_detection/maxDistanceToCamera", maxDistanceToCamera_, 300.0);
+	std::cout << "maxDistanceToCamera = " << maxDistanceToCamera_ << std::endl;
 	node_handle_.param("dirt_detection/removeLines", removeLines_, true);
 	std::cout << "removeLines = " << removeLines_ << std::endl;
 	node_handle_.param("dirt_detection/gridResolution", gridResolution_, 20.0);
@@ -73,8 +75,16 @@ void DirtDetection::init()
 	node_handle_.param("dirt_detection/gridOrigin_y", goy, 0.0);
 	std::cout << "gridOrigin_y = " << goy << std::endl;
 	gridOrigin_ = cv::Point2d(gox, goy);
+	node_handle_.param("dirt_detection/floorSearchIterations", floorSearchIterations_, 3);
+	std::cout << "floorSearchIterations = " << floorSearchIterations_ << std::endl;
+	node_handle_.param("dirt_detection/planeNormalMaxZ", planeNormalMaxZ_, -0.5);
+	std::cout << "planeNormalMaxZ = " << planeNormalMaxZ_ << std::endl;
+	node_handle_.param("dirt_detection/planeMaxHeight", planeMaxHeight_, 0.3);
+	std::cout << "planeMaxHeight = " << planeMaxHeight_ << std::endl;
 	node_handle_.param("dirt_detection/databaseFilename", databaseFilename_, std::string(""));
 	std::cout << "databaseFilename = " << databaseFilename_ << std::endl;
+	node_handle_.param("dirt_detection/labelingFilename", labelingFilename_, std::string(""));
+	std::cout << "labelingFilename = " << labelingFilename_ << std::endl;
 	node_handle_.param("dirt_detection/experimentSubFolder", experimentSubFolder_, std::string(""));
 	std::cout << "experimentSubFolder = " << experimentSubFolder_ << std::endl;
 
@@ -905,8 +915,7 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 			std::string currentTime;
 			ss << t;
 			ss >> currentTime;
-			std::string path = ros::package::getPath("autopnp_dirt_detection") + "/common/files";
-			labelImage::writeTxt3d(labeledImages_, path, currentTime);
+			labelImage::writeTxt3d(labeledImages_, labelingFilename_, currentTime);
 			labelingStarted_ = false;
 		}
 		else if (key == 'q' || key == 1048689)
@@ -975,8 +984,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
 	*filtered_input_cloud = *input_cloud;
 	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-	// todo: make number of trials a parameter
-	for (int trial=0; trial<3; trial++)
+	for (int trial=0; trial<floorSearchIterations_; trial++)
 	{
 		// Create the segmentation object for the planar model and set all the parameters
 		inliers->indices.clear();
@@ -1012,9 +1020,8 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			btVector3 planePointWorld = transform_map_camera * planePointCamera;
 			//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << "   point[half]: " << planePointWorld.getX() << ", " << planePointWorld.getY() << ", " << planePointWorld.getZ() << std::endl;
 
-			// todo: make these criteria a parameter
 			// verify that the found plane is a valid ground plane
-			if (inliers->indices.size()>100 && planeNormalWorld.getZ()<-0.5 && abs(planePointWorld.getZ())<0.3)
+			if (inliers->indices.size()>minPlanePoints_ && planeNormalWorld.getZ()<planeNormalMaxZ_ && abs(planePointWorld.getZ())<planeMaxHeight_)
 			{
 				found_plane=true;
 				break;
@@ -1211,7 +1218,6 @@ bool DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 
 	// 2. select data segment and compute final transformation of camera coordinates to scaled and centered plane coordinates
 	std::vector<cv::Point2f> pointsCamera, pointsPlane;
-	const double max_distance_to_camera = 3.00;	// max distance of plane points to the camera in [m]  todo: param
 	cv::Point2f minPlane(1e20,1e20), maxPlane(-1e20,-1e20);
 	cv::Mat RTt = R.t()*t;
 	for (int v=0; v<plane_color_image.rows; v++)
@@ -1225,7 +1231,7 @@ bool DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 
 			// distance to camera has to be below a maximum distance
 			pcl::PointXYZRGB point = (*input_cloud)[v*plane_color_image.cols+u];
-			if (point.x*point.x + point.y*point.y + point.z*point.z > max_distance_to_camera*max_distance_to_camera)
+			if (point.x*point.x + point.y*point.y + point.z*point.z > maxDistanceToCamera_*maxDistanceToCamera_)
 				continue;
 
 			// determine max and min x and y coordinates of the plane

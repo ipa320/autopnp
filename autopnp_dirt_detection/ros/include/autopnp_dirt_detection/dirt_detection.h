@@ -133,11 +133,20 @@ protected:
 
 	std::string databaseFilename_;		// path and name of the database index file
 	std::string experimentSubFolder_;	// subfolder name for the storage of results
+	std::string labelingFilename_;		// name of the file that contains the labeling results
 
 	std::map<std::string, bool> debug_;
 
 	bool warpImage_;	// if true, image warping to a bird's eye perspective is enabled
+	double maxDistanceToCamera_;	// only those points which are close enough to the camera are taken [max distance in m]
 	bool removeLines_;	// if true, strong lines in the image will not produce dirt responses
+
+	// plane search
+	int floorSearchIterations_;		// the number of attempts to segment the floor plane in the image
+	int minPlanePoints_;		// minimum number of points that are necessary to find the floor plane
+	double planeNormalMaxZ_;	// maximum z-value of the plane normal (ensures to have an floor plane)
+	double planeMaxHeight_;		// maximum height of the detected plane above the mapped ground
+
 
 	// further
 	ros::Time lastIncomingMessage_;

@@ -25,9 +25,13 @@ warpImage: true
 # double
 birdEyeResolution: 300.0
 
+# only those points which are close enough to the camera are taken [max distance in m]
+# double
+maxDistanceToCamera: 3.00
+
 # if true, strong lines in the image will not produce dirt responses
 # bool
-removeLines: false
+removeLines: true
 
 # spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
 # double
@@ -38,7 +42,23 @@ gridResolution: 20.0
 gridOrigin_x: 1.5
 gridOrigin_y: -4.0
 
-# subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
+# the number of attempts to segment the floor plane in the image
+# int
+floorSearchIterations: 3
+
+# minimum number of points that are necessary to find the floor plane
+# int
+minPlanePoints: 100
+
+# maximum z-value of the plane normal (ensures to have an floor plane)
+# double
+planeNormalMaxZ: -0.5
+
+# maximum height of the detected plane above the mapped ground
+# double
+planeMaxHeight: 0.3
+
+# subfolder name for storing the results of the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
 experimentSubFolder: test
 
