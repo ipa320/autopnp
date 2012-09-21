@@ -1,16 +1,21 @@
-# spectral residual component
+# spectral residual component: number of Gaussian smoothing operations
+# int
 spectralResidualGaussianBlurIterations: 3    #3
 
 # side length of the fourier transformed image relative to the width of the original image
+# double
 spectralResidualImageSizeRatio: 0.25   #0.25
 
 # maximum of the spectral residual image with artificial dirt can be at maximum at this number, the spectral residual image is scaled to the ratio (max/spectralResidualNormalizationHighestMaxValue)
-spectralResidualNormalizationHighestMaxValue: 1500
+# double
+spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
+# double
 dirtThreshold: 0.2 #0.2  #0.35 #0.5
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+# double
 dirtCheckStdDevFactor: 3.0   #3.6
 
 # chooses a mode of operation: 0=detection, 1=labeling, 2=database test
@@ -25,18 +30,76 @@ warpImage: false
 # double
 birdEyeResolution: 300.0
 
-# playback rate of rosbag file during database test (lower than 1.0 might be neccessary to process all contained messages)
+# only those points which are close enough to the camera are displayed in the bird's eye view [max distance in m]
 # double
-rosbagPlaybackRate: 1.0
+maxDistanceToCamera: 3.00
 
 # if true, strong lines in the image will not produce dirt responses
 # bool
 removeLines: false
 
-# database path and filename
-# string
-databaseFilename: /home/rmb/git/autopnp/autopnp_dirt_detection/common/files/results/without_warp/dirt_database.txt
+# spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
+# double
+gridResolution: 20.0
 
-# subfolder name for the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
+# these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode
+# double
+gridOrigin_x: 0.0
+gridOrigin_y: 0.0
+
+# the number of attempts to segment the floor plane in the image
+# int
+floorSearchIterations: 3
+
+# minimum number of points that are necessary to find the floor plane
+# int
+minPlanePoints: 100
+
+# maximum z-value of the plane normal (ensures to have an floor plane)
+# double
+planeNormalMaxZ: -0.5
+
+# maximum height of the detected plane above the mapped ground
+# double
+planeMaxHeight: 0.3
+
+# subfolder name for storing the results of the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
 experimentSubFolder: without_warp
+
+##### debug display switches - enable or disable the display of several kinds of images
+# all flags are of type bool
+
+# displays the original source image that comes with the point cloud data
+showOriginalImage: false
+
+# shows only the part of the color image that belongs to the plane, the remainder is masked black
+showPlaneColorImage: true
+
+# shows the warped color image of the plane
+showWarpedOriginalImage: false
+
+# displays the saliency image before rescaling
+showSaliencyBadScale: false
+
+# displays the color image with the artificial dirt added
+showColorWithArtificialDirt: false
+
+# displays the filter response to the image with artificial dirt
+showSaliencyWithArtificialDirt: false
+
+# displays the rescaled saliency image
+showSaliencyDetection: true
+
+# displays the detected lines in the image that might be used to shadow false positives
+showDetectedLines: false
+
+# displays the dirt detection results drawn into the color image
+showDirtDetections: true
+
+# displays the grid that illustrates the number of observations of each floor cell (the image might be displayed rotated)
+showObservationsGrid: true
+
+# displays the grid that illustrates the dirt detections at each floor cell (the image might be displayed rotated)
+showDirtGrid: true
+##### end debug display section

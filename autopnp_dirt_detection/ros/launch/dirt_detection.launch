@@ -2,7 +2,7 @@
 <launch>
 
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.yaml"/>
+  <rosparam command="load" ns="dirt_detection/dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.yaml"/>
 
 
   <!--  -->

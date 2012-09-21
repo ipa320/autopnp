@@ -2,7 +2,7 @@
 <launch>
 
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection_labeling.yaml"/>
+  <rosparam command="load" ns="dirt_detection/dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection_labeling.yaml"/>
 
   <!-- use clock from bag files -->
   <param name="/use_sim_time" type="bool" value="true" />
@@ -15,6 +15,8 @@
 	<!--remap from="colored_point_cloud" to="/camera/rgb/points"/-->
 	<remap from="colored_point_cloud" to="/cam3d/rgb/points"/>
 	
+	<!-- path to labeling file storage -->
+	<param name="labelingFilePath" type="string" value="$(find autopnp_dirt_detection)/common/files/"/>
   </node>
 
 </launch>
