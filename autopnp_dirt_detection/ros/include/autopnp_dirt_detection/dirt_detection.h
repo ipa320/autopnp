@@ -131,8 +131,7 @@ protected:
 	int modeOfOperation_;
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
 
-	std::string databaseFilename_;		// path and name of the database index file
-	std::string experimentSubFolder_;	// subfolder name for the storage of results
+	std::string experimentFolder_;		// storage location of the database index file and writing location for the results of an experiment
 	std::string labelingFilePath_;		// path to labeling file storage
 
 	std::map<std::string, bool> debug_;

@@ -16,8 +16,8 @@
 	<!--remap from="colored_point_cloud" to="/camera/rgb/points"/-->
 	<remap from="colored_point_cloud" to="colored_point_cloud_bagpub"/>
 	
-	<!-- database path and filename -->
-	<param name="databaseFilename" type="string" value="$(find autopnp_dirt_detection)/common/files/results/with_image_warping/dirt_database.txt"/>
+	<!-- storage location of the database index file and writing location for the results of an experiment  -->
+	<param name="experimentFolder" type="string" value="$(find autopnp_dirt_detection)/common/files/results/with_image_warping/"/>
   </node>
 
 </launch>

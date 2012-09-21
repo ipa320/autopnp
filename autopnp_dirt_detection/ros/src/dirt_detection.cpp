@@ -81,12 +81,10 @@ void DirtDetection::init()
 	std::cout << "planeNormalMaxZ = " << planeNormalMaxZ_ << std::endl;
 	node_handle_.param("dirt_detection/planeMaxHeight", planeMaxHeight_, 0.3);
 	std::cout << "planeMaxHeight = " << planeMaxHeight_ << std::endl;
-	node_handle_.param("dirt_detection/databaseFilename", databaseFilename_, std::string(""));
-	std::cout << "databaseFilename = " << databaseFilename_ << std::endl;
+	node_handle_.param("dirt_detection/experimentFolder", experimentFolder_, std::string(""));
+	std::cout << "experimentFolder = " << experimentFolder_ << std::endl;
 	node_handle_.param("dirt_detection/labelingFilePath", labelingFilePath_, std::string(""));
 	std::cout << "labelingFilePath = " << labelingFilePath_ << std::endl;
-	node_handle_.param("dirt_detection/experimentSubFolder", experimentSubFolder_, std::string(""));
-	std::cout << "experimentSubFolder = " << experimentSubFolder_ << std::endl;
 
 	node_handle_.param("dirt_detection/showOriginalImage", debug_["showOriginalImage"], true);
 	std::cout << "showOriginalImage = " << debug_["showOriginalImage"] << std::endl;
@@ -292,10 +290,11 @@ void DirtDetection::databaseTest()
 	// read in individual gridOrigin
 //	std::string statsFilename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats.txt";
 //	std::string statsFilenameMatlab = ros::package::getPath("autopnp_dirt_detection") + "/common/files/apartment/stats_matlab.txt";
-	std::ifstream dbFile(databaseFilename_.c_str());
+	std::string databaseFilename = experimentFolder_ + "dirt_database.txt";
+	std::ifstream dbFile(databaseFilename.c_str());
 	if (dbFile.is_open()==false)
 	{
-		ROS_ERROR("Database '%s' could not be opened.", databaseFilename_.c_str());
+		ROS_ERROR("Database '%s' could not be opened.", databaseFilename.c_str());
 		return;
 	}
 
@@ -335,8 +334,7 @@ void DirtDetection::databaseTest()
 				putDetectionIntoGrid(groundTruthGrid, groundTruthData[i].allRects3d[j]);
 
 		// write ground truth to file
-		std::string savePath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/results/" + experimentSubFolder_ + "/";
-		std::string groundTruthFile = savePath + filename + "-gt.map";
+		std::string groundTruthFile = experimentFolder_ + filename + "-gt.map";
 		std::ofstream outGt(groundTruthFile.c_str());
 		if (outGt.is_open() == false)
 		{
@@ -468,7 +466,7 @@ void DirtDetection::databaseTest()
 
 			// save matlab readable outputs
 			std::stringstream gridPositiveVotesFile;
-			gridPositiveVotesFile << savePath << filename << "-dt" << dirtThreshold_ << "-pv.map";
+			gridPositiveVotesFile << experimentFolder_ << filename << "-dt" << dirtThreshold_ << "-pv.map";
 			std::ofstream outPv(gridPositiveVotesFile.str().c_str());
 			if (outPv.is_open() == false)
 			{
@@ -484,7 +482,7 @@ void DirtDetection::databaseTest()
 			outPv.close();
 
 			std::stringstream gridNumberObservationsFile;
-			gridNumberObservationsFile << savePath << filename << "-dt" << dirtThreshold_ << "-no.map";
+			gridNumberObservationsFile << experimentFolder_ << filename << "-dt" << dirtThreshold_ << "-no.map";
 			std::ofstream outNo(gridNumberObservationsFile.str().c_str());
 			if (outNo.is_open() == false)
 			{
