@@ -44,8 +44,8 @@ gridResolution: 20.0
 
 # these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode
 # double
-gridOrigin_x: 1.5
-gridOrigin_y: -4.0
+gridOrigin_x: 0.0
+gridOrigin_y: 0.0
 
 # the number of attempts to segment the floor plane in the image
 # int
