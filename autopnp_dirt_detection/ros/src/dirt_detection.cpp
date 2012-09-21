@@ -51,7 +51,7 @@ void DirtDetection::init()
 	std::cout << "spectralResidualGaussianBlurIterations = " << spectralResidualGaussianBlurIterations_ << std::endl;
 	node_handle_.param("dirt_detection/dirtThreshold", dirtThreshold_, 0.5);
 	std::cout << "dirtThreshold = " << dirtThreshold_ << std::endl;
-	node_handle_.param("dirt_detection/spectralResidualNormalizationHighestMaxValue", spectralResidualNormalizationHighestMaxValue_, 0.5);
+	node_handle_.param("dirt_detection/spectralResidualNormalizationHighestMaxValue", spectralResidualNormalizationHighestMaxValue_, 1500.0);
 	std::cout << "spectralResidualNormalizationHighestMaxValue = " << spectralResidualNormalizationHighestMaxValue_ << std::endl;
 	node_handle_.param("dirt_detection/spectralResidualImageSizeRatio", spectralResidualImageSizeRatio_, 0.25);
 	std::cout << "spectralResidualImageSizeRatio = " << spectralResidualImageSizeRatio_ << std::endl;
@@ -83,8 +83,8 @@ void DirtDetection::init()
 	std::cout << "planeMaxHeight = " << planeMaxHeight_ << std::endl;
 	node_handle_.param("dirt_detection/databaseFilename", databaseFilename_, std::string(""));
 	std::cout << "databaseFilename = " << databaseFilename_ << std::endl;
-	node_handle_.param("dirt_detection/labelingFilename", labelingFilename_, std::string(""));
-	std::cout << "labelingFilename = " << labelingFilename_ << std::endl;
+	node_handle_.param("dirt_detection/labelingFilePath", labelingFilePath_, std::string(""));
+	std::cout << "labelingFilePath = " << labelingFilePath_ << std::endl;
 	node_handle_.param("dirt_detection/experimentSubFolder", experimentSubFolder_, std::string(""));
 	std::cout << "experimentSubFolder = " << experimentSubFolder_ << std::endl;
 
@@ -915,7 +915,7 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 			std::string currentTime;
 			ss << t;
 			ss >> currentTime;
-			labelImage::writeTxt3d(labeledImages_, labelingFilename_, currentTime);
+			labelImage::writeTxt3d(labeledImages_, labelingFilePath_, currentTime);
 			labelingStarted_ = false;
 		}
 		else if (key == 'q' || key == 1048689)

@@ -133,7 +133,7 @@ protected:
 
 	std::string databaseFilename_;		// path and name of the database index file
 	std::string experimentSubFolder_;	// subfolder name for the storage of results
-	std::string labelingFilename_;		// name of the file that contains the labeling results
+	std::string labelingFilePath_;		// path to labeling file storage
 
 	std::map<std::string, bool> debug_;
 

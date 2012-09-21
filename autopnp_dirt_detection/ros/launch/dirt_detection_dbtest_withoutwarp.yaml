@@ -1,16 +1,21 @@
-# spectral residual component
+# spectral residual component: number of Gaussian smoothing operations
+# int
 spectralResidualGaussianBlurIterations: 3    #3
 
 # side length of the fourier transformed image relative to the width of the original image
+# double
 spectralResidualImageSizeRatio: 0.25   #0.25
 
 # maximum of the spectral residual image with artificial dirt can be at maximum at this number, the spectral residual image is scaled to the ratio (max/spectralResidualNormalizationHighestMaxValue)
-spectralResidualNormalizationHighestMaxValue: 1500
+# double
+spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
+# double
 dirtThreshold: 0.2 #0.2  #0.35 #0.5
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
+# double
 dirtCheckStdDevFactor: 3.0   #3.6
 
 # chooses a mode of operation: 0=detection, 1=labeling, 2=database test
@@ -25,7 +30,7 @@ warpImage: false
 # double
 birdEyeResolution: 300.0
 
-# only those points which are close enough to the camera are taken [max distance in m]
+# only those points which are close enough to the camera are displayed in the bird's eye view [max distance in m]
 # double
 maxDistanceToCamera: 3.00
 
