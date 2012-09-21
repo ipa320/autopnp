@@ -730,28 +730,28 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
 			cv::imshow("dirt grid", gridPositiveVotesDisplay);
 			cvMoveWindow("dirt grid", 0, 0);
-
-			// create occupancy grid map from detections
-			nav_msgs::OccupancyGrid detectionMap;
-			detectionMap.header.stamp = ros::Time::now();
-			detectionMap.header.frame_id = "/map";
-			detectionMap.info.resolution = 1.0/gridResolution_;
-			detectionMap.info.width = gridPositiveVotes_.cols;
-			detectionMap.info.height = gridPositiveVotes_.rows;
-			detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
-			detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
-			detectionMap.info.origin.position.z = 0.02;
-			btQuaternion rot(0,3.14159265359,0);
-			detectionMap.info.origin.orientation.x = rot.getX();
-			detectionMap.info.origin.orientation.y = rot.getY();
-			detectionMap.info.origin.orientation.z = rot.getZ();
-			detectionMap.info.origin.orientation.w = rot.getW();
-			detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
-			for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
-				for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
-					detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
-			detection_map_pub_.publish(detectionMap);
 		}
+
+		// create occupancy grid map from detections
+		nav_msgs::OccupancyGrid detectionMap;
+		detectionMap.header.stamp = ros::Time::now();
+		detectionMap.header.frame_id = "/map";
+		detectionMap.info.resolution = 1.0/gridResolution_;
+		detectionMap.info.width = gridPositiveVotes_.cols;
+		detectionMap.info.height = gridPositiveVotes_.rows;
+		detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
+		detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
+		detectionMap.info.origin.position.z = 0.02;
+		btQuaternion rot(0,3.14159265359,0);
+		detectionMap.info.origin.orientation.x = rot.getX();
+		detectionMap.info.origin.orientation.y = rot.getY();
+		detectionMap.info.origin.orientation.z = rot.getZ();
+		detectionMap.info.origin.orientation.w = rot.getW();
+		detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
+		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
+			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+				detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
+		detection_map_pub_.publish(detectionMap);
 
 		if (debug_["showObservationsGrid"] == true)
 		{
