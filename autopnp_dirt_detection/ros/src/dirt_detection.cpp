@@ -77,6 +77,8 @@ void DirtDetection::init()
 	gridOrigin_ = cv::Point2d(gox, goy);
 	node_handle_.param("dirt_detection/floorSearchIterations", floorSearchIterations_, 3);
 	std::cout << "floorSearchIterations = " << floorSearchIterations_ << std::endl;
+	node_handle_.param("dirt_detection/minPlanePoints", minPlanePoints_, 0);
+	std::cout << "minPlanePoints = " << minPlanePoints_ << std::endl;
 	node_handle_.param("dirt_detection/planeNormalMaxZ", planeNormalMaxZ_, -0.5);
 	std::cout << "planeNormalMaxZ = " << planeNormalMaxZ_ << std::endl;
 	node_handle_.param("dirt_detection/planeMaxHeight", planeMaxHeight_, 0.3);
@@ -151,7 +153,6 @@ int main(int argc, char **argv)
 
 	DirtDetection id(n);
 	id.init();
-
 /*
 	printf("Read samples and split them into train-samples and test-samples.\n");
 	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
@@ -739,7 +740,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		detectionMap.info.height = gridPositiveVotes_.rows;
 		detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
 		detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
-		detectionMap.info.origin.position.z = 0.02;
+		detectionMap.info.origin.position.z = -0.05;
 		btQuaternion rot(0,3.14159265359,0);
 		detectionMap.info.origin.orientation.x = rot.getX();
 		detectionMap.info.origin.orientation.y = rot.getY();
@@ -1016,7 +1017,10 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			pcl::PointXYZRGB point = (*filtered_input_cloud)[(inliers->indices[inliers->indices.size()/2])];
 			btVector3 planePointCamera(point.x, point.y, point.z);
 			btVector3 planePointWorld = transform_map_camera * planePointCamera;
-			//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << "   point[half]: " << planePointWorld.getX() << ", " << planePointWorld.getY() << ", " << planePointWorld.getZ() << std::endl;
+//			std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << "   point[half]: " << planePointWorld.getX() << ", " << planePointWorld.getY() << ", " << planePointWorld.getZ() << std::endl;
+//			std::cout << "pointCount: " << inliers->indices.size() << " minPlanePoints: " << minPlanePoints_ << "\n"
+//					<< "planeNormalWorld.getZ(): " << planeNormalWorld.getZ() << " planeNormalMaxZ_: " << planeNormalMaxZ_ << "\n"
+//					<< "abs(planePointWorld.getZ()): " << abs(planePointWorld.getZ()) << " planeMaxHeight_: " << planeMaxHeight_ << std::endl;
 
 			// verify that the found plane is a valid ground plane
 			if (inliers->indices.size()>minPlanePoints_ && planeNormalWorld.getZ()<planeNormalMaxZ_ && abs(planePointWorld.getZ())<planeMaxHeight_)
