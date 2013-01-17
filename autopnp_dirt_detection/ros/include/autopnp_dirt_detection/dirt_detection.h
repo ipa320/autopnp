@@ -108,6 +108,7 @@ protected:
 	ros::Publisher clock_pub_;
 	ros::Publisher ground_truth_map_pub_;
 	ros::Publisher detection_map_pub_;
+	image_transport::Publisher dirt_detection_image_pub_; ///< topic for publishing the image containing the people positions
 
 	// labeling
 	bool labelingStarted_;

@@ -77,6 +77,8 @@ void DirtDetection::init()
 	gridOrigin_ = cv::Point2d(gox, goy);
 	node_handle_.param("dirt_detection/floorSearchIterations", floorSearchIterations_, 3);
 	std::cout << "floorSearchIterations = " << floorSearchIterations_ << std::endl;
+	node_handle_.param("dirt_detection/minPlanePoints", minPlanePoints_, 0);
+	std::cout << "minPlanePoints = " << minPlanePoints_ << std::endl;
 	node_handle_.param("dirt_detection/planeNormalMaxZ", planeNormalMaxZ_, -0.5);
 	std::cout << "planeNormalMaxZ = " << planeNormalMaxZ_ << std::endl;
 	node_handle_.param("dirt_detection/planeMaxHeight", planeMaxHeight_, 0.3);
@@ -115,6 +117,7 @@ void DirtDetection::init()
 
 	it_ = new image_transport::ImageTransport(node_handle_);
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
+	dirt_detection_image_pub_ = it_->advertise("dirt_detections", 1);
 
 	if (modeOfOperation_ == 0)	// detection
 	{
@@ -739,7 +742,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		detectionMap.info.height = gridPositiveVotes_.rows;
 		detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
 		detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
-		detectionMap.info.origin.position.z = 0.02;
+		detectionMap.info.origin.position.z = -0.05;
 		btQuaternion rot(0,3.14159265359,0);
 		detectionMap.info.origin.orientation.x = rot.getX();
 		detectionMap.info.origin.orientation.y = rot.getY();
@@ -750,6 +753,12 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
 				detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 		detection_map_pub_.publish(detectionMap);
+
+		// publish image
+		cv_bridge::CvImage cv_ptr;
+		cv_ptr.image = new_plane_color_image;
+		cv_ptr.encoding = "bgr8";
+		dirt_detection_image_pub_.publish(cv_ptr.toImageMsg());
 
 		if (debug_["showObservationsGrid"] == true)
 		{
