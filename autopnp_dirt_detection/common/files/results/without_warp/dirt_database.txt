@@ -1,0 +1,12 @@
+/home/rmb/dirt_detection/
+10
+office-clean 2.5 1.5
+office-food 2.5 1.5
+office-fuzz 2.5 1.5
+office-leaves 2.5 1.5
+office-office 2.5 1.0
+office-paper1 2.5 1.0
+office-paper2 2.5 1.0
+office-paper3 2.5 1.0
+office-stones 2.5 1.5
+office-streetdirt 2.5 1.0
