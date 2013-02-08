@@ -104,10 +104,11 @@ protected:
 	ros::Subscriber camera_depth_points_sub_;
 
 	ros::Publisher floor_plane_pub_;
-	ros::Publisher camera_depth_points_bagpub_;
+	ros::Publisher camera_depth_points_from_bag_pub_;
 	ros::Publisher clock_pub_;
-	ros::Publisher ground_truth_map_;
-	ros::Publisher detection_map_;
+	ros::Publisher ground_truth_map_pub_;
+	ros::Publisher detection_map_pub_;
+	image_transport::Publisher dirt_detection_image_pub_; ///< topic for publishing the image containing the people positions
 
 	// labeling
 	bool labelingStarted_;
@@ -118,6 +119,9 @@ protected:
 	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
 	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
 	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
+	std::vector<std::vector<std::vector<unsigned char> > > listOfLastDetections_;	// stores a list of the last x measurements (detection/no detection) for each grid cell (indices: 1=u, 2=v, 3=history)
+	cv::Mat historyLastEntryIndex_;	// stores the index of last modified number in the history array (type: 32SC1)
+	int detectionHistoryDepth_;
 
 	// evaluation
 	int rosbagMessagesProcessed_;	// number of ros messages received by the program
@@ -131,13 +135,21 @@ protected:
 	int modeOfOperation_;
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
 
-	std::string databaseFilename_;		// path and name of the database index file
-	std::string experimentSubFolder_;	// subfolder name for the storage of results
+	std::string experimentFolder_;		// storage location of the database index file and writing location for the results of an experiment
+	std::string labelingFilePath_;		// path to labeling file storage
 
 	std::map<std::string, bool> debug_;
 
 	bool warpImage_;	// if true, image warping to a bird's eye perspective is enabled
+	double maxDistanceToCamera_;	// only those points which are close enough to the camera are taken [max distance in m]
 	bool removeLines_;	// if true, strong lines in the image will not produce dirt responses
+
+	// plane search
+	int floorSearchIterations_;		// the number of attempts to segment the floor plane in the image
+	int minPlanePoints_;		// minimum number of points that are necessary to find the floor plane
+	double planeNormalMaxZ_;	// maximum z-value of the plane normal (ensures to have an floor plane)
+	double planeMaxHeight_;		// maximum height of the detected plane above the mapped ground
+
 
 	// further
 	ros::Time lastIncomingMessage_;

@@ -2,10 +2,11 @@
 <launch>
 
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="dirt_detection/dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection_labeling.yaml"/>
+  <rosparam command="load" ns="dirt_detection/dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection_dbtest_withwarp.yaml"/>
 
   <!-- use clock from bag files -->
   <param name="/use_sim_time" type="bool" value="true" />
+
 
   <!--  -->
   <node pkg="autopnp_dirt_detection" ns="dirt_detection" type="dirt_detection" name="dirt_detection" output="screen">	<!-- ns=namespace (arbitrary), type=name of executable, name=node name (arbitrary) -->
@@ -13,10 +14,10 @@
 	<remap from="image_color" to="/camera/rgb/image_color"/>
 	<!--remap from="colored_point_cloud" to="/camera/depth_registered/points"/-->
 	<!--remap from="colored_point_cloud" to="/camera/rgb/points"/-->
-	<remap from="colored_point_cloud" to="/cam3d/rgb/points"/>
+	<remap from="colored_point_cloud" to="colored_point_cloud_bagpub"/>
 	
-	<!-- path to labeling file storage -->
-	<param name="labelingFilePath" type="string" value="$(find autopnp_dirt_detection)/common/files/"/>
+	<!-- storage location of the database index file and writing location for the results of an experiment  -->
+	<param name="experimentFolder" type="string" value="$(find autopnp_dirt_detection)/common/files/results/with_image_warping/"/>
   </node>
 
 </launch>

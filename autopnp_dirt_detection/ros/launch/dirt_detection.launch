@@ -2,13 +2,13 @@
 <launch>
 
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.yaml"/>
+  <rosparam command="load" ns="dirt_detection/dirt_detection" file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.yaml"/>
 
 
   <!--  -->
   <node pkg="autopnp_dirt_detection" ns="dirt_detection" type="dirt_detection" name="dirt_detection" output="screen">	<!-- ns=namespace (arbitrary), type=name of executable, name=node name (arbitrary) -->
 	<!--launch-prefix="/usr/bin/gdb"-->
-	<remap from="image_color" to="/camera/rgb/image_color"/>
+	<remap from="image_color" to="/cam3d/rgb/image_color"/>
 	<!--remap from="colored_point_cloud" to="/camera/depth_registered/points"/-->
 	<!--remap from="colored_point_cloud" to="/camera/rgb/points"/-->
 	<remap from="colored_point_cloud" to="/cam3d/rgb/points"/>

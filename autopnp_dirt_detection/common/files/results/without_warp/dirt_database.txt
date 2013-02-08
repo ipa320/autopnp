@@ -1,5 +1,45 @@
-/home/rmb/dirt_detection/
-10
+/please_insert_path_to_the_dirt_database/common/files/dirt_database/
+50
+carpet-clean 1.0 -4.5
+carpet-food 0.0 -2.0
+carpet-fuzz 0.0 -2.0
+carpet-leaves 0.0 -2.0
+carpet-office 0.0 -2.0
+carpet-paper1 0.0 -2.0
+carpet-paper2 0.0 -2.0
+carpet-paper3 0.0 -2.0
+carpet-stones 0.0 -2.0
+carpet-streetdirt 0.0 -2.0
+corridor-clean -1.0 0.0
+corridor-food 2.0 0.0
+corridor-fuzz 2.0 0.0
+corridor-leaves 2.0 0.0
+corridor-office 2.0 0.0
+corridor-paper1 -1.0 0.0
+corridor-paper2 -1.0 0.0
+corridor-paper3 -1.0 0.0
+corridor-stones 2.0 0.0
+corridor-streetdirt 2.0 0.0
+kitchen-clean -4.0 -6.0
+kitchen-food -4.0 -6.0
+kitchen-fuzz -4.0 -6.0
+kitchen-leaves -4.0 -6.0
+kitchen-office -4.0 -6.0
+kitchen-paper1 -4.0 -6.0
+kitchen-paper2 -4.0 -6.0
+kitchen-paper3 -4.0 -6.0
+kitchen-stones -4.0 -6.0
+kitchen-streetdirt -4.0 -6.0
+linoleum-clean -1.0 2.0
+linoleum-food -1.0 2.0
+linoleum-fuzz 0.0 1.0
+linoleum-leaves -1.0 2.0
+linoleum-office 0.0 1.0
+linoleum-paper1 -1.0 2.0
+linoleum-paper2 -1.0 2.0
+linoleum-paper3 -1.0 2.0
+linoleum-stones -1.0 2.0
+linoleum-streetdirt 0.0 1.0
 office-clean 2.5 1.5
 office-food 2.5 1.5
 office-fuzz 2.5 1.5

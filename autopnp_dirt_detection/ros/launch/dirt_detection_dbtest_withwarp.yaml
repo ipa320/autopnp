@@ -36,7 +36,7 @@ maxDistanceToCamera: 3.00
 
 # if true, strong lines in the image will not produce dirt responses
 # bool
-removeLines: true
+removeLines: false
 
 # spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
 # double
@@ -65,7 +65,7 @@ planeMaxHeight: 0.3
 
 # subfolder name for storing the results of the current experiment - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
-experimentSubFolder: with_line_removal
+experimentSubFolder: with_image_warping
 
 ##### debug display switches - enable or disable the display of several kinds of images
 # all flags are of type bool
