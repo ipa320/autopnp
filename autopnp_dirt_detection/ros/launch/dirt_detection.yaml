@@ -12,7 +12,7 @@ spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
 # double
-dirtThreshold: 0.25 #0.2  #0.35 #0.5
+dirtThreshold: 0.15 #0.2  #0.35 #0.5
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
 # double
@@ -44,12 +44,12 @@ gridResolution: 20.0
 
 # these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode
 # double
-gridOrigin_x: 1.5
-gridOrigin_y: -4.0
+gridOrigin_x: 0.0
+gridOrigin_y: 0.0
 
 # the number of attempts to segment the floor plane in the image
 # int
-floorSearchIterations: 3
+floorSearchIterations: 2  #3
 
 # minimum number of points that are necessary to find the floor plane
 # int

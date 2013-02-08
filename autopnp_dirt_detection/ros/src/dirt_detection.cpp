@@ -45,6 +45,9 @@ DirtDetection::~DirtDetection()
 
 void DirtDetection::init()
 {
+	// todo: convert to parameters
+	detectionHistoryDepth_ = 20;
+
 	// Parameters
 	std::cout << "\n--------------------------\nDirt Detection Parameters:\n--------------------------\n";
 	node_handle_.param("dirt_detection/spectralResidualGaussianBlurIterations", spectralResidualGaussianBlurIterations_, 2);
@@ -114,6 +117,11 @@ void DirtDetection::init()
 	// prepare grid for dirt detection and observations
 	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
 	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+
+	// new mode with detection history
+	listOfLastDetections_.resize(gridPositiveVotes_.cols, std::vector<std::vector<unsigned char> >(gridPositiveVotes_.rows, std::vector<unsigned char>(15, 0)));
+	//std::cout << "u:" << listOfLastDetections_.size() << "v:" << listOfLastDetections_[0].size() << "hist:" << listOfLastDetections_[0][0].size() << "val:" << int(listOfLastDetections_[0][0][0]) << std::endl;
+	historyLastEntryIndex_ = cv::Mat(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
 	it_ = new image_transport::ImageTransport(node_handle_);
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
@@ -605,6 +613,15 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 	cv::waitKey(10);
 }
 
+// todo: new mode
+int sumOfUCharArray(std::vector<unsigned char> vec)
+{
+	int sum = 0;
+	for (int i=0; i<(int)vec.size(); i++)
+		sum += vec[i];
+	return sum;
+}
+
 void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
 {
 	// get tf between camera and map
@@ -629,6 +646,12 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
+
+	// todo: new mode which can delete dirt
+	// reset results
+	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
+	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+
 
 	// find ground plane
 	cv::Mat plane_color_image = cv::Mat();
@@ -733,6 +756,20 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			cvMoveWindow("dirt grid", 0, 0);
 		}
 
+		// todo: new mode with dirt deletion:
+		for (int v=0; v<gridNumberObservations_.rows; v++)
+		{
+			for (int u=0; u<gridNumberObservations_.cols; u++)
+			{
+				// only update currently visible cells
+				if (gridNumberObservations_.at<int>(v,u) != 0)
+				{
+					historyLastEntryIndex_.at<int>(v,u) = (historyLastEntryIndex_.at<int>(v,u)+1)%detectionHistoryDepth_;
+					listOfLastDetections_[u][v][historyLastEntryIndex_.at<int>(v,u)] = (gridPositiveVotes_.at<int>(v,u)!=0 ? 1 : 0);
+				}
+			}
+		}
+
 		// create occupancy grid map from detections
 		nav_msgs::OccupancyGrid detectionMap;
 		detectionMap.header.stamp = ros::Time::now();
@@ -749,9 +786,14 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		detectionMap.info.origin.orientation.z = rot.getZ();
 		detectionMap.info.origin.orientation.w = rot.getW();
 		detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
+		int limit_square = 34;
 		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
 			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
-				detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
+				// hack: autonomik-scenario
+				if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
+					//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
+					// todo: new mode
+					detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_));
 		detection_map_pub_.publish(detectionMap);
 
 		// publish image
@@ -1569,7 +1611,11 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat&
 		cv::Mat mask_eroded = mask->clone();
 		cv::dilate(*mask, mask_eroded, cv::Mat(), cv::Point(-1, -1), 2);
 		//cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25.0/640.0*C3_color_image.cols);
-		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 35.0/640.0*C3_color_image.cols);
+
+		//cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 35.0/640.0*C3_color_image.cols);
+		// todo: hack for autonomik
+		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 45.0/640.0*C3_color_image.cols);
+
 		cv::Mat temp;
 		C1_saliency_image.copyTo(temp, mask_eroded);
 		C1_saliency_image = temp;
@@ -1947,7 +1993,9 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 
 		cv::cvtColor(C3_color_image, src, CV_BGR2GRAY);
 
-		cv::Canny(src, dst, 150, 200, 3);
+		// hack: autonomik
+		//cv::Canny(src, dst, 150, 200, 3);
+		cv::Canny(src, dst, 90, 170, 3);
 		cv::cvtColor(dst, color_dst, CV_GRAY2BGR);
 
 		std::vector<cv::Vec4i> lines;
@@ -1955,7 +2003,9 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 		for( size_t i = 0; i < lines.size(); i++ )
 		{
 			line(color_dst, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,255), 3, 8);
-			line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 13, 8);
+			// todo: hack for autonomik
+			//line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 13, 8);
+			line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 35, 8);
 		}
 
 		if (debug_["showDetectedLines"] == true)
@@ -2000,10 +2050,14 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
     		meanIntensity += scaled_C1_saliency_image.at<float>(contours[i][t].y, contours[i][t].x);
     	meanIntensity /= (double)contours[i].size();
     	if (meanIntensity > newMean + dirtCheckStdDevFactor_ * newStdDev)
+    	{
+    		// todo: hack: for autonomik only detect green ellipses
+    		dirtDetections.push_back(rec);
 			cv::ellipse(C3_color_image, rec, green, 2);
-    	else
-    		cv::ellipse(C3_color_image, rec, red, 2);
-    	dirtDetections.push_back(rec);
+    	}
+//    	else
+//    		cv::ellipse(C3_color_image, rec, red, 2);
+//    	dirtDetections.push_back(rec);
 	}
 }
 

@@ -6,6 +6,7 @@ import smach
 import smach_ros
 
 import random
+from time import sleep
 from nav_msgs.srv import *
 
 from ApproachPose import *
@@ -20,39 +21,53 @@ class SelectNavigationGoal(smach.State):
 			
 	def execute(self, userdata):
 		# defines
-		x_min = 0
-		x_max = 4.0
-		x_increment = 2
-		y_min = -4.0
-		y_max = 0.0
-		y_increment = 2
-		th_min = -3.14
-		th_max = 3.14
-		th_increment = 2*3.1414926/4
+		# (-0.4, 1.0, 0...270); (0.9, 0.9, 180...270); (-0.4, -1.0, 0...90)
+		
+		#x_min = 0
+		#x_max = 4.0
+		#x_increment = 2
+		#y_min = -4.0
+		#y_max = 0.0
+		#y_increment = 2
+		#th_min = -3.14
+		#th_max = 3.14
+		#th_increment = 2*3.1414926/4
 		
 		# generate new list, if list is empty
 		if len(self.goals) == 0:	
-			x = x_min
-			y = y_min
-			th = th_min
-			while x <= x_max:
-				while y <= y_max:
-					while th <= th_max:
-						pose = []
-						pose.append(x) # x
-						pose.append(y) # y
-						pose.append(th) # th
-						self.goals.append(pose)
-						th += th_increment
-					y += y_increment
-					th = th_min
-				x += x_increment
-				y = y_min
-				th = th_min
+			self.goals.append([0.9, 0.9, 1.0*3.1414926])
+			self.goals.append([0.9, 0.9, 1.25*3.1414926])
+			self.goals.append([0.9, 0.9, 1.5*3.1414926])
+			self.goals.append([-0.3, -0.8, 0.25*3.1414926])
+			self.goals.append([-0.3, -0.8, 0.5*3.1414926])
+			self.goals.append([-0.3, -0.8, 0.25*3.1414926])
+			self.goals.append([-0.3, -0.8, 0])
+			self.goals.append([-0.3, 0.85, 1.5*3.1414926])
+			self.goals.append([-0.3, 0.85, 1.75*3.1414926])
+			self.goals.append([-0.3, 0.85, 0])
+			self.goals.append([-0.3, 0.85, 1.0*3.1414926])
+		#	x = x_min
+		#	y = y_min
+		#	th = th_min
+		#	while x <= x_max:
+		#		while y <= y_max:
+		#			while th <= th_max:
+		#				pose = []
+		#				pose.append(x) # x
+		#				pose.append(y) # y
+		#				pose.append(th) # th
+		#				self.goals.append(pose)
+		#				th += th_increment
+		#			y += y_increment
+		#			th = th_min
+		#		x += x_increment
+		#		y = y_min
+		#		th = th_min
 
 		#print self.goals
-		#userdata.base_pose = self.goals.pop() # takes last element out of list
-		userdata.base_pose = self.goals.pop(random.randint(0,len(self.goals)-1)) # takes random element out of list
+		userdata.base_pose = self.goals.pop() # takes last element out of list
+		sleep(2)
+		#userdata.base_pose = self.goals.pop(random.randint(0,len(self.goals)-1)) # takes random element out of list
 
 		return 'selected'
 
