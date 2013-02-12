@@ -125,6 +125,8 @@ protected:
 
 	// evaluation
 	int rosbagMessagesProcessed_;	// number of ros messages received by the program
+	double meanProcessingTimeSegmentation_;		// average time needed for segmentation
+	double meanProcessingTimeDirtDetection_;		// average time needed for dirt detection
 
 	//parameters
 	int spectralResidualGaussianBlurIterations_;

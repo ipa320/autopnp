@@ -12,7 +12,7 @@ spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
 # double
-dirtThreshold: 0.15 #0.2  #0.35 #0.5
+dirtThreshold: 0.15 #0.09 #0.2  #0.35 #0.5
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
 # double
@@ -38,9 +38,9 @@ maxDistanceToCamera: 3.00
 # bool
 removeLines: true
 
-# spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
+# spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 10-20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
 # double
-gridResolution: 20.0
+gridResolution: 10.0
 
 # these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode
 # double
@@ -49,7 +49,7 @@ gridOrigin_y: 0.0
 
 # the number of attempts to segment the floor plane in the image
 # int
-floorSearchIterations: 2  #3
+floorSearchIterations: 3  #3
 
 # minimum number of points that are necessary to find the floor plane
 # int
@@ -95,7 +95,7 @@ showSaliencyDetection: false
 showDetectedLines: false
 
 # displays the dirt detection results drawn into the color image
-showDirtDetections: false
+showDirtDetections: true
 
 # displays the grid that illustrates the number of observations of each floor cell (the image might be displayed rotated)
 showObservationsGrid: false

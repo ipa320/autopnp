@@ -1,6 +1,11 @@
 #include <autopnp_dirt_detection/dirt_detection.h>
 #include <autopnp_dirt_detection/timer.h>
 
+#include <pcl/ModelCoefficients.h>
+#include <pcl/point_types.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/filters/voxel_grid.h>
+
 #include <set>
 #include <time.h>
 
@@ -26,6 +31,8 @@ DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 {
 	it_ = 0;
 	rosbagMessagesProcessed_ = 0;
+	meanProcessingTimeSegmentation_ = 0.;
+	meanProcessingTimeDirtDetection_ = 0.;
 	labelingStarted_ = false;
 	lastIncomingMessage_ = ros::Time::now();
 }
@@ -46,7 +53,7 @@ DirtDetection::~DirtDetection()
 void DirtDetection::init()
 {
 	// todo: convert to parameters
-	detectionHistoryDepth_ = 20;
+	detectionHistoryDepth_ = 30; //30;
 
 	// Parameters
 	std::cout << "\n--------------------------\nDirt Detection Parameters:\n--------------------------\n";
@@ -653,11 +660,19 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
 
+	Timer tim;
+	tim.start();
+	double segmentationTime=0., dirtDetectionTime=0.;
+
 	// find ground plane
 	cv::Mat plane_color_image = cv::Mat();
 	cv::Mat plane_mask = cv::Mat();
 	pcl::ModelCoefficients plane_model;
 	bool found_plane = planeSegmentation(input_cloud, plane_color_image, plane_mask, plane_model, transformMapCamera, gridNumberObservations_);
+
+	//std::cout << "Segmentation time: " << tim.getElapsedTimeInMilliSec() << "ms." << std::endl;
+	segmentationTime = tim.getElapsedTimeInMilliSec();
+	tim.start();
 
 	// check if a ground plane could be found
 	if (found_plane == true)
@@ -757,6 +772,9 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		}
 
 		// todo: new mode with dirt deletion:
+		cv::Point2i offset(gridNumberObservations_.cols/2, gridNumberObservations_.rows/2);
+		cv::Mat Rt = R.t();
+		cv::Mat Rtt = Rt*t;
 		for (int v=0; v<gridNumberObservations_.rows; v++)
 		{
 			for (int u=0; u<gridNumberObservations_.cols; u++)
@@ -764,6 +782,26 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 				// only update currently visible cells
 				if (gridNumberObservations_.at<int>(v,u) != 0)
 				{
+					if (warpImage_ == true)
+					{
+						// todo: compute more efficiently
+						// only mark grid cells as observed if they are part of the warped image
+						btVector3 pointWorldMapBt(-(u-offset.x)/gridResolution_ + gridOrigin_.x, (v-offset.y)/gridResolution_ + gridOrigin_.y, 0.0);
+						btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;	// transform map point (world coordinates) into camera coordinates
+						cv::Mat pointWorldCamera = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
+						cv::Mat pointFloorPlane = Rt*pointWorldCamera - Rtt; 	// =point in detected floor plane in plane coordinate system
+						cv::Mat pointPlaneImage = (cv::Mat_<double>(3,1) << (pointFloorPlane.at<double>(0)-cameraImagePlaneOffset.x)*birdEyeResolution_, (pointFloorPlane.at<double>(1)-cameraImagePlaneOffset.y)*birdEyeResolution_, 1.0);
+						// todo: parameter candidate?
+						double borderOffset = 30.;	// pixel distance from image border - observations close to the border should not count as there are no detections happening
+						if (pointPlaneImage.at<double>(0) < 0.+borderOffset || pointPlaneImage.at<double>(0) > new_plane_color_image.cols-borderOffset ||
+							pointPlaneImage.at<double>(1) < 0.+borderOffset || pointPlaneImage.at<double>(1) > new_plane_color_image.rows-borderOffset)
+						{
+							gridNumberObservations_.at<int>(v,u) = 0;
+							continue;
+						}
+					}
+
+					// update history of cell values
 					historyLastEntryIndex_.at<int>(v,u) = (historyLastEntryIndex_.at<int>(v,u)+1)%detectionHistoryDepth_;
 					listOfLastDetections_[u][v][historyLastEntryIndex_.at<int>(v,u)] = (gridPositiveVotes_.at<int>(v,u)!=0 ? 1 : 0);
 				}
@@ -789,12 +827,18 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		int limit_square = 34;
 		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
 			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
-				// hack: autonomik-scenario
-				if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
+				// hack: autonomik-scenario: only map dirt within a certain area
+				//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
 					//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 					// todo: new mode
-					detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_));
+					detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
 		detection_map_pub_.publish(detectionMap);
+
+		//std::cout << "Dirt Detection time: " << tim.getElapsedTimeInMilliSec() << "ms." << std::endl;
+		dirtDetectionTime = tim.getElapsedTimeInMilliSec();
+		meanProcessingTimeSegmentation_ = (meanProcessingTimeSegmentation_*rosbagMessagesProcessed_+segmentationTime)/(rosbagMessagesProcessed_+1.0);
+		meanProcessingTimeDirtDetection_ = (meanProcessingTimeDirtDetection_*rosbagMessagesProcessed_+dirtDetectionTime)/(rosbagMessagesProcessed_+1.0);
+		std::cout << "mean times for segmentation, dirt detection, total:\t" << meanProcessingTimeSegmentation_ << "\t" << meanProcessingTimeDirtDetection_ << "\t" << meanProcessingTimeSegmentation_+meanProcessingTimeDirtDetection_ << std::endl;
 
 		// publish image
 		cv_bridge::CvImage cv_ptr;
@@ -1029,23 +1073,31 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 
 
 	// try several times to find the ground plane
+	double plane_inlier_threshold = 0.05;	// cm
 	bool found_plane = false;
+
+	// downsample the dataset with a voxel filter using a leaf size of 1cm
+	pcl::VoxelGrid<pcl::PointXYZRGB> vg;
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
-	*filtered_input_cloud = *input_cloud;
-	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-	for (int trial=0; trial<floorSearchIterations_; trial++)
+	vg.setInputCloud(input_cloud->makeShared());
+	vg.setLeafSize(0.01f, 0.01f, 0.01f);
+	vg.filter(*filtered_input_cloud);
+	//std::cout << "PointCloud after filtering has: " << filtered_input_cloud->points.size ()  << " data points." << std::endl;
+
+	pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+	for (int trial=0; (trial<floorSearchIterations_ && 	filtered_input_cloud->points.size()>100); trial++)
 	{
 		// Create the segmentation object for the planar model and set all the parameters
 		inliers->indices.clear();
 		pcl::SACSegmentation<pcl::PointXYZRGB> seg;
-		seg.setOptimizeCoefficients (true);
-		seg.setModelType (pcl::SACMODEL_PLANE);
-		seg.setMethodType (pcl::SAC_RANSAC);
-		seg.setMaxIterations (100);
-		seg.setDistanceThreshold (0.05);
+		seg.setOptimizeCoefficients(true);
+		seg.setModelType(pcl::SACMODEL_PLANE);
+		seg.setMethodType(pcl::SAC_RANSAC);
+		seg.setMaxIterations(100);
+		seg.setDistanceThreshold(plane_inlier_threshold);
 
 		seg.setInputCloud(filtered_input_cloud);
-		seg.segment (*inliers, plane_model);
+		seg.segment(*inliers, plane_model);
 
 		// keep plane_normal upright
 		if (plane_model.values[2] < 0.)
@@ -1077,26 +1129,26 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			}
 			else
 			{
-				// the plane is not the ground plane -> remove that plane from the point cloud
-				for (size_t i=0; i<inliers->indices.size(); i++)
-				{
-					// set all inliers to invalid
-					pcl::PointXYZRGB& point = (*filtered_input_cloud)[(inliers->indices[i])];
-					point.x = 0;
-					point.y = 0;
-					point.z = 0;
-				}
+//				// the plane is not the ground plane -> remove that plane from the point cloud
+//				for (size_t i=0; i<inliers->indices.size(); i++)
+//				{
+//					// set all inliers to invalid
+//					pcl::PointXYZRGB& point = (*filtered_input_cloud)[(inliers->indices[i])];
+//					point.x = 0;
+//					point.y = 0;
+//					point.z = 0;
+//				}
 
-//				// Extract the planar inliers from the input cloud
-//				pcl::ExtractIndices<pcl::PointXYZRGB> extract;
-//				extract.setInputCloud (filtered_input_cloud);
-//				extract.setIndices (inliers);
-//
-//				// Remove the planar inliers, extract the rest
-//				pcl::PointCloud<pcl::PointXYZRGB>::Ptr temp (new pcl::PointCloud<pcl::PointXYZRGB>);
-//				extract.setNegative (true);
-//				extract.filter(*temp);
-//				filtered_input_cloud = temp;
+				// Extract the planar inliers from the input cloud
+				pcl::ExtractIndices<pcl::PointXYZRGB> extract;
+				extract.setInputCloud(filtered_input_cloud);
+				extract.setIndices(inliers);
+
+				// Remove the planar inliers, extract the rest
+				pcl::PointCloud<pcl::PointXYZRGB>::Ptr temp(new pcl::PointCloud<pcl::PointXYZRGB>);
+				extract.setNegative(true);
+				extract.filter(*temp);
+				filtered_input_cloud = temp;
 			}
 		}
 	}
@@ -1105,6 +1157,20 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 	if (found_plane == true)
 	{
 //		pcl::PointCloud<pcl::PointXYZRGB> floor_plane;
+
+		// determine all point indices in original point cloud for plane inliers
+		inliers->indices.clear();
+		for (unsigned int i=0; i<input_cloud->size(); i++)
+		{
+			pcl::PointXYZRGB& point = (*input_cloud)[i];
+			if (point.x!=0. || point.y!=0. || point.z!=0.)
+			{
+				// check plane equation
+				double distance = plane_model.values[0]*point.x + plane_model.values[1]*point.y + plane_model.values[2]*point.z + plane_model.values[3];
+				if (distance > -plane_inlier_threshold && distance < plane_inlier_threshold)
+					inliers->indices.push_back(i);
+			}
+		}
 
 		plane_color_image = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC3);
 		plane_mask = cv::Mat::zeros(input_cloud->height, input_cloud->width, CV_8UC1);
@@ -1116,7 +1182,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			int u = inliers->indices[i] - v*input_cloud->width;
 
 			// cropped color image and mask
-			pcl::PointXYZRGB point = (*filtered_input_cloud)[(inliers->indices[i])];
+			pcl::PointXYZRGB point = (*input_cloud)[(inliers->indices[i])];
 			bgr bgr_ = {point.b, point.g, point.r};
 			plane_color_image.at<bgr>(v, u) = bgr_;
 			plane_mask.at<uchar>(v, u) = 255;
@@ -1125,6 +1191,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			btVector3 planePointCamera(point.x, point.y, point.z);
 			btVector3 planePointWorld = transform_map_camera * planePointCamera;
 			cv::Point2i co(-(planePointWorld.getX()-gridOrigin_.x)*gridResolution_+grid_offset.x, (planePointWorld.getY()-gridOrigin_.y)*gridResolution_+grid_offset.y);
+			// todo: add a check whether the current point is really visible in the current image of analysis (i.e. the warped image)
 			if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<grid_number_observations.cols && co.y>=0 && co.y<grid_number_observations.rows)
 			{
 				// grid cell has not been incremented, yet
@@ -1342,6 +1409,7 @@ bool DirtDetection::computeBirdsEyePerspective(pcl::PointCloud<pcl::PointXYZRGB>
 
 	// 4. warp perspective
 	cv::warpPerspective(plane_color_image, plane_color_image_warped, H, plane_color_image.size());
+	// todo: better manual sampling of the warped mask needed
 	cv::warpPerspective(plane_mask, plane_mask_warped, H, plane_mask.size());
 
 //		// this example is correct, H transforms world points into the image coordinate system
@@ -1610,11 +1678,13 @@ void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat&
 		// maske erodiere
 		cv::Mat mask_eroded = mask->clone();
 		cv::dilate(*mask, mask_eroded, cv::Mat(), cv::Point(-1, -1), 2);
-		//cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25.0/640.0*C3_color_image.cols);
+		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 25.0/640.0*C3_color_image.cols);
+		cv::Mat neighborhood = cv::Mat::ones(3, 1, CV_8UC1);
+		cv::erode(mask_eroded, mask_eroded, neighborhood, cv::Point(-1, -1), 15.0/640.0*C3_color_image.cols);
 
 		//cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 35.0/640.0*C3_color_image.cols);
 		// todo: hack for autonomik
-		cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 45.0/640.0*C3_color_image.cols);
+		//cv::erode(mask_eroded, mask_eroded, cv::Mat(), cv::Point(-1, -1), 45.0/640.0*C3_color_image.cols);
 
 		cv::Mat temp;
 		C1_saliency_image.copyTo(temp, mask_eroded);
@@ -2003,9 +2073,9 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 		for( size_t i = 0; i < lines.size(); i++ )
 		{
 			line(color_dst, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,255), 3, 8);
+			line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 13, 8);
 			// todo: hack for autonomik
-			//line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 13, 8);
-			line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 35, 8);
+			//line(scaled_C1_saliency_image, cv::Point(lines[i][0], lines[i][1]), cv::Point(lines[i][2], lines[i][3]), cv::Scalar(0,0,0), 35, 8);
 		}
 
 		if (debug_["showDetectedLines"] == true)
@@ -2052,12 +2122,12 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
     	if (meanIntensity > newMean + dirtCheckStdDevFactor_ * newStdDev)
     	{
     		// todo: hack: for autonomik only detect green ellipses
-    		dirtDetections.push_back(rec);
+    		//dirtDetections.push_back(rec);
 			cv::ellipse(C3_color_image, rec, green, 2);
     	}
-//    	else
-//    		cv::ellipse(C3_color_image, rec, red, 2);
-//    	dirtDetections.push_back(rec);
+    	else
+    		cv::ellipse(C3_color_image, rec, green, 2);	// todo: use red
+    	dirtDetections.push_back(rec);
 	}
 }
 
