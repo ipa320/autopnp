@@ -25,6 +25,10 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 
+// dynamic reconfigure
+#include <dynamic_reconfigure/server.h>
+#include <autopnp_dirt_detection/DirtDetectionConfig.h>
+
 // ROS message includes
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
@@ -85,6 +89,9 @@ protected:
 	 * ROS node handle.
 	 */
 	ros::NodeHandle node_handle_;
+
+	// dynamic reconfigure
+	dynamic_reconfigure::Server<autopnp_dirt_detection::DirtDetectionConfig> dynamic_reconfigure_server_;
 
 	/**
 	 * Used to subscribe and publish images.
@@ -225,6 +232,9 @@ public:
 	 */
 	void init();
 
+
+	// dynamic reconfigure
+	void dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetectionConfig &config, uint32_t level);
 
 	/**
 	 * Function is called if color image topic is received.
