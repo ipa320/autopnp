@@ -8,7 +8,7 @@ import autopnp_scenario.msg
 
 def to_goal( InputImg, CenterX, CenterY , mapResolution , mapOriginX , mapOriginY ):  
     
-    client = actionlib.SimpleActionClient( 'go_to_location', autopnp_scenario.msg.to_locationAction )
+    client = actionlib.SimpleActionClient( 'go_to_location', autopnp_scenario.msg.ToLocationAction )
     
     rospy.loginfo("Waiting for the Go To Goal Action server to start.")
     
@@ -16,7 +16,7 @@ def to_goal( InputImg, CenterX, CenterY , mapResolution , mapOriginX , mapOrigin
     
     rospy.loginfo("Go To Goal Action server started, sending goal.")
        
-    goal = autopnp_scenario.msg.to_locationGoal(input_img = InputImg,
+    goal = autopnp_scenario.msg.ToLocationGoal(input_img = InputImg,
                                                 CenterPositionX = CenterX,
                                                 CenterPositionY = CenterY, 
                                                 map_resolution = mapResolution, 

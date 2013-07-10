@@ -10,19 +10,19 @@
 #include <sensor_msgs/image_encodings.h>
 
 #include <actionlib/server/simple_action_server.h>
-#include <autopnp_scenario/to_locationAction.h>
+#include <autopnp_scenario/ToLocationAction.h>
 
-#include <autopnp_scenario/Exploration_Algorithm_2nd_version_Action_server_Library.h>
+#include <autopnp_scenario/exploration_algorithm_action_server_library.h>
 
 
 class to_location_Server
 	{
 		protected:
 			ros::NodeHandle nh_;
-			actionlib::SimpleActionServer<autopnp_scenario::to_locationAction> tl;
+			actionlib::SimpleActionServer<autopnp_scenario::ToLocationAction> tl;
 			std::string action_name_;
-			autopnp_scenario::to_locationFeedback feedback_;
-			autopnp_scenario::to_locationResult result_;
+			autopnp_scenario::ToLocationFeedback feedback_;
+			autopnp_scenario::ToLocationResult result_;
 
 		public:
 			Exploration exploration_obj;
@@ -35,7 +35,7 @@ class to_location_Server
 
 			~to_location_Server(void){}
 
-			void executeCB(const autopnp_scenario::to_locationGoalConstPtr &goal)
+			void executeCB(const autopnp_scenario::ToLocationGoalConstPtr &goal)
 				{
 					ros::Rate r(1);
 
