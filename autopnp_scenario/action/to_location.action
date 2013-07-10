@@ -1,0 +1,12 @@
+#goal definition
+sensor_msgs/Image input_img
+float64 map_resolution
+float64 Map_Origin_x
+float64 Map_Origin_y
+int32 CenterPositionX
+int32 CenterPositionY
+---
+#result definition
+string resultant
+---
+#feedback definition
