@@ -9,7 +9,7 @@
 #include <sensor_msgs/image_encodings.h>
 
 #include <actionlib/server/simple_action_server.h>
-#include <autopnp_scenario/Analyze_MapAction.h>
+#include <autopnp_scenario/AnalyzeMapAction.h>
 
 #include <autopnp_scenario/Exploration_Algorithm_2nd_version_Action_server_Library.h>
 
@@ -18,10 +18,10 @@ class Analyze_Map_Server
 	{
 		protected:
 			ros::NodeHandle nh_;
-			actionlib::SimpleActionServer<autopnp_scenario::Analyze_MapAction> ams_;
+			actionlib::SimpleActionServer<autopnp_scenario::AnalyzeMapAction> ams_;
 			std::string action_name_;
-			autopnp_scenario::Analyze_MapFeedback feedback_;
-			autopnp_scenario::Analyze_MapResult result_;
+			autopnp_scenario::AnalyzeMapFeedback feedback_;
+			autopnp_scenario::AnalyzeMapResult result_;
 
 		public:
 			Exploration exploration_obj;
@@ -34,7 +34,7 @@ class Analyze_Map_Server
 
 			~Analyze_Map_Server(void){}
 
-			void executeCB(const autopnp_scenario::Analyze_MapGoalConstPtr &goal)
+			void executeCB(const autopnp_scenario::AnalyzeMapGoalConstPtr &goal)
 				{
 					ros::Rate r(1);
 
