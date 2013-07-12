@@ -13,6 +13,8 @@ using namespace ipa_DirtDetection;
 using namespace std;
 using namespace cv;
 
+//#define WITH_MAP   // enables the usage of robot localization
+
 
 struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
 {
@@ -120,6 +122,11 @@ void DirtDetection::init()
 	std::cout << "showObservationsGrid = " << debug_["showObservationsGrid"] << std::endl;
 	node_handle_.param("dirt_detection/showDirtGrid", debug_["showDirtGrid"], true);
 	std::cout << "showDirtGrid = " << debug_["showDirtGrid"] << std::endl;
+
+	// dynamic reconfigure
+	dynamic_reconfigure::Server<autopnp_dirt_detection::DirtDetectionConfig>::CallbackType dynamic_reconfigure_callback_type;
+	dynamic_reconfigure_callback_type = boost::bind(&DirtDetection::dynamicReconfigureCallback, this, _1, _2);
+	dynamic_reconfigure_server_.setCallback(dynamic_reconfigure_callback_type);
 
 	// prepare grid for dirt detection and observations
 	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
@@ -301,6 +308,27 @@ int main(int argc, char **argv)
 }
 
 
+void DirtDetection::dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetectionConfig &config, uint32_t level)
+{
+	//ROS_INFO("Reconfigure Request: %d %f %s %s %d",	config.int_param, config.double_param, config.str_param.c_str(), config.bool_param?"True":"False", config.size);
+	dirtThreshold_ = config.dirtThreshold;
+	warpImage_ = config.warpImage;
+	birdEyeResolution_ = config.birdEyeResolution;
+	maxDistanceToCamera_ = config.maxDistanceToCamera;
+	removeLines_ = config.removeLines;
+	floorSearchIterations_ = config.floorSearchIterations;
+	minPlanePoints_ = config.minPlanePoints;
+	std::cout << "Dynamic reconfigure changed settings to \n";
+	std::cout << "  dirtThreshold = " << dirtThreshold_ << std::endl;
+	std::cout << "  warpImage = " << warpImage_ << std::endl;
+	std::cout << "  birdEyeResolution = " << birdEyeResolution_ << std::endl;
+	std::cout << "  maxDistanceToCamera = " << maxDistanceToCamera_ << std::endl;
+	std::cout << "  removeLines = " << removeLines_ << std::endl;
+	std::cout << "  floorSearchIterations = " << floorSearchIterations_ << std::endl;
+	std::cout << "  minPlanePoints = " << minPlanePoints_ << std::endl;
+}
+
+
 void DirtDetection::databaseTest()
 {
 
@@ -438,7 +466,7 @@ void DirtDetection::databaseTest()
 			groundTruthMap.info.origin.position.x = -groundTruthGrid.cols/2 / (-gridResolution_) + gridOrigin_.x;
 			groundTruthMap.info.origin.position.y = -groundTruthGrid.rows/2 / gridResolution_ + gridOrigin_.y;
 			groundTruthMap.info.origin.position.z = 0;
-			btQuaternion rot(0,3.14159265359,0);
+			tf::Quaternion rot(0,3.14159265359,0);
 			groundTruthMap.info.origin.orientation.x = rot.getX();
 			groundTruthMap.info.origin.orientation.y = rot.getY();
 			groundTruthMap.info.origin.orientation.z = rot.getZ();
@@ -615,7 +643,7 @@ void DirtDetection::imageDisplayCallback(const sensor_msgs::ImageConstPtr& color
 	if (debug_["showDirtDetections"] == true)
 	{
 		cv::imshow("dirt detections", new_color_image);
-		cvMoveWindow("dirt detections", 0, 520);
+		cvMoveWindow("dirt detections", 650, 530);
 	}
 	cv::waitKey(10);
 }
@@ -634,6 +662,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 	// get tf between camera and map
 	tf::StampedTransform transformMapCamera;
 	transformMapCamera.setIdentity();
+#ifdef WITH_MAP
 	try
 	{
 		ros::Time time = point_cloud2_rgb_msg->header.stamp;
@@ -650,6 +679,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		ROS_WARN("%s",ex.what());
 		return;
 	}
+#endif
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
@@ -724,6 +754,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		std::vector<cv::RotatedRect> dirtDetections;
 		Image_Postprocessing_C1_rmb(C1_saliency_image, C1_BlackWhite_image, new_plane_color_image, dirtDetections, plane_mask_warped);
 
+#ifdef WITH_MAP
 		// convert detections to map coordinates and mark dirt regions in map
 		for (int i=0; i<(int)dirtDetections.size(); i++)
 		{
@@ -786,8 +817,8 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 					{
 						// todo: compute more efficiently
 						// only mark grid cells as observed if they are part of the warped image
-						btVector3 pointWorldMapBt(-(u-offset.x)/gridResolution_ + gridOrigin_.x, (v-offset.y)/gridResolution_ + gridOrigin_.y, 0.0);
-						btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;	// transform map point (world coordinates) into camera coordinates
+						tf::Vector3 pointWorldMapBt(-(u-offset.x)/gridResolution_ + gridOrigin_.x, (v-offset.y)/gridResolution_ + gridOrigin_.y, 0.0);
+						tf::Vector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;	// transform map point (world coordinates) into camera coordinates
 						cv::Mat pointWorldCamera = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
 						cv::Mat pointFloorPlane = Rt*pointWorldCamera - Rtt; 	// =point in detected floor plane in plane coordinate system
 						cv::Mat pointPlaneImage = (cv::Mat_<double>(3,1) << (pointFloorPlane.at<double>(0)-cameraImagePlaneOffset.x)*birdEyeResolution_, (pointFloorPlane.at<double>(1)-cameraImagePlaneOffset.y)*birdEyeResolution_, 1.0);
@@ -853,6 +884,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 			cv::imshow("observations grid", gridObservationsDisplay);
 			cvMoveWindow("observations grid", 340, 0);
 		}
+#endif
 
 		if (debug_["showWarpedOriginalImage"] == true)
 		{
@@ -863,13 +895,13 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		if (debug_["showDirtDetections"] == true)
 		{
 			cv::imshow("dirt detections", new_plane_color_image);
-			cvMoveWindow("dirt detections", 0, 530);
+			cvMoveWindow("dirt detections", 650, 530);
 		}
 
 		if (debug_["showPlaneColorImage"] == true)
 		{
-			cv::imshow("original color image", plane_color_image);
-			cvMoveWindow("original color image", 650, 0);
+			cv::imshow("segmented color image", plane_color_image);
+			cvMoveWindow("segmented color image", 650, 0);
 		}
 	}
 	rosbagMessagesProcessed_++;
@@ -915,9 +947,9 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 
 //	// verify that plane is a valid ground plane
 //	tf::StampedTransform rotationMapCamera = transformMapCamera;
-//	rotationMapCamera.setOrigin(btVector3(0,0,0));
-//	btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
-//	btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+//	rotationMapCamera.setOrigin(tf::Vector3(0,0,0));
+//	tf::Vector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+//	tf::Vector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
 	//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << std::endl;
 
 	// check if a ground plane could be found
@@ -933,10 +965,10 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 		if (transformSuccessful == false)
 			return;
 
-//		//btVector3 pointWorldMapBt(0.45, -4.25, 0.20);
-//		//btVector3 pointWorldMapBt(0.11, -1.23, 0.11);
-//		btVector3 pointWorldMapBt(2.77, 1.61, 0.11);
-//		btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
+//		//tf::Vector3 pointWorldMapBt(0.45, -4.25, 0.20);
+//		//tf::Vector3 pointWorldMapBt(0.11, -1.23, 0.11);
+//		tf::Vector3 pointWorldMapBt(2.77, 1.61, 0.11);
+//		tf::Vector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
 //		cv::Mat pw = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
 //		cv::Mat pp = (R.t()*pw-R.t()*t);
 //		pp.at<double>(0) = birdEyeResolution_*(pp.at<double>(0)-cameraImagePlaneOffset.x);
@@ -1066,8 +1098,8 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			}
 		}
 		//display original image
-		cv::imshow("color image", color_image);
-		cvMoveWindow("color image", 650, 0);
+		cv::imshow("original color image", color_image);
+		cvMoveWindow("original color image", 0, 0);
 		//cvMoveWindow("color image", 0, 520);
 	}
 
@@ -1112,21 +1144,29 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 		if (inliers->indices.size()!=0)
 		{
 			tf::StampedTransform rotationMapCamera = transform_map_camera;
-			rotationMapCamera.setOrigin(btVector3(0,0,0));
-			btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
-			btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+			rotationMapCamera.setOrigin(tf::Vector3(0,0,0));
+			tf::Vector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+			tf::Vector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
 
 			pcl::PointXYZRGB point = (*filtered_input_cloud)[(inliers->indices[inliers->indices.size()/2])];
-			btVector3 planePointCamera(point.x, point.y, point.z);
-			btVector3 planePointWorld = transform_map_camera * planePointCamera;
+			tf::Vector3 planePointCamera(point.x, point.y, point.z);
+			tf::Vector3 planePointWorld = transform_map_camera * planePointCamera;
 			//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << "   point[half]: " << planePointWorld.getX() << ", " << planePointWorld.getY() << ", " << planePointWorld.getZ() << std::endl;
 
 			// verify that the found plane is a valid ground plane
+#ifdef WITH_MAP
 			if (inliers->indices.size()>minPlanePoints_ && planeNormalWorld.getZ()<planeNormalMaxZ_ && abs(planePointWorld.getZ())<planeMaxHeight_)
 			{
 				found_plane=true;
 				break;
 			}
+#else
+			if (inliers->indices.size()>minPlanePoints_)
+			{
+				found_plane=true;
+				break;
+			}
+#endif
 			else
 			{
 //				// the plane is not the ground plane -> remove that plane from the point cloud
@@ -1188,8 +1228,8 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			plane_mask.at<uchar>(v, u) = 255;
 
 			// populate visibility grid
-			btVector3 planePointCamera(point.x, point.y, point.z);
-			btVector3 planePointWorld = transform_map_camera * planePointCamera;
+			tf::Vector3 planePointCamera(point.x, point.y, point.z);
+			tf::Vector3 planePointWorld = transform_map_camera * planePointCamera;
 			cv::Point2i co(-(planePointWorld.getX()-gridOrigin_.x)*gridResolution_+grid_offset.x, (planePointWorld.getY()-gridOrigin_.y)*gridResolution_+grid_offset.y);
 			// todo: add a check whether the current point is really visible in the current image of analysis (i.e. the warped image)
 			if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<grid_number_observations.cols && co.y>=0 && co.y<grid_number_observations.rows)
@@ -1456,8 +1496,8 @@ void DirtDetection::transformPointFromCameraImageToWorld(const cv::Mat& pointCam
 	cv::Mat Hp = H*pointCamera;	// transformation from image plane to floor plane
 	cv::Mat pointFloor = (cv::Mat_<double>(3,1) << Hp.at<double>(0)/Hp.at<double>(2)/birdEyeResolution_+cameraImagePlaneOffset.x, Hp.at<double>(1)/Hp.at<double>(2)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
 	cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
-	btVector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
-	btVector3 pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
+	tf::Vector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
+	tf::Vector3 pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
 	pointWorld.x = pointWorldMapBt.getX();
 	pointWorld.y = pointWorldMapBt.getY();
 	pointWorld.z = pointWorldMapBt.getZ();
@@ -1465,18 +1505,18 @@ void DirtDetection::transformPointFromCameraImageToWorld(const cv::Mat& pointCam
 
 void DirtDetection::transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld)
 {
-	btVector3 pointWorldMapBt;
+	tf::Vector3 pointWorldMapBt;
 	if (warpImage_ == true)
 	{
 		cv::Mat pointFloor = (cv::Mat_<double>(3,1) << pointPlane.at<double>(0)/birdEyeResolution_+cameraImagePlaneOffset.x, pointPlane.at<double>(1)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
 		cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
-		btVector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
+		tf::Vector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
 		pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
 
 	}
 	else
 	{
-		btVector3 pointWorldCameraBt(pointPlane.at<double>(0), pointPlane.at<double>(1), pointPlane.at<double>(2));
+		tf::Vector3 pointWorldCameraBt(pointPlane.at<double>(0), pointPlane.at<double>(1), pointPlane.at<double>(2));
 		pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
 	}
 	pointWorld.x = pointWorldMapBt.getX();
@@ -1745,7 +1785,7 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
 	if (debug_["showSaliencyDetection"] == true)
 	{
 		cv::imshow("saliency detection", scaled_input_image);
-		cvMoveWindow("saliency detection", 650, 530);
+		cvMoveWindow("saliency detection", 0, 530);
 	}
 
 	//set dirt pixel to white
@@ -2088,7 +2128,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	if (debug_["showSaliencyDetection"] == true)
 	{
 		cv::imshow("saliency detection", scaled_C1_saliency_image);
-		cvMoveWindow("saliency detection", 650, 530);
+		cvMoveWindow("saliency detection", 0, 530);
 	}
 
 	//set dirt pixel to white
