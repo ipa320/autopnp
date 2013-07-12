@@ -466,7 +466,7 @@ void DirtDetection::databaseTest()
 			groundTruthMap.info.origin.position.x = -groundTruthGrid.cols/2 / (-gridResolution_) + gridOrigin_.x;
 			groundTruthMap.info.origin.position.y = -groundTruthGrid.rows/2 / gridResolution_ + gridOrigin_.y;
 			groundTruthMap.info.origin.position.z = 0;
-			btQuaternion rot(0,3.14159265359,0);
+			tf::Quaternion rot(0,3.14159265359,0);
 			groundTruthMap.info.origin.orientation.x = rot.getX();
 			groundTruthMap.info.origin.orientation.y = rot.getY();
 			groundTruthMap.info.origin.orientation.z = rot.getZ();
@@ -817,8 +817,8 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 					{
 						// todo: compute more efficiently
 						// only mark grid cells as observed if they are part of the warped image
-						btVector3 pointWorldMapBt(-(u-offset.x)/gridResolution_ + gridOrigin_.x, (v-offset.y)/gridResolution_ + gridOrigin_.y, 0.0);
-						btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;	// transform map point (world coordinates) into camera coordinates
+						tf::Vector3 pointWorldMapBt(-(u-offset.x)/gridResolution_ + gridOrigin_.x, (v-offset.y)/gridResolution_ + gridOrigin_.y, 0.0);
+						tf::Vector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;	// transform map point (world coordinates) into camera coordinates
 						cv::Mat pointWorldCamera = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
 						cv::Mat pointFloorPlane = Rt*pointWorldCamera - Rtt; 	// =point in detected floor plane in plane coordinate system
 						cv::Mat pointPlaneImage = (cv::Mat_<double>(3,1) << (pointFloorPlane.at<double>(0)-cameraImagePlaneOffset.x)*birdEyeResolution_, (pointFloorPlane.at<double>(1)-cameraImagePlaneOffset.y)*birdEyeResolution_, 1.0);
@@ -947,9 +947,9 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 
 //	// verify that plane is a valid ground plane
 //	tf::StampedTransform rotationMapCamera = transformMapCamera;
-//	rotationMapCamera.setOrigin(btVector3(0,0,0));
-//	btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
-//	btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+//	rotationMapCamera.setOrigin(tf::Vector3(0,0,0));
+//	tf::Vector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+//	tf::Vector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
 	//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << std::endl;
 
 	// check if a ground plane could be found
@@ -965,10 +965,10 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 		if (transformSuccessful == false)
 			return;
 
-//		//btVector3 pointWorldMapBt(0.45, -4.25, 0.20);
-//		//btVector3 pointWorldMapBt(0.11, -1.23, 0.11);
-//		btVector3 pointWorldMapBt(2.77, 1.61, 0.11);
-//		btVector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
+//		//tf::Vector3 pointWorldMapBt(0.45, -4.25, 0.20);
+//		//tf::Vector3 pointWorldMapBt(0.11, -1.23, 0.11);
+//		tf::Vector3 pointWorldMapBt(2.77, 1.61, 0.11);
+//		tf::Vector3 pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
 //		cv::Mat pw = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
 //		cv::Mat pp = (R.t()*pw-R.t()*t);
 //		pp.at<double>(0) = birdEyeResolution_*(pp.at<double>(0)-cameraImagePlaneOffset.x);
@@ -1144,13 +1144,13 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 		if (inliers->indices.size()!=0)
 		{
 			tf::StampedTransform rotationMapCamera = transform_map_camera;
-			rotationMapCamera.setOrigin(btVector3(0,0,0));
-			btVector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
-			btVector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
+			rotationMapCamera.setOrigin(tf::Vector3(0,0,0));
+			tf::Vector3 planeNormalCamera(plane_model.values[0], plane_model.values[1], plane_model.values[2]);
+			tf::Vector3 planeNormalWorld = rotationMapCamera * planeNormalCamera;
 
 			pcl::PointXYZRGB point = (*filtered_input_cloud)[(inliers->indices[inliers->indices.size()/2])];
-			btVector3 planePointCamera(point.x, point.y, point.z);
-			btVector3 planePointWorld = transform_map_camera * planePointCamera;
+			tf::Vector3 planePointCamera(point.x, point.y, point.z);
+			tf::Vector3 planePointWorld = transform_map_camera * planePointCamera;
 			//std::cout << "normCam: " << planeNormalCamera.getX() << ", " << planeNormalCamera.getY() << ", " << planeNormalCamera.getZ() << "  normW: " << planeNormalWorld.getX() << ", " << planeNormalWorld.getY() << ", " << planeNormalWorld.getZ() << "   point[half]: " << planePointWorld.getX() << ", " << planePointWorld.getY() << ", " << planePointWorld.getZ() << std::endl;
 
 			// verify that the found plane is a valid ground plane
@@ -1228,8 +1228,8 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 			plane_mask.at<uchar>(v, u) = 255;
 
 			// populate visibility grid
-			btVector3 planePointCamera(point.x, point.y, point.z);
-			btVector3 planePointWorld = transform_map_camera * planePointCamera;
+			tf::Vector3 planePointCamera(point.x, point.y, point.z);
+			tf::Vector3 planePointWorld = transform_map_camera * planePointCamera;
 			cv::Point2i co(-(planePointWorld.getX()-gridOrigin_.x)*gridResolution_+grid_offset.x, (planePointWorld.getY()-gridOrigin_.y)*gridResolution_+grid_offset.y);
 			// todo: add a check whether the current point is really visible in the current image of analysis (i.e. the warped image)
 			if (visitedGridCells.find(co)==visitedGridCells.end() && co.x>=0 && co.x<grid_number_observations.cols && co.y>=0 && co.y<grid_number_observations.rows)
@@ -1496,8 +1496,8 @@ void DirtDetection::transformPointFromCameraImageToWorld(const cv::Mat& pointCam
 	cv::Mat Hp = H*pointCamera;	// transformation from image plane to floor plane
 	cv::Mat pointFloor = (cv::Mat_<double>(3,1) << Hp.at<double>(0)/Hp.at<double>(2)/birdEyeResolution_+cameraImagePlaneOffset.x, Hp.at<double>(1)/Hp.at<double>(2)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
 	cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
-	btVector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
-	btVector3 pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
+	tf::Vector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
+	tf::Vector3 pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
 	pointWorld.x = pointWorldMapBt.getX();
 	pointWorld.y = pointWorldMapBt.getY();
 	pointWorld.z = pointWorldMapBt.getZ();
@@ -1505,18 +1505,18 @@ void DirtDetection::transformPointFromCameraImageToWorld(const cv::Mat& pointCam
 
 void DirtDetection::transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld)
 {
-	btVector3 pointWorldMapBt;
+	tf::Vector3 pointWorldMapBt;
 	if (warpImage_ == true)
 	{
 		cv::Mat pointFloor = (cv::Mat_<double>(3,1) << pointPlane.at<double>(0)/birdEyeResolution_+cameraImagePlaneOffset.x, pointPlane.at<double>(1)/birdEyeResolution_+cameraImagePlaneOffset.y, 0.0);
 		cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
-		btVector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
+		tf::Vector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
 		pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
 
 	}
 	else
 	{
-		btVector3 pointWorldCameraBt(pointPlane.at<double>(0), pointPlane.at<double>(1), pointPlane.at<double>(2));
+		tf::Vector3 pointWorldCameraBt(pointPlane.at<double>(0), pointPlane.at<double>(1), pointPlane.at<double>(2));
 		pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
 	}
 	pointWorld.x = pointWorldMapBt.getX();
