@@ -12,6 +12,7 @@
   <depend package="autopnp_dirt_detection"/>
   <depend package="cob_navigation_global"/>
   <depend package="cob_generic_states_experimental"/>
+  <depend package="cob_trajectory_controller"/>
 
 </package>
 
