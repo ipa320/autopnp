@@ -10,7 +10,6 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
-
 #include <ros/ros.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -18,6 +17,8 @@
 #include <actionlib/client/simple_action_client.h>
 #include <tf/transform_listener.h>
 
+#include <nav_msgs/GridCells.h>
+#include <geometry_msgs/Point.h>
 
 struct Pose
 	{
@@ -50,6 +51,9 @@ class Exploration
 			double map_resolution_;		// in [m/cell]
 			double robotRadius;			// in [m]
 
+			int Center_Position_x ;
+			int Center_Position_y ;
+
 			std::vector < int > Room_min_x;
 			std::vector < int > Room_max_x;
 			std::vector < int > Room_min_y;
@@ -60,16 +64,19 @@ class Exploration
 			std::vector < cv::Point > Center_of_Room;
 			std::vector < int > Center_of_Room_x;
 			std::vector < int > Center_of_Room_y;
-			int Center_Position_x ;
-			int Center_Position_y ;
+
+			std::vector<double> Inflation_data_X;
+			std::vector<double> Inflation_data_Y;
+
+
 			cv::Point random_location_point;
+
+			cv::Point2d map_origin_;	// in [m]
 
 			cv::Mat expanded_map_;
 			cv::Mat Segmented_Map;
 			cv::Mat Room_Inspection_Map_Show;
 			cv::Mat Get_Map;
-
-			cv::Point2d map_origin_;	// in [m]
 
 			tf::TransformListener listener;
 			tf::StampedTransform transform;
@@ -132,6 +139,12 @@ class Exploration
 			move_base_msgs::MoveBaseGoal Move_in_pixel( int X , int Y );
 			move_base_msgs::MoveBaseGoal stay_forward( int X , int Y );
 
+			//Inflation Data read and Call-back
+			ros::NodeHandle Inflation_node;
+			ros::Subscriber Inflation_sub;
+
+			void InflationDataCallback(const nav_msgs::GridCells::ConstPtr& msg);
+			void InflationInit(ros::NodeHandle nh);
 	};
 
 

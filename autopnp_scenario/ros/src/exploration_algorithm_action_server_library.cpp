@@ -543,13 +543,13 @@ std::string Exploration::go_to_destination( cv::Mat FTL , int CenterPositionX , 
 
 
 
-cv::Mat Exploration::random_location( cv::Mat RL,
-										std::vector<int> room_Number,
-										std::vector<int> room_min_x,
-										std::vector<int> room_max_x,
-										std::vector<int> room_min_y,
-										std::vector<int> room_max_y,
-										int unsuccessful_times)
+cv::Mat Exploration::random_location(cv::Mat RL,
+									 std::vector<int> room_Number,
+									 std::vector<int> room_min_x,
+									 std::vector<int> room_max_x,
+									 std::vector<int> room_min_y,
+									 std::vector<int> room_max_y,
+									 int unsuccessful_times)
 	{
 		cv::Mat Random_Location = RL.clone();
 		cv::Mat Random_Location_mutable = RL ;
@@ -638,6 +638,23 @@ std::vector<int>& Exploration::get_room_max_y()
 
 
 
+void Exploration::InflationDataCallback(const nav_msgs::GridCells::ConstPtr& data)
+	{
+		for(unsigned int i=0; i< data->cells.size() ; i++)
+		{
+			Inflation_data_X.push_back(data->cells[i].x);
+			Inflation_data_Y.push_back(data->cells[i].y);
+		}
+	}
+
+void Exploration::InflationInit(ros::NodeHandle nh)
+	{
+		Inflation_node = nh;
+		Inflation_sub = Inflation_node.subscribe("/move_base/local_costmap/inflated_obstacles", 1000, &Exploration::InflationDataCallback,this);
+	}
+
+
+
 cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 									  std::vector<cv::Point> center_of_room,
 									  std::vector<int> room_Number,
@@ -655,6 +672,8 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 		int Step_Size = 20 ;
 		MoveBaseClient ac("move_base", true);
 
+		ros::NodeHandle node_;
+
 		for ( int m = room_min_x[room_Number.back()] ; m < room_max_x[room_Number.back()] ; m=m+Step_Size )
 				{
 					if(loop_count % 2 == 0)
@@ -665,29 +684,47 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 										 Obstacle_free_Point( Room_Inspection_RI , m , n )
 										)
 										{
-											Pixel_Point_next.x = n;
-											Pixel_Point_next.y = m;
+											ros::Rate r(1);
+											InflationInit(node_);
+											ros::spinOnce();
+											r.sleep();
 
-											ac.waitForServer();
-											ac.sendGoal( stay_forward( n , m ));
-											ac.waitForResult();
-
-											ac.waitForServer();
-											ac.sendGoal( Move_in_pixel ( n , m ));
-
-											bool finished_before_timeout = ac.waitForResult();
-
-											if (finished_before_timeout)
+											bool obstacle_in_way = false ;
+											for (unsigned int i = 0 ; i < Inflation_data_X.size() ; i++ )
 												{
-													actionlib::SimpleClientGoalState state = ac.getState();
-													ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
-													//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
-													//cv::imshow( "Room Inspection", Room_Inspection_RI );
-													//cv::waitKey(100);
+													if( std::abs( ( ( (n*map_resolution_)+map_origin_.x) - Inflation_data_X[i] ) ) < 0.1 &&
+														std::abs( ( ( (m*map_resolution_)+map_origin_.y) - Inflation_data_Y[i] ) ) < 0.1 )
+														{
+															obstacle_in_way = true ;
+														}
 												}
-											else
+
+											if(!obstacle_in_way)
 												{
-													ROS_INFO("Move Base Action for RI did not finish before the time out.");
+													Pixel_Point_next.x = n;
+													Pixel_Point_next.y = m;
+
+													ac.waitForServer();
+													ac.sendGoal( stay_forward( n , m ));
+													ac.waitForResult();
+
+													ac.waitForServer();
+													ac.sendGoal( Move_in_pixel ( n , m ));
+
+													bool finished_before_timeout = ac.waitForResult();
+
+													if (finished_before_timeout)
+														{
+															actionlib::SimpleClientGoalState state = ac.getState();
+															ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
+															//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
+															//cv::imshow( "Room Inspection", Room_Inspection_RI );
+															//cv::waitKey(100);
+														}
+													else
+														{
+															ROS_INFO("Move Base Action for RI did not finish before the time out.");
+														}
 												}
 										}
 								}
@@ -702,30 +739,47 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 										 Obstacle_free_Point( Room_Inspection_RI , m , n )
 										)
 										{
-											Pixel_Point_next.x = n;
-											Pixel_Point_next.y = m;
+											ros::Rate r(1);
+											InflationInit(node_);
+											ros::spinOnce();
+											r.sleep();
 
-
-											ac.waitForServer();
-											ac.sendGoal( stay_forward( n , m ));
-											ac.waitForResult();
-
-											ac.waitForServer();
-											ac.sendGoal( Move_in_pixel ( n , m ));
-											bool finished_before_timeout = ac.waitForResult();
-
-											if (finished_before_timeout)
+											bool obstacle_in_way = false ;
+											for (unsigned int i = 0 ; i < Inflation_data_X.size() ; i++ )
 												{
-													actionlib::SimpleClientGoalState state = ac.getState();
-													ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
-													//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
-													//cv::imshow( "Room Inspection", Room_Inspection_RI );
-													//cv::waitKey(100);
+													if( std::abs( ( ( (n*map_resolution_)+map_origin_.x) - Inflation_data_X[i] ) ) < 0.1 &&
+														std::abs( ( ( (m*map_resolution_)+map_origin_.y) - Inflation_data_Y[i] ) ) < 0.1 )
+														{
+															obstacle_in_way = true ;
+														}
 												}
 
-											else
+											if(!obstacle_in_way)
 												{
-													ROS_INFO("Move Base Action for RI did not finish before the time out.");
+													Pixel_Point_next.x = n;
+													Pixel_Point_next.y = m;
+
+													ac.waitForServer();
+													ac.sendGoal( stay_forward( n , m ));
+													ac.waitForResult();
+
+													ac.waitForServer();
+													ac.sendGoal( Move_in_pixel ( n , m ));
+													bool finished_before_timeout = ac.waitForResult();
+
+													if (finished_before_timeout)
+														{
+															actionlib::SimpleClientGoalState state = ac.getState();
+															ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
+															//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
+															//cv::imshow( "Room Inspection", Room_Inspection_RI );
+															//cv::waitKey(100);
+														}
+
+													else
+														{
+															ROS_INFO("Move Base Action for RI did not finish before the time out.");
+														}
 												}
 										}
 								}

@@ -100,8 +100,13 @@ target_link_libraries(random_location_server exploration_algorithm_action_server
 
 #rosbuild_link_boost(random_location_client thread)
 
+
 			#Move Arm Client
-rosbuild_add_executable(Move_Arm_Client ros/src/Move_Arm_Client.cpp)			
+rosbuild_add_executable(Move_Arm_Client ros/src/Move_Arm_Client.cpp)
+
+			#Inflation Data Test CPP	
+rosbuild_add_executable(Inflation_Data_test ros/src/Inflation_Data_test.cpp)
+
 
 
 
