@@ -21,7 +21,7 @@
 		<machine name="pc2" address="$(arg pc2)" default="true"/>
 
 		<!-- start dirt detection -->
-		<include file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.launch" />
+		<!--include file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.launch" /-->
 
 	</group>
 
