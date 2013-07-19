@@ -176,7 +176,6 @@ int main(int argc, char **argv)
 
 	DirtDetection id(n);
 	id.init();
-
 /*
 	printf("Read samples and split them into train-samples and test-samples.\n");
 	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
