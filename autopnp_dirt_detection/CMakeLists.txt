@@ -24,6 +24,11 @@ rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
+#add dynamic reconfigure api
+rosbuild_find_ros_package(dynamic_reconfigure)
+include(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
+gencfg()
+
 rosbuild_add_boost_directories()
 
 rosbuild_add_executable(dirt_detection  ros/src/dirt_detection.cpp

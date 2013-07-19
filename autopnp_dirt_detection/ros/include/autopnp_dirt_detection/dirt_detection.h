@@ -25,6 +25,10 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 
+// dynamic reconfigure
+#include <dynamic_reconfigure/server.h>
+#include <autopnp_dirt_detection/DirtDetectionConfig.h>
+
 // ROS message includes
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
@@ -86,6 +90,9 @@ protected:
 	 */
 	ros::NodeHandle node_handle_;
 
+	// dynamic reconfigure
+	dynamic_reconfigure::Server<autopnp_dirt_detection::DirtDetectionConfig> dynamic_reconfigure_server_;
+
 	/**
 	 * Used to subscribe and publish images.
 	 */
@@ -119,9 +126,14 @@ protected:
 	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
 	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
 	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
+	std::vector<std::vector<std::vector<unsigned char> > > listOfLastDetections_;	// stores a list of the last x measurements (detection/no detection) for each grid cell (indices: 1=u, 2=v, 3=history)
+	cv::Mat historyLastEntryIndex_;	// stores the index of last modified number in the history array (type: 32SC1)
+	int detectionHistoryDepth_;
 
 	// evaluation
 	int rosbagMessagesProcessed_;	// number of ros messages received by the program
+	double meanProcessingTimeSegmentation_;		// average time needed for segmentation
+	double meanProcessingTimeDirtDetection_;		// average time needed for dirt detection
 
 	//parameters
 	int spectralResidualGaussianBlurIterations_;
@@ -220,6 +232,9 @@ public:
 	 */
 	void init();
 
+
+	// dynamic reconfigure
+	void dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetectionConfig &config, uint32_t level);
 
 	/**
 	 * Function is called if color image topic is received.

@@ -1,0 +1,15 @@
+#goal definition
+sensor_msgs/Image input_img
+int32[] room_number
+int32[] room_min_x
+int32[] room_max_x
+int32[] room_min_y
+int32[] room_max_y
+int32 Unsuccess_time
+---
+#result definition
+sensor_msgs/Image output_img
+int32 random_location_x
+int32 random_location_y
+---
+#feedback definition

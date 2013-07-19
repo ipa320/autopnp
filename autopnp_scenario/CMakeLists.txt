@@ -9,6 +9,10 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
+rosbuild_find_ros_package(actionlib_msgs)
+include(${actionlib_msgs_PACKAGE_PATH}/cmake/actionbuild.cmake)
+genaction()
+
 rosbuild_init()
 
 #set the default path for built executables to the "bin" directory
@@ -17,7 +21,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #uncomment if you have defined messages
-#rosbuild_genmsg()
+rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
@@ -28,3 +32,74 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
+					${PROJECT_SOURCE_DIR}/common/include)
+					
+#rosbuild_add_executable(send_Goal_nav ros/src/send_Goal_nav.cpp)
+#rosbuild_add_executable(Exploration_Algorithm ros/src/Exploration_Algorithm.cpp)
+#rosbuild_add_executable(myBWlabel ros/src/myBWlabel.cpp)
+#rosbuild_add_executable(tf_data ros/src/tf_data.cpp)
+#rosbuild_add_executable(help ros/src/help.cpp)
+#rosbuild_add_executable(test_test ros/src/test.cpp)
+
+			#Exploration Algorithm Executable
+rosbuild_add_executable(Exploration_Algorithm_2nd_version ros/src/Exploration_Algorithm_2nd_version.cpp)
+
+			#Exploration Algorithm Library executable
+rosbuild_add_library(exploration_algorithm_action_server_library ros/src/exploration_algorithm_action_server_library.cpp)
+rosbuild_link_boost(exploration_algorithm_action_server_library thread)
+
+			#Analyze Map Server and Client
+rosbuild_add_executable(analyze_map_server ros/src/analyze_map_server.cpp)
+
+target_link_libraries(analyze_map_server exploration_algorithm_action_server_library)
+
+rosbuild_add_executable(analyze_map_client ros/src/analyze_map_client.cpp)
+
+rosbuild_link_boost(analyze_map_client thread)
+
+
+			#Next Room Server and Client
+rosbuild_add_executable(next_room_server ros/src/next_room_server.cpp)
+
+target_link_libraries(next_room_server exploration_algorithm_action_server_library)
+
+rosbuild_add_executable(next_room_client ros/src/next_room_client.cpp)
+
+rosbuild_link_boost(next_room_client thread)
+
+
+			#Inspect Room Server and Client
+rosbuild_add_executable(inspect_room_server ros/src/inspect_room_server.cpp)
+
+target_link_libraries(inspect_room_server exploration_algorithm_action_server_library)
+
+#rosbuild_add_executable(inspect_room_client ros/src/inspect_room_client.cpp)
+
+#rosbuild_link_boost(inspect_room_client thread)
+
+
+			#to location Server and Client
+rosbuild_add_executable(to_location_server ros/src/to_location_server.cpp)
+
+target_link_libraries(to_location_server exploration_algorithm_action_server_library)
+
+#rosbuild_add_executable(to_location_client ros/src/to_location_client.cpp)
+
+#rosbuild_link_boost(to_location_client thread)
+
+
+			#Random Location Server and Client
+rosbuild_add_executable(random_location_server ros/src/random_location_server.cpp)
+
+target_link_libraries(random_location_server exploration_algorithm_action_server_library)
+
+#rosbuild_add_executable(random_location_client ros/src/random_location_client.cpp)
+
+#rosbuild_link_boost(random_location_client thread)
+
+
+
+
