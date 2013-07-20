@@ -26,6 +26,10 @@ dirtCheckStdDevFactor: 3.0   #3.6
 # int
 modeOfOperation: 1
 
+# for normal operation mode, specifies whether dirt detection is on right from the beginning
+# bool
+dirtDetectionActivatedOnStartup: true
+
 # if true, image warping to a bird's eye perspective is enabled
 # bool
 warpImage: true

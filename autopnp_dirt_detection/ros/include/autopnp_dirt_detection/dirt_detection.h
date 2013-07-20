@@ -38,6 +38,11 @@
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/OccupancyGrid.h>
 
+// services
+#include <autopnp_dirt_detection/ActivateDirtDetection.h>
+#include <autopnp_dirt_detection/DeactivateDirtDetection.h>
+#include <autopnp_dirt_detection/GetDirtMap.h>
+
 // topics
 #include <image_transport/image_transport.h>
 #include <image_transport/subscriber_filter.h>
@@ -90,8 +95,22 @@ protected:
 	 */
 	ros::NodeHandle node_handle_;
 
-	// dynamic reconfigure
+	/// dynamic reconfigure
 	dynamic_reconfigure::Server<autopnp_dirt_detection::DirtDetectionConfig> dynamic_reconfigure_server_;
+
+	/**
+	 * services
+	 */
+	ros::ServiceServer activate_dirt_detection_service_server_;		/// server for activating dirt detection
+	ros::ServiceServer deactivate_dirt_detection_service_server_;	/// server for deactivating dirt detection
+	ros::ServiceServer get_map_service_server_;						/// server for dirt map requests
+
+	bool activateDirtDetection(autopnp_dirt_detection::ActivateDirtDetection::Request &req, autopnp_dirt_detection::ActivateDirtDetection::Response &res);
+
+	bool deactivateDirtDetection(autopnp_dirt_detection::DeactivateDirtDetection::Request &req, autopnp_dirt_detection::DeactivateDirtDetection::Response &res);
+
+	bool getDirtMap(autopnp_dirt_detection::GetDirtMap::Request &req, autopnp_dirt_detection::GetDirtMap::Response &res);
+
 
 	/**
 	 * Used to subscribe and publish images.
@@ -143,6 +162,7 @@ protected:
 	double dirtCheckStdDevFactor_;
 	int modeOfOperation_;
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
+	bool dirtDetectionActivatedOnStartup_;	// for normal operation mode, specifies whether dirt detection is on right from the beginning
 
 	std::string experimentFolder_;		// storage location of the database index file and writing location for the results of an experiment
 	std::string labelingFilePath_;		// path to labeling file storage
@@ -162,7 +182,7 @@ protected:
 
 	// further
 	ros::Time lastIncomingMessage_;
-
+	bool dirtDetectionCallbackActive_;		///< flag whether incoming messages shall be processed
 
 public:
 
@@ -250,11 +270,13 @@ public:
 	 * @param [in] point_cloud2_rgb_msg	Point cloude message from camera.
 	 *
 	 */
-	void planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
+	void dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
 	void planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
 	void databaseTest();
+
+	void createOccupancyGridMapFromDirtDetections(nav_msgs::OccupancyGrid& detectionMap);
 
 	/**
 	 * Converts: "sensor_msgs::Image::ConstPtr" \f$ \rightarrow \f$ "cv::Mat".

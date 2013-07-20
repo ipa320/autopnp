@@ -70,6 +70,8 @@ void DirtDetection::init()
 	std::cout << "dirtCheckStdDevFactor = " << dirtCheckStdDevFactor_ << std::endl;
 	node_handle_.param("dirt_detection/modeOfOperation", modeOfOperation_, 0);
 	std::cout << "modeOfOperation = " << modeOfOperation_ << std::endl;
+	node_handle_.param("dirt_detection/dirtDetectionActivatedOnStartup", dirtDetectionActivatedOnStartup_, true);
+	std::cout << "dirtDetectionActivatedOnStartup = " << dirtDetectionActivatedOnStartup_ << std::endl;
 	node_handle_.param("dirt_detection/warpImage", warpImage_, true);
 	std::cout << "warpImage = " << warpImage_ << std::endl;
 	node_handle_.param("dirt_detection/birdEyeResolution", birdEyeResolution_, 300.0);
@@ -140,9 +142,12 @@ void DirtDetection::init()
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
 	dirt_detection_image_pub_ = it_->advertise("dirt_detections", 1);
 
+	// dirt detection on at the beginning?
+	dirtDetectionCallbackActive_ = dirtDetectionActivatedOnStartup_;
+
 	if (modeOfOperation_ == 0)	// detection
 	{
-		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::planeDetectionCallback, this);
+		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 1, &DirtDetection::dirtDetectionCallback, this);
 		detection_map_pub_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("detection_map", 1);
 	}
 	else if (modeOfOperation_ == 1)		// labeling
@@ -151,13 +156,18 @@ void DirtDetection::init()
 	}
 	else if (modeOfOperation_ == 2)		// database evaluation
 	{
-		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 5, &DirtDetection::planeDetectionCallback, this);
+		camera_depth_points_sub_ =  node_handle_.subscribe<sensor_msgs::PointCloud2>("colored_point_cloud", 5, &DirtDetection::dirtDetectionCallback, this);
 		camera_depth_points_from_bag_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("colored_point_cloud_bagpub", 1);
 		clock_pub_ = node_handle_.advertise<rosgraph_msgs::Clock>("/clock", 1);
 		ground_truth_map_pub_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("ground_truth_map", 1);
 		detection_map_pub_ = node_handle_.advertise<nav_msgs::OccupancyGrid>("detection_map", 1);
 		databaseTest();
 	}
+
+	// services
+	activate_dirt_detection_service_server_ = node_handle_.advertiseService("activate_dirt_detection", &DirtDetection::activateDirtDetection, this);
+	deactivate_dirt_detection_service_server_ = node_handle_.advertiseService("deactivate_dirt_detection", &DirtDetection::deactivateDirtDetection, this);
+	get_map_service_server_ = node_handle_.advertiseService("get_dirt_map", &DirtDetection::getDirtMap, this);
 
 //	floor_plane_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("floor_plane", 1);
 }
@@ -183,6 +193,32 @@ void DirtDetection::dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetec
 	std::cout << "  removeLines = " << removeLines_ << std::endl;
 	std::cout << "  floorSearchIterations = " << floorSearchIterations_ << std::endl;
 	std::cout << "  minPlanePoints = " << minPlanePoints_ << std::endl;
+}
+
+bool DirtDetection::activateDirtDetection(autopnp_dirt_detection::ActivateDirtDetection::Request &req, autopnp_dirt_detection::ActivateDirtDetection::Response &res)
+{
+	ROS_INFO("Activating dirt detection.");
+	dirtDetectionCallbackActive_ = true;
+
+	return true;
+}
+
+
+bool DirtDetection::deactivateDirtDetection(autopnp_dirt_detection::DeactivateDirtDetection::Request &req, autopnp_dirt_detection::DeactivateDirtDetection::Response &res)
+{
+	ROS_INFO("Deactivating dirt detection.");
+	dirtDetectionCallbackActive_ = false;
+
+	return true;
+}
+
+
+bool DirtDetection::getDirtMap(autopnp_dirt_detection::GetDirtMap::Request &req, autopnp_dirt_detection::GetDirtMap::Response &res)
+{
+	// create occupancy grid map from detections
+	createOccupancyGridMapFromDirtDetections(res.dirtMap);
+
+	return true;
 }
 
 
@@ -514,8 +550,11 @@ int sumOfUCharArray(std::vector<unsigned char> vec)
 	return sum;
 }
 
-void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
+void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
 {
+	if (dirtDetectionCallbackActive_ == false)
+		return;
+
 	// get tf between camera and map
 	tf::StampedTransform transformMapCamera;
 	transformMapCamera.setIdentity();
@@ -698,28 +737,29 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 
 		// create occupancy grid map from detections
 		nav_msgs::OccupancyGrid detectionMap;
-		detectionMap.header.stamp = ros::Time::now();
-		detectionMap.header.frame_id = "/map";
-		detectionMap.info.resolution = 1.0/gridResolution_;
-		detectionMap.info.width = gridPositiveVotes_.cols;
-		detectionMap.info.height = gridPositiveVotes_.rows;
-		detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
-		detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
-		detectionMap.info.origin.position.z = -0.05;
-		tf::Quaternion rot(0,3.14159265359,0);
-		detectionMap.info.origin.orientation.x = rot.getX();
-		detectionMap.info.origin.orientation.y = rot.getY();
-		detectionMap.info.origin.orientation.z = rot.getZ();
-		detectionMap.info.origin.orientation.w = rot.getW();
-		detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
-		int limit_square = 34;
-		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
-			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
-				// hack: autonomik-scenario: only map dirt within a certain area
-				//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
-					//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
-					// todo: new mode
-					detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
+		createOccupancyGridMapFromDirtDetections(detectionMap);
+//		detectionMap.header.stamp = ros::Time::now();
+//		detectionMap.header.frame_id = "/map";
+//		detectionMap.info.resolution = 1.0/gridResolution_;
+//		detectionMap.info.width = gridPositiveVotes_.cols;
+//		detectionMap.info.height = gridPositiveVotes_.rows;
+//		detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
+//		detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
+//		detectionMap.info.origin.position.z = -0.05;
+//		tf::Quaternion rot(0,3.14159265359,0);
+//		detectionMap.info.origin.orientation.x = rot.getX();
+//		detectionMap.info.origin.orientation.y = rot.getY();
+//		detectionMap.info.origin.orientation.z = rot.getZ();
+//		detectionMap.info.origin.orientation.w = rot.getW();
+//		detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
+//		//int limit_square = 34;  // hack: autonomik-scenario
+//		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
+//			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+//				// hack: autonomik-scenario: only map dirt within a certain area
+//				//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
+//					//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
+//					// todo: new mode
+//					detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
 		detection_map_pub_.publish(detectionMap);
 
 		//std::cout << "Dirt Detection time: " << tim.getElapsedTimeInMilliSec() << "ms." << std::endl;
@@ -906,6 +946,34 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 			ros::shutdown();
 		}
 	}
+}
+
+
+void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::OccupancyGrid& detectionMap)
+{
+	// create occupancy grid map from detections
+	detectionMap.header.stamp = ros::Time::now();
+	detectionMap.header.frame_id = "/map";
+	detectionMap.info.resolution = 1.0/gridResolution_;
+	detectionMap.info.width = gridPositiveVotes_.cols;
+	detectionMap.info.height = gridPositiveVotes_.rows;
+	detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
+	detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
+	detectionMap.info.origin.position.z = -0.05;
+	tf::Quaternion rot(0,3.14159265359,0);
+	detectionMap.info.origin.orientation.x = rot.getX();
+	detectionMap.info.origin.orientation.y = rot.getY();
+	detectionMap.info.origin.orientation.z = rot.getZ();
+	detectionMap.info.origin.orientation.w = rot.getW();
+	detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
+	//int limit_square = 34;  // hack: autonomik-scenario
+	for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
+		for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+			// hack: autonomik-scenario: only map dirt within a certain area
+			//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
+				//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
+				// todo: new mode
+				detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
 }
 
 
