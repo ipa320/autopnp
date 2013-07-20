@@ -706,7 +706,7 @@ void DirtDetection::planeDetectionCallback(const sensor_msgs::PointCloud2ConstPt
 		detectionMap.info.origin.position.x = -gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;
 		detectionMap.info.origin.position.y = -gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
 		detectionMap.info.origin.position.z = -0.05;
-		btQuaternion rot(0,3.14159265359,0);
+		tf::Quaternion rot(0,3.14159265359,0);
 		detectionMap.info.origin.orientation.x = rot.getX();
 		detectionMap.info.origin.orientation.y = rot.getY();
 		detectionMap.info.origin.orientation.z = rot.getZ();
@@ -1012,13 +1012,13 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 
 			// verify that the found plane is a valid ground plane
 #ifdef WITH_MAP
-			if (inliers->indices.size()>minPlanePoints_ && planeNormalWorld.getZ()<planeNormalMaxZ_ && abs(planePointWorld.getZ())<planeMaxHeight_)
+			if ((int)inliers->indices.size()>minPlanePoints_ && planeNormalWorld.getZ()<planeNormalMaxZ_ && abs(planePointWorld.getZ())<planeMaxHeight_)
 			{
 				found_plane=true;
 				break;
 			}
 #else
-			if (inliers->indices.size()>minPlanePoints_)
+			if ((int)inliers->indices.size()>minPlanePoints_)
 			{
 				found_plane=true;
 				break;
