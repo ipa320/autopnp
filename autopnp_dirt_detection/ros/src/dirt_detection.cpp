@@ -13,7 +13,7 @@ using namespace ipa_DirtDetection;
 using namespace std;
 using namespace cv;
 
-//#define WITH_MAP   // enables the usage of robot localization
+#define WITH_MAP   // enables the usage of robot localization
 
 
 struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
@@ -54,15 +54,14 @@ DirtDetection::~DirtDetection()
 
 void DirtDetection::init()
 {
-	// todo: convert to parameters
-	detectionHistoryDepth_ = 30; //30;
-
 	// Parameters
 	std::cout << "\n--------------------------\nDirt Detection Parameters:\n--------------------------\n";
 	node_handle_.param("dirt_detection/spectralResidualGaussianBlurIterations", spectralResidualGaussianBlurIterations_, 2);
 	std::cout << "spectralResidualGaussianBlurIterations = " << spectralResidualGaussianBlurIterations_ << std::endl;
 	node_handle_.param("dirt_detection/dirtThreshold", dirtThreshold_, 0.5);
 	std::cout << "dirtThreshold = " << dirtThreshold_ << std::endl;
+	node_handle_.param("dirt_detection/detectionHistoryDepth", detectionHistoryDepth_, 30);
+	std::cout << "detectionHistoryDepth = " << detectionHistoryDepth_ << std::endl;
 	node_handle_.param("dirt_detection/spectralResidualNormalizationHighestMaxValue", spectralResidualNormalizationHighestMaxValue_, 1500.0);
 	std::cout << "spectralResidualNormalizationHighestMaxValue = " << spectralResidualNormalizationHighestMaxValue_ << std::endl;
 	node_handle_.param("dirt_detection/spectralResidualImageSizeRatio", spectralResidualImageSizeRatio_, 0.25);
@@ -133,7 +132,7 @@ void DirtDetection::init()
 	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
 	// new mode with detection history
-	listOfLastDetections_.resize(gridPositiveVotes_.cols, std::vector<std::vector<unsigned char> >(gridPositiveVotes_.rows, std::vector<unsigned char>(15, 0)));
+	listOfLastDetections_.resize(gridPositiveVotes_.cols, std::vector<std::vector<unsigned char> >(gridPositiveVotes_.rows, std::vector<unsigned char>(detectionHistoryDepth_, 0)));
 	//std::cout << "u:" << listOfLastDetections_.size() << "v:" << listOfLastDetections_[0].size() << "hist:" << listOfLastDetections_[0][0].size() << "val:" << int(listOfLastDetections_[0][0][0]) << std::endl;
 	historyLastEntryIndex_ = cv::Mat(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
@@ -163,154 +162,12 @@ void DirtDetection::init()
 //	floor_plane_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("floor_plane", 1);
 }
 
-/////////////////////////////////////////////////
-// Main functions
-/////////////////////////////////////////////////
-
-int main(int argc, char **argv)
-{
-
-	ros::init(argc, argv, "dirt_detection");
-
-	ros::NodeHandle n;
-
-	DirtDetection id(n);
-	id.init();
-/*
-	printf("Read samples and split them into train-samples and test-samples.\n");
-	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
-	std::vector<DirtDetection::CarpetClass> carp_class_vec;
-
-	//data used to train the different learning algorithms
-	std::vector<DirtDetection::CarpetFeatures> train_feat_vec;
-	std::vector<DirtDetection::CarpetClass> train_class_vec;
-
-	//used to test the different trained algorithms
-	std::vector<DirtDetection::CarpetFeatures> test_feat_vec;
-	std::vector<DirtDetection::CarpetClass> test_class_vec;
-
-
-	//file path to carpet files
-	std::string filepath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/TeppichFiles/";
-
-	std::string name;
-	//vector of carpet file names
-	std::vector<std::string> name_vec;
-
-	name = "carpet-gray.tepp"; //threshold=0.18
-	name_vec.push_back(name);
-
-	name = "carpet2.tepp"; //threshold=0.25
-	name_vec.push_back(name);
-
-	name = "kitchen1a.tepp"; //threshold=0.2
-	name_vec.push_back(name);
-
-	name = "kitchen1b.tepp"; //threshold=0.2
-	name_vec.push_back(name);
-
-	name = "wood1.tepp"; //threshold=0.25
-	name_vec.push_back(name);
-
-	name = "wood2.tepp"; //threshold=0.25
-	name_vec.push_back(name);
-
-	name = "carpet6.tepp"; //threshold=0.25
-	name_vec.push_back(name);
-
-	name = "carpet4.tepp"; //threshold=0.3
-	name_vec.push_back(name);
-
-	name = "redblackpattern.tepp"; //threshold=0.35
-	name_vec.push_back(name);
-
-
-	for (unsigned int i = 0; i<name_vec.size(); i++)
-	{
-		carp_feat_vec.clear();
-		carp_class_vec.clear();
-
-		//read carpet data from current file
-		id.ReadDataFromCarpetFile(carp_feat_vec, carp_class_vec, filepath, name_vec[i]);
-
-		//split data into train and test samples
-		id.SplitIntoTrainAndTestSamples(5, carp_feat_vec, carp_class_vec,
-											train_feat_vec, train_class_vec,
-											test_feat_vec, test_class_vec);
-	}
-
-
-	//determine maximum value of the mean value feature and the standard deviation feature
-	//-> needed to draw the evaluation picture
-	double maxMean;
-	double maxStd;
-	id.ScaleSamples(train_feat_vec, maxMean, maxStd);
-
-	std::cout << "Data read and splitted.\n"  << std::endl;
-	std::cout << "Total samples=" << train_feat_vec.size() + test_feat_vec.size()  << std::endl;
-	std::cout << "Number of train-samples=" << train_feat_vec.size()  << std::endl;
-	std::cout << "Number of test-samples=" << test_feat_vec.size()  << std::endl;
-
-	// switchflag = 1; <-> SVM
-	// switchflag = 2; <-> normal tree
-	// switchflag = 3; <-> gradient boosted tree
-	int switchflag = 3;
-
-	switch (switchflag)
-	{
-		case 1: //<-> SVM
-		{
-			printf("Create SVM...\n");
-			CvSVM carp_classi;
-			id.CreateCarpetClassiefierSVM(train_feat_vec, train_class_vec, carp_classi);
-			printf("SVM created.\n");
-
-			printf("Check SVM...\n");
-			id.SVMEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, carp_classi, maxMean, maxStd);
-			printf("Check SVM done.\n");
-
-			break;
-		}
-		case 2: //<-> normal tree
-		{
-			printf("Create tree model...\n");
-			CvRTrees rtree;
-			id.CreateCarpetClassiefierRTree(train_feat_vec, train_class_vec, rtree);
-			printf("Tree model created.\n");
-
-			printf("Check Forest...\n");
-			id.RTreeEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, rtree, maxMean, maxStd);
-			printf("Check tree model done.\n");
-
-			break;
-		}
-		case 3: //<-> gradient boosted tree
-		{
-			printf("Create gradient boosted tree model...\n");
-			CvGBTrees GBtree;
-			id.CreateCarpetClassiefierGBTree(train_feat_vec, train_class_vec, GBtree);
-			printf("Gradient boosted tree model created.\n");
-
-			printf("Check gradient boosted tree model...\n");
-			id.GBTreeEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, GBtree, maxMean, maxStd);
-			printf("Check gradient boosted tree model done.\n");
-
-			break;
-		}
-	}
-*/
-
-	//start to look for messages (loop)
-	ros::spin();
-
-	return 0;
-}
-
 
 void DirtDetection::dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetectionConfig &config, uint32_t level)
 {
 	//ROS_INFO("Reconfigure Request: %d %f %s %s %d",	config.int_param, config.double_param, config.str_param.c_str(), config.bool_param?"True":"False", config.size);
 	dirtThreshold_ = config.dirtThreshold;
+	detectionHistoryDepth_ = config.detectionHistoryDepth;
 	warpImage_ = config.warpImage;
 	birdEyeResolution_ = config.birdEyeResolution;
 	maxDistanceToCamera_ = config.maxDistanceToCamera;
@@ -319,6 +176,7 @@ void DirtDetection::dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetec
 	minPlanePoints_ = config.minPlanePoints;
 	std::cout << "Dynamic reconfigure changed settings to \n";
 	std::cout << "  dirtThreshold = " << dirtThreshold_ << std::endl;
+	std::cout << "  detectionHistoryDepth = " << detectionHistoryDepth_ << std::endl;
 	std::cout << "  warpImage = " << warpImage_ << std::endl;
 	std::cout << "  birdEyeResolution = " << birdEyeResolution_ << std::endl;
 	std::cout << "  maxDistanceToCamera = " << maxDistanceToCamera_ << std::endl;
@@ -3445,5 +3303,147 @@ void DirtDetection::SVMTestFunction()
 }
 
 
+/////////////////////////////////////////////////
+// Main functions
+/////////////////////////////////////////////////
+
+int main(int argc, char **argv)
+{
+
+	ros::init(argc, argv, "dirt_detection");
+
+	ros::NodeHandle n;
+
+	DirtDetection id(n);
+	id.init();
+/*
+	printf("Read samples and split them into train-samples and test-samples.\n");
+	std::vector<DirtDetection::CarpetFeatures> carp_feat_vec;
+	std::vector<DirtDetection::CarpetClass> carp_class_vec;
+
+	//data used to train the different learning algorithms
+	std::vector<DirtDetection::CarpetFeatures> train_feat_vec;
+	std::vector<DirtDetection::CarpetClass> train_class_vec;
+
+	//used to test the different trained algorithms
+	std::vector<DirtDetection::CarpetFeatures> test_feat_vec;
+	std::vector<DirtDetection::CarpetClass> test_class_vec;
+
+
+	//file path to carpet files
+	std::string filepath = ros::package::getPath("autopnp_dirt_detection") + "/common/files/TeppichFiles/";
+
+	std::string name;
+	//vector of carpet file names
+	std::vector<std::string> name_vec;
+
+	name = "carpet-gray.tepp"; //threshold=0.18
+	name_vec.push_back(name);
+
+	name = "carpet2.tepp"; //threshold=0.25
+	name_vec.push_back(name);
+
+	name = "kitchen1a.tepp"; //threshold=0.2
+	name_vec.push_back(name);
+
+	name = "kitchen1b.tepp"; //threshold=0.2
+	name_vec.push_back(name);
+
+	name = "wood1.tepp"; //threshold=0.25
+	name_vec.push_back(name);
+
+	name = "wood2.tepp"; //threshold=0.25
+	name_vec.push_back(name);
+
+	name = "carpet6.tepp"; //threshold=0.25
+	name_vec.push_back(name);
+
+	name = "carpet4.tepp"; //threshold=0.3
+	name_vec.push_back(name);
+
+	name = "redblackpattern.tepp"; //threshold=0.35
+	name_vec.push_back(name);
+
+
+	for (unsigned int i = 0; i<name_vec.size(); i++)
+	{
+		carp_feat_vec.clear();
+		carp_class_vec.clear();
+
+		//read carpet data from current file
+		id.ReadDataFromCarpetFile(carp_feat_vec, carp_class_vec, filepath, name_vec[i]);
+
+		//split data into train and test samples
+		id.SplitIntoTrainAndTestSamples(5, carp_feat_vec, carp_class_vec,
+											train_feat_vec, train_class_vec,
+											test_feat_vec, test_class_vec);
+	}
+
+
+	//determine maximum value of the mean value feature and the standard deviation feature
+	//-> needed to draw the evaluation picture
+	double maxMean;
+	double maxStd;
+	id.ScaleSamples(train_feat_vec, maxMean, maxStd);
+
+	std::cout << "Data read and splitted.\n"  << std::endl;
+	std::cout << "Total samples=" << train_feat_vec.size() + test_feat_vec.size()  << std::endl;
+	std::cout << "Number of train-samples=" << train_feat_vec.size()  << std::endl;
+	std::cout << "Number of test-samples=" << test_feat_vec.size()  << std::endl;
+
+	// switchflag = 1; <-> SVM
+	// switchflag = 2; <-> normal tree
+	// switchflag = 3; <-> gradient boosted tree
+	int switchflag = 3;
+
+	switch (switchflag)
+	{
+		case 1: //<-> SVM
+		{
+			printf("Create SVM...\n");
+			CvSVM carp_classi;
+			id.CreateCarpetClassiefierSVM(train_feat_vec, train_class_vec, carp_classi);
+			printf("SVM created.\n");
+
+			printf("Check SVM...\n");
+			id.SVMEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, carp_classi, maxMean, maxStd);
+			printf("Check SVM done.\n");
+
+			break;
+		}
+		case 2: //<-> normal tree
+		{
+			printf("Create tree model...\n");
+			CvRTrees rtree;
+			id.CreateCarpetClassiefierRTree(train_feat_vec, train_class_vec, rtree);
+			printf("Tree model created.\n");
+
+			printf("Check Forest...\n");
+			id.RTreeEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, rtree, maxMean, maxStd);
+			printf("Check tree model done.\n");
+
+			break;
+		}
+		case 3: //<-> gradient boosted tree
+		{
+			printf("Create gradient boosted tree model...\n");
+			CvGBTrees GBtree;
+			id.CreateCarpetClassiefierGBTree(train_feat_vec, train_class_vec, GBtree);
+			printf("Gradient boosted tree model created.\n");
+
+			printf("Check gradient boosted tree model...\n");
+			id.GBTreeEvaluation(train_feat_vec, train_class_vec, test_feat_vec, test_class_vec, GBtree, maxMean, maxStd);
+			printf("Check gradient boosted tree model done.\n");
+
+			break;
+		}
+	}
+*/
+
+	//start to look for messages (loop)
+	ros::spin();
+
+	return 0;
+}
 
 

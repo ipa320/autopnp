@@ -128,7 +128,7 @@ protected:
 	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
 	std::vector<std::vector<std::vector<unsigned char> > > listOfLastDetections_;	// stores a list of the last x measurements (detection/no detection) for each grid cell (indices: 1=u, 2=v, 3=history)
 	cv::Mat historyLastEntryIndex_;	// stores the index of last modified number in the history array (type: 32SC1)
-	int detectionHistoryDepth_;
+	int detectionHistoryDepth_;		// number of time steps used for the detection history logging
 
 	// evaluation
 	int rosbagMessagesProcessed_;	// number of ros messages received by the program
