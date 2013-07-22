@@ -130,13 +130,14 @@ void DirtDetection::init()
 	dynamic_reconfigure_server_.setCallback(dynamic_reconfigure_callback_type);
 
 	// prepare grid for dirt detection and observations
-	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
-	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
-
-	// new mode with detection history
-	listOfLastDetections_.resize(gridPositiveVotes_.cols, std::vector<std::vector<unsigned char> >(gridPositiveVotes_.rows, std::vector<unsigned char>(detectionHistoryDepth_, 0)));
-	//std::cout << "u:" << listOfLastDetections_.size() << "v:" << listOfLastDetections_[0].size() << "hist:" << listOfLastDetections_[0][0].size() << "val:" << int(listOfLastDetections_[0][0][0]) << std::endl;
-	historyLastEntryIndex_ = cv::Mat(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+	resetMapsAndHistory();
+//	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
+//	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+//
+//	// new mode with detection history
+//	listOfLastDetections_.resize(gridPositiveVotes_.cols, std::vector<std::vector<unsigned char> >(gridPositiveVotes_.rows, std::vector<unsigned char>(detectionHistoryDepth_, 0)));
+//	//std::cout << "u:" << listOfLastDetections_.size() << "v:" << listOfLastDetections_[0].size() << "hist:" << listOfLastDetections_[0][0].size() << "val:" << int(listOfLastDetections_[0][0][0]) << std::endl;
+//	historyLastEntryIndex_ = cv::Mat(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 
 	it_ = new image_transport::ImageTransport(node_handle_);
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
@@ -168,6 +169,7 @@ void DirtDetection::init()
 	activate_dirt_detection_service_server_ = node_handle_.advertiseService("activate_dirt_detection", &DirtDetection::activateDirtDetection, this);
 	deactivate_dirt_detection_service_server_ = node_handle_.advertiseService("deactivate_dirt_detection", &DirtDetection::deactivateDirtDetection, this);
 	get_map_service_server_ = node_handle_.advertiseService("get_dirt_map", &DirtDetection::getDirtMap, this);
+	validate_cleaning_result_service_server_ = node_handle_.advertiseService("validate_cleaning_result", &DirtDetection::validateCleaningResult, this);
 
 //	floor_plane_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("floor_plane", 1);
 }
@@ -215,10 +217,59 @@ bool DirtDetection::deactivateDirtDetection(autopnp_dirt_detection::DeactivateDi
 
 bool DirtDetection::getDirtMap(autopnp_dirt_detection::GetDirtMap::Request &req, autopnp_dirt_detection::GetDirtMap::Response &res)
 {
+	ROS_INFO("Received request for sending the dirt map.");
+#ifdef WITH_MAP
 	// create occupancy grid map from detections
 	createOccupancyGridMapFromDirtDetections(res.dirtMap);
 
 	return true;
+#else
+	ROS_ERROR("No dirt map available, the program needs to be compiled with the WITH_MAP option.");
+
+	return false;
+#endif
+}
+
+
+bool DirtDetection::validateCleaningResult(autopnp_dirt_detection::ValidateCleaningResult::Request &req, autopnp_dirt_detection::ValidateCleaningResult::Response &res)
+{
+	// locations to check are received with the request
+
+	// clear maps
+	resetMapsAndHistory();
+
+	// turn dirt detection on
+	rosbagMessagesProcessed_ = 0;
+	dirtDetectionCallbackActive_ = true;
+
+	// wait for x recordings
+	while (rosbagMessagesProcessed_ < detectionHistoryDepth_)
+		ros::spinOnce();
+
+	// turn dirt detection off
+	dirtDetectionCallbackActive_ = false;
+
+	// check locations
+	for (unsigned int i=0; i<req.validationPositions.size(); ++i)
+	{
+
+	}
+
+	// save images of still dirty locations and their coordinates
+
+	return true;
+}
+
+void DirtDetection::resetMapsAndHistory()
+{
+	// prepare grid for dirt detection and observations
+	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
+	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+
+	// prepare detection history
+	listOfLastDetections_.clear();
+	listOfLastDetections_.resize(gridPositiveVotes_.cols, std::vector<std::vector<unsigned char> >(gridPositiveVotes_.rows, std::vector<unsigned char>(detectionHistoryDepth_, 0)));
+	historyLastEntryIndex_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 }
 
 
@@ -581,7 +632,7 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 	convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
 
 	// todo: new mode which can delete dirt
-	// reset results
+	// reset results (these two lines were not called with the old mode of operation)
 	gridPositiveVotes_ = cv::Mat::zeros(10*gridResolution_, 10*gridResolution_, CV_32SC1);
 	gridNumberObservations_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
 

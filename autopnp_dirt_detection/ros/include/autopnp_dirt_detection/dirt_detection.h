@@ -42,6 +42,7 @@
 #include <autopnp_dirt_detection/ActivateDirtDetection.h>
 #include <autopnp_dirt_detection/DeactivateDirtDetection.h>
 #include <autopnp_dirt_detection/GetDirtMap.h>
+#include <autopnp_dirt_detection/ValidateCleaningResult.h>
 
 // topics
 #include <image_transport/image_transport.h>
@@ -104,6 +105,7 @@ protected:
 	ros::ServiceServer activate_dirt_detection_service_server_;		/// server for activating dirt detection
 	ros::ServiceServer deactivate_dirt_detection_service_server_;	/// server for deactivating dirt detection
 	ros::ServiceServer get_map_service_server_;						/// server for dirt map requests
+	ros::ServiceServer validate_cleaning_result_service_server_;	/// server for validating cleaning results
 
 	bool activateDirtDetection(autopnp_dirt_detection::ActivateDirtDetection::Request &req, autopnp_dirt_detection::ActivateDirtDetection::Response &res);
 
@@ -111,6 +113,7 @@ protected:
 
 	bool getDirtMap(autopnp_dirt_detection::GetDirtMap::Request &req, autopnp_dirt_detection::GetDirtMap::Response &res);
 
+	bool validateCleaningResult(autopnp_dirt_detection::ValidateCleaningResult::Request &req, autopnp_dirt_detection::ValidateCleaningResult::Response &res);
 
 	/**
 	 * Used to subscribe and publish images.
@@ -251,6 +254,9 @@ public:
 	 * Create subscribers.
 	 */
 	void init();
+
+
+	void resetMapsAndHistory();
 
 
 	// dynamic reconfigure
