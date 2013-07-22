@@ -101,6 +101,10 @@ target_link_libraries(random_location_server exploration_algorithm_action_server
 #rosbuild_link_boost(random_location_client thread)
 
 
+			#Cleaning Position executable
+rosbuild_add_executable(cleaning_position ros/src/cleaning_position.cpp)			
+
+
 			#Move Arm Client
 rosbuild_add_executable(Move_Arm_Client ros/src/Move_Arm_Client.cpp)
 

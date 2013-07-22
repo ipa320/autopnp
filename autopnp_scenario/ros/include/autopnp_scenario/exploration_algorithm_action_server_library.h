@@ -20,6 +20,17 @@
 #include <nav_msgs/GridCells.h>
 #include <geometry_msgs/Point.h>
 
+#include <boost/thread/mutex.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/timer.hpp>
+
+#include <message_filters/subscriber.h>
+#include <message_filters/sync_policies/approximate_time.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/time_synchronizer.h>
+
+#define PI 3.14159265
+
 struct Pose
 	{
 		float x;
@@ -109,6 +120,11 @@ class Exploration
 									int unsuccessful_times);
 
 
+			void cleaning_pose(cv::Mat CP,
+							   int center_of_room_x,
+							   int center_of_room_y);
+
+
 			cv::Mat Room_Inspection(cv::Mat RI,
 									std::vector<cv::Point> center_of_room,
 									std::vector<int> room_Number,
@@ -138,13 +154,19 @@ class Exploration
 			move_base_msgs::MoveBaseGoal Move( double X , double Y , double Z );
 			move_base_msgs::MoveBaseGoal Move_in_pixel( int X , int Y );
 			move_base_msgs::MoveBaseGoal stay_forward( int X , int Y );
+			move_base_msgs::MoveBaseGoal stay_backward( int X , int Y , int CircleCenterX , int CircleCenterY );
 
 			//Inflation Data read and Call-back
-			ros::NodeHandle Inflation_node;
-			ros::Subscriber Inflation_sub;
+			ros::NodeHandle inflation_node_;
+			message_filters::Subscriber<nav_msgs::GridCells> obstacles_sub_;
+			message_filters::Subscriber<nav_msgs::GridCells> inflated_obstacles_sub_;
+			typedef message_filters::sync_policies::ApproximateTime<nav_msgs::GridCells, nav_msgs::GridCells> InflatedObstaclesSyncPolicy;
+			boost::shared_ptr < message_filters::Synchronizer < InflatedObstaclesSyncPolicy > > inflated_obstacles_sub_sync_; 	//< Synchronizer
 
-			void InflationDataCallback(const nav_msgs::GridCells::ConstPtr& msg);
+			void InflationDataCallback(const nav_msgs::GridCells::ConstPtr& obstacles_data, const nav_msgs::GridCells::ConstPtr& inflated_obstacles_data);
 			void InflationInit(ros::NodeHandle nh);
+			boost::mutex mutex_inflation_topic_;
+			boost::condition_variable condition_inflation_topic_;
 	};
 
 
