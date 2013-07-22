@@ -131,6 +131,7 @@ protected:
 	 * Used to receive point cloud topic from camera.
 	 */
 	ros::Subscriber camera_depth_points_sub_;
+	ros::Subscriber floor_plan_sub_;
 
 	ros::Publisher floor_plane_pub_;
 	ros::Publisher camera_depth_points_from_bag_pub_;
@@ -146,6 +147,7 @@ protected:
 	// grid map
 	double gridResolution_;		// resolution of the grid in [cells/m]
 	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
+	cv::Point2i gridDimensions_;	// number of grid cells in x and y direction = width and height [in number grid cells]
 	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
 	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
 	std::vector<std::vector<std::vector<unsigned char> > > listOfLastDetections_;	// stores a list of the last x measurements (detection/no detection) for each grid cell (indices: 1=u, 2=v, 3=history)
@@ -182,10 +184,11 @@ protected:
 	double planeNormalMaxZ_;	// maximum z-value of the plane normal (ensures to have an floor plane)
 	double planeMaxHeight_;		// maximum height of the detected plane above the mapped ground
 
-
 	// further
 	ros::Time lastIncomingMessage_;
 	bool dirtDetectionCallbackActive_;		///< flag whether incoming messages shall be processed
+	nav_msgs::OccupancyGrid floor_plan_;	///< map of the environment
+	bool floor_plan_received_;				///< flag whether the florr plan has been received already
 
 public:
 
@@ -261,6 +264,10 @@ public:
 
 	// dynamic reconfigure
 	void dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetectionConfig &config, uint32_t level);
+
+
+
+	void floorPlanCallback(const nav_msgs::OccupancyGridConstPtr& map_msg);
 
 	/**
 	 * Function is called if color image topic is received.

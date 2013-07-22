@@ -1,0 +1,8 @@
+# message for validating the cleanness at a list of defined positions
+
+# request message
+geometry_msgs/Point[] validationPositions	# the positions that shall be validated for their cleanness [in m]
+
+---
+# response message
+geometry_msgs/Point[] dirtyPositions	# the positions that have been validated dirty [in m]
