@@ -566,7 +566,7 @@ std::string Exploration::go_to_destination( cv::Mat FTL , int CenterPositionX , 
 		if (go_to_des.at<unsigned char> ( CenterPositionY , CenterPositionX ) == go_to_des.at<unsigned char> ( robot_location_in_pixel ))
 			{
 				Feedback_ = "True";
-				cleaning_pose(FTL,CenterPositionX,CenterPositionY);
+				//cleaning_pose(FTL,CenterPositionX,CenterPositionY);
 				return Feedback_;
 			}
 		else
@@ -807,6 +807,11 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 
 		ros::NodeHandle node_;
 
+		ros::Rate r(1);
+		InflationInit(node_);
+		ros::spinOnce();
+		r.sleep();
+
 		for ( int m = room_min_x[room_Number.back()] ; m < room_max_x[room_Number.back()] ; m=m+Step_Size )
 				{
 					if(loop_count % 2 == 0)
@@ -817,12 +822,8 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 										 Obstacle_free_Point( Room_Inspection_RI , m , n )
 										)
 										{
-											ros::Rate r(1);
-											InflationInit(node_);
-											ros::spinOnce();
-											r.sleep();
-
 											bool obstacle_in_way = false ;
+
 											for (unsigned int i = 0 ; i < Inflation_data_X.size() ; i++ )
 												{
 													if( std::abs( ( ( (n*map_resolution_)+map_origin_.x) - Inflation_data_X[i] ) ) < 0.1 &&
@@ -831,7 +832,27 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 															obstacle_in_way = true ;
 														}
 												}
+/*
+											//boost::mutex::scoped_lock lock(mutex_inflation_topic_);
+											//boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(5000);
 
+											cv::Mat RM_obstacles_check = RI.clone();
+
+											for( unsigned int idx = 0; idx < Inflation_data_X.size(); idx++ )
+												{
+													RM_obstacles_check.at<unsigned char>( (Inflation_data_Y[idx]- map_origin_.y)/map_resolution_ , (Inflation_data_X[idx]- map_origin_.x)/map_resolution_ ) = 0;
+												}
+
+											cv::imshow("Inflated Map", RM_obstacles_check );
+											cv::waitKey();
+
+											bool obstacle_in_way = false ;
+
+											if( RM_obstacles_check.at<unsigned char>(m,n)== 0 )
+												{
+													obstacle_in_way = true;
+												}
+*/
 											if(!obstacle_in_way)
 												{
 													Pixel_Point_next.x = n;
@@ -872,12 +893,8 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 										 Obstacle_free_Point( Room_Inspection_RI , m , n )
 										)
 										{
-											ros::Rate r(1);
-											InflationInit(node_);
-											ros::spinOnce();
-											r.sleep();
-
 											bool obstacle_in_way = false ;
+
 											for (unsigned int i = 0 ; i < Inflation_data_X.size() ; i++ )
 												{
 													if( std::abs( ( ( (n*map_resolution_)+map_origin_.x) - Inflation_data_X[i] ) ) < 0.1 &&
@@ -886,7 +903,27 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 															obstacle_in_way = true ;
 														}
 												}
+/*
+											//boost::mutex::scoped_lock lock(mutex_inflation_topic_);
+											//boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(5000);
 
+											cv::Mat RM_obstacles_check = RI.clone();
+
+											for( unsigned int idx = 0; idx < Inflation_data_X.size(); idx++ )
+												{
+													RM_obstacles_check.at<unsigned char>( (Inflation_data_Y[idx]- map_origin_.y)/map_resolution_ , (Inflation_data_X[idx]- map_origin_.x)/map_resolution_ ) = 0;
+												}
+
+											cv::imshow("Inflated Map", RM_obstacles_check );
+											cv::waitKey();
+
+											bool obstacle_in_way = false ;
+
+											if( RM_obstacles_check.at<unsigned char>(m,n)== 0 )
+												{
+													obstacle_in_way = true;
+												}
+*/
 											if(!obstacle_in_way)
 												{
 													Pixel_Point_next.x = n;
