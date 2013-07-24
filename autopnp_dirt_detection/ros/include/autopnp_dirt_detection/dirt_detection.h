@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <deque>
 #include <time.h>
 #include <math.h>
@@ -113,6 +114,7 @@ protected:
 
 	bool getDirtMap(autopnp_dirt_detection::GetDirtMap::Request &req, autopnp_dirt_detection::GetDirtMap::Response &res);
 
+	// this function assumes that all positions to check are visible at the moment the function is called
 	bool validateCleaningResult(autopnp_dirt_detection::ValidateCleaningResult::Request &req, autopnp_dirt_detection::ValidateCleaningResult::Response &res);
 
 	/**
@@ -146,7 +148,7 @@ protected:
 
 	// grid map
 	double gridResolution_;		// resolution of the grid in [cells/m]
-	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
+	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m], (The origin of the map [m, m, rad].  This is the real-world pose of the cell (0,0) in the map.)
 	cv::Point2i gridDimensions_;	// number of grid cells in x and y direction = width and height [in number grid cells]
 	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
 	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
@@ -269,13 +271,13 @@ public:
 
 	void floorPlanCallback(const nav_msgs::OccupancyGridConstPtr& map_msg);
 
-	/**
-	 * Function is called if color image topic is received.
-	 *
-	 * @param [in] color_image_msg	Color image message from camera.
-	 *
-	 */
-	void imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg);
+//	/**
+//	 * Function is called if color image topic is received.
+//	 *
+//	 * @param [in] color_image_msg	Color image message from camera.
+//	 *
+//	 */
+//	void imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg);
 
 	/**
 	 * Function is called if point cloud topic is received.
