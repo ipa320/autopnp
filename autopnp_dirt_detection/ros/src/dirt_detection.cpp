@@ -277,38 +277,28 @@ bool DirtDetection::validateCleaningResult(autopnp_dirt_detection::ValidateClean
 	dirtDetectionCallbackActive_ = false;
 
 	// verify cleanness of locations
-	std::vector< std::vector<cv::Point2d> > dirtyLocationsAfterValidation;
-	for (unsigned int group=0; group<req.validationPositions.size(); ++group)
+	std::vector<cv::Point2d> dirtyLocationsAfterValidation;
+	for (unsigned int i=0; i<req.validationPositions.size(); ++i)
 	{
-		std::vector<cv::Point2d> dirtyLocationsAfterValidationGroup;
-		for (unsigned int i=0; i<req.validationPositions[group].points.size(); ++i)
+		int u = (req.validationPositions[i].x - gridOrigin_.x) * gridResolution_;
+		int v = (req.validationPositions[i].y - gridOrigin_.y) * gridResolution_;
+		double dirtyness = 100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_);
+		if (dirtyness > 25.)		// todo: parameter
 		{
-			int u = (req.validationPositions[group].points[i].x - gridOrigin_.x) * gridResolution_;
-			int v = (req.validationPositions[group].points[i].y - gridOrigin_.y) * gridResolution_;
-			double dirtyness = 100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_);
-			if (dirtyness > 25.)		// todo: parameter
-			{
-				cv::Point2d point(req.validationPositions[group].points[i].x, req.validationPositions[group].points[i].y);
-				dirtyLocationsAfterValidationGroup.push_back(point);
-			}
+			cv::Point2d point(req.validationPositions[i].x, req.validationPositions[i].y);
+			dirtyLocationsAfterValidation.push_back(point);
 		}
-		if (dirtyLocationsAfterValidationGroup.size() > 0)
-			dirtyLocationsAfterValidation.push_back(dirtyLocationsAfterValidationGroup);
 	}
 
-	// save images of still dirty locations and their coordinates
+	// save image of still dirty locations and their coordinates
 	// todo:
 
 	// response message
 	res.dirtyPositions.resize(dirtyLocationsAfterValidation.size());
-	for (unsigned int group=0; group<dirtyLocationsAfterValidation.size(); ++group)
+	for (unsigned int i=0; i<dirtyLocationsAfterValidation.size(); ++i)
 	{
-		res.dirtyPositions[group].points.resize(dirtyLocationsAfterValidation[group].size());
-		for (unsigned int i=0; i<dirtyLocationsAfterValidation[group].size(); ++i)
-		{
-			res.dirtyPositions[group].points[i].x = dirtyLocationsAfterValidation[group][i].x;
-			res.dirtyPositions[group].points[i].y = dirtyLocationsAfterValidation[group][i].y;
-		}
+		res.dirtyPositions[i].x = dirtyLocationsAfterValidation[i].x;
+		res.dirtyPositions[i].y = dirtyLocationsAfterValidation[i].y;
 	}
 
 	return true;
