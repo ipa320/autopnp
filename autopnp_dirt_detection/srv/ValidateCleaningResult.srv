@@ -1,9 +1,9 @@
 # message for validating the cleanness at a list of defined positions
 
 # request message
-geometry_msgs/Point[] validationPositions	# the positions that shall be validated for their cleanness [in m], the cell size is given by the running program
-int32 numberValidationImages					# the number of images to take for the check (if <=0 then detectionHistoryDepth images are taken)
+autopnp_dirt_detection/PointArray[] validationPositions	# the positions that shall be validated for their cleanness [in m], each PointArray is a group of locations that belong to the same spot, the cell size is given by the running program
+int32 numberValidationImages		# the number of images to take for the check (if <=0 then detectionHistoryDepth images are taken)
 
 ---
 # response message
-geometry_msgs/Point[] dirtyPositions	# the positions that have been validated dirty [in m]
+autopnp_dirt_detection/PointArray[] dirtyPositions	# the positions that have been validated dirty [in m]

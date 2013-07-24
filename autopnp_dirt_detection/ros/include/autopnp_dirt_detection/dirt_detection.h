@@ -117,6 +117,8 @@ protected:
 	// this function assumes that all positions to check are visible at the moment the function is called
 	bool validateCleaningResult(autopnp_dirt_detection::ValidateCleaningResult::Request &req, autopnp_dirt_detection::ValidateCleaningResult::Response &res);
 
+	int sumOfUCharArray(const std::vector<unsigned char>& vec);
+
 	/**
 	 * Used to subscribe and publish images.
 	 */
