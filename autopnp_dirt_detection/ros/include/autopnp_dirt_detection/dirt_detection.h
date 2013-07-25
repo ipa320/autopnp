@@ -74,6 +74,7 @@
 
 //boost
 #include <boost/foreach.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include <time.h>
 #include "autopnp_dirt_detection/label_box.h"
@@ -191,6 +192,17 @@ protected:
 	// further
 	ros::Time lastIncomingMessage_;
 	bool dirtDetectionCallbackActive_;		///< flag whether incoming messages shall be processed
+	bool storeLastImage_;					///< if true, the last (warped) image is stored as well as all variables necessary for conversion
+	boost::mutex storeLastImageMutex_;		///< mutex for securing read and write access to the last image data
+	struct LastImageDataStorage
+	{
+		cv::Mat plane_color_image_warped;	// normal image (not warped) if warp is disabled
+		cv::Mat R;				// transformation between world and floor plane coordinates, i.e. [xw,yw,zw] = R*[xp,yp,0]+t and [xp,yp,0] = R^T*[xw,yw,zw] - R^T*t
+		cv::Mat t;
+		cv::Point2f cameraImagePlaneOffset;		// offset in the camera image plane. Conversion from floor plane to  [xc, yc]
+		tf::StampedTransform transformMapCamera;	// 3D transform between camera and map (pointWorldMap = transformMapCamera * pointWorldCamera)
+	};
+	LastImageDataStorage lastImageDataStorage_;	///< stores the image data of the last image
 	nav_msgs::OccupancyGrid floor_plan_;	///< map of the environment
 	bool floor_plan_received_;				///< flag whether the florr plan has been received already
 
@@ -337,6 +349,8 @@ public:
 
 	/// converts point pointPlane, that lies within the floor plane and is provided in coordinates of the warped camera image, into map coordinates
 	void transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
+
+	void transformPointFromWorldToCameraWarped(const cv::Point3f& pointWorld, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Mat& pointPlane);
 
 	void putDetectionIntoGrid(cv::Mat& grid, const labelImage::RegionPointTriple& detection);
 

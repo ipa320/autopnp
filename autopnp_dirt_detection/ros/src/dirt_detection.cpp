@@ -35,6 +35,7 @@ DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 	rosbagMessagesProcessed_ = 0;
 	meanProcessingTimeSegmentation_ = 0.;
 	meanProcessingTimeDirtDetection_ = 0.;
+	storeLastImage_ = false;
 	labelingStarted_ = false;
 	lastIncomingMessage_ = ros::Time::now();
 }
@@ -266,6 +267,7 @@ bool DirtDetection::validateCleaningResult(autopnp_dirt_detection::ValidateClean
 
 	// turn dirt detection on
 	rosbagMessagesProcessed_ = 0;
+	storeLastImage_ = true;
 	dirtDetectionCallbackActive_ = true;
 
 	// wait for x recordings
@@ -275,23 +277,80 @@ bool DirtDetection::validateCleaningResult(autopnp_dirt_detection::ValidateClean
 
 	// turn dirt detection off
 	dirtDetectionCallbackActive_ = false;
+	storeLastImage_ = false;
 
 	// verify cleanness of locations
 	std::vector<cv::Point2d> dirtyLocationsAfterValidation;
+	cv::Point2d minPointMap(1e10, 1e10);
+	cv::Point2d maxPointMap(-1e10, -1e10);
+	double cellSize_m = 1./gridResolution_;
 	for (unsigned int i=0; i<req.validationPositions.size(); ++i)
 	{
-		int u = (req.validationPositions[i].x - gridOrigin_.x) * gridResolution_;
-		int v = (req.validationPositions[i].y - gridOrigin_.y) * gridResolution_;
+		int u = cvRound((req.validationPositions[i].x - gridOrigin_.x) * gridResolution_);
+		int v = cvRound((req.validationPositions[i].y - gridOrigin_.y) * gridResolution_);
+//		std::cout << "checking point (u,v)=(" << u << ", " << v << "),  (x,y)=(" << req.validationPositions[i].x << ", " << req.validationPositions[i].y << ")";
+//		std::cout << "   gridOrigin_.x=" << gridOrigin_.x << "  gridOrigin_.y=" << gridOrigin_.y << "   gridResolution=" << gridResolution_ << "\n";
+
 		double dirtyness = 100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_);
 		if (dirtyness > 25.)		// todo: parameter
 		{
-			cv::Point2d point(req.validationPositions[i].x, req.validationPositions[i].y);
-			dirtyLocationsAfterValidation.push_back(point);
+			// save dirty point
+			cv::Point2d point2(req.validationPositions[i].x, req.validationPositions[i].y);
+			dirtyLocationsAfterValidation.push_back(point2);
+
+			// determine min/max map coordinates
+			minPointMap.x = std::min(minPointMap.x, point2.x);
+			minPointMap.y = std::min(minPointMap.y, point2.y);
+			maxPointMap.x = std::max(maxPointMap.x, point2.x+cellSize_m);
+			maxPointMap.y = std::max(maxPointMap.y, point2.y+cellSize_m);
 		}
 	}
 
 	// save image of still dirty locations and their coordinates
-	// todo:
+	int padding = cellSize_m * birdEyeResolution_;	// size of one cell in pixels
+	if (dirtyLocationsAfterValidation.size() > 0)
+	{
+		boost::mutex::scoped_lock lock(storeLastImageMutex_);
+
+		// compute image coordinates of 4 cell corner points
+		std::vector<cv::Point> dirtRegionOutline(4);
+		cv::Point minPoint(lastImageDataStorage_.plane_color_image_warped.cols, lastImageDataStorage_.plane_color_image_warped.rows);
+		cv::Point maxPoint(0, 0);
+		std::vector<cv::Point3d> points3;
+		points3.push_back(cv::Point3d(minPointMap.x, minPointMap.y, 0.));
+		points3.push_back(cv::Point3d(maxPointMap.x, minPointMap.y, 0.));
+		points3.push_back(cv::Point3d(maxPointMap.x, maxPointMap.y, 0.));
+		points3.push_back(cv::Point3d(minPointMap.x, maxPointMap.y, 0.));
+		for (unsigned int i=0; i<points3.size(); ++i)
+		{
+			cv::Mat image_coordinates;
+			transformPointFromWorldToCameraWarped(points3[i], lastImageDataStorage_.R, lastImageDataStorage_.t, lastImageDataStorage_.cameraImagePlaneOffset, lastImageDataStorage_.transformMapCamera, image_coordinates);
+			dirtRegionOutline[i] = cv::Point((int)image_coordinates.at<double>(0), (int)image_coordinates.at<double>(1));
+
+			// determine min/max image coordinates
+			minPoint.x = std::min(minPoint.x, dirtRegionOutline[i].x);
+			minPoint.y = std::min(minPoint.y, dirtRegionOutline[i].y);
+			maxPoint.x = std::max(maxPoint.x, dirtRegionOutline[i].x);
+			maxPoint.y = std::max(maxPoint.y, dirtRegionOutline[i].y);
+
+			//std::cout << " points3[i].x=" << points3[i].x << "  points3[i].y=" << points3[i].y << "  dirtRegionOutline[i].x=" << dirtRegionOutline[i].x << "  dirtRegionOutline[i].y=" << dirtRegionOutline[i].x << std::endl;
+		}
+
+		// compute image roi for dirt region
+		cv::Point minPointROI, maxPointROI;
+		minPointROI.x = std::max(minPoint.x-2*padding, 0);
+		minPointROI.y = std::max(minPoint.y-2*padding, 0);
+		maxPointROI.x = std::min(maxPoint.x+2*padding, lastImageDataStorage_.plane_color_image_warped.cols-1);
+		maxPointROI.y = std::min(maxPoint.y+2*padding, lastImageDataStorage_.plane_color_image_warped.rows-1);
+		cv::Rect img_region(minPointROI.x, minPointROI.y, maxPointROI.x-minPointROI.x, maxPointROI.y-minPointROI.y);
+		cv::Mat roi = lastImageDataStorage_.plane_color_image_warped(img_region);
+
+		cv::polylines(lastImageDataStorage_.plane_color_image_warped, dirtRegionOutline, true, CV_RGB(0, 255, 0), 2);
+		cv::imshow("dirty region after cleaning", roi);
+		cv::waitKey();
+
+		// todo: save internally
+	}
 
 	// response message
 	res.dirtyPositions.resize(dirtyLocationsAfterValidation.size());
@@ -763,7 +822,10 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 			else
 				pc = (cv::Mat_<double>(3,1) << (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].x, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].y, (double)(*input_cloud)[dirtDetections[i].center.y*input_cloud->width+dirtDetections[i].center.x].z);
 			transformPointFromCameraWarpedToWorld(pc, R, t, cameraImagePlaneOffset, transformMapCamera, pointsWorldMap.center);
-			//std::cout << "---------- world.x=" << pointsWorldMap.center.x << "   world.y=" << pointsWorldMap.center.y << "   world.z=" << pointsWorldMap.center.z << std::endl;
+//			cv::Mat pc_copy;
+//			transformPointFromWorldToCameraWarped(pointsWorldMap.center, R, t, cameraImagePlaneOffset, transformMapCamera, pc_copy);
+//			std::cout << " pc=(" << pc.at<double>(0) << ", " << pc.at<double>(1) << ", " << pc.at<double>(2) << ")    pc_copy=(" << pc_copy.at<double>(0) << ", " << pc_copy.at<double>(1) << ", " << pc_copy.at<double>(2) << ")\n";
+//			std::cout << "---------- world.x=" << pointsWorldMap.center.x << "   world.y=" << pointsWorldMap.center.y << "   world.z=" << pointsWorldMap.center.z << std::endl;
 
 			// point in width direction
 			double u = (double)dirtDetections[i].center.x+cos(-dirtDetections[i].angle*3.14159265359/180.f)*dirtDetections[i].size.width/2.f;	//todo: offset?
@@ -846,6 +908,18 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 		meanProcessingTimeSegmentation_ = (meanProcessingTimeSegmentation_*rosbagMessagesProcessed_+segmentationTime)/(rosbagMessagesProcessed_+1.0);
 		meanProcessingTimeDirtDetection_ = (meanProcessingTimeDirtDetection_*rosbagMessagesProcessed_+dirtDetectionTime)/(rosbagMessagesProcessed_+1.0);
 		std::cout << "mean times for segmentation, dirt detection, total:\t" << meanProcessingTimeSegmentation_ << "\t" << meanProcessingTimeDirtDetection_ << "\t" << meanProcessingTimeSegmentation_+meanProcessingTimeDirtDetection_ << std::endl;
+
+		// store data internally if necessary
+		if (storeLastImage_ == true)
+		{
+			boost::mutex::scoped_lock lock(storeLastImageMutex_);
+
+			lastImageDataStorage_.plane_color_image_warped = plane_color_image_warped;
+			lastImageDataStorage_.R = R;
+			lastImageDataStorage_.t = t;
+			lastImageDataStorage_.cameraImagePlaneOffset = cameraImagePlaneOffset;
+			lastImageDataStorage_.transformMapCamera = transformMapCamera;
+		}
 
 		// publish image
 		cv_bridge::CvImage cv_ptr;
@@ -1517,7 +1591,6 @@ void DirtDetection::transformPointFromCameraWarpedToWorld(const cv::Mat& pointPl
 		cv::Mat pointWorldCamera = R*pointFloor + t;	// transformation from floor plane to camera world coordinates
 		tf::Vector3 pointWorldCameraBt(pointWorldCamera.at<double>(0), pointWorldCamera.at<double>(1), pointWorldCamera.at<double>(2));
 		pointWorldMapBt = transformMapCamera * pointWorldCameraBt;
-
 	}
 	else
 	{
@@ -1527,6 +1600,30 @@ void DirtDetection::transformPointFromCameraWarpedToWorld(const cv::Mat& pointPl
 	pointWorld.x = pointWorldMapBt.getX();
 	pointWorld.y = pointWorldMapBt.getY();
 	pointWorld.z = pointWorldMapBt.getZ();
+}
+
+void DirtDetection::transformPointFromWorldToCameraWarped(const cv::Point3f& pointWorld, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Mat& pointPlane)
+{
+	tf::Vector3 pointWorldMapBt(pointWorld.x, pointWorld.y, pointWorld.z);
+	tf::Vector3 pointWorldCameraBt;
+	pointPlane.create(3,1,CV_64FC1);
+	if (warpImage_ == true)
+	{
+		pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
+		cv::Mat pointWorldCamera = (cv::Mat_<double>(3,1) << pointWorldCameraBt.getX(), pointWorldCameraBt.getY(), pointWorldCameraBt.getZ());
+		cv::Mat pointFloor = R.t() * (pointWorldCamera - t);	// transformation from camera world coordinates to floor plane
+		pointPlane.at<double>(0) = (pointFloor.at<double>(0)-cameraImagePlaneOffset.x)*birdEyeResolution_;
+		pointPlane.at<double>(1) = (pointFloor.at<double>(1)-cameraImagePlaneOffset.y)*birdEyeResolution_;
+		pointPlane.at<double>(2) = 1.;
+	}
+	else
+	{
+		tf::Vector3 pointWorldCameraBt(pointPlane.at<double>(0), pointPlane.at<double>(1), pointPlane.at<double>(2));
+		pointWorldCameraBt = transformMapCamera.inverse() * pointWorldMapBt;
+		pointPlane.at<double>(0) = pointWorldCameraBt.getX();
+		pointPlane.at<double>(1) = pointWorldCameraBt.getY();
+		pointPlane.at<double>(2) = pointWorldCameraBt.getZ();
+	}
 }
 
 
