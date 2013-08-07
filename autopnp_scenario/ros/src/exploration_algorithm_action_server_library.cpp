@@ -90,8 +90,6 @@ move_base_msgs::MoveBaseGoal Exploration::stay_forward( int X , int Y )
 
 move_base_msgs::MoveBaseGoal Exploration::stay_backward( int X , int Y , int CircleCenterX , int CircleCenterY )
 	{
-		//listener.lookupTransform("/map", "/base_link",ros::Time(0), transform);
-
 		move_base_msgs::MoveBaseGoal Goal;
 		geometry_msgs::PoseStamped goal;
 
@@ -100,9 +98,6 @@ move_base_msgs::MoveBaseGoal Exploration::stay_backward( int X , int Y , int Cir
 
 		double b = ( CircleCenterX * map_resolution_ ) + map_origin_.x ;
 		double v = ( CircleCenterY * map_resolution_ ) + map_origin_.y ;
-
-		//double m = transform.getOrigin().x();
-		//double n = transform.getOrigin().y();
 
 		double angel = atan2((q - v),(p - b));
 
