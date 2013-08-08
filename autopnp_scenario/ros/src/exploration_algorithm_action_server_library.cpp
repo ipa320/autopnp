@@ -28,7 +28,7 @@ move_base_msgs::MoveBaseGoal Exploration::Move( double X , double Y , double Z )
 
 
 
-move_base_msgs::MoveBaseGoal Exploration::Move_in_pixel( int X , int Y )
+move_base_msgs::MoveBaseGoal Exploration::Move_in_pixel( int X , int Y  )
 	{
 		listener.lookupTransform("/map", "/base_link",ros::Time(0), transform);
 
@@ -85,6 +85,35 @@ move_base_msgs::MoveBaseGoal Exploration::stay_forward( int X , int Y )
 
 		return Goal;
 	}
+
+
+
+move_base_msgs::MoveBaseGoal Exploration::stay_backward( int X , int Y , int CircleCenterX , int CircleCenterY )
+	{
+		move_base_msgs::MoveBaseGoal Goal;
+		geometry_msgs::PoseStamped goal;
+
+		double p = ( X * map_resolution_ ) + map_origin_.x ;
+		double q = ( Y * map_resolution_ ) + map_origin_.y ;
+
+		double b = ( CircleCenterX * map_resolution_ ) + map_origin_.x ;
+		double v = ( CircleCenterY * map_resolution_ ) + map_origin_.y ;
+
+		double angel = atan2((q - v),(p - b));
+
+		goal.header.frame_id = "map";
+		goal.header.stamp = ros::Time::now();
+
+		goal.pose.position.x = p ;
+		goal.pose.position.y = q;
+		tf::Quaternion quat = tf::createQuaternionFromYaw(angel);
+		tf::quaternionTFToMsg(quat, goal.pose.orientation);
+
+		Goal.target_pose = goal;
+
+		return Goal;
+	}
+
 
 
 
@@ -496,7 +525,7 @@ int Exploration::get_center_position_y()
 
 std::string Exploration::go_to_destination( cv::Mat FTL , int CenterPositionX , int CenterPositionY )
 	{
-		cv::Mat go_to_des = FTL .clone();
+		cv::Mat go_to_des = FTL.clone();
 
 		std::string Feedback_ = "True";
 
@@ -532,6 +561,7 @@ std::string Exploration::go_to_destination( cv::Mat FTL , int CenterPositionX , 
 		if (go_to_des.at<unsigned char> ( CenterPositionY , CenterPositionX ) == go_to_des.at<unsigned char> ( robot_location_in_pixel ))
 			{
 				Feedback_ = "True";
+				//cleaning_pose(FTL,CenterPositionX,CenterPositionY);
 				return Feedback_;
 			}
 		else
@@ -539,17 +569,19 @@ std::string Exploration::go_to_destination( cv::Mat FTL , int CenterPositionX , 
 				Feedback_ = "False";
 				return Feedback_;
 			}
+
+
 	}
 
 
 
-cv::Mat Exploration::random_location( cv::Mat RL,
-										std::vector<int> room_Number,
-										std::vector<int> room_min_x,
-										std::vector<int> room_max_x,
-										std::vector<int> room_min_y,
-										std::vector<int> room_max_y,
-										int unsuccessful_times)
+cv::Mat Exploration::random_location(cv::Mat RL,
+									 std::vector<int> room_Number,
+									 std::vector<int> room_min_x,
+									 std::vector<int> room_max_x,
+									 std::vector<int> room_min_y,
+									 std::vector<int> room_max_y,
+									 int unsuccessful_times)
 	{
 		cv::Mat Random_Location = RL.clone();
 		cv::Mat Random_Location_mutable = RL ;
@@ -638,6 +670,119 @@ std::vector<int>& Exploration::get_room_max_y()
 
 
 
+void Exploration::InflationDataCallback(const nav_msgs::GridCells::ConstPtr& obstacles_data, const nav_msgs::GridCells::ConstPtr& inflated_obstacles_data)
+	{
+		{
+			boost::mutex::scoped_lock lock(mutex_inflation_topic_);
+
+			Inflation_data_X.clear();
+			Inflation_data_Y.clear();
+
+
+			for(unsigned int i=0; i< obstacles_data->cells.size() ; i++)
+				{
+					Inflation_data_X.push_back(obstacles_data->cells[i].x);
+					Inflation_data_Y.push_back(obstacles_data->cells[i].y);
+				}
+
+
+			for(unsigned int i=0; i< inflated_obstacles_data->cells.size() ; i++)
+				{
+					Inflation_data_X.push_back(inflated_obstacles_data->cells[i].x);
+					Inflation_data_Y.push_back(inflated_obstacles_data->cells[i].y);
+				}
+		}
+
+		condition_inflation_topic_.notify_one();
+	}
+
+
+
+void Exploration::InflationInit(ros::NodeHandle nh)
+	{
+		inflation_node_ = nh;
+		obstacles_sub_.subscribe(inflation_node_, "/move_base/local_costmap/obstacles", 1);
+		inflated_obstacles_sub_.subscribe(inflation_node_, "/move_base/local_costmap/inflated_obstacles", 1);
+
+		inflated_obstacles_sub_sync_ = boost::shared_ptr<message_filters::Synchronizer<InflatedObstaclesSyncPolicy> >(new message_filters::Synchronizer<InflatedObstaclesSyncPolicy>(InflatedObstaclesSyncPolicy(3)));
+		inflated_obstacles_sub_sync_->connectInput(obstacles_sub_, inflated_obstacles_sub_);
+		inflated_obstacles_sub_sync_->registerCallback(boost::bind(&Exploration::InflationDataCallback, this, _1, _2));
+	}
+
+
+
+void Exploration::cleaning_pose(cv::Mat CP,
+								int center_of_room_x,
+								int center_of_room_y)
+	{
+		cv::Mat Cleaning_Pose = CP.clone();
+
+		cv::Point Clean_Point;
+
+		ros::NodeHandle node2;
+
+		bool found_pose = false;
+		MoveBaseClient ac("move_base", true);
+		std::cout<<"\nCleaning Pose Function is started4"<<std::endl;
+
+		InflationInit(node2);
+
+		for (int angle = 0; angle < 360 && found_pose==false; angle+=10)
+			{
+				Clean_Point.x = center_of_room_x + ((( robotRadius * 1.5 ) * cos (( angle * PI / 180.0 ))))/map_resolution_;
+				Clean_Point.y = center_of_room_y + ((( robotRadius * 1.5 ) * sin (( angle * PI / 180.0 ))))/map_resolution_;
+
+				double x_m = (Clean_Point.x * map_resolution_)+map_origin_.x;
+				double y_m = (Clean_Point.y * map_resolution_)+map_origin_.y;
+
+				if (Cleaning_Pose.at<unsigned char> ( Clean_Point.y ,Clean_Point.x ) != 0 &&
+					Obstacle_free_Point( Cleaning_Pose , Clean_Point.y , Clean_Point.x ))
+					{
+						boost::mutex::scoped_lock lock(mutex_inflation_topic_);
+						boost::system_time const timeout=boost::get_system_time()+ boost::posix_time::milliseconds(5000);
+						if (condition_inflation_topic_.timed_wait(lock, timeout))
+							std::cout << "Got the inflation data." << std::endl;
+						else
+						{
+							std::cout << "Inflation data not available." << std::endl;
+						}
+
+						for (unsigned int i = 0 ; i < Inflation_data_X.size() ; i++ )
+							{
+								if( std::abs( ( x_m - Inflation_data_X[i] ) ) > 0.1 &&
+									std::abs( ( y_m - Inflation_data_Y[i] ) ) > 0.1 )
+									{
+										found_pose = true;
+									}
+							}
+					}
+			}
+
+		if (found_pose == true)
+			{
+				std::cout <<"\nCenter of room x value: "<<center_of_room_x;
+				std::cout <<"\nCenter of room y value: "<< center_of_room_y ;
+				std::cout <<"\nClean Point of room x value: "<< Clean_Point.x;
+				std::cout <<"\nClean Point of room y value: "<< Clean_Point.y<<std::endl;
+
+				ac.waitForServer();
+				ac.sendGoal( stay_forward( Clean_Point.x , Clean_Point.y ));
+				ac.waitForResult();
+
+				ac.waitForServer();
+				ac.sendGoal( Move_in_pixel( Clean_Point.x , Clean_Point.y ));
+				ac.waitForResult();
+
+				ac.waitForServer();
+				ac.sendGoal( stay_backward( Clean_Point.x , Clean_Point.y , center_of_room_x , center_of_room_y ));
+				ac.waitForResult();
+			}
+		else
+			std::cout << "\nNo valid pose found."<< std::endl;
+	}
+
+
+
 cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 									  std::vector<cv::Point> center_of_room,
 									  std::vector<int> room_Number,
@@ -655,6 +800,13 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 		int Step_Size = 20 ;
 		MoveBaseClient ac("move_base", true);
 
+		ros::NodeHandle node_;
+
+		ros::Rate r(1);
+		InflationInit(node_);
+		ros::spinOnce();
+		r.sleep();
+
 		for ( int m = room_min_x[room_Number.back()] ; m < room_max_x[room_Number.back()] ; m=m+Step_Size )
 				{
 					if(loop_count % 2 == 0)
@@ -665,29 +817,63 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 										 Obstacle_free_Point( Room_Inspection_RI , m , n )
 										)
 										{
-											Pixel_Point_next.x = n;
-											Pixel_Point_next.y = m;
+											bool obstacle_in_way = false ;
 
-											ac.waitForServer();
-											ac.sendGoal( stay_forward( n , m ));
-											ac.waitForResult();
-
-											ac.waitForServer();
-											ac.sendGoal( Move_in_pixel ( n , m ));
-
-											bool finished_before_timeout = ac.waitForResult();
-
-											if (finished_before_timeout)
+											for (unsigned int i = 0 ; i < Inflation_data_X.size() ; i++ )
 												{
-													actionlib::SimpleClientGoalState state = ac.getState();
-													ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
-													//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
-													//cv::imshow( "Room Inspection", Room_Inspection_RI );
-													//cv::waitKey(100);
+													if( std::abs( ( ( (n*map_resolution_)+map_origin_.x) - Inflation_data_X[i] ) ) < 0.1 &&
+														std::abs( ( ( (m*map_resolution_)+map_origin_.y) - Inflation_data_Y[i] ) ) < 0.1 )
+														{
+															obstacle_in_way = true ;
+														}
 												}
-											else
+/*
+											//boost::mutex::scoped_lock lock(mutex_inflation_topic_);
+											//boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(5000);
+
+											cv::Mat RM_obstacles_check = RI.clone();
+
+											for( unsigned int idx = 0; idx < Inflation_data_X.size(); idx++ )
 												{
-													ROS_INFO("Move Base Action for RI did not finish before the time out.");
+													RM_obstacles_check.at<unsigned char>( (Inflation_data_Y[idx]- map_origin_.y)/map_resolution_ , (Inflation_data_X[idx]- map_origin_.x)/map_resolution_ ) = 0;
+												}
+
+											cv::imshow("Inflated Map", RM_obstacles_check );
+											cv::waitKey();
+
+											bool obstacle_in_way = false ;
+
+											if( RM_obstacles_check.at<unsigned char>(m,n)== 0 )
+												{
+													obstacle_in_way = true;
+												}
+*/
+											if(!obstacle_in_way)
+												{
+													Pixel_Point_next.x = n;
+													Pixel_Point_next.y = m;
+
+													ac.waitForServer();
+													ac.sendGoal( stay_forward( n , m ));
+													ac.waitForResult();
+
+													ac.waitForServer();
+													ac.sendGoal( Move_in_pixel ( n , m ));
+
+													bool finished_before_timeout = ac.waitForResult();
+
+													if (finished_before_timeout)
+														{
+															actionlib::SimpleClientGoalState state = ac.getState();
+															ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
+															//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
+															//cv::imshow( "Room Inspection", Room_Inspection_RI );
+															//cv::waitKey(100);
+														}
+													else
+														{
+															ROS_INFO("Move Base Action for RI did not finish before the time out.");
+														}
 												}
 										}
 								}
@@ -702,30 +888,63 @@ cv::Mat Exploration::Room_Inspection( cv::Mat RI,
 										 Obstacle_free_Point( Room_Inspection_RI , m , n )
 										)
 										{
-											Pixel_Point_next.x = n;
-											Pixel_Point_next.y = m;
+											bool obstacle_in_way = false ;
 
-
-											ac.waitForServer();
-											ac.sendGoal( stay_forward( n , m ));
-											ac.waitForResult();
-
-											ac.waitForServer();
-											ac.sendGoal( Move_in_pixel ( n , m ));
-											bool finished_before_timeout = ac.waitForResult();
-
-											if (finished_before_timeout)
+											for (unsigned int i = 0 ; i < Inflation_data_X.size() ; i++ )
 												{
-													actionlib::SimpleClientGoalState state = ac.getState();
-													ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
-													//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
-													//cv::imshow( "Room Inspection", Room_Inspection_RI );
-													//cv::waitKey(100);
+													if( std::abs( ( ( (n*map_resolution_)+map_origin_.x) - Inflation_data_X[i] ) ) < 0.1 &&
+														std::abs( ( ( (m*map_resolution_)+map_origin_.y) - Inflation_data_Y[i] ) ) < 0.1 )
+														{
+															obstacle_in_way = true ;
+														}
+												}
+/*
+											//boost::mutex::scoped_lock lock(mutex_inflation_topic_);
+											//boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(5000);
+
+											cv::Mat RM_obstacles_check = RI.clone();
+
+											for( unsigned int idx = 0; idx < Inflation_data_X.size(); idx++ )
+												{
+													RM_obstacles_check.at<unsigned char>( (Inflation_data_Y[idx]- map_origin_.y)/map_resolution_ , (Inflation_data_X[idx]- map_origin_.x)/map_resolution_ ) = 0;
 												}
 
-											else
+											cv::imshow("Inflated Map", RM_obstacles_check );
+											cv::waitKey();
+
+											bool obstacle_in_way = false ;
+
+											if( RM_obstacles_check.at<unsigned char>(m,n)== 0 )
 												{
-													ROS_INFO("Move Base Action for RI did not finish before the time out.");
+													obstacle_in_way = true;
+												}
+*/
+											if(!obstacle_in_way)
+												{
+													Pixel_Point_next.x = n;
+													Pixel_Point_next.y = m;
+
+													ac.waitForServer();
+													ac.sendGoal( stay_forward( n , m ));
+													ac.waitForResult();
+
+													ac.waitForServer();
+													ac.sendGoal( Move_in_pixel ( n , m ));
+													bool finished_before_timeout = ac.waitForResult();
+
+													if (finished_before_timeout)
+														{
+															actionlib::SimpleClientGoalState state = ac.getState();
+															ROS_INFO("Move Base Action for RI finished: %s",state.toString().c_str());
+															//cv::circle( Room_Inspection_RI , Pixel_Point_next , 3 , cv::Scalar(255), -1 );
+															//cv::imshow( "Room Inspection", Room_Inspection_RI );
+															//cv::waitKey(100);
+														}
+
+													else
+														{
+															ROS_INFO("Move Base Action for RI did not finish before the time out.");
+														}
 												}
 										}
 								}

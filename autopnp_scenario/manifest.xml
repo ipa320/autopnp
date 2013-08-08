@@ -9,9 +9,17 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/autopnp_scenario</url>
 
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="roslib"/>
+  <depend package="opencv2"/>
+  <!--depend package="opencv"/-->
+  <rosdep name="boost"/>
+  <depend package="message_filters"/>
   <depend package="autopnp_dirt_detection"/>
   <depend package="cob_navigation_global"/>
   <depend package="cob_generic_states_experimental"/>
+  <depend package="cob_trajectory_controller"/>
 
 </package>
 
