@@ -107,7 +107,7 @@ rosbuild_add_library(move_base_location_on_perimeter ros/src/move_base_location_
 rosbuild_link_boost(move_base_location_on_perimeter thread)
 
 			#Check Point accessibility
-rosbuild_add_executable(check_point_accessibility_server ros/src/check_point_accessibility_server.cpp)				
+rosbuild_add_executable(map_point_accessibility_check_server ros/src/map_point_accessibility_check_server.cpp)				
 
 			#Get Obstacle free point server and client executable
 rosbuild_add_executable(get_obstacle_free_point_server ros/src/get_obstacle_free_point_server.cpp)	
