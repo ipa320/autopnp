@@ -17,6 +17,7 @@
 #include <message_filters/time_synchronizer.h>
 
 #include <autopnp_scenario/CheckPointAccessibility.h>
+#include <autopnp_scenario/CheckPerimeterAccessibility.h>
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
@@ -24,8 +25,6 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/shared_ptr.hpp>
 
-
-#define PI 3.14159265
 
 class MapPointAccessibilityCheck
 {
@@ -46,7 +45,11 @@ protected:
 	// to create dynamic obstacles map
 	void obstacleDataCallback(const nav_msgs::GridCells::ConstPtr& obstacles_data, const nav_msgs::GridCells::ConstPtr& inflated_obstacles_data);
 
+	// callback for service checking the accessibility of a vector of points
 	bool checkPose2DArrayCallback(autopnp_scenario::CheckPointAccessibility::Request &req, autopnp_scenario::CheckPointAccessibility::Response &res);
+
+	// callback for service checking the accessibility of a perimeter around a center point
+	bool checkPerimeterCallback(autopnp_scenario::CheckPerimeterAccessibility::Request &req, autopnp_scenario::CheckPerimeterAccessibility::Response &res);
 
 	ros::NodeHandle node_handle_;
 
@@ -61,10 +64,11 @@ protected:
 	std::string obstacles_topic_name_;				// name of obstacle topic
 	std::string inflated_obstacles_topic_name_;		// name of inflated obstacles topic
 
-	ros::ServiceServer map_point_accessibility_check_server_;		// server handling the request for accessibility
+	ros::ServiceServer map_points_accessibility_check_server_;	// server handling requests for checking the accessibility of a set of points
+	ros::ServiceServer map_perimeter_accessibility_check_server_;	// server handling requests for checking the accessibility of any point on the perimeter of a given position
 
 	//Resolution,robot radius,origin of the map
-	double map_resolution_; // in [m/cell]
+	double inverse_map_resolution_; // in [cell/m]
 	double robot_radius_; // in [m]
 	cv::Point2d map_origin_; // in [m]
 

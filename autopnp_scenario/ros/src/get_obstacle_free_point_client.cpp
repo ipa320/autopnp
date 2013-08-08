@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 
 		if (client.call(srv))
 			{
-				ROS_INFO("Sum: %d", srv.response.accessibility_flag[0]);
+				ROS_INFO("Sum: %d", srv.response.accessibility_flags[0]);
 			}
 		else
 			{
