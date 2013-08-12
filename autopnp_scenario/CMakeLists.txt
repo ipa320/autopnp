@@ -45,7 +45,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
 #rosbuild_add_executable(test_test ros/src/test.cpp)
 
 			#Exploration Algorithm Executable
-rosbuild_add_executable(Exploration_Algorithm_2nd_version ros/src/Exploration_Algorithm_2nd_version.cpp)
+#rosbuild_add_executable(Exploration_Algorithm_2nd_version ros/src/Exploration_Algorithm_2nd_version.cpp)
 
 			#Exploration Algorithm Library executable
 rosbuild_add_library(exploration_algorithm_action_server_library ros/src/exploration_algorithm_action_server_library.cpp)
@@ -102,27 +102,27 @@ target_link_libraries(random_location_server exploration_algorithm_action_server
 
 
 			#move_base_location_on_perimeter executable
-rosbuild_add_executable(move_base_location_on_perimeter_cpp ros/src/move_base_location_on_perimeter.cpp)
-rosbuild_add_library(move_base_location_on_perimeter ros/src/move_base_location_on_perimeter.cpp)
-rosbuild_link_boost(move_base_location_on_perimeter thread)		
+#rosbuild_add_executable(move_base_location_on_perimeter_cpp ros/src/move_base_location_on_perimeter.cpp)
+#rosbuild_add_library(move_base_location_on_perimeter ros/src/move_base_location_on_perimeter.cpp)
+#rosbuild_link_boost(move_base_location_on_perimeter thread)		
 
 			#Get Obstacle free point server and client executable
-rosbuild_add_executable(get_obstacle_free_point_server ros/src/get_obstacle_free_point_server.cpp)	
-target_link_libraries(get_obstacle_free_point_server move_base_location_on_perimeter)	
+#rosbuild_add_executable(get_obstacle_free_point_server ros/src/get_obstacle_free_point_server.cpp)	
+#target_link_libraries(get_obstacle_free_point_server move_base_location_on_perimeter)	
 
-rosbuild_add_executable(get_obstacle_free_point_client ros/src/get_obstacle_free_point_client.cpp)	
-target_link_libraries(get_obstacle_free_point_client move_base_location_on_perimeter)				
+#rosbuild_add_executable(get_obstacle_free_point_client ros/src/get_obstacle_free_point_client.cpp)	
+#target_link_libraries(get_obstacle_free_point_client move_base_location_on_perimeter)				
 
 
 			#Move Arm Client
-rosbuild_add_executable(Move_Arm_Client ros/src/Move_Arm_Client.cpp)
+#rosbuild_add_executable(Move_Arm_Client ros/src/Move_Arm_Client.cpp)
 
 			#Inflation Data Test CPP	
-rosbuild_add_executable(Inflation_Data_test ros/src/Inflation_Data_test.cpp)
+#rosbuild_add_executable(Inflation_Data_test ros/src/Inflation_Data_test.cpp)
 
 			#Check Point accessibility
-rosbuild_add_executable(map_point_accessibility_check_server ros/src/map_point_accessibility_check_server.cpp)
-rosbuild_add_executable(map_point_accessibility_check_client ros/src/map_point_accessibility_check_client.cpp)
+#rosbuild_add_executable(map_point_accessibility_check_server ros/src/map_point_accessibility_check_server.cpp)
+#rosbuild_add_executable(map_point_accessibility_check_client ros/src/map_point_accessibility_check_client.cpp)
 
 
 
