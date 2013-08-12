@@ -22,7 +22,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include ${PROJECT_SOURCE_DIR}/comm
 #uncomment if you have defined messages
 rosbuild_genmsg()
 #uncomment if you have defined services
-#rosbuild_gensrv()
+rosbuild_gensrv()
 
 #add dynamic reconfigure api
 rosbuild_find_ros_package(dynamic_reconfigure)
@@ -35,6 +35,8 @@ rosbuild_add_executable(dirt_detection  ros/src/dirt_detection.cpp
 										common/src/timer.cpp
 										ros/src/label_box.cpp)
 rosbuild_link_boost(dirt_detection filesystem system)
+
+rosbuild_add_executable(dirt_detection_client  ros/src/dirt_detection_client_main.cpp)
 
 #rosbuild_add_compile_flags(dirt_detection -D__LINUX__)
 

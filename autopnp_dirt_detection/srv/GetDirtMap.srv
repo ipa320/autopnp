@@ -1,0 +1,5 @@
+# request message
+
+---
+# response message
+nav_msgs/OccupancyGrid dirtMap     # the map which contains a degree of dirtyness in each cell

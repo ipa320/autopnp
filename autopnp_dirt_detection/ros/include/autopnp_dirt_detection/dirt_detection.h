@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <deque>
 #include <time.h>
 #include <math.h>
@@ -37,6 +38,12 @@
 #include <tf/transform_listener.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/OccupancyGrid.h>
+
+// services
+#include <autopnp_dirt_detection/ActivateDirtDetection.h>
+#include <autopnp_dirt_detection/DeactivateDirtDetection.h>
+#include <autopnp_dirt_detection/GetDirtMap.h>
+#include <autopnp_dirt_detection/ValidateCleaningResult.h>
 
 // topics
 #include <image_transport/image_transport.h>
@@ -67,6 +74,7 @@
 
 //boost
 #include <boost/foreach.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include <time.h>
 #include "autopnp_dirt_detection/label_box.h"
@@ -90,8 +98,27 @@ protected:
 	 */
 	ros::NodeHandle node_handle_;
 
-	// dynamic reconfigure
+	/// dynamic reconfigure
 	dynamic_reconfigure::Server<autopnp_dirt_detection::DirtDetectionConfig> dynamic_reconfigure_server_;
+
+	/**
+	 * services
+	 */
+	ros::ServiceServer activate_dirt_detection_service_server_;		/// server for activating dirt detection
+	ros::ServiceServer deactivate_dirt_detection_service_server_;	/// server for deactivating dirt detection
+	ros::ServiceServer get_map_service_server_;						/// server for dirt map requests
+	ros::ServiceServer validate_cleaning_result_service_server_;	/// server for validating cleaning results
+
+	bool activateDirtDetection(autopnp_dirt_detection::ActivateDirtDetection::Request &req, autopnp_dirt_detection::ActivateDirtDetection::Response &res);
+
+	bool deactivateDirtDetection(autopnp_dirt_detection::DeactivateDirtDetection::Request &req, autopnp_dirt_detection::DeactivateDirtDetection::Response &res);
+
+	bool getDirtMap(autopnp_dirt_detection::GetDirtMap::Request &req, autopnp_dirt_detection::GetDirtMap::Response &res);
+
+	// this function assumes that all positions to check are visible at the moment the function is called
+	bool validateCleaningResult(autopnp_dirt_detection::ValidateCleaningResult::Request &req, autopnp_dirt_detection::ValidateCleaningResult::Response &res);
+
+	int sumOfUCharArray(const std::vector<unsigned char>& vec);
 
 	/**
 	 * Used to subscribe and publish images.
@@ -109,6 +136,7 @@ protected:
 	 * Used to receive point cloud topic from camera.
 	 */
 	ros::Subscriber camera_depth_points_sub_;
+	ros::Subscriber floor_plan_sub_;
 
 	ros::Publisher floor_plane_pub_;
 	ros::Publisher camera_depth_points_from_bag_pub_;
@@ -123,12 +151,13 @@ protected:
 
 	// grid map
 	double gridResolution_;		// resolution of the grid in [cells/m]
-	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m]
+	cv::Point2d gridOrigin_;	// translational offset of the grid map with respect to the /map frame origin, in [m], (The origin of the map [m, m, rad].  This is the real-world pose of the cell (0,0) in the map.)
+	cv::Point2i gridDimensions_;	// number of grid cells in x and y direction = width and height [in number grid cells]
 	cv::Mat gridPositiveVotes_;		// grid map that counts the positive votes for dirt
 	cv::Mat gridNumberObservations_;		// grid map that counts the number of times that the visual sensor has observed a grid cell
 	std::vector<std::vector<std::vector<unsigned char> > > listOfLastDetections_;	// stores a list of the last x measurements (detection/no detection) for each grid cell (indices: 1=u, 2=v, 3=history)
 	cv::Mat historyLastEntryIndex_;	// stores the index of last modified number in the history array (type: 32SC1)
-	int detectionHistoryDepth_;
+	int detectionHistoryDepth_;		// number of time steps used for the detection history logging
 
 	// evaluation
 	int rosbagMessagesProcessed_;	// number of ros messages received by the program
@@ -143,6 +172,7 @@ protected:
 	double dirtCheckStdDevFactor_;
 	int modeOfOperation_;
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
+	bool dirtDetectionActivatedOnStartup_;	// for normal operation mode, specifies whether dirt detection is on right from the beginning
 
 	std::string experimentFolder_;		// storage location of the database index file and writing location for the results of an experiment
 	std::string labelingFilePath_;		// path to labeling file storage
@@ -159,10 +189,22 @@ protected:
 	double planeNormalMaxZ_;	// maximum z-value of the plane normal (ensures to have an floor plane)
 	double planeMaxHeight_;		// maximum height of the detected plane above the mapped ground
 
-
 	// further
 	ros::Time lastIncomingMessage_;
-
+	bool dirtDetectionCallbackActive_;		///< flag whether incoming messages shall be processed
+	bool storeLastImage_;					///< if true, the last (warped) image is stored as well as all variables necessary for conversion
+	boost::mutex storeLastImageMutex_;		///< mutex for securing read and write access to the last image data
+	struct LastImageDataStorage
+	{
+		cv::Mat plane_color_image_warped;	// normal image (not warped) if warp is disabled
+		cv::Mat R;				// transformation between world and floor plane coordinates, i.e. [xw,yw,zw] = R*[xp,yp,0]+t and [xp,yp,0] = R^T*[xw,yw,zw] - R^T*t
+		cv::Mat t;
+		cv::Point2f cameraImagePlaneOffset;		// offset in the camera image plane. Conversion from floor plane to  [xc, yc]
+		tf::StampedTransform transformMapCamera;	// 3D transform between camera and map (pointWorldMap = transformMapCamera * pointWorldCamera)
+	};
+	LastImageDataStorage lastImageDataStorage_;	///< stores the image data of the last image
+	nav_msgs::OccupancyGrid floor_plan_;	///< map of the environment
+	bool floor_plan_received_;				///< flag whether the florr plan has been received already
 
 public:
 
@@ -233,16 +275,23 @@ public:
 	void init();
 
 
+	void resetMapsAndHistory();
+
+
 	// dynamic reconfigure
 	void dynamicReconfigureCallback(autopnp_dirt_detection::DirtDetectionConfig &config, uint32_t level);
 
-	/**
-	 * Function is called if color image topic is received.
-	 *
-	 * @param [in] color_image_msg	Color image message from camera.
-	 *
-	 */
-	void imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg);
+
+
+	void floorPlanCallback(const nav_msgs::OccupancyGridConstPtr& map_msg);
+
+//	/**
+//	 * Function is called if color image topic is received.
+//	 *
+//	 * @param [in] color_image_msg	Color image message from camera.
+//	 *
+//	 */
+//	void imageDisplayCallback(const sensor_msgs::ImageConstPtr& color_image_msg);
 
 	/**
 	 * Function is called if point cloud topic is received.
@@ -250,11 +299,13 @@ public:
 	 * @param [in] point_cloud2_rgb_msg	Point cloude message from camera.
 	 *
 	 */
-	void planeDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
+	void dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
 	void planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg);
 
 	void databaseTest();
+
+	void createOccupancyGridMapFromDirtDetections(nav_msgs::OccupancyGrid& detectionMap);
 
 	/**
 	 * Converts: "sensor_msgs::Image::ConstPtr" \f$ \rightarrow \f$ "cv::Mat".
@@ -298,6 +349,8 @@ public:
 
 	/// converts point pointPlane, that lies within the floor plane and is provided in coordinates of the warped camera image, into map coordinates
 	void transformPointFromCameraWarpedToWorld(const cv::Mat& pointPlane, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Point3f& pointWorld);
+
+	void transformPointFromWorldToCameraWarped(const cv::Point3f& pointWorld, const cv::Mat& R, const cv::Mat& t, const cv::Point2f& cameraImagePlaneOffset, const tf::StampedTransform& transformMapCamera, cv::Mat& pointPlane);
 
 	void putDetectionIntoGrid(cv::Mat& grid, const labelImage::RegionPointTriple& detection);
 
