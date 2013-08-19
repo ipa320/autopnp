@@ -38,7 +38,7 @@ void updateMapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
 
 		autopnp_scenario::AnalyzeMapGoal goal;
 
-		actionlib::SimpleActionClient<autopnp_scenario::AnalyzeMapAction> ac("Analyze_Map", true);
+		actionlib::SimpleActionClient<autopnp_scenario::AnalyzeMapAction> ac("analyze_map", true);
 
 		ROS_INFO("Waiting for action server to start.");
 		// wait for the action server to start

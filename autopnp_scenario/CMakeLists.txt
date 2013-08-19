@@ -124,5 +124,8 @@ target_link_libraries(random_location_server exploration_algorithm_action_server
 #rosbuild_add_executable(map_point_accessibility_check_server ros/src/map_point_accessibility_check_server.cpp)
 #rosbuild_add_executable(map_point_accessibility_check_client ros/src/map_point_accessibility_check_client.cpp)
 
+			#Map Segmentation Action Server
+rosbuild_add_executable(map_segmentation_action_server ros/src/map_segmentation_action_server.cpp)
+
 
 
