@@ -4,6 +4,7 @@ segmentation_algorithm::segmentation_algorithm(std::string name_of_the_action) :
 		analyze_map_action_server_variable_redefinition_(nh_, name_of_the_action, boost::bind(&segmentation_algorithm::execute_map_segmentation_server, this, _1), false), action_name_(
 				name_of_the_action)
 {
+	//Start action server
 	analyze_map_action_server_variable_redefinition_.start();
 
 	//Initialize the map resolution and container values
@@ -12,20 +13,6 @@ segmentation_algorithm::segmentation_algorithm(std::string name_of_the_action) :
 	room_area_ = 0.0;
 	room_area_factor_lower_limit_ = 3.0;
 	room_area_factor_upper_limit_ = 40.0;
-
-	room_number_.clear();
-	minimum_x_coordinate_value_of_the_room_.clear();
-	maximum_x_coordinate_value_of_the_room_.clear();
-	minimum_y_coordinate_value_of_the_room_.clear();
-	maximum_y_coordinate_value_of_the_room_.clear();
-	center_of_room_.clear();
-	x_coordinate_value_of_the_room_center_.clear();
-	y_coordinate_value_of_the_room_center_.clear();
-	temporary_contours_.clear();
-	saved_contours_.clear();
-	hierarchy_.clear();
-	black_pixel_.clear();
-	neighbourhood_pixel_.clear();
 }
 
 /* This is the map segmentation algorithm,does the following steps:
@@ -82,7 +69,7 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 
 	for (unsigned int idx = 0; idx < saved_contours_.size(); idx++)
 	{
-		cv::Scalar color_to_fill(rand() % 252 + 2);
+		cv::Scalar color_to_fill(rand() % 253 + 1);
 		cv::drawContours(new_map_to_draw_the_saved_contours_of_the_room_, saved_contours_, idx, color_to_fill, -1);
 	}
 
@@ -203,7 +190,7 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 
 	//************Replica-Padding to the Image region*************
 
-	//************Bounding Box**********************************
+	//************Extracting Data from segmented map and Bounding Box Technique**********************************
 
 	bounding_box_map_to_extract_room_info = temporary_map_for_replica_padding_purpose.clone();
 	cv::Point point_at_the_min_end_of_xy_coordinate, point_at_the_max_end_of_xy_coordinate, center_of_the_individual_room;
@@ -264,14 +251,14 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 	cv::imshow("bounding box", bounding_box_map_to_extract_room_info);
 	cv::waitKey(100);
 
-	//************Bounding Box**********************************
+	//************Extracting Data from segmented map and Bounding Box Technique**********************************
 
 	return temporary_map_for_replica_padding_purpose.clone();
 }
 
 void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scenario::AnalyzeMapGoalConstPtr &goal)
 {
-	ros::Rate r(1);
+	ros::Rate looping_rate(1);
 
 	cv_bridge::CvImagePtr cv_ptr;
 	cv_ptr = cv_bridge::toCvCopy(goal->input_img, sensor_msgs::image_encodings::MONO8);
@@ -281,7 +268,7 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 	cv::Mat Segmented_map;
 	Segmented_map = Image_Segmentation_method(original_img, goal->map_resolution);
 
-	r.sleep();
+	looping_rate.sleep();
 
 	//Publish Result message:
 	cv_bridge::CvImage cv_image;
@@ -290,6 +277,7 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 	cv_image.image = Segmented_map;
 	cv_image.toImageMsg(action_result_.output_img);
 
+	//setting value to the action msgs to publish
 	action_result_.room_center_x = x_coordinate_value_of_the_room_center_;
 	action_result_.room_center_y = y_coordinate_value_of_the_room_center_;
 	action_result_.map_resolution = goal->map_resolution;
@@ -300,7 +288,23 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 	action_result_.room_max_x = maximum_x_coordinate_value_of_the_room_;
 	action_result_.room_max_y = maximum_y_coordinate_value_of_the_room_;
 
+	//publish result
 	analyze_map_action_server_variable_redefinition_.setSucceeded(action_result_);
+
+	//clearing the memory container used
+	room_number_.clear();
+	minimum_x_coordinate_value_of_the_room_.clear();
+	maximum_x_coordinate_value_of_the_room_.clear();
+	minimum_y_coordinate_value_of_the_room_.clear();
+	maximum_y_coordinate_value_of_the_room_.clear();
+	center_of_room_.clear();
+	x_coordinate_value_of_the_room_center_.clear();
+	y_coordinate_value_of_the_room_center_.clear();
+	temporary_contours_.clear();
+	saved_contours_.clear();
+	hierarchy_.clear();
+	black_pixel_.clear();
+	neighbourhood_pixel_.clear();
 }
 
 int main(int argc, char** argv)
