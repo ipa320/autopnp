@@ -9,7 +9,7 @@
 
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
-#include <autopnp_scenario/AnalyzeMapAction.h>
+#include <autopnp_scenario/MapSegmentationAction.h>
 
 
 
@@ -36,9 +36,9 @@ void updateMapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
 					}
 			}
 
-		autopnp_scenario::AnalyzeMapGoal goal;
+		autopnp_scenario::MapSegmentationGoal goal;
 
-		actionlib::SimpleActionClient<autopnp_scenario::AnalyzeMapAction> ac("analyze_map", true);
+		actionlib::SimpleActionClient<autopnp_scenario::MapSegmentationAction> ac("segment_map", true);
 
 		ROS_INFO("Waiting for action server to start.");
 		// wait for the action server to start
@@ -52,11 +52,13 @@ void updateMapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
 		cv_image.header.stamp = ros::Time::now();
 		cv_image.encoding = "mono8";
 		cv_image.image = map_;
-		cv_image.toImageMsg(goal.input_img);
+		cv_image.toImageMsg(goal.input_map);
 
 		goal.map_resolution = map_resolution_;
-		goal.Map_Origin_x = map_origin_.x;
-		goal.Map_Origin_y = map_origin_.y;
+		goal.map_origin_x = map_origin_.x;
+		goal.map_origin_y = map_origin_.y;
+		goal.return_format_in_meter = true ;
+		goal.return_format_in_pixel = true ;
 
 		ac.sendGoal(goal);
 
@@ -77,7 +79,7 @@ void updateMapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
 
 int main(int argc, char **argv)
 	{
-	  ros::init(argc, argv, "test_Analyze_Map");
+	  ros::init(argc, argv, "test_segment_map");
 
 	  ros::NodeHandle n;
 

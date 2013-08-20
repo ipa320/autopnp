@@ -1,6 +1,6 @@
 <launch>
 
-  <node name="Analyze_Map" pkg="autopnp_scenario" type="analyze_map_server" output="screen" />
+  <include file="$(find autopnp_scenario)/ros/launch/map_segmentation_action_server.launch"/>
 
   <node name="Find_Next_Room" pkg="autopnp_scenario" type="next_room_server" output="screen" />
 
@@ -9,5 +9,7 @@
   <node name="Find_Random_Location" pkg="autopnp_scenario" type="random_location_server" output="screen" />
 
   <node name="Inspect_Room" pkg="autopnp_scenario" type="inspect_room_server" output="screen" />
+  
+  <include file="$(find cob_map_accessibility_analysis)/ros/launch/map_accessibility_analysis.launch"/>
 
 </launch>

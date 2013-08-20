@@ -87,7 +87,7 @@
 
 #include <actionlib/server/simple_action_server.h>
 
-#include <autopnp_scenario/AnalyzeMapAction.h>
+#include <autopnp_scenario/MapSegmentationAction.h>
 
 class segmentation_algorithm
 {
@@ -123,8 +123,8 @@ private:
 	std::vector<int> y_coordinate_value_of_the_room_center_;
 	//"""The evaluated values are in cell[pixel value]"""""""
 
-	std::vector< std::vector <cv::Point> > temporary_contours_;
-	std::vector< std::vector <cv::Point> > saved_contours_;
+	std::vector<std::vector<cv::Point> > temporary_contours_;
+	std::vector<std::vector<cv::Point> > saved_contours_;
 	std::vector<cv::Vec4i> hierarchy_;
 	std::vector<cv::Point> black_pixel_;
 	std::vector<cv::Point> neighbourhood_pixel_;
@@ -142,18 +142,32 @@ private:
 
 	cv::Mat segmented_map_;
 
+	//converter-> Pixel to meter for X coordinate
+	double convert_pixel_to_meter_for_x_coordinate_(int pixel_valued_object_x)
+	{
+		double meter_value_obj_x = (pixel_valued_object_x * map_resolution_) + map_origin_.x;
+		return meter_value_obj_x;
+	}
+
+	//converter-> Pixel to meter for Y coordinate
+	double convert_pixel_to_meter_for_y_coordinate_(int pixel_valued_object_y)
+	{
+		double meter_value_obj_y = (pixel_valued_object_y * map_resolution_) + map_origin_.y;
+		return meter_value_obj_y;
+	}
+
 	//This function takes the navigation data and produce segmented map and necessary information regarding room
 	cv::Mat Image_Segmentation_method(cv::Mat &Original_Map_from_subscription, double map_resolution_data_from_subscription);
 
 	//This is the execution function used by action server
-	void execute_map_segmentation_server(const autopnp_scenario::AnalyzeMapGoalConstPtr &goal);
+	void execute_map_segmentation_server(const autopnp_scenario::MapSegmentationGoalConstPtr &goal);
 
 protected:
 	ros::NodeHandle nh_;
-	actionlib::SimpleActionServer<autopnp_scenario::AnalyzeMapAction> analyze_map_action_server_variable_redefinition_;
+	actionlib::SimpleActionServer<autopnp_scenario::MapSegmentationAction> map_segmentation_action_server_;
 	std::string action_name_;
-	autopnp_scenario::AnalyzeMapFeedback action_feedback_;
-	autopnp_scenario::AnalyzeMapResult action_result_;
+	autopnp_scenario::MapSegmentationFeedback action_feedback_;
+	autopnp_scenario::MapSegmentationResult action_result_;
 
 public:
 	//Start the map segmentation action server

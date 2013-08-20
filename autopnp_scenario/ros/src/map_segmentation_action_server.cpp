@@ -1,18 +1,19 @@
 #include <autopnp_scenario/map_segmentation_algorithm.h>
 
 segmentation_algorithm::segmentation_algorithm(std::string name_of_the_action) :
-		analyze_map_action_server_variable_redefinition_(nh_, name_of_the_action, boost::bind(&segmentation_algorithm::execute_map_segmentation_server, this, _1), false), action_name_(
+		map_segmentation_action_server_(nh_, name_of_the_action, boost::bind(&segmentation_algorithm::execute_map_segmentation_server, this, _1), false), action_name_(
 				name_of_the_action)
 {
 	//Start action server
-	analyze_map_action_server_variable_redefinition_.start();
+	map_segmentation_action_server_.start();
 
-	//Initialize the map resolution and container values
-	map_resolution_ = 0;
-	map_sampling_factor_ = 1.5;
+	//Initialize the map resolution
+	map_resolution_ = 0.0;
 	room_area_ = 0.0;
-	room_area_factor_lower_limit_ = 3.0;
-	room_area_factor_upper_limit_ = 40.0;
+
+	ros::param::param("/map_segmentation_algorithm_parameter/map_sampling_factor_check_", map_sampling_factor_, 1.5);
+	ros::param::param("/map_segmentation_algorithm_parameter/room_area_factor_lower_limit_check_", room_area_factor_lower_limit_, 3.0);
+	ros::param::param("/map_segmentation_algorithm_parameter/room_area_factor_upper_limit_check_", room_area_factor_upper_limit_, 40.0);
 }
 
 /* This is the map segmentation algorithm,does the following steps:
@@ -69,6 +70,8 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 
 	for (unsigned int idx = 0; idx < saved_contours_.size(); idx++)
 	{
+		//0-for obstacles and it's a black pixel
+		//255-for white value and accessible area
 		cv::Scalar color_to_fill(rand() % 253 + 1);
 		cv::drawContours(new_map_to_draw_the_saved_contours_of_the_room_, saved_contours_, idx, color_to_fill, -1);
 	}
@@ -220,24 +223,26 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 		}
 	}
 
-	for (unsigned int a = 0; a < min_y_value_of_the_room.size(); a++)
+	for (unsigned int loop_counter = 0; loop_counter < min_y_value_of_the_room.size(); loop_counter++)
 	{
-		if (min_y_value_of_the_room[a] != 100000000 && min_x_value_of_the_room[a] != 100000000 && max_y_value_of_the_room[a] != 0 && max_x_value_of_the_room[a] != 0)
+		if (min_y_value_of_the_room[loop_counter] != 100000000 && min_x_value_of_the_room[loop_counter] != 100000000 && max_y_value_of_the_room[loop_counter] != 0
+				&& max_x_value_of_the_room[loop_counter] != 0)
 		{
-			point_at_the_min_end_of_xy_coordinate.x = min_y_value_of_the_room[a];
-			point_at_the_min_end_of_xy_coordinate.y = min_x_value_of_the_room[a];
-			point_at_the_max_end_of_xy_coordinate.x = max_y_value_of_the_room[a];
-			point_at_the_max_end_of_xy_coordinate.y = max_x_value_of_the_room[a];
+			point_at_the_min_end_of_xy_coordinate.x = min_y_value_of_the_room[loop_counter];
+			point_at_the_min_end_of_xy_coordinate.y = min_x_value_of_the_room[loop_counter];
+			point_at_the_max_end_of_xy_coordinate.x = max_y_value_of_the_room[loop_counter];
+			point_at_the_max_end_of_xy_coordinate.y = max_x_value_of_the_room[loop_counter];
 
-			center_of_the_individual_room.x = min_y_value_of_the_room[a] + (max_y_value_of_the_room[a] - min_y_value_of_the_room[a]) / 2;
-			center_of_the_individual_room.y = min_x_value_of_the_room[a] + (max_x_value_of_the_room[a] - min_x_value_of_the_room[a]) / 2;
+			center_of_the_individual_room.x = min_y_value_of_the_room[loop_counter] + (max_y_value_of_the_room[loop_counter] - min_y_value_of_the_room[loop_counter]) / 2;
+			center_of_the_individual_room.y = min_x_value_of_the_room[loop_counter] + (max_x_value_of_the_room[loop_counter] - min_x_value_of_the_room[loop_counter]) / 2;
+//todo:
+//			uncomment it,if you want to see the center of the room value which is pixel value
+//			std::cout << "\nCenter of the bounding Box: [ " << center_of_the_individual_room.x << " , " << center_of_the_individual_room.y << " ]\n";
 
-			std::cout << "\nCenter of the bounding Box: [ " << center_of_the_individual_room.x << " , " << center_of_the_individual_room.y << " ]\n";
-
-			minimum_x_coordinate_value_of_the_room_.push_back(min_x_value_of_the_room[a]);
-			minimum_y_coordinate_value_of_the_room_.push_back(min_y_value_of_the_room[a]);
-			maximum_x_coordinate_value_of_the_room_.push_back(max_x_value_of_the_room[a]);
-			maximum_y_coordinate_value_of_the_room_.push_back(max_y_value_of_the_room[a]);
+			minimum_x_coordinate_value_of_the_room_.push_back(min_x_value_of_the_room[loop_counter]);
+			minimum_y_coordinate_value_of_the_room_.push_back(min_y_value_of_the_room[loop_counter]);
+			maximum_x_coordinate_value_of_the_room_.push_back(max_x_value_of_the_room[loop_counter]);
+			maximum_y_coordinate_value_of_the_room_.push_back(max_y_value_of_the_room[loop_counter]);
 
 			center_of_room_.push_back(center_of_the_individual_room);
 			x_coordinate_value_of_the_room_center_.push_back(center_of_the_individual_room.x);
@@ -247,23 +252,30 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 			cv::circle(bounding_box_map_to_extract_room_info, center_of_the_individual_room, 3, cv::Scalar(255), -1);
 		}
 	}
-
-	cv::imshow("bounding box", bounding_box_map_to_extract_room_info);
-	cv::waitKey(100);
+//todo:
+//	uncomment it,if you want to see the final segmented map
+//	cv::imshow("bounding box", bounding_box_map_to_extract_room_info);
+//	cv::waitKey(100);
 
 	//************Extracting Data from segmented map and Bounding Box Technique**********************************
 
 	return temporary_map_for_replica_padding_purpose.clone();
 }
 
-void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scenario::AnalyzeMapGoalConstPtr &goal)
+void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scenario::MapSegmentationGoalConstPtr &goal)
 {
 	ros::Rate looping_rate(1);
 
-	cv_bridge::CvImagePtr cv_ptr;
-	cv_ptr = cv_bridge::toCvCopy(goal->input_img, sensor_msgs::image_encodings::MONO8);
+	ROS_INFO("map resolution is : %f", goal->map_resolution);
+	ROS_INFO("map sampling factor is : %f", map_sampling_factor_);
+	ROS_INFO("room area factor lower limit is : %f", room_area_factor_lower_limit_);
+	ROS_INFO("room area factor upper limit is : %f\n", room_area_factor_upper_limit_);
+
+	//converting the map msg in cv format
+	cv_bridge::CvImagePtr cv_ptr_obj;
+	cv_ptr_obj = cv_bridge::toCvCopy(goal->input_map, sensor_msgs::image_encodings::MONO8);
 	cv::Mat original_img;
-	original_img = cv_ptr->image;
+	original_img = cv_ptr_obj->image;
 
 	cv::Mat Segmented_map;
 	Segmented_map = Image_Segmentation_method(original_img, goal->map_resolution);
@@ -271,25 +283,54 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 	looping_rate.sleep();
 
 	//Publish Result message:
+
+	//converting the cv format in map msg format
 	cv_bridge::CvImage cv_image;
 	cv_image.header.stamp = ros::Time::now();
 	cv_image.encoding = "mono8";
 	cv_image.image = Segmented_map;
-	cv_image.toImageMsg(action_result_.output_img);
+	cv_image.toImageMsg(action_result_.output_map);
 
 	//setting value to the action msgs to publish
-	action_result_.room_center_x = x_coordinate_value_of_the_room_center_;
-	action_result_.room_center_y = y_coordinate_value_of_the_room_center_;
 	action_result_.map_resolution = goal->map_resolution;
-	action_result_.Map_Origin_x = goal->Map_Origin_x;
-	action_result_.Map_Origin_y = goal->Map_Origin_y;
-	action_result_.room_min_x = minimum_x_coordinate_value_of_the_room_;
-	action_result_.room_min_y = minimum_y_coordinate_value_of_the_room_;
-	action_result_.room_max_x = maximum_x_coordinate_value_of_the_room_;
-	action_result_.room_max_y = maximum_y_coordinate_value_of_the_room_;
+	action_result_.map_origin_x = goal->map_origin_x;
+	action_result_.map_origin_y = goal->map_origin_y;
+
+	//setting massages in pixel value
+	if (goal->return_format_in_pixel == true)
+	{
+		action_result_.room_center_x_in_pixel = x_coordinate_value_of_the_room_center_;
+		action_result_.room_center_y_in_pixel = y_coordinate_value_of_the_room_center_;
+		action_result_.room_min_x_in_pixel = minimum_x_coordinate_value_of_the_room_;
+		action_result_.room_min_y_in_pixel = minimum_y_coordinate_value_of_the_room_;
+		action_result_.room_max_x_in_pixel = maximum_x_coordinate_value_of_the_room_;
+		action_result_.room_max_y_in_pixel = maximum_y_coordinate_value_of_the_room_;
+	}
+
+	//setting massages in meter
+	if (goal->return_format_in_meter == true)
+	{
+		for (unsigned int loop_counter = 0; loop_counter < x_coordinate_value_of_the_room_center_.size(); loop_counter++)
+		{
+			action_result_.room_center_x_in_meter.push_back(convert_pixel_to_meter_for_x_coordinate_(x_coordinate_value_of_the_room_center_[loop_counter]));
+			action_result_.room_center_y_in_meter.push_back(convert_pixel_to_meter_for_y_coordinate_(y_coordinate_value_of_the_room_center_[loop_counter]));
+			action_result_.room_min_x_in_meter.push_back(convert_pixel_to_meter_for_x_coordinate_(minimum_x_coordinate_value_of_the_room_[loop_counter]));
+			action_result_.room_min_y_in_meter.push_back(convert_pixel_to_meter_for_y_coordinate_(minimum_y_coordinate_value_of_the_room_[loop_counter]));
+			action_result_.room_max_x_in_meter.push_back(convert_pixel_to_meter_for_x_coordinate_(maximum_x_coordinate_value_of_the_room_[loop_counter]));
+			action_result_.room_max_y_in_meter.push_back(convert_pixel_to_meter_for_y_coordinate_(maximum_y_coordinate_value_of_the_room_[loop_counter]));
+		}
+	}
 
 	//publish result
-	analyze_map_action_server_variable_redefinition_.setSucceeded(action_result_);
+	map_segmentation_action_server_.setSucceeded(action_result_);
+
+	//clearing the action msgs container
+	action_result_.room_center_x_in_meter.clear();
+	action_result_.room_center_y_in_meter.clear();
+	action_result_.room_min_x_in_meter.clear();
+	action_result_.room_min_y_in_meter.clear();
+	action_result_.room_max_x_in_meter.clear();
+	action_result_.room_max_y_in_meter.clear();
 
 	//clearing the memory container used
 	room_number_.clear();
@@ -309,9 +350,11 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 
 int main(int argc, char** argv)
 {
-	ros::init(argc, argv, "analyze_map");
+	ros::init(argc, argv, "segment_map");
 
 	segmentation_algorithm Segmentation_Algorithm_obj(ros::this_node::getName());
+
+	ROS_INFO("map segmentation action server is initialized.....");
 
 	ros::spin();
 

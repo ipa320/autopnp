@@ -56,9 +56,9 @@ rosbuild_add_executable(analyze_map_server ros/src/analyze_map_server.cpp)
 
 target_link_libraries(analyze_map_server exploration_algorithm_action_server_library)
 
-rosbuild_add_executable(analyze_map_client ros/src/analyze_map_client.cpp)
+rosbuild_add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
 
-rosbuild_link_boost(analyze_map_client thread)
+rosbuild_link_boost(map_segmentation_action_client thread)
 
 
 			#Next Room Server and Client
