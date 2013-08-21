@@ -2,11 +2,11 @@
 
 <launch>
 
-  <include file="$(find cob_object_recording)/ros/launch/fiducials/fiducials.launch"/>
+  <include file="$(find autopnp_tool_change)/ros/launch/fiducials/fiducials.launch"/>
 
-  <node ns="object_recording" name="object_recording" pkg="cob_object_recording" type="object_recording" output="screen">
-    <remap from="input_pointcloud" to="/camera/depth/points_xyzrgb"/>
-    <remap from="input_color_image" to="/camera/rgb/image"/>
+  <node ns="autopnp_tool_change" name="autopnp_tool_change" pkg="autopnp_tool_change" type="autopnp_tool_change" output="screen">
+    <!--remap from="input_pointcloud" to="/camera/depth/points_xyzrgb"/>
+    <remap from="input_color_image" to="/camera/rgb/image"/-->
     <remap from="input_marker_detections" to="/fiducials/detect_fiducials"/>
     <remap from="input_color_camera_info" to="/camera/rgb/camera_info"/> 
   </node>

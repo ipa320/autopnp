@@ -5,13 +5,16 @@
 
   </description>
   <author>Olha Meyer</author>
-  <license>BSD</license>
+  <license>LGPL</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/autopnp_tool_change</url>
-
+  
+  <depend package="opencv2"/>
   <depend package="roscpp"/>
   <depend package="roslib"/>
-  <depend package="image_transport"/>
+  <depend package="cv_bridge"/>
+  <depend package="message_filters"/>
+  <depend package="cob_object_detection_msgs"/>
   
   
 </package>
