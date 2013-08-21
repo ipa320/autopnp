@@ -1,0 +1,19 @@
+<package>
+  <description brief="autopnp_tool_change">
+
+     autopnp_tool_change
+
+  </description>
+  <author>Olha Meyer</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/autopnp_tool_change</url>
+
+  <depend package="roscpp"/>
+  <depend package="roslib"/>
+  <depend package="image_transport"/>
+  
+  
+</package>
+
+
