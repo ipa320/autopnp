@@ -52,14 +52,9 @@ rosbuild_add_library(exploration_algorithm_action_server_library ros/src/explora
 rosbuild_link_boost(exploration_algorithm_action_server_library thread)
 
 			#Analyze Map Server and Client
-rosbuild_add_executable(analyze_map_server ros/src/analyze_map_server.cpp)
+#rosbuild_add_executable(analyze_map_server ros/src/analyze_map_server.cpp)
 
-target_link_libraries(analyze_map_server exploration_algorithm_action_server_library)
-
-rosbuild_add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
-
-rosbuild_link_boost(map_segmentation_action_client thread)
-
+#target_link_libraries(analyze_map_server exploration_algorithm_action_server_library)
 
 			#Next Room Server and Client
 rosbuild_add_executable(next_room_server ros/src/next_room_server.cpp)
@@ -124,8 +119,12 @@ target_link_libraries(random_location_server exploration_algorithm_action_server
 #rosbuild_add_executable(map_point_accessibility_check_server ros/src/map_point_accessibility_check_server.cpp)
 #rosbuild_add_executable(map_point_accessibility_check_client ros/src/map_point_accessibility_check_client.cpp)
 
-			#Map Segmentation Action Server
+			#Map Segmentation Action Server and Client
 rosbuild_add_executable(map_segmentation_action_server ros/src/map_segmentation_action_server.cpp)
+
+rosbuild_add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
+
+rosbuild_link_boost(map_segmentation_action_client thread)
 
 
 

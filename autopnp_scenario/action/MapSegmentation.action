@@ -1,8 +1,9 @@
-# Analyze Map action-> Provides interface to get the segmented map.
-#					-> input interface/msg format for action client
-#					   which is required by action server to process
-#					-> output interface/msg format to get the image
-#					   and necessary data 
+# Map Segmentation action
+#-> Provides interface to get the segmented map.
+#-> input interface/msg format for action client
+#	which is required by action server to process
+#-> output interface/msg format to get the image
+#	and necessary data 
 # The input map can be obtained from map topic
 
 #----------------------------------------goal definition---------------------------------------------
