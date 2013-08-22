@@ -65,13 +65,9 @@ import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
 import cv
 import numpy as np
-
 import actionlib
 from nav_msgs.msg import OccupancyGrid 
-
-from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
-
+from cv_bridge import CvBridge
 import autopnp_scenario.msg
 
 class MapSegmentationActionClient():

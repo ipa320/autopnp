@@ -6,12 +6,14 @@ import smach
 import smach_ros
 
 from map_segmentation_action_client import MapSegmentationActionClient
-from next_room_client import NextRoom
+from find_next_unprocessed_room_action_client import find_next_unprocessed_room
 from to_location_client import to_goal
 from random_location_client import random_Location
 from inspect_room_client import inspect_Room
 
-
+# The AnalyzeMap class defines a state machine of smach which basically 
+# call the map segmentation action client object and execute the function
+# of action client to communicate with action server
 class AnalyzeMap(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['list_of_rooms'], output_keys=['analyze_map_data_img_',
@@ -30,7 +32,7 @@ class AnalyzeMap(smach.State):
         map_segmentation_action_client_object_ = MapSegmentationActionClient()
         
         rospy.sleep(1)
-        rospy.loginfo('Executing state Analyze_Map.....')
+        rospy.loginfo('Executing state analyze map.....')
                         
         map_segmentation_action_server_result_ = map_segmentation_action_client_object_.map_segmentation_action_client_()   
         
@@ -47,44 +49,46 @@ class AnalyzeMap(smach.State):
         
         return 'list_of_rooms'  
        
-
-class FindNextRoom(smach.State):
+# The NextUnprocessedRoom class defines a state machine of smach which basically 
+# call the find next unprocessed room action client object and execute the function
+# of action client to communicate with action server
+class NextUnprocessedRoom(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['location','no_rooms','arrived'],input_keys=['F_N_R_data_img',
-                                                                                         'analyze_map_data_map_resolution_',
-                                                                                         'analyze_map_data_map_origin_x_',
-                                                                                         'analyze_map_data_map_origin_y_',
-                                                                                         'analyze_map_data_room_center_x_',
-                                                                                         'analyze_map_data_room_center_y_',
-                                                                                         'F_N_R_room_number_in',
-                                                                                         'F_N_R_loop_counter_in'],                             
-                                                                            output_keys=['F_N_R_room_number_out',
-                                                                                         'F_N_R_loop_counter_out',
-                                                                                         'F_N_R_center_X',
-                                                                                         'F_N_R_center_Y'])
+        smach.State.__init__(self, outcomes=['location','no_rooms','arrived'],input_keys=['next_unprocessed_room_data_img_',
+                                                                                          'analyze_map_data_map_resolution_',
+                                                                                          'analyze_map_data_map_origin_x_',
+                                                                                          'analyze_map_data_map_origin_y_',
+                                                                                          'analyze_map_data_room_center_x_',
+                                                                                          'analyze_map_data_room_center_y_',
+                                                                                          'F_N_R_room_number_in',
+                                                                                          'F_N_R_loop_counter_in'],                             
+                                                                             output_keys=['next_unprocessed_room_number_out',
+                                                                                          'F_N_R_loop_counter_out',
+                                                                                          'F_N_R_center_X',
+                                                                                          'F_N_R_center_Y'])
      
         
     def execute(self, userdata ):       
                 
         #rospy.sleep(10)
-        rospy.loginfo('Executing state Find_Next_Room')
+        rospy.loginfo('Executing state next unprocessed room.....')
         
         if userdata.F_N_R_loop_counter_in <= len(userdata.analyze_map_data_room_center_x_):
-            F_N_R_data_result = NextRoom( userdata.F_N_R_data_img,
-                                          userdata.analyze_map_data_room_center_x_,
-                                          userdata.analyze_map_data_room_center_y_,
-                                          userdata.analyze_map_data_map_resolution_,
-                                          userdata.analyze_map_data_map_origin_x_,
-                                          userdata.analyze_map_data_map_origin_y_ )
+            find_next_unprocessed_room_action_server_result_ = find_next_unprocessed_room( userdata.next_unprocessed_room_data_img_,
+                                                                                           userdata.analyze_map_data_room_center_x_,
+                                                                                           userdata.analyze_map_data_room_center_y_,
+                                                                                           userdata.analyze_map_data_map_resolution_,
+                                                                                           userdata.analyze_map_data_map_origin_x_,
+                                                                                           userdata.analyze_map_data_map_origin_y_ )
                     
             #rospy.sleep(10)
         
-            userdata.F_N_R_room_number_out = F_N_R_data_result.room_number
+            userdata.next_unprocessed_room_number_out = find_next_unprocessed_room_action_server_result_.room_number
             
             rospy.loginfo('Current room No: %d'%userdata.F_N_R_loop_counter_in)  
             userdata.F_N_R_loop_counter_out = userdata.F_N_R_loop_counter_in + 1  
-            userdata.F_N_R_center_X = F_N_R_data_result.CenterPositionX
-            userdata.F_N_R_center_Y = F_N_R_data_result.CenterPositionY           
+            userdata.F_N_R_center_X = find_next_unprocessed_room_action_server_result_.center_position_x
+            userdata.F_N_R_center_Y = find_next_unprocessed_room_action_server_result_.center_position_y           
                                   
             return 'location'
 
@@ -241,10 +245,10 @@ def main():
         sm_sub.userdata.sm_location_counter = 0
         
         with sm_sub:                 
-            smach.StateMachine.add('FIND_NEXT_ROOM', FindNextRoom(),transitions={'location':'GO_TO_LOCATION','no_rooms':'no_more_rooms_left'},
-                   remapping={'F_N_R_data_img':'sm_img',
+            smach.StateMachine.add('FIND_NEXT_ROOM', NextUnprocessedRoom(),transitions={'location':'GO_TO_LOCATION','no_rooms':'no_more_rooms_left'},
+                   remapping={'next_unprocessed_room_data_img_':'sm_img',
                               'F_N_R_room_number_in':'sm_RoomNo',
-                              'F_N_R_room_number_out':'sm_RoomNo',
+                              'next_unprocessed_room_number_out':'sm_RoomNo',
                               'F_N_R_loop_counter_in':'sm_counter',
                               'F_N_R_loop_counter_out':'sm_counter'})
             

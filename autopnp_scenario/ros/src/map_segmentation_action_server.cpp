@@ -266,10 +266,12 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 {
 	ros::Rate looping_rate(1);
 
+	ROS_INFO("111111111111 map segmentation action server 1111111111111");
 	ROS_INFO("map resolution is : %f", goal->map_resolution);
 	ROS_INFO("map sampling factor is : %f", map_sampling_factor_);
 	ROS_INFO("room area factor lower limit is : %f", room_area_factor_lower_limit_);
-	ROS_INFO("room area factor upper limit is : %f\n", room_area_factor_upper_limit_);
+	ROS_INFO("room area factor upper limit is : %f", room_area_factor_upper_limit_);
+	ROS_INFO("111111111111 map segmentation action server 1111111111111\n");
 
 	//converting the map msg in cv format
 	cv_bridge::CvImagePtr cv_ptr_obj;
