@@ -77,9 +77,9 @@ target_link_libraries(inspect_room_server exploration_algorithm_action_server_li
 
 
 			#to location Server and Client
-rosbuild_add_executable(to_location_server ros/src/to_location_server.cpp)
+#rosbuild_add_executable(to_location_server ros/src/to_location_server.cpp)
 
-target_link_libraries(to_location_server exploration_algorithm_action_server_library)
+#target_link_libraries(to_location_server exploration_algorithm_action_server_library)
 
 #rosbuild_add_executable(to_location_client ros/src/to_location_client.cpp)
 
@@ -127,7 +127,10 @@ rosbuild_add_executable(map_segmentation_action_client ros/src/map_segmentation_
 rosbuild_link_boost(map_segmentation_action_client thread)
 
 			#find next room action server
-rosbuild_add_executable(find_next_unprocessed_room_action_server ros/src/find_next_unprocessed_room_action_server.cpp)			
+rosbuild_add_executable(find_next_unprocessed_room_action_server ros/src/find_next_unprocessed_room_action_server.cpp)		
+
+			#go to room location action server
+rosbuild_add_executable(go_to_room_location_action_server ros/src/go_to_room_location_action_server.cpp)						
 
 
 
