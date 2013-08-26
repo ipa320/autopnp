@@ -79,7 +79,7 @@
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/server/simple_action_server.h>
 #include <tf/transform_listener.h>
-#include <autopnp_scenario/ToLocationAction.h>
+#include <autopnp_scenario/GoToRoomLocationAction.h>
 
 struct pose
 {
@@ -135,14 +135,14 @@ public:
 	move_base_msgs::MoveBaseGoal stay_forward_(int x_coordinate_value, int y_coordinate_value);
 
 	//This is the execution function used by action server
-	void execute_go_to_room_location_action_server_(const autopnp_scenario::ToLocationGoalConstPtr &goal);
+	void execute_go_to_room_location_action_server_(const autopnp_scenario::GoToRoomLocationGoalConstPtr &goal);
 
 protected:
 	ros::NodeHandle nh_;
-	actionlib::SimpleActionServer<autopnp_scenario::ToLocationAction> go_inside_of_the_room_action_server_;
+	actionlib::SimpleActionServer<autopnp_scenario::GoToRoomLocationAction> go_inside_of_the_room_action_server_;
 	std::string action_name_;
-	autopnp_scenario::ToLocationFeedback feedback_;
-	autopnp_scenario::ToLocationResult result_;
+	autopnp_scenario::GoToRoomLocationFeedback feedback_;
+	autopnp_scenario::GoToRoomLocationResult result_;
 
 public:
 	//Start the map segmentation action server

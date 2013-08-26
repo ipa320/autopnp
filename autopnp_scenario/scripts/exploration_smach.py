@@ -7,7 +7,7 @@ import smach_ros
 
 from map_segmentation_action_client import MapSegmentationActionClient
 from find_next_unprocessed_room_action_client import find_next_unprocessed_room
-from to_location_client import to_goal
+from go_to_room_location_action_client import go_to_room_location
 from random_location_client import random_Location
 from inspect_room_client import inspect_Room
 
@@ -96,10 +96,12 @@ class NextUnprocessedRoom(smach.State):
             return 'no_rooms'
 
      
-     
-class GoToLocation(smach.State):
+# The GoToRoomLocation class defines a state machine of smach which basically 
+# call the go to room location action client object and execute the function
+# of action client to communicate with action server     
+class GoToRoomLocation(smach.State):
     def __init__(self):
-        smach.State.__init__(self,outcomes=['successful','unsuccessful'],input_keys=['G_T_L_data_img',
+        smach.State.__init__(self,outcomes=['successful','unsuccessful'],input_keys=['go_to_room_location_data_img_',
                                                                                      'analyze_map_data_map_resolution_',
                                                                                      'analyze_map_data_map_origin_x_',
                                                                                      'analyze_map_data_map_origin_y_',
@@ -107,35 +109,35 @@ class GoToLocation(smach.State):
                                                                                      'F_N_R_center_Y',
                                                                                      'R_L_F_random_location_x',
                                                                                      'R_L_F_random_location_y',
-                                                                                     'G_T_L_loop_counter_in'],
-                                                                        output_keys=['G_T_L_loop_counter_out'])        
+                                                                                     'go_to_room_location_loop_counter_in_'],
+                                                                        output_keys=['go_to_room_location_loop_counter_out_'])        
         
     def execute(self, userdata):
         
         #rospy.sleep(10)
         rospy.loginfo('Executing state Go_To_Location')        
         
-        if userdata.G_T_L_loop_counter_in == 0 :
-            G_T_L_data_result = to_goal(userdata.G_T_L_data_img,
-                                        userdata.F_N_R_center_X , 
-                                        userdata.F_N_R_center_Y,
-                                        userdata.analyze_map_data_map_resolution_,
-                                        userdata.analyze_map_data_map_origin_x_,
-                                        userdata.analyze_map_data_map_origin_y_ )
+        if userdata.go_to_room_location_loop_counter_in_ == 0 :
+            go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
+                                                                            userdata.F_N_R_center_X , 
+                                                                            userdata.F_N_R_center_Y,
+                                                                            userdata.analyze_map_data_map_resolution_,
+                                                                            userdata.analyze_map_data_map_origin_x_,
+                                                                            userdata.analyze_map_data_map_origin_y_ )
             
         else:
-             G_T_L_data_result = to_goal(userdata.G_T_L_data_img,
-                                         userdata.R_L_F_random_location_x,
-                                         userdata.R_L_F_random_location_y,
-                                         userdata.analyze_map_data_map_resolution_,
-                                         userdata.analyze_map_data_map_origin_x_,
-                                         userdata.analyze_map_data_map_origin_y_)
+             go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
+                                                                             userdata.R_L_F_random_location_x,
+                                                                             userdata.R_L_F_random_location_y,
+                                                                             userdata.analyze_map_data_map_resolution_,
+                                                                             userdata.analyze_map_data_map_origin_x_,
+                                                                             userdata.analyze_map_data_map_origin_y_)
                     
-        if G_T_L_data_result.resultant == 'True':        
+        if go_to_room_location_action_server_result_.output_flag == 'True':        
             return 'successful'
         
         else:
-            userdata.G_T_L_loop_counter_out = userdata.G_T_L_loop_counter_in + 1
+            userdata.go_to_room_location_loop_counter_out_ = userdata.go_to_room_location_loop_counter_in_ + 1
             return 'unsuccessful' 
     
     
@@ -252,10 +254,10 @@ def main():
                               'F_N_R_loop_counter_in':'sm_counter',
                               'F_N_R_loop_counter_out':'sm_counter'})
             
-            smach.StateMachine.add('GO_TO_LOCATION', GoToLocation(),transitions={'successful':'arrived','unsuccessful':'RANDOM_LOCATION_FINDER'},
-                   remapping={'G_T_L_data_img':'sm_img',
-                              'G_T_L_loop_counter_in':'sm_location_counter',
-                              'G_T_L_loop_counter_out':'sm_location_counter'})  
+            smach.StateMachine.add('GO_TO_LOCATION', GoToRoomLocation(),transitions={'successful':'arrived','unsuccessful':'RANDOM_LOCATION_FINDER'},
+                   remapping={'go_to_room_location_data_img_':'sm_img',
+                              'go_to_room_location_loop_counter_in_':'sm_location_counter',
+                              'go_to_room_location_loop_counter_out_':'sm_location_counter'})  
             
             smach.StateMachine.add('RANDOM_LOCATION_FINDER', Random_Location_Finder(),transitions={'re_locate':'GO_TO_LOCATION','unsuccessful_five_times':'FIND_NEXT_ROOM'},
                    remapping={'R_L_F_data_img_in':'sm_img',

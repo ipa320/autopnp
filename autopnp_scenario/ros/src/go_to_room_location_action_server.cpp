@@ -109,17 +109,17 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	}
 }
 
-void go_inside_of_the_room::execute_go_to_room_location_action_server_(const autopnp_scenario::ToLocationGoalConstPtr &goal)
+void go_inside_of_the_room::execute_go_to_room_location_action_server_(const autopnp_scenario::GoToRoomLocationGoalConstPtr &goal)
 {
 	ros::Rate looping_rate(1);
 
 	//get the necessary room information from goal definition from client
 	map_resolution_ = goal->map_resolution;
-	map_origin_.x = goal->Map_Origin_x;
-	map_origin_.y = goal->Map_Origin_y;
+	map_origin_.x = goal->map_origin_x;
+	map_origin_.y = goal->map_origin_y;
 
-	goal_room_center_x_ = goal->CenterPositionX;
-	goal_room_center_y_ = goal->CenterPositionY;
+	goal_room_center_x_ = goal->room_center_position_x;
+	goal_room_center_y_ = goal->room_center_position_y;
 
 	//converting the map msg in cv format
 	cv_bridge::CvImagePtr cv_ptr;
@@ -129,7 +129,7 @@ void go_inside_of_the_room::execute_go_to_room_location_action_server_(const aut
 
 	std::string Result = go_to_room_center_location_(original_img);
 
-	result_.resultant = Result;
+	result_.output_flag = Result;
 
 	looping_rate.sleep();
 
@@ -138,7 +138,7 @@ void go_inside_of_the_room::execute_go_to_room_location_action_server_(const aut
 
 int main(int argc, char** argv)
 {
-	ros::init(argc, argv, "go_to_location");
+	ros::init(argc, argv, "go_to_room_location");
 	go_inside_of_the_room TL(ros::this_node::getName());
 	ROS_INFO("go to room location action server is initialized.....");
 	ros::spin();
