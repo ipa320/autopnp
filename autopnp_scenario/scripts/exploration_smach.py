@@ -8,7 +8,7 @@ import smach_ros
 from map_segmentation_action_client import MapSegmentationActionClient
 from find_next_unprocessed_room_action_client import find_next_unprocessed_room
 from go_to_room_location_action_client import go_to_room_location
-from random_location_client import random_Location
+from random_location_finder_action_client import random_location_finder_client
 from inspect_room_client import inspect_Room
 
 # The AnalyzeMap class defines a state machine of smach which basically 
@@ -68,11 +68,9 @@ class NextUnprocessedRoom(smach.State):
                                                                                           'F_N_R_center_Y'])
      
         
-    def execute(self, userdata ):       
-                
+    def execute(self, userdata ):                       
         #rospy.sleep(10)
-        rospy.loginfo('Executing state next unprocessed room.....')
-        
+        rospy.loginfo('Executing state next unprocessed room.....')        
         if userdata.F_N_R_loop_counter_in <= len(userdata.analyze_map_data_room_center_x_):
             find_next_unprocessed_room_action_server_result_ = find_next_unprocessed_room( userdata.next_unprocessed_room_data_img_,
                                                                                            userdata.analyze_map_data_room_center_x_,
@@ -81,17 +79,13 @@ class NextUnprocessedRoom(smach.State):
                                                                                            userdata.analyze_map_data_map_origin_x_,
                                                                                            userdata.analyze_map_data_map_origin_y_ )
                     
-            #rospy.sleep(10)
-        
-            userdata.next_unprocessed_room_number_out = find_next_unprocessed_room_action_server_result_.room_number
-            
+            #rospy.sleep(10)        
+            userdata.next_unprocessed_room_number_out = find_next_unprocessed_room_action_server_result_.room_number            
             rospy.loginfo('Current room No: %d'%userdata.F_N_R_loop_counter_in)  
             userdata.F_N_R_loop_counter_out = userdata.F_N_R_loop_counter_in + 1  
             userdata.F_N_R_center_X = find_next_unprocessed_room_action_server_result_.center_position_x
-            userdata.F_N_R_center_Y = find_next_unprocessed_room_action_server_result_.center_position_y           
-                                  
+            userdata.F_N_R_center_Y = find_next_unprocessed_room_action_server_result_.center_position_y                                           
             return 'location'
-
         else:
             return 'no_rooms'
 
@@ -107,16 +101,14 @@ class GoToRoomLocation(smach.State):
                                                                                      'analyze_map_data_map_origin_y_',
                                                                                      'F_N_R_center_X',
                                                                                      'F_N_R_center_Y',
-                                                                                     'R_L_F_random_location_x',
-                                                                                     'R_L_F_random_location_y',
+                                                                                     'random_location_finder_random_location_x_',
+                                                                                     'random_location_finder_random_location_y_',
                                                                                      'go_to_room_location_loop_counter_in_'],
                                                                         output_keys=['go_to_room_location_loop_counter_out_'])        
         
-    def execute(self, userdata):
-        
+    def execute(self, userdata):        
         #rospy.sleep(10)
-        rospy.loginfo('Executing state Go_To_Location')        
-        
+        rospy.loginfo('Executing state go to room location')                
         if userdata.go_to_room_location_loop_counter_in_ == 0 :
             go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
                                                                             userdata.F_N_R_center_X , 
@@ -127,60 +119,65 @@ class GoToRoomLocation(smach.State):
             
         else:
              go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
-                                                                             userdata.R_L_F_random_location_x,
-                                                                             userdata.R_L_F_random_location_y,
+                                                                             userdata.random_location_finder_random_location_x_,
+                                                                             userdata.random_location_finder_random_location_y_,
                                                                              userdata.analyze_map_data_map_resolution_,
                                                                              userdata.analyze_map_data_map_origin_x_,
                                                                              userdata.analyze_map_data_map_origin_y_)
                     
         if go_to_room_location_action_server_result_.output_flag == 'True':        
-            return 'successful'
-        
+            return 'successful'        
         else:
             userdata.go_to_room_location_loop_counter_out_ = userdata.go_to_room_location_loop_counter_in_ + 1
             return 'unsuccessful' 
     
     
-    
-class Random_Location_Finder(smach.State):
+# The FindRandomLocation class defines a state machine of smach which basically 
+# call the random location finder action client object and execute the function
+# of action client to communicate with action server        
+class FindRandomLocation(smach.State):
     def __init__(self):
-        smach.State.__init__(self,outcomes=['re_locate','unsuccessful_five_times'],input_keys=['R_L_F_data_img_in',
-                                                                                               'R_L_F_room_number',
+        smach.State.__init__(self,outcomes=['re_locate','unsuccessful_five_times'],input_keys=['random_location_finder_data_img_in_',
+                                                                                               'analyze_map_data_map_resolution_',
+                                                                                               'analyze_map_data_map_origin_x_',
+                                                                                               'analyze_map_data_map_origin_y_',
+                                                                                               'random_location_finder_room_number_',
                                                                                                'analyze_map_data_room_min_x_',
                                                                                                'analyze_map_data_room_max_x_',
                                                                                                'analyze_map_data_room_min_y_',
                                                                                                'analyze_map_data_room_max_y_',
-                                                                                               'R_L_F_counter_in'],
-                                                                                  output_keys=['R_L_F_random_location_x',
-                                                                                               'R_L_F_random_location_y',
-                                                                                               'R_L_F_counter_out',
-                                                                                               'R_L_F_data_img_out'])        
+                                                                                               'random_location_finder_counter_in_'],
+                                                                                  output_keys=['random_location_finder_random_location_x_',
+                                                                                               'random_location_finder_random_location_y_',
+                                                                                               'random_location_finder_counter_out_',
+                                                                                               'random_location_finder_data_img_out_'])        
         
     def execute(self, userdata):
         
         #rospy.sleep(10)
-        rospy.loginfo('Executing state Go_To_Location')        
+        rospy.loginfo('Executing state find random location')        
         
-        R_L_F_data_result = random_Location(userdata.R_L_F_data_img_in,
-                                            userdata.R_L_F_room_number,
-                                            userdata.analyze_map_data_room_min_x_,
-                                            userdata.analyze_map_data_room_max_x_,
-                                            userdata.analyze_map_data_room_min_y_,
-                                            userdata.analyze_map_data_room_max_y_,
-                                            userdata.R_L_F_counter_in)
+        random_location_finder_action_server_result_ = random_location_finder_client(userdata.random_location_finder_data_img_in_,
+                                                                                     userdata.analyze_map_data_map_resolution_,
+                                                                                     userdata.analyze_map_data_map_origin_x_,
+                                                                                     userdata.analyze_map_data_map_origin_y_ ,
+                                                                                     userdata.random_location_finder_room_number_,
+                                                                                     userdata.analyze_map_data_room_min_x_,
+                                                                                     userdata.analyze_map_data_room_max_x_,
+                                                                                     userdata.analyze_map_data_room_min_y_,
+                                                                                     userdata.analyze_map_data_room_max_y_,
+                                                                                     userdata.random_location_finder_counter_in_)
         
-        userdata.R_L_F_random_location_x = R_L_F_data_result.random_location_x
-        userdata.R_L_F_random_location_y = R_L_F_data_result.random_location_y
-        
-        if userdata.R_L_F_counter_in < 6:
-            return 're_locate'
-        
+        userdata.random_location_finder_random_location_x_ = random_location_finder_action_server_result_.random_location_x
+        userdata.random_location_finder_random_location_y_ = random_location_finder_action_server_result_.random_location_y        
+        if userdata.random_location_finder_counter_in_ < 6:
+            return 're_locate'        
         else:
-            print "unsuccessful rate: ",userdata.R_L_F_counter_in
-            userdata.R_L_F_counter_out = 0 ;
-            userdata.R_L_F_data_img_out = R_L_F_data_result.output_img
+            rospy.loginfo("unsuccessful rate: %d",userdata.random_location_finder_counter_in_)
+            userdata.random_location_finder_counter_out_ = 0 ;
+            userdata.random_location_finder_data_img_out_ = random_location_finder_action_server_result_.output_img
             return 'unsuccessful_five_times'
-     
+   
 
 
 class InspectRoom(smach.State):
@@ -259,12 +256,12 @@ def main():
                               'go_to_room_location_loop_counter_in_':'sm_location_counter',
                               'go_to_room_location_loop_counter_out_':'sm_location_counter'})  
             
-            smach.StateMachine.add('RANDOM_LOCATION_FINDER', Random_Location_Finder(),transitions={'re_locate':'GO_TO_LOCATION','unsuccessful_five_times':'FIND_NEXT_ROOM'},
-                   remapping={'R_L_F_data_img_in':'sm_img',
-                              'R_L_F_data_img_out':'sm_img',
-                              'R_L_F_counter_in':'sm_location_counter',
-                              'R_L_F_counter_out':'sm_location_counter',
-                              'R_L_F_room_number':'sm_RoomNo'}) 
+            smach.StateMachine.add('RANDOM_LOCATION_FINDER', FindRandomLocation(),transitions={'re_locate':'GO_TO_LOCATION','unsuccessful_five_times':'FIND_NEXT_ROOM'},
+                   remapping={'random_location_finder_data_img_in_':'sm_img',
+                              'random_location_finder_data_img_out_':'sm_img',
+                              'random_location_finder_counter_in_':'sm_location_counter',
+                              'random_location_finder_counter_out_':'sm_location_counter',
+                              'random_location_finder_room_number_':'sm_RoomNo'}) 
         
         smach.StateMachine.add('UNPROCESSED_ROOM', sm_sub ,transitions={'arrived':'INSPECT_ROOM','no_more_rooms_left':'finish'})
       

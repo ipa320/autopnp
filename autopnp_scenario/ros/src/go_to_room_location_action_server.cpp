@@ -73,7 +73,7 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	move_base_client_obj.waitForResult();
 
 	ROS_INFO("333333333333 go to location action server 333333333333");
-	ROS_INFO("robot is going towards the room center.....");
+	ROS_INFO("robot is trying to enter inside of the room.....");
 	move_base_client_obj.waitForServer();
 	move_base_client_obj.sendGoal(Move_in_pixel_(goal_room_center_x_, goal_room_center_y_));
 
@@ -99,7 +99,7 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	if (original_map_from_goal_definition.at<unsigned char>(goal_room_center_y_, goal_room_center_x_)
 			== original_map_from_goal_definition.at<unsigned char>(robot_location_in_pixel_))
 	{
-		feedback_about_robot_location_ = "True";
+		feedback_about_robot_location_ = "False";
 		return feedback_about_robot_location_;
 	}
 	else

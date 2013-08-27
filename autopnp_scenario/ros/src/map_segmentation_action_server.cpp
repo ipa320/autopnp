@@ -353,13 +353,9 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "segment_map");
-
 	segmentation_algorithm Segmentation_Algorithm_obj(ros::this_node::getName());
-
 	ROS_INFO("map segmentation action server is initialized.....");
-
 	ros::spin();
-
 	return 0;
 }
 

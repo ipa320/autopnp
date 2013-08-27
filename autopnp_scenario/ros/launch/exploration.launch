@@ -6,7 +6,7 @@
 
   <node name="go_to_room_location" pkg="autopnp_scenario" type="go_to_room_location_action_server" output="screen" />
 
-  <node name="Find_Random_Location" pkg="autopnp_scenario" type="random_location_server" output="screen" />
+  <include file="$(find autopnp_scenario)/ros/launch/random_location_finder_action_server.launch"/>
 
   <node name="Inspect_Room" pkg="autopnp_scenario" type="inspect_room_server" output="screen" />
   
