@@ -8,8 +8,8 @@
   <!--arg name="rgb_topic" default="/stereo/right/" /-->
   
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="fiducials" file="$(find cob_object_recording)/ros/launch/fiducials/fiducials_0.yaml"/>
-  <param name="fiducials/model_directory" value="$(find cob_fiducials)/common/files/models/"/>
+  <rosparam command="load" ns="fiducials" file="$(find autopnp_tool_change)/ros/launch/fiducials/fiducials_0.yaml"/>
+  <param name="fiducials/model_directory" value="$(find autopnp_tool_change)/common/files/models/"/>
 
   <!-- start left camera -->
   <node pkg="cob_fiducials" ns="fiducials" type="fiducials" name="fiducials" output="screen">
