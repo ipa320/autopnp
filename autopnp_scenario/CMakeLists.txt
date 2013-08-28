@@ -48,8 +48,8 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
 #rosbuild_add_executable(Exploration_Algorithm_2nd_version ros/src/Exploration_Algorithm_2nd_version.cpp)
 
 			#Exploration Algorithm Library executable
-rosbuild_add_library(exploration_algorithm_action_server_library ros/src/exploration_algorithm_action_server_library.cpp)
-rosbuild_link_boost(exploration_algorithm_action_server_library thread)
+#rosbuild_add_library(exploration_algorithm_action_server_library ros/src/exploration_algorithm_action_server_library.cpp)
+#rosbuild_link_boost(exploration_algorithm_action_server_library thread)
 
 			#Analyze Map Server and Client
 #rosbuild_add_executable(analyze_map_server ros/src/analyze_map_server.cpp)
@@ -67,9 +67,9 @@ rosbuild_link_boost(exploration_algorithm_action_server_library thread)
 
 
 			#Inspect Room Server and Client
-rosbuild_add_executable(inspect_room_server ros/src/inspect_room_server.cpp)
+#rosbuild_add_executable(inspect_room_server ros/src/inspect_room_server.cpp)
 
-target_link_libraries(inspect_room_server exploration_algorithm_action_server_library)
+#target_link_libraries(inspect_room_server exploration_algorithm_action_server_library)
 
 #rosbuild_add_executable(inspect_room_client ros/src/inspect_room_client.cpp)
 
@@ -133,7 +133,9 @@ rosbuild_add_executable(find_next_unprocessed_room_action_server ros/src/find_ne
 rosbuild_add_executable(go_to_room_location_action_server ros/src/go_to_room_location_action_server.cpp)		
 
 			#Random Location Finder Server
-rosbuild_add_executable(random_location_finder_action_server ros/src/random_location_finder_action_server.cpp)				
+rosbuild_add_executable(random_location_finder_action_server ros/src/random_location_finder_action_server.cpp)	
 
+			#Inspect Room Server			
+rosbuild_add_executable(inspect_room_action_server ros/src/inspect_room_action_server.cpp)
 
 

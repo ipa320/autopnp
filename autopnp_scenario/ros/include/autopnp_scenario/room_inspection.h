@@ -25,14 +25,9 @@
  * \date Date of creation: August 2013
  *
  * \brief
- * go to room location provides header definition for go to
- * room location action server which receives the goal definition
- * via go to room location action client(in smach-state_machine)
- * from NextUnprocessedRoom state. So, it tries to go to the center
- * position of that room and send a success feedback,if it reaches
- * the center of the room successfully. But, if it can't be able to
- * reach room center,then it checks the current robot location.If the
- * robot is inside that room, it also then sends the success feedback.
+ * inspect room provides header definition for inspect room action server
+ * which check every unprocessed room for available points or accessible
+ * areas where the robot can visit
  *
  *****************************************************************
  *
@@ -65,93 +60,83 @@
  *
  ****************************************************************/
 
-#ifndef GO_TO_ROOM_LOCATION_HH
-#define GO_TO_ROOM_LOCATION_HH
+#ifndef INSPECT_ROOM_HH
+#define INSPECT_ROOM_HH
 
 #include <iostream>
-#include <string>
+#include <vector>
 #include <ros/ros.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 #include <cv_bridge/cv_bridge.h>
-#include <move_base_msgs/MoveBaseAction.h>
+#include <tf/transform_listener.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/image_encodings.h>
-#include <actionlib/client/simple_action_client.h>
+#include <move_base_msgs/MoveBaseAction.h>
+#include <autopnp_scenario/InspectRoomAction.h>
 #include <actionlib/server/simple_action_server.h>
-#include <tf/transform_listener.h>
-#include <autopnp_scenario/GoToRoomLocationAction.h>
+#include <actionlib/client/simple_action_client.h>
+#include <cob_map_accessibility_analysis/CheckPointAccessibility.h>
 
-struct pose
+class room_inspection
 {
-	float x_coordinate_value;
-	float y_coordinate_value;
-	float orientation_around_z_axis; //in degree
-
-	pose()
-	{
-		x_coordinate_value = 0;
-		y_coordinate_value = 0;
-		orientation_around_z_axis = 0;
-	}
-
-	pose(float x_, float y_, float orientation_)
-	{
-		x_coordinate_value = x_;
-		y_coordinate_value = y_;
-		orientation_around_z_axis = orientation_;
-	}
-};
-
-class go_inside_of_the_room
-{
-public:
-	//redefine a short name for move base client data-type
-	typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> move_base_action_client_datatype;
+private:
+	typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> move_base_client_identifier_;
 
 	double map_resolution_;			// in [m/cell]
 	double robot_radius_;			// in [m]
 	cv::Point2d map_origin_;		// in [m]
-	std::string feedback_about_robot_location_;
-	cv::Point robot_location_in_pixel_;
-	int goal_room_center_x_, goal_room_center_y_;
+
+	std::vector<cv::Point> center_of_room_;
+	std::vector<int> room_number_;
+	std::vector<int> room_center_x_;
+	std::vector<int> room_center_y_;
+	std::vector<int> room_min_x_;
+	std::vector<int> room_max_x_;
+	std::vector<int> room_min_y_;
+	std::vector<int> room_max_y_;
 
 	tf::TransformListener listener_;
 	tf::StampedTransform transform_;
 
-	template< class T >
-	T convert_from_meter_to_pixel_coordinates_(const pose& temp_pose_obj)
-	{
-		T value;
-		value.x = (temp_pose_obj.x_coordinate_value - map_origin_.x) / map_resolution_;
-		value.y = (temp_pose_obj.y_coordinate_value - map_origin_.y) / map_resolution_;
-		return value;
-	}
+	/* step_size_to_find_accessible_points_of_the_room_->
+	 * 1. This variable is depends on choice of the user
+	 * 2. Lower step size will provide more frequent points
+	 * 	  to observe inside a room.Lowest Limit should be
+	 * 	  greater or equal to (robot_radius_/map_resolution_).
+	 * 	  If the lower limit is < (robot_radius_/map_resolution_)
+	 * 	  then you may get some extra points which the robot
+	 * 	  has already visited.
+	 * 3. Higher step size will give you less observation
+	 * 	  points.
+	 * 4. good selection of value will be 2*(robot_radius_/map_resolution_)
+	 * */
+	int step_size_to_find_accessible_points_of_the_room_;
 
-	//this function will send the robot to room center position
-	std::string go_to_room_center_location_(const cv::Mat &original_map_from_goal_definition);
+	/* room_inspection_method_->
+	 * 1. It finds the available points from the unprocessed room.
+	 * 2. check the points against the dynamic obstacles
+	 * 3. call move_base action to move the base to the accessible points
+	 * */
+	cv::Mat room_inspection_method_(cv::Mat &original_map_from_goal_definiton);
 
 	//Move Base Action Server Methods
 	move_base_msgs::MoveBaseGoal move_in_pixel_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter);
 	move_base_msgs::MoveBaseGoal stay_forward_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter);
 
 	//This is the execution function used by action server
-	void execute_go_to_room_location_action_server_(const autopnp_scenario::GoToRoomLocationGoalConstPtr &goal);
+	void execute_inspect_room_action_server_(const autopnp_scenario::InspectRoomGoalConstPtr &goal);
 
 protected:
 	ros::NodeHandle nh_;
-	actionlib::SimpleActionServer<autopnp_scenario::GoToRoomLocationAction> go_inside_of_the_room_action_server_;
+	actionlib::SimpleActionServer<autopnp_scenario::InspectRoomAction> inspect_room_action_server_object_;
 	std::string action_name_;
-	autopnp_scenario::GoToRoomLocationFeedback feedback_;
-	autopnp_scenario::GoToRoomLocationResult result_;
+	autopnp_scenario::InspectRoomFeedback feedback_;
+	autopnp_scenario::InspectRoomResult result_;
 
 public:
-	//Start the map segmentation action server
-	go_inside_of_the_room(std::string name_of_the_action);
-
-	~go_inside_of_the_room(void)
-	{
-	}
+	room_inspection(std::string name_of_the_action);
+	~room_inspection(void){}
 };
 
 #endif

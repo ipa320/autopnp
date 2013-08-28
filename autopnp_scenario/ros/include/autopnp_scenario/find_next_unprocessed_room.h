@@ -25,9 +25,10 @@
  * \date Date of creation: August 2013
  *
  * \brief
- * find next unprocessed room receives a segmented map and by extracting
- * data from segmented map it evaluates the nearest room from the current
- * robot location which is not yet processed
+ * find next unprocessed room provides header definition for find next
+ * unprocessed room action server which receives a segmented map and by
+ * extracting data from segmented map it evaluates the nearest room from
+ * the current robot location which is not yet processed
  *
  *****************************************************************
  *

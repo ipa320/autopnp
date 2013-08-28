@@ -9,25 +9,25 @@ go_inside_of_the_room::go_inside_of_the_room(std::string name_of_the_action) :
 }
 
 //execute move_base action and receives the goal in pixel
-move_base_msgs::MoveBaseGoal go_inside_of_the_room::Move_in_pixel_(int x_coordinate_value, int y_coordinate_value)
+move_base_msgs::MoveBaseGoal go_inside_of_the_room::move_in_pixel_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter)
 {
 	listener_.lookupTransform("/map", "/base_link", ros::Time(0), transform_);
 
 	move_base_msgs::MoveBaseGoal move_base_msgs_obj;
 	geometry_msgs::PoseStamped goal_to_move_base_action_server;
 
-	double p = (x_coordinate_value * map_resolution_) + map_origin_.x;
-	double q = (y_coordinate_value * map_resolution_) + map_origin_.y;
+	double x_coordinate_value_in_pixel = (x_coordinate_value_in_meter * map_resolution_) + map_origin_.x;
+	double y_coordinate_value_in_pixel = (y_coordinate_value_in_meter * map_resolution_) + map_origin_.y;
 
-	double m = transform_.getOrigin().x();
-	double n = transform_.getOrigin().y();
+	double current_x_coordinate_value_in_pixel = transform_.getOrigin().x();
+	double current_y_coordinate_value_in_pixel = transform_.getOrigin().y();
 
-	double angel_around_z_axis = atan2((q - n), (p - m));
+	double angel_around_z_axis = atan2((y_coordinate_value_in_pixel - current_y_coordinate_value_in_pixel), (x_coordinate_value_in_pixel - current_x_coordinate_value_in_pixel));
 
 	goal_to_move_base_action_server.header.frame_id = "map";
 	goal_to_move_base_action_server.header.stamp = ros::Time::now();
-	goal_to_move_base_action_server.pose.position.x = p;
-	goal_to_move_base_action_server.pose.position.y = q;
+	goal_to_move_base_action_server.pose.position.x = x_coordinate_value_in_pixel;
+	goal_to_move_base_action_server.pose.position.y = y_coordinate_value_in_pixel;
 	tf::Quaternion quat = tf::createQuaternionFromYaw(angel_around_z_axis);
 	tf::quaternionTFToMsg(quat, goal_to_move_base_action_server.pose.orientation);
 
@@ -37,25 +37,25 @@ move_base_msgs::MoveBaseGoal go_inside_of_the_room::Move_in_pixel_(int x_coordin
 }
 
 //always keep the robot in front in moving direction and receives the goal in pixel
-move_base_msgs::MoveBaseGoal go_inside_of_the_room::stay_forward_(int x_coordinate_value, int y_coordinate_value)
+move_base_msgs::MoveBaseGoal go_inside_of_the_room::stay_forward_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter)
 {
 	listener_.lookupTransform("/map", "/base_link", ros::Time(0), transform_);
 
 	move_base_msgs::MoveBaseGoal move_base_msgs_obj;
 	geometry_msgs::PoseStamped goal_to_move_base_action_server;
 
-	double p = (x_coordinate_value * map_resolution_) + map_origin_.x;
-	double q = (y_coordinate_value * map_resolution_) + map_origin_.y;
+	double x_coordinate_value_in_pixel = (x_coordinate_value_in_meter * map_resolution_) + map_origin_.x;
+	double y_coordinate_value_in_pixel = (y_coordinate_value_in_meter * map_resolution_) + map_origin_.y;
 
-	double m = transform_.getOrigin().x();
-	double n = transform_.getOrigin().y();
+	double current_x_coordinate_value_in_pixel = transform_.getOrigin().x();
+	double current_y_coordinate_value_in_pixel = transform_.getOrigin().y();
 
-	double angel_around_z_axis = atan2((q - n), (p - m));
+	double angel_around_z_axis = atan2((y_coordinate_value_in_pixel - current_y_coordinate_value_in_pixel), (x_coordinate_value_in_pixel - current_x_coordinate_value_in_pixel));
 
 	goal_to_move_base_action_server.header.frame_id = "map";
 	goal_to_move_base_action_server.header.stamp = ros::Time::now();
-	goal_to_move_base_action_server.pose.position.x = m;
-	goal_to_move_base_action_server.pose.position.y = n;
+	goal_to_move_base_action_server.pose.position.x = current_x_coordinate_value_in_pixel;
+	goal_to_move_base_action_server.pose.position.y = current_y_coordinate_value_in_pixel;
 	tf::Quaternion quat = tf::createQuaternionFromYaw(angel_around_z_axis);
 	tf::quaternionTFToMsg(quat, goal_to_move_base_action_server.pose.orientation);
 
@@ -75,7 +75,7 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	ROS_INFO("333333333333 go to location action server 333333333333");
 	ROS_INFO("robot is trying to enter inside of the room.....");
 	move_base_client_obj.waitForServer();
-	move_base_client_obj.sendGoal(Move_in_pixel_(goal_room_center_x_, goal_room_center_y_));
+	move_base_client_obj.sendGoal(move_in_pixel_(goal_room_center_x_, goal_room_center_y_));
 
 	bool finished_before_timeout = move_base_client_obj.waitForResult();
 
@@ -99,7 +99,7 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	if (original_map_from_goal_definition.at<unsigned char>(goal_room_center_y_, goal_room_center_x_)
 			== original_map_from_goal_definition.at<unsigned char>(robot_location_in_pixel_))
 	{
-		feedback_about_robot_location_ = "False";
+		feedback_about_robot_location_ = "True";
 		return feedback_about_robot_location_;
 	}
 	else
@@ -133,13 +133,14 @@ void go_inside_of_the_room::execute_go_to_room_location_action_server_(const aut
 
 	looping_rate.sleep();
 
+	//publish result
 	go_inside_of_the_room_action_server_.setSucceeded(result_);
 }
 
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "go_to_room_location");
-	go_inside_of_the_room TL(ros::this_node::getName());
+	go_inside_of_the_room go_inside_of_the_room_obj(ros::this_node::getName());
 	ROS_INFO("go to room location action server is initialized.....");
 	ros::spin();
 	return 0;

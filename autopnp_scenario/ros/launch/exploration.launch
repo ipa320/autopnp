@@ -8,7 +8,7 @@
 
   <include file="$(find autopnp_scenario)/ros/launch/random_location_finder_action_server.launch"/>
 
-  <node name="Inspect_Room" pkg="autopnp_scenario" type="inspect_room_server" output="screen" />
+  <include file="$(find autopnp_scenario)/ros/launch/inspect_room_action_server.launch"/>
   
   <include file="$(find cob_map_accessibility_analysis)/ros/launch/map_accessibility_analysis.launch"/>
 

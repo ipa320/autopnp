@@ -25,9 +25,10 @@
  * \date Date of creation: August 2013
  *
  * \brief
- * map segmentation algorithm provides map segmentation action server
- * receives the map from navigation and does the images segmentation
- * and return a segmented map with the following room information:
+ * map segmentation algorithm provides provides header definition for
+ * map segmentation action server receives the map from navigation
+ * and does the images segmentation and return a segmented map with
+ * the following room information:
  * 1. Return Segmented Map
  * 2. Return Original Map Resolution used in Navigation
  * 3. Return Original Map Origin X Coordinate used in Navigation
