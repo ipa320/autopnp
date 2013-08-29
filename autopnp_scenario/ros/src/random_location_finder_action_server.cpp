@@ -36,10 +36,10 @@ cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from
 
 		// this calls the service server to process our request message and put the result into the response message
 		// this call is blocking, i.e. this program will not proceed until the service server sends the response
-		bool dynamic_obstacle_free_point_ = ros::service::call(points_service_name_, req_points_, res_points_);
+		ros::service::call(points_service_name_, req_points_, res_points_);
 
 		if (random_location_finder_map.at<unsigned char>(random_location_point_) != 0
-				&& obstacle_free_point_(random_location_finder_map, random_location_point_.y, random_location_point_.x) && dynamic_obstacle_free_point_ == true)
+				&& obstacle_free_point_(random_location_finder_map, random_location_point_.y, random_location_point_.x) && res_points_.accessibility_flags[0] == true)
 		{
 			loop_checker = false;
 		}
