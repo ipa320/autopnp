@@ -3,6 +3,9 @@
 // services - here you have to include the header file with exactly the same name as your message in the /srv folder (the Message.h is automatically generated from your Message.srv file during compilation)
 #include <autopnp_scenario/TrashBinDetection.h>
 
+//https://github.com/ipa320/cob_perception_common/blob/groovy_dev/cob_object_detection_msgs/msg/Detection.msg
+//https://github.com/ipa320/cob_object_perception/tree/groovy_dev/cob_fiducials/ros/launch
+
 void startRecording(std::string serviceName)
 {
 	// prepare the request and response messages
