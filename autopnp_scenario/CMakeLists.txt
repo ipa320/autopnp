@@ -135,7 +135,7 @@ rosbuild_add_executable(go_to_room_location_action_server ros/src/go_to_room_loc
 			#Random Location Finder Server
 rosbuild_add_executable(random_location_finder_action_server ros/src/random_location_finder_action_server.cpp)	
 
-			#Inspect Room Server			
+			#Inspect Room server			
 rosbuild_add_executable(inspect_room_action_server ros/src/inspect_room_action_server.cpp)
 
 
