@@ -11,5 +11,7 @@
   <include file="$(find autopnp_scenario)/ros/launch/inspect_room_action_server.launch"/>
   
   <include file="$(find cob_map_accessibility_analysis)/ros/launch/map_accessibility_analysis.launch"/>
+  
+  <!--node name="trash_bin_detection_server" pkg="autopnp_scenario" type="trash_bin_detection_service_server" output="screen" /-->
 
 </launch>
