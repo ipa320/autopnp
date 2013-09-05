@@ -1,110 +1,19 @@
-/*!
- *****************************************************************
- * \file
- *
- * \note
- * Copyright (c) 2013 \n
- * Fraunhofer Institute for Manufacturing Engineering
- * and Automation (IPA) \n\n
- *
- *****************************************************************
- *
- * \note
- * Project name: care-o-bot
- * \note
- * ROS stack name: autopnp
- * \note
- * ROS package name: autopnp_scenario
- *
- * \author
- * Author: Mohammad Muinul Islam(email:mohammad.islam@ipa.fraunhofer.de)
- *
- * \author
- * Supervised by: Richard Bormann(email:richard.bormann@ipa.fraunhofer.de)
- *
- * \date Date of creation: September 2013
- *
- * \brief
- * Trash Bin Detection-> The program subscribes to the topic
- * /fiducials/detect_fiducials to get the data from trash bin marker
- * detection.Then it process the data to get the Trash Bin position
- * with respect to map coordinate system
- *
- *****************************************************************
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * - Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer. \n
- * - Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution. \n
- * - Neither the name of the Fraunhofer Institute for Manufacturing
- * Engineering and Automation (IPA) nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission. \n
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License LGPL as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License LGPL for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License LGPL along with this program.
- * If not, see <http://www.gnu.org/licenses/>.
- *
- ****************************************************************/
-
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include "ros/ros.h"
-#include <tf/transform_listener.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <cob_object_detection_msgs/Detection.h>
-
-// services - here you have to include the header file with exactly the same name as your message in the /srv folder (the Message.h is automatically generated from your Message.srv file during compilation)
-#include <autopnp_scenario/TrashBinDetection.h>
-
-//https://github.com/ipa320/cob_perception_common/blob/groovy_dev/cob_object_detection_msgs/msg/Detection.msg
-//https://github.com/ipa320/cob_object_perception/tree/groovy_dev/cob_fiducials/ros/launch
-
-//global variable declaration
-bool fiducials_data_recieved_;
-ros::Subscriber fiducials_msg_sub_;
-std::string fiducials_frame_id_;
-std::string image_detection_label_;
-geometry_msgs::PoseStamped pose_with_respect_to_fiducials_frame_id_;
-geometry_msgs::PoseStamped pose_with_respect_to_map_;
-std::vector<geometry_msgs::PoseStamped> pose_array_;
-
-//global function declaration
-void fiducialsInit(ros::NodeHandle& nh);
-void fiducialsDataCallback(const cob_object_detection_msgs::Detection::ConstPtr& fiducials_msg_data);
-bool TrashBinDetectionCallback(autopnp_scenario::TrashBinDetection::Request &req, autopnp_scenario::TrashBinDetection::Response &res);
-bool similarity_checker(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value);
-geometry_msgs::PoseStamped average_calculator(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value);
+#include <autopnp_scenario/trash_bin_detection.h>
 
 //Initialize Trash bin detection to receive necessary raw data
-void fiducialsInit(ros::NodeHandle& nh)
+void trash_bin_detection::fiducialsInit(ros::NodeHandle& nh)
 {
-	fiducials_data_recieved_ = false;
+//	fiducials_data_recieved_ = false;
 	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::Detection>("/fiducials/detect_fiducials", 1, fiducialsDataCallback);
 	ROS_INFO("TrashBinDetectionServer: Waiting to receive data...");
-	while (fiducials_data_recieved_ == false)
-		ros::spinOnce();
+//	while (fiducials_data_recieved_ == false)
+//		ros::spinOnce();
 
 	ROS_INFO("TrashBinDetectionCheck: data received.");
 }
 
 //fiducials topic data call-back
-void fiducialsDataCallback(const cob_object_detection_msgs::Detection::ConstPtr& fiducials_msg_data)
+void trash_bin_detection::fiducialsDataCallback(const cob_object_detection_msgs::Detection::ConstPtr& fiducials_msg_data)
 {
 	fiducials_frame_id_ = fiducials_msg_data->header.frame_id;
 	image_detection_label_ = fiducials_msg_data->label;
@@ -114,7 +23,7 @@ void fiducialsDataCallback(const cob_object_detection_msgs::Detection::ConstPtr&
 }
 
 //This function process the data to calculate the trash bin location
-bool TrashBinDetectionCallback(autopnp_scenario::TrashBinDetection::Request &req, autopnp_scenario::TrashBinDetection::Response &res)
+bool trash_bin_detection::TrashBinDetectionCallback(autopnp_scenario::TrashBinDetection::Request &req, autopnp_scenario::TrashBinDetection::Response &res)
 {
 	if (req.service_on_off_switch == true)
 	{
@@ -163,7 +72,7 @@ bool TrashBinDetectionCallback(autopnp_scenario::TrashBinDetection::Request &req
 }
 
 //This function checks the similarity between the two consecutive pose
-bool similarity_checker(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value)
+bool trash_bin_detection::similarity_checker(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value)
 {
 	if ((abs(present_value.pose.position.x - past_value.pose.position.x)) < 0.09 && (abs(present_value.pose.position.y - past_value.pose.position.y)) < 0.09
 			&& (abs(present_value.pose.position.z - past_value.pose.position.z)) < 0.09 && (abs(present_value.pose.orientation.x - past_value.pose.orientation.x)) < 0.09
@@ -176,7 +85,7 @@ bool similarity_checker(geometry_msgs::PoseStamped &present_value, geometry_msgs
 		return false;
 }
 
-geometry_msgs::PoseStamped average_calculator(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value)
+geometry_msgs::PoseStamped trash_bin_detection::average_calculator(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value)
 {
 	geometry_msgs::PoseStamped average_value;
 	average_value.pose.position.x = (present_value.pose.position.x + past_value.pose.position.x) / 2;
@@ -208,10 +117,10 @@ int main(int argc, char **argv)
 	 * NodeHandle destructed will close down the node.
 	 */
 	ros::NodeHandle nh;
-	fiducialsInit(nh);
-	ros::ServiceServer trash_bin_detection_check_server_ = nh.advertiseService("trash_bin_detection_check", TrashBinDetectionCallback);
+	trash_bin_detection bin_detection_object;
+	bin_detection_object.fiducialsInit(nh);
+	//trash_bin_detection_check_server_ = nh.advertiseService("trash_bin_detection_check", &trash_bin_detection::TrashBinDetectionCallback, this);
 	ROS_INFO("Trash Bin detection Server initialized.....");
 	ros::spin();
 	return 0;
 }
-

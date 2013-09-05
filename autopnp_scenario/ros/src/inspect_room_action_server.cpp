@@ -69,16 +69,17 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 	cv::Point pixel_point_next;
 	int pixel_value_of_the_room = original_map_from_goal_definiton.at<unsigned char>(center_of_room_[room_number_.back()]);
 	int even_odd_loop_checker = 0;
-	ros::param::param("/inspect_room_parameter/step_size_to_find_accessible_points_of_the_room_check_", step_size_to_find_accessible_points_of_the_room_, 20);
+	ros::param::param("/inspect_room_parameter/step_size_to_find_accessible_points_of_the_room_check_", step_size_to_find_accessible_points_of_the_room_, 1);
+	int step_size_to_find_accessible_points_of_the_room_in_pixel = (step_size_to_find_accessible_points_of_the_room_/map_resolution_);
 	move_base_client_identifier_ move_base_client_object("move_base", true);
 
 	for (int map_column_value = room_min_x_[room_number_.back()]; map_column_value < room_max_x_[room_number_.back()];
-			map_column_value = map_column_value + step_size_to_find_accessible_points_of_the_room_)
+			map_column_value = map_column_value + step_size_to_find_accessible_points_of_the_room_in_pixel)
 	{
 		if (even_odd_loop_checker % 2 == 0)
 		{
 			for (int map_row_value = room_min_y_[room_number_.back()]; map_row_value < room_max_y_[room_number_.back()];
-					map_row_value = map_row_value + step_size_to_find_accessible_points_of_the_room_)
+					map_row_value = map_row_value + step_size_to_find_accessible_points_of_the_room_in_pixel)
 			{
 				if (original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value) == pixel_value_of_the_room)
 				{
@@ -101,28 +102,28 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 						pixel_point_next.x = map_row_value;
 						pixel_point_next.y = map_column_value;
 
-//						cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
-//						cv::imshow( "Room Inspection", original_map_from_goal_definiton );
-//						cv::waitKey(100);
+						cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
+						cv::imshow( "Room Inspection", original_map_from_goal_definiton );
+						cv::waitKey(100);
 
-						move_base_client_object.waitForServer();
-						move_base_client_object.sendGoal(stay_forward_(map_row_value, map_column_value));
-						move_base_client_object.waitForResult();
-
-						move_base_client_object.waitForServer();
-						move_base_client_object.sendGoal(move_in_pixel_(map_row_value, map_column_value));
-
-						bool finished_before_timeout = move_base_client_object.waitForResult();
-
-						if (finished_before_timeout)
-						{
-							actionlib::SimpleClientGoalState state = move_base_client_object.getState();
-							ROS_INFO("move base action for room inspection finished: %s", state.toString().c_str());
-						}
-						else
-						{
-							ROS_INFO("move base action for room inspection did not finish before the time out.");
-						}
+//						move_base_client_object.waitForServer();
+//						move_base_client_object.sendGoal(stay_forward_(map_row_value, map_column_value));
+//						move_base_client_object.waitForResult();
+//
+//						move_base_client_object.waitForServer();
+//						move_base_client_object.sendGoal(move_in_pixel_(map_row_value, map_column_value));
+//
+//						bool finished_before_timeout = move_base_client_object.waitForResult();
+//
+//						if (finished_before_timeout)
+//						{
+//							actionlib::SimpleClientGoalState state = move_base_client_object.getState();
+//							ROS_INFO("move base action for room inspection finished: %s", state.toString().c_str());
+//						}
+//						else
+//						{
+//							ROS_INFO("move base action for room inspection did not finish before the time out.");
+//						}
 					}
 				}
 			}
@@ -132,7 +133,7 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 		else
 		{
 			for (int map_row_value = room_max_y_[room_number_.back()]; map_row_value > room_min_y_[room_number_.back()];
-					map_row_value = map_row_value - step_size_to_find_accessible_points_of_the_room_)
+					map_row_value = map_row_value - step_size_to_find_accessible_points_of_the_room_in_pixel)
 			{
 				if (original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value) == pixel_value_of_the_room)
 				{
@@ -155,28 +156,28 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 						pixel_point_next.x = map_row_value;
 						pixel_point_next.y = map_column_value;
 
-//						cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
-//						cv::imshow( "Room Inspection", original_map_from_goal_definiton );
-//						cv::waitKey(100);
+						cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
+						cv::imshow( "Room Inspection", original_map_from_goal_definiton );
+						cv::waitKey(100);
 
-						move_base_client_object.waitForServer();
-						move_base_client_object.sendGoal(stay_forward_(map_row_value, map_column_value));
-						move_base_client_object.waitForResult();
-
-						move_base_client_object.waitForServer();
-						move_base_client_object.sendGoal(move_in_pixel_(map_row_value, map_column_value));
-						bool finished_before_timeout = move_base_client_object.waitForResult();
-
-						if (finished_before_timeout)
-						{
-							actionlib::SimpleClientGoalState state = move_base_client_object.getState();
-							ROS_INFO("move base action for room inspection finished: %s", state.toString().c_str());
-						}
-
-						else
-						{
-							ROS_INFO("move base action for room inspection did not finish before the time out.");
-						}
+//						move_base_client_object.waitForServer();
+//						move_base_client_object.sendGoal(stay_forward_(map_row_value, map_column_value));
+//						move_base_client_object.waitForResult();
+//
+//						move_base_client_object.waitForServer();
+//						move_base_client_object.sendGoal(move_in_pixel_(map_row_value, map_column_value));
+//						bool finished_before_timeout = move_base_client_object.waitForResult();
+//
+//						if (finished_before_timeout)
+//						{
+//							actionlib::SimpleClientGoalState state = move_base_client_object.getState();
+//							ROS_INFO("move base action for room inspection finished: %s", state.toString().c_str());
+//						}
+//
+//						else
+//						{
+//							ROS_INFO("move base action for room inspection did not finish before the time out.");
+//						}
 					}
 				}
 			}
