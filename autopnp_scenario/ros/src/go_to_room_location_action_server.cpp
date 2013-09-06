@@ -68,6 +68,7 @@ move_base_msgs::MoveBaseGoal go_inside_of_the_room::stay_forward_(int x_coordina
 std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &original_map_from_goal_definition)
 {
 	move_base_action_client_datatype move_base_client_obj("move_base", true);
+	bool finished_before_timeout = false;
 	move_base_client_obj.waitForServer();
 	move_base_client_obj.sendGoal(stay_forward_(goal_room_center_x_, goal_room_center_y_));
 	move_base_client_obj.waitForResult();
@@ -75,9 +76,9 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	ROS_INFO("333333333333 go to location action server 333333333333");
 	ROS_INFO("robot is trying to enter inside of the room.....");
 	move_base_client_obj.waitForServer();
-	move_base_client_obj.sendGoal(move_in_pixel_(goal_room_center_x_, goal_room_center_y_));
+	move_base_client_obj.sendGoalAndWait(move_in_pixel_(goal_room_center_x_, goal_room_center_y_),ros::Duration(30.0));
 
-	bool finished_before_timeout = move_base_client_obj.waitForResult();
+	finished_before_timeout = move_base_client_obj.waitForResult();
 
 	if (finished_before_timeout)
 	{

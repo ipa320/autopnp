@@ -6,8 +6,8 @@ random_location_finder::random_location_finder(std::string name_of_the_action) :
 {
 	//Start action server
 	random_location_action_server_.start();
-	ros::param::param("/random_location_finder/robot_radius_multiplying_factor_check_", robot_radius_multiplying_factor_, 1.64);
-	ros::param::param("/move_base/local_costmap/robot_radius", robot_radius_, 0.46);
+//	ros::param::param("/random_location_finder/robot_radius_multiplying_factor_check_", robot_radius_multiplying_factor_, 1.64);
+//	ros::param::param("/move_base/local_costmap/robot_radius", robot_radius_, 0.46);
 }
 
 cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from_goal_definition)
@@ -38,8 +38,7 @@ cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from
 		// this call is blocking, i.e. this program will not proceed until the service server sends the response
 		ros::service::call(points_service_name_, req_points_, res_points_);
 
-		if (random_location_finder_map.at<unsigned char>(random_location_point_) != 0
-				&& obstacle_free_point_(random_location_finder_map, random_location_point_.y, random_location_point_.x) && res_points_.accessibility_flags[0] == true)
+		if (random_location_finder_map.at<unsigned char>(random_location_point_) != 0 && res_points_.accessibility_flags[0] == true)
 		{
 			loop_checker = false;
 		}
@@ -70,32 +69,32 @@ cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from
 	return Random_Location_mutable;
 }
 
-bool random_location_finder::obstacle_free_point_(const cv::Mat &obstacle_free_point_map, int x_coordinate_value, int y_coordinate_value)
-{
-	int obstacle_free_point_flag, obstacle_free_point_flag_temp = 1;
-	for (int map_row_counter = 0; map_row_counter < clearence_factor_; map_row_counter++)
-	{
-		for (int map_cloumn_counter = 0; map_cloumn_counter < clearence_factor_; map_cloumn_counter++)
-		{
-			if (obstacle_free_point_map.at<unsigned char>(x_coordinate_value + map_cloumn_counter, y_coordinate_value + map_row_counter) != 0
-					&& obstacle_free_point_map.at<unsigned char>(x_coordinate_value - map_cloumn_counter, y_coordinate_value + map_row_counter) != 0
-					&& obstacle_free_point_map.at<unsigned char>(x_coordinate_value + map_cloumn_counter, y_coordinate_value - map_row_counter) != 0
-					&& obstacle_free_point_map.at<unsigned char>(x_coordinate_value - map_cloumn_counter, y_coordinate_value - map_row_counter) != 0)
-			{
-				obstacle_free_point_flag = 1;
-			}
-
-			else
-				obstacle_free_point_flag = 0;
-			obstacle_free_point_flag_temp = std::min(obstacle_free_point_flag_temp, obstacle_free_point_flag);
-		}
-	}
-
-	if (obstacle_free_point_flag_temp == 1)
-		return true;
-	else
-		return false;
-}
+//bool random_location_finder::obstacle_free_point_(const cv::Mat &obstacle_free_point_map, int x_coordinate_value, int y_coordinate_value)
+//{
+//	int obstacle_free_point_flag, obstacle_free_point_flag_temp = 1;
+//	for (int map_row_counter = 0; map_row_counter < clearence_factor_; map_row_counter++)
+//	{
+//		for (int map_cloumn_counter = 0; map_cloumn_counter < clearence_factor_; map_cloumn_counter++)
+//		{
+//			if (obstacle_free_point_map.at<unsigned char>(x_coordinate_value + map_cloumn_counter, y_coordinate_value + map_row_counter) != 0
+//					&& obstacle_free_point_map.at<unsigned char>(x_coordinate_value - map_cloumn_counter, y_coordinate_value + map_row_counter) != 0
+//					&& obstacle_free_point_map.at<unsigned char>(x_coordinate_value + map_cloumn_counter, y_coordinate_value - map_row_counter) != 0
+//					&& obstacle_free_point_map.at<unsigned char>(x_coordinate_value - map_cloumn_counter, y_coordinate_value - map_row_counter) != 0)
+//			{
+//				obstacle_free_point_flag = 1;
+//			}
+//
+//			else
+//				obstacle_free_point_flag = 0;
+//			obstacle_free_point_flag_temp = std::min(obstacle_free_point_flag_temp, obstacle_free_point_flag);
+//		}
+//	}
+//
+//	if (obstacle_free_point_flag_temp == 1)
+//		return true;
+//	else
+//		return false;
+//}
 
 void random_location_finder::execute_random_location_finder_action_server_(const autopnp_scenario::RandomLocationFinderGoalConstPtr &goal)
 {
@@ -106,7 +105,7 @@ void random_location_finder::execute_random_location_finder_action_server_(const
 	map_origin_.x = goal->map_origin_x;
 	map_origin_.y = goal->map_origin_y;
 	unsuccessful_times_ = goal->unsuccess_counter;
-	clearence_factor_ = (int)((robot_radius_ * robot_radius_multiplying_factor_) / map_resolution_);
+//	clearence_factor_ = (int)((robot_radius_ * robot_radius_multiplying_factor_) / map_resolution_);
 
 	//Initializing the necessary container value
 	room_Number_.clear();

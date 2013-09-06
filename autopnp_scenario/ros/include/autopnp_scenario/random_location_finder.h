@@ -84,7 +84,7 @@ class random_location_finder
 {
 private:
 	double map_resolution_;			// in [m/cell]
-	double robot_radius_;			// in [m]
+//	double robot_radius_;			// in [m]
 	cv::Point2d map_origin_;		// in [m]
 
 	/* The following information is about the input map
@@ -136,9 +136,9 @@ private:
 	 * from that point to a distance of
 	 * clearence_factor_)
 	 * */
-	double robot_radius_multiplying_factor_;
+//	double robot_radius_multiplying_factor_;
 	int clearence_factor_;
-	bool obstacle_free_point_(const cv::Mat &obstacle_free_point_map, int x_coordinate_value, int y_coordinate_value);
+//	bool obstacle_free_point_(const cv::Mat &obstacle_free_point_map, int x_coordinate_value, int y_coordinate_value);
 
 	//This is the execution function used by action server
 	void execute_random_location_finder_action_server_(const autopnp_scenario::RandomLocationFinderGoalConstPtr &goal);
