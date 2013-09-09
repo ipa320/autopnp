@@ -1,5 +1,7 @@
 #include <autopnp_scenario/go_to_room_location.h>
 
+//#define __DEBUG_DISPLAYS__
+
 go_inside_of_the_room::go_inside_of_the_room(std::string name_of_the_action) :
 		go_inside_of_the_room_action_server_(nh_, name_of_the_action, boost::bind(&go_inside_of_the_room::execute_go_to_room_location_action_server_, this, _1), false), action_name_(
 				name_of_the_action)
@@ -99,12 +101,24 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 			== original_map_from_goal_definition.at<unsigned char>(robot_location_in_pixel_))
 	{
 		feedback_about_robot_location_ = "True";
+#ifdef __DEBUG_DISPLAYS__
+	cv::Mat Debug_image = original_map_from_goal_definition.clone();
+	cv::circle( Debug_image , robot_location_in_pixel_ , 3 , cv::Scalar(255), -1 );
+	cv::imshow( "go to room center location", Debug_image );
+	cv::waitKey(100);
+#endif
 		ROS_INFO("333333333333 go to location action server 333333333333\n");
 		return feedback_about_robot_location_;
 	}
 	else
 	{
 		feedback_about_robot_location_ = "False";
+#ifdef __DEBUG_DISPLAYS__
+	cv::Mat Debug_image = original_map_from_goal_definition.clone();
+	cv::circle( Debug_image , robot_location_in_pixel_ , 3 , cv::Scalar(255), -1 );
+	cv::imshow( "go to room center location", Debug_image );
+	cv::waitKey(100);
+#endif
 		ROS_INFO("333333333333 go to location action server 333333333333\n");
 		return feedback_about_robot_location_;
 	}
