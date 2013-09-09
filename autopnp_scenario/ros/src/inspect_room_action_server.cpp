@@ -1,5 +1,7 @@
 #include <autopnp_scenario/room_inspection.h>
 
+//#define __DEBUG_DISPLAYS__
+
 room_inspection::room_inspection(std::string name_of_the_action) :
 		inspect_room_action_server_object_(nh_, name_of_the_action, boost::bind(&room_inspection::execute_inspect_room_action_server_, this, _1), false), action_name_(name_of_the_action)
 {
@@ -102,11 +104,13 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 						pixel_point_next.x = map_row_value;
 						pixel_point_next.y = map_column_value;
 
-//						cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
-//						cv::imshow( "Room Inspection", original_map_from_goal_definiton );
-//						cv::waitKey(100);
-						bool finished_before_timeout = false;
+#ifdef __DEBUG_DISPLAYS__
+	cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
+	cv::imshow( "Room Inspection", original_map_from_goal_definiton );
+	cv::waitKey(100);
+#endif
 
+						bool finished_before_timeout = false;
 						move_base_client_object.waitForServer();
 						move_base_client_object.sendGoal(stay_forward_(map_row_value, map_column_value));
 						move_base_client_object.waitForResult();
@@ -156,11 +160,12 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 						pixel_point_next.x = map_row_value;
 						pixel_point_next.y = map_column_value;
 
-//						cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
-//						cv::imshow( "Room Inspection", original_map_from_goal_definiton );
-//						cv::waitKey(100);
+#ifdef __DEBUG_DISPLAYS__
+	cv::circle( original_map_from_goal_definiton , pixel_point_next , 3 , cv::Scalar(255), -1 );
+	cv::imshow( "Room Inspection", original_map_from_goal_definiton );
+	cv::waitKey(100);
+#endif
 						bool finished_before_timeout = false;
-
 						move_base_client_object.waitForServer();
 						move_base_client_object.sendGoal(stay_forward_(map_row_value, map_column_value));
 						move_base_client_object.waitForResult();
