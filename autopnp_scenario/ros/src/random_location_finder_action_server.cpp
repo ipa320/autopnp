@@ -1,5 +1,7 @@
 #include <autopnp_scenario/random_location_finder.h>
 
+//#define __DEBUG_DISPLAYS__
+
 random_location_finder::random_location_finder(std::string name_of_the_action) :
 		random_location_action_server_(nh_, name_of_the_action, boost::bind(&random_location_finder::execute_random_location_finder_action_server_, this, _1), false), action_name_(
 				name_of_the_action)
@@ -28,6 +30,12 @@ cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from
 	bool loop_checker = true;
 	while (loop_checker)
 	{
+#ifdef __DEBUG_DISPLAYS__
+	cv::Mat Debug_image = original_map_from_goal_definition.clone();
+	cv::circle( Debug_image , random_location_point_ , 3 , cv::Scalar(255), -1 );
+	cv::imshow( "find random location_", Debug_image );
+	cv::waitKey(100);
+#endif
 		/* To check the dynamic obstacles the map
 		 * accessibility analysis service server
 		 * is called
@@ -67,7 +75,6 @@ cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from
 	}
 
 	cv::Point center_of_room;
-
 	center_of_room.y = (maximum_x_coordinate_value_of_the_room_[room_Number_.back()] + minimum_x_coordinate_value_of_the_room_[room_Number_.back()]) / 2;
 	center_of_room.x = (maximum_y_coordinate_value_of_the_room_[room_Number_.back()] + minimum_y_coordinate_value_of_the_room_[room_Number_.back()]) / 2;
 
