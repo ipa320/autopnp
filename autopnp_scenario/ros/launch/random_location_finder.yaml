@@ -1,6 +1,0 @@
-# robot_radius_multiplying_factor_check_ ->
-#	it is used to check the static obstacles in the 
-#	static map from a point with a radius of (robot_radius * 
-#	robot_radius_multiplying_factor_check_)
-
-robot_radius_multiplying_factor_check_: 1.64

@@ -227,6 +227,7 @@ class FindRandomLocation(smach.State):
         userdata.random_location_finder_random_location_x_ = random_location_finder_action_server_result_.random_location_x
         userdata.random_location_finder_random_location_y_ = random_location_finder_action_server_result_.random_location_y        
         if userdata.random_location_finder_counter_in_ < 6:
+            rospy.loginfo("unsuccessful rate: %d",userdata.random_location_finder_counter_in_)
             return 're_locate'        
         else:
             rospy.loginfo("unsuccessful rate: %d",userdata.random_location_finder_counter_in_)

@@ -69,6 +69,7 @@
 #define RANDOM_LOCATION_FINDER_HH
 
 #include <iostream>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <ros/ros.h>
@@ -84,7 +85,6 @@ class random_location_finder
 {
 private:
 	double map_resolution_;			// in [m/cell]
-//	double robot_radius_;			// in [m]
 	cv::Point2d map_origin_;		// in [m]
 
 	/* The following information is about the input map
@@ -122,23 +122,6 @@ private:
 	 * is the core of action server
 	 * */
 	cv::Mat find_random_location_(cv::Mat &original_map_from_goal_definition);
-
-	/* This two factor is very important
-	 * used in the next function(obstacle_free_point_)
-	 *
-	 * clearence_factor_ -> which is product of robot_radius_
-	 * and robot_radius_multiplying_factor_.
-	 *
-	 * The function obstacle_free_point_
-	 * checks the obstacles free point
-	 * in the static map(a point will be
-	 * obstacle free,if there is no obstacle
-	 * from that point to a distance of
-	 * clearence_factor_)
-	 * */
-//	double robot_radius_multiplying_factor_;
-	int clearence_factor_;
-//	bool obstacle_free_point_(const cv::Mat &obstacle_free_point_map, int x_coordinate_value, int y_coordinate_value);
 
 	//This is the execution function used by action server
 	void execute_random_location_finder_action_server_(const autopnp_scenario::RandomLocationFinderGoalConstPtr &goal);

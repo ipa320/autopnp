@@ -76,9 +76,9 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	ROS_INFO("333333333333 go to location action server 333333333333");
 	ROS_INFO("robot is trying to enter inside of the room.....");
 	move_base_client_obj.waitForServer();
-	move_base_client_obj.sendGoalAndWait(move_in_pixel_(goal_room_center_x_, goal_room_center_y_),ros::Duration(30.0));
+	move_base_client_obj.sendGoalAndWait(move_in_pixel_(goal_room_center_x_, goal_room_center_y_),ros::Duration(60.0));
 
-	finished_before_timeout = move_base_client_obj.waitForResult();
+	finished_before_timeout = move_base_client_obj.waitForResult(ros::Duration(60.0));
 
 	if (finished_before_timeout)
 	{
@@ -95,17 +95,18 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	pose robot_location_in_meter(transform_.getOrigin().x(), transform_.getOrigin().y(), transform_.getRotation().z());
 	robot_location_in_pixel_ = convert_from_meter_to_pixel_coordinates_<cv::Point>(robot_location_in_meter);
 
-	ROS_INFO("333333333333 go to location action server 333333333333\n");
-
 	if (original_map_from_goal_definition.at<unsigned char>(goal_room_center_y_, goal_room_center_x_)
 			== original_map_from_goal_definition.at<unsigned char>(robot_location_in_pixel_))
 	{
 		feedback_about_robot_location_ = "True";
+		ROS_INFO("333333333333 go to location action server 333333333333\n");
+
 		return feedback_about_robot_location_;
 	}
 	else
 	{
 		feedback_about_robot_location_ = "False";
+		ROS_INFO("333333333333 go to location action server 333333333333\n");
 		return feedback_about_robot_location_;
 	}
 }

@@ -113,7 +113,7 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 
 						move_base_client_object.waitForServer();
 						move_base_client_object.sendGoalAndWait(move_in_pixel_(map_row_value, map_column_value),ros::Duration(20.0));
-						finished_before_timeout = move_base_client_object.waitForResult(ros::Duration(20.0));
+						finished_before_timeout = move_base_client_object.waitForResult(ros::Duration(30.0));
 
 						if (finished_before_timeout)
 						{
@@ -167,7 +167,7 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 
 						move_base_client_object.waitForServer();
 						move_base_client_object.sendGoalAndWait(move_in_pixel_(map_row_value, map_column_value),ros::Duration(20.0));
-						finished_before_timeout = move_base_client_object.waitForResult(ros::Duration(20.0));
+						finished_before_timeout = move_base_client_object.waitForResult(ros::Duration(30.0));
 						std::cout<<"\nfinished_before_timeout: "<<finished_before_timeout<<"\n";
 
 						if (finished_before_timeout)
