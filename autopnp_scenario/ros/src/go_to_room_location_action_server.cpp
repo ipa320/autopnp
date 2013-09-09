@@ -100,7 +100,6 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	{
 		feedback_about_robot_location_ = "True";
 		ROS_INFO("333333333333 go to location action server 333333333333\n");
-
 		return feedback_about_robot_location_;
 	}
 	else
