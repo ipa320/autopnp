@@ -1,5 +1,7 @@
 #include <autopnp_scenario/map_segmentation_algorithm.h>
 
+#define __DEBUG_DISPLAYS__
+
 segmentation_algorithm::segmentation_algorithm(std::string name_of_the_action) :
 		map_segmentation_action_server_(nh_, name_of_the_action, boost::bind(&segmentation_algorithm::execute_map_segmentation_server, this, _1), false), action_name_(
 				name_of_the_action)
@@ -235,9 +237,10 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 
 			center_of_the_individual_room.x = min_y_value_of_the_room[loop_counter] + (max_y_value_of_the_room[loop_counter] - min_y_value_of_the_room[loop_counter]) / 2;
 			center_of_the_individual_room.y = min_x_value_of_the_room[loop_counter] + (max_x_value_of_the_room[loop_counter] - min_x_value_of_the_room[loop_counter]) / 2;
-//todo:
-//			uncomment it,if you want to see the center of the room value which is pixel value
-//			std::cout << "\nCenter of the bounding Box: [ " << center_of_the_individual_room.x << " , " << center_of_the_individual_room.y << " ]\n";
+
+#ifdef __DEBUG_DISPLAYS__
+	ROS_INFO("Center of the bounding Box: [ %d , %d ]", center_of_the_individual_room.x  , center_of_the_individual_room.y);
+#endif
 
 			minimum_x_coordinate_value_of_the_room_.push_back(min_x_value_of_the_room[loop_counter]);
 			minimum_y_coordinate_value_of_the_room_.push_back(min_y_value_of_the_room[loop_counter]);
@@ -252,13 +255,15 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 			cv::circle(bounding_box_map_to_extract_room_info, center_of_the_individual_room, 3, cv::Scalar(255), -1);
 		}
 	}
-//todo:
-//	uncomment it,if you want to see the final segmented map
-//	cv::imshow("bounding box", bounding_box_map_to_extract_room_info);
-//	cv::waitKey(100);
+#ifdef __DEBUG_DISPLAYS__
+	cv::Mat Debug_image = temporary_map_for_replica_padding_purpose.clone();
+	cv::imshow( "segmented map", Debug_image );
+	cv::waitKey(100);
+	cv::imshow("bounding box", bounding_box_map_to_extract_room_info);
+	cv::waitKey(100);
+#endif
 
 	//************Extracting Data from segmented map and Bounding Box Technique**********************************
-
 	return temporary_map_for_replica_padding_purpose.clone();
 }
 
@@ -271,7 +276,6 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 	ROS_INFO("map sampling factor is : %f", map_sampling_factor_);
 	ROS_INFO("room area factor lower limit is : %f", room_area_factor_lower_limit_);
 	ROS_INFO("room area factor upper limit is : %f", room_area_factor_upper_limit_);
-	ROS_INFO("111111111111 map segmentation action server 1111111111111\n");
 
 	//converting the map msg in cv format
 	cv_bridge::CvImagePtr cv_ptr_obj;
@@ -281,6 +285,7 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 
 	cv::Mat Segmented_map;
 	Segmented_map = Image_Segmentation_method(original_img, goal->map_resolution);
+	ROS_INFO("111111111111 map segmentation action server 1111111111111\n");
 
 	looping_rate.sleep();
 
