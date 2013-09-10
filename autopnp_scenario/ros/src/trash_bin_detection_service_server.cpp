@@ -3,13 +3,16 @@
 //Initialize Trash bin detection to receive necessary raw data
 void trash_bin_detection::fiducialsInit(ros::NodeHandle& nh)
 {
+	{
+			boost::mutex::scoped_lock lock(mutex_subscription_data_);
 //	fiducials_data_recieved_ = false;
-	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::Detection>("/fiducials/detect_fiducials", 1, fiducialsDataCallback);
 	ROS_INFO("TrashBinDetectionServer: Waiting to receive data...");
+	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::Detection>("/fiducials/detect_fiducials", 1, &trash_bin_detection::fiducialsDataCallback,this);
 //	while (fiducials_data_recieved_ == false)
 //		ros::spinOnce();
-
 	ROS_INFO("TrashBinDetectionCheck: data received.");
+	}
+	trash_bin_detection_check_server_ = nh.advertiseService("trash_bin_detection_check", &trash_bin_detection::TrashBinDetectionCallback, this);
 }
 
 //fiducials topic data call-back
@@ -18,8 +21,8 @@ void trash_bin_detection::fiducialsDataCallback(const cob_object_detection_msgs:
 	fiducials_frame_id_ = fiducials_msg_data->header.frame_id;
 	image_detection_label_ = fiducials_msg_data->label;
 	pose_with_respect_to_fiducials_frame_id_ = fiducials_msg_data->pose;
-	fiducials_data_recieved_ = true;
-	fiducials_msg_sub_.shutdown();
+//	fiducials_data_recieved_ = true;
+//	fiducials_msg_sub_.shutdown();
 }
 
 //This function process the data to calculate the trash bin location
@@ -34,10 +37,16 @@ bool trash_bin_detection::TrashBinDetectionCallback(autopnp_scenario::TrashBinDe
 			tf::TransformListener listener_;
 			tf::Stamped<tf::Pose> original_pose(
 					tf::Pose(
-							tf::Quaternion(pose_with_respect_to_fiducials_frame_id_.pose.orientation.x, pose_with_respect_to_fiducials_frame_id_.pose.orientation.y,
-									pose_with_respect_to_fiducials_frame_id_.pose.orientation.z, pose_with_respect_to_fiducials_frame_id_.pose.orientation.w),
-							tf::Vector3(pose_with_respect_to_fiducials_frame_id_.pose.position.x, pose_with_respect_to_fiducials_frame_id_.pose.position.y,
-									pose_with_respect_to_fiducials_frame_id_.pose.position.z)), ros::Time(0), fiducials_frame_id_);
+							tf::Quaternion(
+									pose_with_respect_to_fiducials_frame_id_.pose.orientation.x,
+									pose_with_respect_to_fiducials_frame_id_.pose.orientation.y,
+									pose_with_respect_to_fiducials_frame_id_.pose.orientation.z,
+									pose_with_respect_to_fiducials_frame_id_.pose.orientation.w),
+							tf::Vector3(
+									pose_with_respect_to_fiducials_frame_id_.pose.position.x,
+									pose_with_respect_to_fiducials_frame_id_.pose.position.y,
+									pose_with_respect_to_fiducials_frame_id_.pose.position.z)),
+					ros::Time(0), fiducials_frame_id_);
 			tf::Stamped<tf::Pose> transformed_pose;
 			listener_.transformPose("map", original_pose, transformed_pose);
 

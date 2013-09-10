@@ -139,5 +139,11 @@ rosbuild_add_executable(random_location_finder_action_server ros/src/random_loca
 rosbuild_add_executable(inspect_room_action_server ros/src/inspect_room_action_server.cpp)
 
 			#Trash Bin detection Server			
-#rosbuild_add_executable(trash_bin_detection_service_server ros/src/trash_bin_detection_service_server.cpp)
+rosbuild_add_executable(trash_bin_detection_service_server ros/src/trash_bin_detection_service_server.cpp)
+
+			#Trash Bin detection ON Client 			
+rosbuild_add_executable(trash_bin_detection_on_client ros/src/trash_bin_detection_on_client.cpp)
+
+			#Trash Bin detection OFF Client			
+rosbuild_add_executable(trash_bin_detection_off_client ros/src/trash_bin_detection_off_client.cpp)
 
