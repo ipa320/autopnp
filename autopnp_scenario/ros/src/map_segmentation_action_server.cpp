@@ -1,6 +1,6 @@
 #include <autopnp_scenario/map_segmentation_algorithm.h>
 
-#define __DEBUG_DISPLAYS__
+//#define __DEBUG_DISPLAYS__
 
 segmentation_algorithm::segmentation_algorithm(std::string name_of_the_action) :
 		map_segmentation_action_server_(nh_, name_of_the_action, boost::bind(&segmentation_algorithm::execute_map_segmentation_server, this, _1), false), action_name_(
