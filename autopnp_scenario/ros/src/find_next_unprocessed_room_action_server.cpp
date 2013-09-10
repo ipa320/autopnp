@@ -1,5 +1,7 @@
 #include <autopnp_scenario/find_next_unprocessed_room.h>
 
+//#define __DEBUG_DISPLAYS__
+
 unprocessed_room_finder::unprocessed_room_finder(std::string name_of_the_action) :
 		next_unprocessed_room_action_server_(nh_, name_of_the_action, boost::bind(&unprocessed_room_finder::execute_find_next_unprocessed_room_action_server, this, _1), false), action_name_(
 				name_of_the_action)
@@ -21,6 +23,13 @@ void unprocessed_room_finder::find_next_room_(const cv::Mat &map_from_goal_defin
 	Pose robot_location_in_meter(transform_.getOrigin().x(), transform_.getOrigin().y(), transform_.getRotation().z());
 	robot_location_in_pixel = convert_from_meter_to_pixel_coordinates_<cv::Point>(robot_location_in_meter);
 	int Pixel_Value = (int)map_from_goal_definition.at<unsigned char>(robot_location_in_pixel);
+
+#ifdef __DEBUG_DISPLAYS__
+	cv::Mat debug_image = map_from_goal_definition.clone();
+	cv::circle( debug_image , robot_location_in_pixel , 3 , cv::Scalar(255), -1 );
+	cv::imshow( "robot location", debug_image );
+	cv::waitKey(100);
+#endif
 
 	/*
 	 * comment: If Pixel_value gives the same value then that means
@@ -56,6 +65,13 @@ void unprocessed_room_finder::find_next_room_(const cv::Mat &map_from_goal_defin
 			ROS_INFO("Next room to Visit: %d",room_number_.back());
 		}
 	}
+
+#ifdef __DEBUG_DISPLAYS__
+	cv::Mat debug_image_for_next_room = map_from_goal_definition.clone();
+	cv::circle( debug_image_for_next_room , center_of_room_[room_number_.back()] , 3 , cv::Scalar(255), -1 );
+	cv::imshow( "Next nearest unprocessed room", debug_image_for_next_room );
+	cv::waitKey(100);
+#endif
 
 	ROS_INFO("222222222222 find next unprocessed room action server 222222222222\n");
 }
