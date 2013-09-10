@@ -1,5 +1,13 @@
 #include <autopnp_scenario/random_location_finder.h>
 
+/* If you want to run this software smoothly,please->
+ * set the approach_path_accessibility_check to false
+ * in map_accessibility_analysis_params.yaml from
+ * package cob_map_accessibility_analysis and also
+ * set the parameter in node_handle_.param("map_accessibility_analysis/approach_path_accessibility_check", approach_path_accessibility_check_, false);
+ * to false in map_accessibility_analysis_server.cpp
+ * */
+
 //#define __DEBUG_DISPLAYS__
 
 random_location_finder::random_location_finder(std::string name_of_the_action) :
@@ -33,7 +41,7 @@ cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from
 #ifdef __DEBUG_DISPLAYS__
 	cv::Mat Debug_image = original_map_from_goal_definition.clone();
 	cv::circle( Debug_image , random_location_point_ , 3 , cv::Scalar(255), -1 );
-	cv::imshow( "find random location_", Debug_image );
+	cv::imshow( "find random location", Debug_image );
 	cv::waitKey(100);
 #endif
 		/* To check the dynamic obstacles the map
@@ -51,7 +59,6 @@ cv::Mat random_location_finder::find_random_location_(cv::Mat &original_map_from
 		// this calls the service server to process our request message and put the result into the response message
 		// this call is blocking, i.e. this program will not proceed until the service server sends the response
 		ros::service::call(points_service_name_, req_points_, res_points_);
-		std::cout<<"\nres_points_.accessibility_flags[0]: "<< (int)res_points_.accessibility_flags[0]<<std::endl;
 
 		if (random_location_finder_map.at<unsigned char>(random_location_point_) != 0 && res_points_.accessibility_flags[0] == true)
 		{
