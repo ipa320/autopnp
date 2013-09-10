@@ -9,7 +9,7 @@
   <arg name="yaml_file" default="fiducials_0.yaml" />
   
   <!-- send parameters to parameter server -->
-  <rosparam command="load" ns="fiducials" file="$(find autopnp_scenario)/ros/fiducials/launch/$(arg yaml_file)"/>
+  <rosparam command="load" ns="fiducials" file="$(find autopnp_scenario)/ros/launch/fiducials/$(arg yaml_file)"/>
   <param name="fiducials/model_directory" value="$(find cob_fiducials)/common/files/models/"/>
 
   <!-- start left camera -->
