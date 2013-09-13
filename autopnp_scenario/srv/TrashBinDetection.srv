@@ -1,5 +1,0 @@
-#req
-bool service_on_off_switch							# A value 'True' will Turn-on the service and 'False' will Turn-off the service  
----
-#res
-geometry_msgs/PoseStamped[] trash_bin_locations		# return the locations of detected Trash Bins

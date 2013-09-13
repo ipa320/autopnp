@@ -1,6 +1,5 @@
 #include "ros/ros.h"
-#include <autopnp_scenario/TrashBinDetection.h>
-#include <autopnp_scenario/trash_bin_detection.h>
+#include <autopnp_scenario/ActivateTrashBinDetection.h>
 
 int main(int argc, char **argv)
 {
@@ -14,16 +13,16 @@ int main(int argc, char **argv)
 	* You must call one of the versions of ros::init() before using any other
 	* part of the ROS system.
 	*/
-	ros::init(argc, argv, "map_point_accessibility_check_client");
+	ros::init(argc, argv, "trash_bin_detection_activation_client");
 
 	/**
 	* NodeHandle is the main access point to communications with the ROS system.
 	* The first NodeHandle constructed will fully initialize this node, and the last
 	* NodeHandle destructed will close down the node.
 	*/
-	ros::NodeHandle n;
+	ros::NodeHandle node_handle;
 
-	std::string trash_bin_detection_service_name = "trash_bin_detection_check";
+	std::string trash_bin_detection_service_name = "activate_trash_bin_detection_service";
 
 	// here we wait until the service is available; please use the same service name as the one in the server; you may define a timeout if the service does not show up
 	std::cout << "Waiting for service server to become available....." << std::endl;
@@ -37,23 +36,21 @@ int main(int argc, char **argv)
 	}
 	std::cout << "The service servers are advertised.\n" << std::endl;
 
-
-	// ===== example call to trash bin detection service =====
-	autopnp_scenario::TrashBinDetection::Request turn_on_request;
-	autopnp_scenario::TrashBinDetection::Response res_pose;
-
-	turn_on_request.service_on_off_switch = true;
+	// ===== example call to activate trash bin detection service =====
+	autopnp_scenario::ActivateTrashBinDetection::Request request;
+	autopnp_scenario::ActivateTrashBinDetection::Response response;
+	ros::service::call(trash_bin_detection_service_name, request, response);
 
 	// this calls the service server to process our request message and put the result into the response message
 	// this call is blocking, i.e. this program will not proceed until the service server sends the response
-	bool success = ros::service::call(trash_bin_detection_service_name, turn_on_request, res_pose);
+	bool success = ros::service::call(trash_bin_detection_service_name, request, response);
 
 	if (success == true)
 	{
-		ROS_INFO("trash bin detection on service is available");
+		ROS_INFO("activation of trash bin detection is available");
 	}
 	else
-		ROS_INFO("trash bin detection on service is not available");
+		ROS_INFO("activation of trash bin detection is not available");
 
 	return 0;
 }
