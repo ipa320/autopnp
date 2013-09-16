@@ -1,6 +1,6 @@
 #include <autopnp_scenario/trash_bin_detection.h>
 
-#define __DEBUG_DISPLAYS__
+//#define __DEBUG_DISPLAYS__
 
 //constructor Initialization
 trash_bin_detection::trash_bin_detection()
