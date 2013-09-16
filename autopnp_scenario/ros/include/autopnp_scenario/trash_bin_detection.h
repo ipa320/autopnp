@@ -89,7 +89,7 @@ private:
 	ros::ServiceServer activate_trash_bin_detection_server_;
 	ros::ServiceServer deactivate_trash_bin_detection_server_;
 
-    geometry_msgs::PoseStamped pose_with_respect_to_fiducials_frame_id_;
+    	geometry_msgs::PoseStamped pose_with_respect_to_fiducials_frame_id_;
 	geometry_msgs::PoseStamped pose_with_respect_to_map_;
 
 	std::vector<geometry_msgs::PoseStamped> pose_array_;
