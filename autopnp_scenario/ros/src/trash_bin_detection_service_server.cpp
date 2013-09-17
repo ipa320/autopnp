@@ -3,7 +3,8 @@
 //#define __DEBUG_DISPLAYS__
 
 //constructor Initialization
-trash_bin_detection::trash_bin_detection()
+trash_bin_detection::trash_bin_detection(ros::NodeHandle& nh)
+: listener_(nh, ros::Duration(40.0))
 {
 	trash_bin_detection_active_ = false ;
 }
@@ -37,39 +38,43 @@ void trash_bin_detection::fiducials_data_callback_(const cob_object_detection_ms
 		{
 			fiducials_frame_id_ = fiducials_msg_data->detections[loop_counter].header.frame_id;
 			pose_with_respect_to_fiducials_frame_id_= fiducials_msg_data->detections[loop_counter].pose;
-			trash_bin_pose_estimator_();
+			trash_bin_pose_estimator_(pose_with_respect_to_fiducials_frame_id_ , fiducials_frame_id_ );
 		}
 	}
 }
 
 //This function process the data to calculate the trash bin location
-void trash_bin_detection::trash_bin_pose_estimator_()
+void trash_bin_detection::trash_bin_pose_estimator_(geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id)
 {
 	if (trash_bin_detection_active_ == false)
 	{
-		pose_array_.clear();
-		trash_bin_location_storage_.trash_bin_locations.clear();
 		return;
 	}
-
 	else
 	{
-		tf::TransformListener listener_;
 		tf::Stamped<tf::Pose> original_pose(
 		tf::Pose(
 				tf::Quaternion(
-						pose_with_respect_to_fiducials_frame_id_.pose.orientation.x,
-						pose_with_respect_to_fiducials_frame_id_.pose.orientation.y,
-						pose_with_respect_to_fiducials_frame_id_.pose.orientation.z,
-						pose_with_respect_to_fiducials_frame_id_.pose.orientation.w),
+						pose_from_fiducials_frame_id.pose.orientation.x,
+						pose_from_fiducials_frame_id.pose.orientation.y,
+						pose_from_fiducials_frame_id.pose.orientation.z,
+						pose_from_fiducials_frame_id.pose.orientation.w),
 				tf::Vector3(
-						pose_with_respect_to_fiducials_frame_id_.pose.position.x,
-						pose_with_respect_to_fiducials_frame_id_.pose.position.y,
-						pose_with_respect_to_fiducials_frame_id_.pose.position.z)),
-				ros::Time(0), fiducials_frame_id_);
+						pose_from_fiducials_frame_id.pose.position.x,
+						pose_from_fiducials_frame_id.pose.position.y,
+						pose_from_fiducials_frame_id.pose.position.z)),
+				ros::Time(0), frame_id);
 		tf::Stamped<tf::Pose> transformed_pose;
-		//todo: Have to give correct frame id->
-		listener_.transformPose(fiducials_frame_id_, original_pose, transformed_pose);
+		try
+		{
+			listener_.waitForTransform("/map", original_pose.frame_id_, original_pose.stamp_, ros::Duration(5.0));
+			listener_.transformPose("/map", original_pose, transformed_pose);
+		}
+		catch (tf::TransformException& ex)
+		{
+			ROS_ERROR("%s",ex.what());
+			return;
+		}
 		pose_with_respect_to_map_.pose.position.x = transformed_pose.getOrigin().x();
 		pose_with_respect_to_map_.pose.position.y = transformed_pose.getOrigin().y();
 		pose_with_respect_to_map_.pose.position.z = transformed_pose.getOrigin().z();
@@ -77,26 +82,28 @@ void trash_bin_detection::trash_bin_pose_estimator_()
 		pose_with_respect_to_map_.pose.orientation.y = transformed_pose.getRotation().y();
 		pose_with_respect_to_map_.pose.orientation.z = transformed_pose.getRotation().z();
 		pose_with_respect_to_map_.pose.orientation.w = transformed_pose.getRotation().w();
+		pose_with_respect_to_map_.header.frame_id = transformed_pose.frame_id_;
+		pose_with_respect_to_map_.header.stamp = transformed_pose.stamp_;
+		pose_with_respect_to_map_.header.seq = pose_from_fiducials_frame_id.header.seq;
 
-		pose_array_.push_back(pose_with_respect_to_map_);
-		unsigned int container_value_checker = pose_array_.size() - 1;
-		if (container_value_checker > 1)
+		if (trash_bin_location_storage_.trash_bin_locations.size() > 0)
 		{
-			if (similarity_checker_(pose_array_[container_value_checker], pose_array_[container_value_checker - 1],0.09) == true)
+			for ( unsigned int loop_counter = 0 ; loop_counter < trash_bin_location_storage_.trash_bin_locations.size() ; loop_counter++ )
 			{
-				pose_array_[container_value_checker] = average_calculator_(pose_array_[container_value_checker], pose_array_[container_value_checker - 1]);
-				trash_bin_location_storage_.trash_bin_locations.push_back(pose_array_[container_value_checker]);
-#ifdef __DEBUG_DISPLAYS__
-	ROS_INFO("trash_bin_locations size: %d",trash_bin_location_storage_.trash_bin_locations.size());
-#endif
+				if (similarity_checker_(pose_with_respect_to_map_ , trash_bin_location_storage_.trash_bin_locations[loop_counter] , 0.3 ) == true)
+				{
+					trash_bin_location_storage_.trash_bin_locations[loop_counter] = average_calculator_(pose_with_respect_to_map_,trash_bin_location_storage_.trash_bin_locations[loop_counter]);
+				}
+				else if(loop_counter == (trash_bin_location_storage_.trash_bin_locations.size() - 1 ))
+				{
+					trash_bin_location_storage_.trash_bin_locations.push_back(pose_with_respect_to_map_);
+				}
+
 			}
 		}
 		else
 		{
-			trash_bin_location_storage_.trash_bin_locations.push_back(pose_array_[container_value_checker]);
-#ifdef __DEBUG_DISPLAYS__
-	ROS_INFO("trash_bin_locations size: %d",trash_bin_location_storage_.trash_bin_locations.size());
-#endif
+			trash_bin_location_storage_.trash_bin_locations.push_back(pose_with_respect_to_map_);
 		}
 
 		trash_bin_location_publisher_.publish(trash_bin_location_storage_);
@@ -110,6 +117,8 @@ bool trash_bin_detection::activate_trash_bin_detection_callback_(
 
 	ROS_INFO("Received request to turn-on trash bin detection.....");
 	ROS_INFO("Trash bin detection is turned-on.");
+
+	trash_bin_location_storage_.trash_bin_locations.clear();
 
 	trash_bin_detection_active_ = true;
 
@@ -129,29 +138,13 @@ bool trash_bin_detection::deactivate_trash_bin_detection_callback_(
 	return true;
 }
 
-
 //This function checks the similarity between the two consecutive pose
 bool trash_bin_detection::similarity_checker_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value , double difference_value )
 {
-	if ((abs(present_value.pose.position.x - past_value.pose.position.x))
-			< difference_value
-			&& (abs(present_value.pose.position.y - past_value.pose.position.y))
-					< difference_value
-			&& (abs(present_value.pose.position.z - past_value.pose.position.z))
-					< difference_value
-			&& (abs(
-					present_value.pose.orientation.x
-							- past_value.pose.orientation.x)) < difference_value
-			&& (abs(
-					present_value.pose.orientation.y
-							- past_value.pose.orientation.y)) < difference_value
-			&& (abs(
-					present_value.pose.orientation.z
-							- past_value.pose.orientation.z)) < difference_value
-			&& (abs(
-					present_value.pose.orientation.w
-							- past_value.pose.orientation.w))
-					< difference_value)
+	if (sqrt((present_value.pose.position.x - past_value.pose.position.x)*(present_value.pose.position.x - past_value.pose.position.x)
+			+ (present_value.pose.position.y - past_value.pose.position.y)*(present_value.pose.position.y - past_value.pose.position.y)
+			+ (present_value.pose.position.z - past_value.pose.position.z)*(present_value.pose.position.z - past_value.pose.position.z))
+			< difference_value )
 	{
 		return true;
 	}
@@ -177,6 +170,9 @@ geometry_msgs::PoseStamped trash_bin_detection::average_calculator_(geometry_msg
 			+ past_value.pose.orientation.z) / 2;
 	average_value.pose.orientation.w = (present_value.pose.orientation.w
 			+ past_value.pose.orientation.w) / 2;
+
+	average_value.header = present_value.header;
+
 	return average_value;
 }
 
@@ -199,7 +195,7 @@ int main(int argc, char **argv)
 	 * NodeHandle destructed will close down the node.
 	 */
 	ros::NodeHandle nh;
-	trash_bin_detection bin_detection_object;
+	trash_bin_detection bin_detection_object(nh);
 	bin_detection_object.fiducials_init_(nh);
 	ROS_INFO("Trash Bin detection Server initialized.....");
 	ros::spin();

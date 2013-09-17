@@ -78,7 +78,6 @@
 class trash_bin_detection
 {
 private:
-
 	bool trash_bin_detection_active_;
 
 	std::string fiducials_frame_id_;
@@ -89,22 +88,23 @@ private:
 	ros::ServiceServer activate_trash_bin_detection_server_;
 	ros::ServiceServer deactivate_trash_bin_detection_server_;
 
+	tf::TransformListener listener_;
+
     geometry_msgs::PoseStamped pose_with_respect_to_fiducials_frame_id_;
 	geometry_msgs::PoseStamped pose_with_respect_to_map_;
 
-	std::vector<geometry_msgs::PoseStamped> pose_array_;
 	boost::mutex mutex_subscription_data_;
 	autopnp_scenario::TrashBinDetection trash_bin_location_storage_;
 
 	void fiducials_data_callback_(const cob_object_detection_msgs::DetectionArray::ConstPtr& fiducials_msg_data);
-	void trash_bin_pose_estimator_();
+	void trash_bin_pose_estimator_(geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id);
 	bool activate_trash_bin_detection_callback_(autopnp_scenario::ActivateTrashBinDetection::Request &req, autopnp_scenario::ActivateTrashBinDetection::Response &res);
 	bool deactivate_trash_bin_detection_callback_(autopnp_scenario::DeactivateTrashBinDetection::Request &req, autopnp_scenario::DeactivateTrashBinDetection::Response &res);
-	bool similarity_checker_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value, double difference_value);
+	bool similarity_checker_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value, double difference_value );
 	geometry_msgs::PoseStamped average_calculator_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value);
 
 public:
-	trash_bin_detection();
+	trash_bin_detection(ros::NodeHandle& nh);
 	void fiducials_init_(ros::NodeHandle& nh);
 };
 
