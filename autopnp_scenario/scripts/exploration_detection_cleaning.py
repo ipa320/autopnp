@@ -69,7 +69,6 @@ from inspect_room_action_client import inspect_room
 
 from autopnp_scenario.srv import *
 from autopnp_dirt_detection.srv import *
-import autopnp_scenario
 
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
@@ -349,7 +348,7 @@ class ReleaseGrasp(smach.State):
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-#-------------------------------------------------------- Dirt Detection ---------------------------------------------------------------------------------------
+#-------------------------------------------------------- Dirt Detection ----------------------------------------------------------------------------------------
         
         
         
@@ -362,25 +361,26 @@ class DirtDetectionOn(smach.State):
         rospy.loginfo('Executing state Dirt_Detection_On')
         rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
         try:
-            rospy.ServiceProxy('/dirt_detection/activate_dirt_detection',ActivateDirtDetection)
+            req = rospy.ServiceProxy('/dirt_detection/activate_dirt_detection',ActivateDirtDetection)
+            resp = req()
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
         return 'dd_On' 
     
     
 # The TrashBinDetectionOn class defines a state machine of smach which basically 
-# use the TrashBinDetection service to detect Trash Bins
+# use the ActivateTrashBinDetection service to activate Trash Bin Detection
 class TrashBinDetectionOn(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['TBD_On'])
              
     def execute(self, userdata ):  
-        rospy.sleep(2)                              
+#         rospy.sleep(2)                              
         rospy.loginfo('Executing state Trash_Bin_Detection_On') 
-        rospy.wait_for_service('trash_bin_detection_check') 
+        rospy.wait_for_service('activate_trash_bin_detection_service') 
         try:
-            req = rospy.ServiceProxy('trash_bin_detection_check',TrashBinDetection)
-            req(True)
+            req = rospy.ServiceProxy('activate_trash_bin_detection_service',ActivateTrashBinDetection)
+            resp = req()
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e                                               
         return 'TBD_On'               
@@ -396,30 +396,61 @@ class DirtDetectionOff(smach.State):
         rospy.loginfo('Executing state Dirt_Detection_Off')   
         rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
         try:
-            rospy.ServiceProxy('/dirt_detection/deactivate_dirt_detection',DeactivateDirtDetection)
+            req = rospy.ServiceProxy('/dirt_detection/deactivate_dirt_detection',DeactivateDirtDetection)
+            resp = req()
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e                                             
         return 'dd_Off'  
-    
-    
-# The TrashBinDetectionOn class defines a state machine of smach which basically 
-# Turn-off the TrashBinDetection service    
+
+  
+# The TrashBinDetectionOff class defines a state machine of smach which basically 
+# use the DeactivateTrashBinDetection service to deactivate Trash Bin Detection
 class TrashBinDetectionOff(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['trash_can_found','trash_can_not_found'])
+        smach.State.__init__(self, outcomes=['trash_can_found','trash_can_not_found'],output_keys=['detected_waste_bin_poses_'])
              
     def execute(self, userdata ): 
 #         rospy.sleep(2)                               
         rospy.loginfo('Executing state Trash_Bin_Detection_Off')     
-        rospy.wait_for_service('trash_bin_detection_check') 
+        rospy.wait_for_service('deactivate_trash_bin_detection_service') 
         try:
-            req = rospy.ServiceProxy('trash_bin_detection_check',TrashBinDetection)
-            req(False)
+            req = rospy.ServiceProxy('deactivate_trash_bin_detection_service',DeactivateTrashBinDetection)
+            resp = req()            
         except rospy.ServiceException, e:
-            print "Service call failed: %s"%e                                             
-        return 'trash_can_found'            
+            print "Service call failed: %s"%e
+                        
+        userdata.detected_waste_bin_poses_ = resp.detected_trash_bin_poses.detections
+        
+        if len(resp.detected_trash_bin_poses.detections)==0:                                    
+            return 'trash_can_not_found'   
+        else:
+            return 'trash_can_found'
     
     
+# The GoToNextUnprocessedWasteBin class defines a state machine of smach which basically 
+# give the goal position to go to the next unprocessed trash bin location   
+class GoToNextUnprocessedWasteBin(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['go_to_trash_location','All_the_trash_bin_is_cleared'],input_keys=['go_to_next_unprocessed_waste_bin_in_',
+                                                                                                                'number_of_unprocessed_trash_bin_in_'],
+                                                                                                    output_keys= ['go_to_next_unprocessed_waste_bin_out_',
+                                                                                                                  'number_of_unprocessed_trash_bin_out_'])
+              
+    def execute(self, userdata ): 
+#         rospy.sleep(2)                               
+        rospy.loginfo('Executing state Go_To_Next_Unprocessed_Waste_Bin')
+        if (len(userdata.go_to_next_unprocessed_waste_bin_in_)==0 or
+            userdata.number_of_unprocessed_trash_bin_in_ == len(userdata.go_to_next_unprocessed_waste_bin_in_)):
+            rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
+            return 'All_the_trash_bin_is_cleared'
+        else:
+            rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
+            rospy.loginfo('Current Trash Bin Number: %d',userdata.number_of_unprocessed_trash_bin_in_)
+            userdata.go_to_next_unprocessed_waste_bin_out_ = userdata.go_to_next_unprocessed_waste_bin_in_[userdata.number_of_unprocessed_trash_bin_in_]
+            userdata.number_of_unprocessed_trash_bin_out_ = userdata.number_of_unprocessed_trash_bin_in_ + 1
+            return 'go_to_trash_location'                    
+    
+        
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -427,14 +458,16 @@ class TrashBinDetectionOff(smach.State):
 #-------------------------------------------------------- Clear Waste Bin ---------------------------------------------------------------------------------------
 
 
-    
+# Here you can use the 'trash_bin_pose_' input key to move the robot 
+# to desire trash bin position     
 class MoveToTrashBinLocation(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['MTTBL_success'])
+        smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'])
              
     def execute(self, userdata ):  
-        rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_To_Trash_Bin_Location')                                                
+#         rospy.sleep(2)                              
+        rospy.loginfo('Executing state Move_To_Trash_Bin_Location') 
+        print '\ncurrent trash bin pose: ',userdata.trash_bin_pose_                                               
         return 'MTTBL_success'  
     
     
@@ -444,7 +477,7 @@ class GraspTrashBin(smach.State):
         smach.State.__init__(self, outcomes=['GTB_success'])
              
     def execute(self, userdata ):  
-        rospy.sleep(2)                              
+#         rospy.sleep(2)                              
         rospy.loginfo('Executing state Grasp_Trash_Bin')                                                
         return 'GTB_success'        
     
@@ -455,7 +488,7 @@ class MoveToToolWagon(smach.State):
         smach.State.__init__(self, outcomes=['MTTW_success'])
              
     def execute(self, userdata ):  
-        rospy.sleep(2)                              
+#         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_To_Tool_Wagon')                                                
         return 'MTTW_success'
     
@@ -466,7 +499,7 @@ class ClearTrashBinIntoToolWagon(smach.State):
         smach.State.__init__(self, outcomes=['CTBITW_done'])
              
     def execute(self, userdata ):  
-        rospy.sleep(2)                              
+#         rospy.sleep(2)                              
         rospy.loginfo('Executing state Clear_Trash_Bin_Into_Tool_Wagon')                                                
         return 'CTBITW_done'   
     
@@ -477,7 +510,7 @@ class MoveToTrashBinPickingLocation(smach.State):
         smach.State.__init__(self, outcomes=['MTTBPL_done'])
              
     def execute(self, userdata ):  
-        rospy.sleep(2)                              
+#         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')                                                
         return 'MTTBPL_done'
     
@@ -488,7 +521,7 @@ class ReleaseTrashBin(smach.State):
         smach.State.__init__(self, outcomes=['RTB_finished'])
              
     def execute(self, userdata ):  
-        rospy.sleep(2)                              
+#         rospy.sleep(2)                              
         rospy.loginfo('Executing state Release_Trash_Bin')                                                
         return 'RTB_finished'  
     
@@ -737,25 +770,27 @@ def main():
 
 
 
-    sm_top_exploration = smach.StateMachine(outcomes=['finish'])    
+    sm_top_exploration = smach.StateMachine(outcomes=['finish'])  
+    sm_top_exploration.userdata.sm_trash_bin_counter = 0  
 
     with sm_top_exploration:
         smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),transitions={'list_of_rooms':'UNPROCESSED_ROOM'},
                    remapping={'analyze_map_data_img_':'sm_img'})                           
                
-        sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],input_keys=['sm_img',
-                                                                                        'analyze_map_data_map_resolution_',
-                                                                                        'analyze_map_data_map_origin_x_',
-                                                                                        'analyze_map_data_map_origin_y_',
-                                                                                        'analyze_map_data_room_center_x_', 
-                                                                                        'analyze_map_data_room_center_y_',
-                                                                                        'analyze_map_data_room_min_x_',
-                                                                                        'analyze_map_data_room_max_x_',
-                                                                                        'analyze_map_data_room_min_y_',
-                                                                                        'analyze_map_data_room_max_y_'],
-                                                                           output_keys=['sm_RoomNo'])
+        sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],input_keys=[ 'sm_img',
+                                                                                                                        'analyze_map_data_map_resolution_',
+                                                                                                                        'analyze_map_data_map_origin_x_',
+                                                                                                                        'analyze_map_data_map_origin_y_',
+                                                                                                                        'analyze_map_data_room_center_x_', 
+                                                                                                                        'analyze_map_data_room_center_y_',
+                                                                                                                        'analyze_map_data_room_min_x_',
+                                                                                                                        'analyze_map_data_room_max_x_',
+                                                                                                                        'analyze_map_data_room_min_y_',
+                                                                                                                        'analyze_map_data_room_max_y_'],
+                                                                                                           output_keys=['sm_RoomNo'])
+        
         sm_sub_go_to_next_unproccessed_room.userdata.sm_counter = 1
-        sm_sub_go_to_next_unproccessed_room.userdata.sm_location_counter = 0                
+        sm_sub_go_to_next_unproccessed_room.userdata.sm_location_counter = 0                                
         
         with sm_sub_go_to_next_unproccessed_room:                 
             smach.StateMachine.add('FIND_NEXT_ROOM', NextUnprocessedRoom(),transitions={'location':'VERIFY_TOOL_CAR_LOCATION','no_rooms':'no_more_rooms_left'},
@@ -766,7 +801,6 @@ def main():
                               'find_next_unprocessed_room_loop_counter_out_':'sm_counter'})
             
             smach.StateMachine.add('VERIFY_TOOL_CAR_LOCATION', VerifyToolCarLocation(),transitions={'no_need_to_move_it':'GO_TO_LOCATION','tool_wagon_needs_to_be_moved':'MOVE_TOOL_WAGON'}) 
-            
             
             
             sm_sub_move_tool_wagon = smach.StateMachine(outcomes=['wagon_location'])
@@ -809,15 +843,21 @@ def main():
         
         smach.StateMachine.add('DIRT_DETECTION_OFF', DirtDetectionOff() ,transitions={'dd_Off':'TRASH_BIN_DETECTION_OFF'})
         
-        smach.StateMachine.add('TRASH_BIN_DETECTION_OFF', TrashBinDetectionOff() ,transitions={'trash_can_found':'CLEAR_WASTE_BIN','trash_can_not_found':'UNPROCESSED_ROOM'})
+        smach.StateMachine.add('TRASH_BIN_DETECTION_OFF', TrashBinDetectionOff() ,transitions={'trash_can_found':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN','trash_can_not_found':'UNPROCESSED_ROOM'},
+                   remapping={'detected_waste_bin_poses_':'trash_detection_poses'})
 
-
+        smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_WASTE_BIN', GoToNextUnprocessedWasteBin() ,transitions={'go_to_trash_location':'CLEAR_WASTE_BIN','All_the_trash_bin_is_cleared':'UNPROCESSED_ROOM'},
+           remapping={'go_to_next_unprocessed_waste_bin_in_':'trash_detection_poses',
+                      'go_to_next_unprocessed_waste_bin_out_':'detection_pose',
+                      'number_of_unprocessed_trash_bin_in_':'sm_trash_bin_counter',
+                      'number_of_unprocessed_trash_bin_out_':'sm_trash_bin_counter'})
 
         
-        sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done'])
+        sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done'],input_keys=['detection_pose'])
               
         with sm_sub_clear_waste_bin:
-            smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION',MoveToTrashBinLocation() ,transitions={'MTTBL_success':'GRASP_TRASH_BIN'})
+            smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION',MoveToTrashBinLocation() ,transitions={'MTTBL_success':'GRASP_TRASH_BIN'},
+                    remapping = {'trash_bin_pose_':'detection_pose'})
             
             smach.StateMachine.add('GRASP_TRASH_BIN',GraspTrashBin() ,transitions={'GTB_success':'MOVE_TO_TOOL_WAGON'})
             
@@ -829,7 +869,7 @@ def main():
             
             smach.StateMachine.add('RELEASE_TRASH_BIN',ReleaseTrashBin() ,transitions={'RTB_finished':'CWB_done'})
         
-        smach.StateMachine.add('CLEAR_WASTE_BIN', sm_sub_clear_waste_bin ,transitions={'CWB_done':'UNPROCESSED_ROOM'})
+        smach.StateMachine.add('CLEAR_WASTE_BIN', sm_sub_clear_waste_bin ,transitions={'CWB_done':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN'})
         
         
         

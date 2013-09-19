@@ -135,6 +135,17 @@ bool trash_bin_detection::deactivate_trash_bin_detection_callback_(
 
 	trash_bin_detection_active_ = false;
 
+	cob_object_detection_msgs::Detection temp_detection_obj;
+
+	for(unsigned int loop_counter = 0 ; loop_counter < trash_bin_location_storage_.trash_bin_locations.size() ; loop_counter++)
+	{
+		temp_detection_obj.pose.pose = trash_bin_location_storage_.trash_bin_locations[loop_counter].pose;
+		temp_detection_obj.header =  trash_bin_location_storage_.trash_bin_locations[loop_counter].header;
+		res.detected_trash_bin_poses.detections.push_back(temp_detection_obj);
+	}
+
+
+
 	return true;
 }
 

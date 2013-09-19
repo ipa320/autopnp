@@ -71,6 +71,7 @@
 #include <tf/transform_listener.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <autopnp_scenario/TrashBinDetection.h>
+#include <cob_object_detection_msgs/Detection.h>
 #include <cob_object_detection_msgs/DetectionArray.h>
 #include <autopnp_scenario/ActivateTrashBinDetection.h>
 #include <autopnp_scenario/DeactivateTrashBinDetection.h>
