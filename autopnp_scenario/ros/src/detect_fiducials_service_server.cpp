@@ -25,10 +25,6 @@
  * \date Date of creation: September 2013
  *
  * \brief
- * Trash Bin Detection-> The program subscribes to the topic
- * /fiducials/detect_fiducials to get the data from trash bin marker
- * detection.Then it process the data to get the Trash Bin position
- * with respect to map coordinate system
  *
  *****************************************************************
  *
@@ -61,51 +57,85 @@
  *
  ****************************************************************/
 
-#ifndef TRASH_BIN_DETECTION_HH
-#define TRASH_BIN_DETECTION_HH
-
-#include <cmath>
-#include <vector>
-#include <iostream>
 #include <ros/ros.h>
-#include <tf/transform_listener.h>
 #include <geometry_msgs/PoseStamped.h>
-#include <autopnp_scenario/TrashBinDetection.h>
+#include <autopnp_scenario/DetectFiducials.h>
 #include <cob_object_detection_msgs/Detection.h>
 #include <cob_object_detection_msgs/DetectionArray.h>
-#include <autopnp_scenario/ActivateTrashBinDetection.h>
-#include <autopnp_scenario/DeactivateTrashBinDetection.h>
 
-class trash_bin_detection
+class detect_trash_bin_again
 {
 private:
-	bool trash_bin_detection_active_;
-
-	std::string fiducials_frame_id_;
-	std::string image_detection_label_;
+	std::string tag_label_name_;
+	geometry_msgs::PoseStamped fiducials_pose_;
 
 	ros::Subscriber fiducials_msg_sub_;
 	ros::Publisher trash_bin_location_publisher_;
-	ros::ServiceServer activate_trash_bin_detection_server_;
-	ros::ServiceServer deactivate_trash_bin_detection_server_;
+	ros::NodeHandle node_handle_;
+	ros::ServiceServer detect_trash_bin_again_server_;
 
-	tf::TransformListener listener_;
-
-    geometry_msgs::PoseStamped pose_with_respect_to_fiducials_frame_id_;
-	geometry_msgs::PoseStamped pose_with_respect_to_map_;
-
-	autopnp_scenario::TrashBinDetection trash_bin_location_storage_;
+	autopnp_scenario::DetectFiducials trash_bin_pose_;
 
 	void fiducials_data_callback_(const cob_object_detection_msgs::DetectionArray::ConstPtr& fiducials_msg_data);
-	void trash_bin_pose_estimator_(geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id);
-	bool activate_trash_bin_detection_callback_(autopnp_scenario::ActivateTrashBinDetection::Request &req, autopnp_scenario::ActivateTrashBinDetection::Response &res);
-	bool deactivate_trash_bin_detection_callback_(autopnp_scenario::DeactivateTrashBinDetection::Request &req, autopnp_scenario::DeactivateTrashBinDetection::Response &res);
-	bool similarity_checker_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value, double difference_value );
-	geometry_msgs::PoseStamped average_calculator_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value);
+	bool detect_trash_bin_again_callback_(autopnp_scenario::DetectFiducials::Request &req, autopnp_scenario::DetectFiducials::Response &res);
 
 public:
-	trash_bin_detection(ros::NodeHandle& nh);
 	void fiducials_init_(ros::NodeHandle& nh);
 };
 
-#endif
+void detect_trash_bin_again::fiducials_init_(ros::NodeHandle& nh)
+{
+	ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
+	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &detect_trash_bin_again::fiducials_data_callback_,this);
+	ROS_INFO("FiducialsDetectionCheck: data received.");
+	detect_trash_bin_again_server_ = node_handle_.advertiseService("detect_trash_bin_again_service", &detect_trash_bin_again::detect_trash_bin_again_callback_,this);
+}
+
+void detect_trash_bin_again::fiducials_data_callback_(const cob_object_detection_msgs::DetectionArray::ConstPtr& fiducials_msg_data)
+{
+	for (unsigned int loop_counter=0; loop_counter<fiducials_msg_data->detections.size(); loop_counter++)
+	{
+		if (fiducials_msg_data->detections.size() == 0)
+		{
+			ROS_INFO("No markers detected.\n");
+			return;
+		}
+		else
+		{
+			tag_label_name_ = fiducials_msg_data->detections[loop_counter].label;
+			fiducials_pose_= fiducials_msg_data->detections[loop_counter].pose;
+		}
+	}
+}
+
+bool detect_trash_bin_again::detect_trash_bin_again_callback_(
+		autopnp_scenario::DetectFiducials::Request &req,
+		autopnp_scenario::DetectFiducials::Response &res) {
+
+	ROS_INFO("Received request to detect trash bin.....");
+
+	if((tag_label_name_ == req.tag_name))
+	{
+		res.waste_bin_location = fiducials_pose_ ;
+	}
+
+	return true;
+}
+
+int main(int argc, char **argv)
+{
+	ros::init(argc, argv, "detect_trash_bin_again");
+	ros::NodeHandle nh;
+	detect_trash_bin_again detect_trash_bin_again_obj;
+	detect_trash_bin_again_obj.fiducials_init_(nh);
+	ROS_INFO("Detect trash Bin again service server initialized.....");
+	ros::spin();
+	return 0;
+}
+
+
+
+
+
+
+

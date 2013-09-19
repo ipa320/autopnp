@@ -12,12 +12,9 @@ trash_bin_detection::trash_bin_detection(ros::NodeHandle& nh)
 //Initialize Trash bin detection to receive necessary raw data
 void trash_bin_detection::fiducials_init_(ros::NodeHandle& nh)
 {
-	{
-		boost::mutex::scoped_lock lock(mutex_subscription_data_);
-		ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
-		fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &trash_bin_detection::fiducials_data_callback_,this);
-		ROS_INFO("FiducialsDetectionCheck: data received.");
-	}
+	ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
+	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &trash_bin_detection::fiducials_data_callback_,this);
+	ROS_INFO("FiducialsDetectionCheck: data received.");
 	activate_trash_bin_detection_server_ = nh.advertiseService("activate_trash_bin_detection_service", &trash_bin_detection::activate_trash_bin_detection_callback_, this);
 	deactivate_trash_bin_detection_server_ = nh.advertiseService("deactivate_trash_bin_detection_service", &trash_bin_detection::deactivate_trash_bin_detection_callback_, this);
 	//trash_bin_poses-> So you have to take the data from this topic

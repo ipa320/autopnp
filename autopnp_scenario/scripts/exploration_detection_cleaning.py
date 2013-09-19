@@ -70,6 +70,11 @@ from inspect_room_action_client import inspect_room
 from autopnp_scenario.srv import *
 from autopnp_dirt_detection.srv import *
 
+from ApproachPerimeter import *
+
+from simple_script_server import simple_script_server
+sss = simple_script_server()
+
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
@@ -464,21 +469,63 @@ class MoveToTrashBinLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'])
              
-    def execute(self, userdata ):  
-#         rospy.sleep(2)                              
+    def execute(self, userdata ):                              
         rospy.loginfo('Executing state Move_To_Trash_Bin_Location') 
-        print '\ncurrent trash bin pose: ',userdata.trash_bin_pose_                                               
+        try:
+            sm = ApproachPerimeter()
+            sm.userdata.center = Pose2D()
+            sm.userdata.center.x = userdata.trash_bin_pose_.pose.pose.position.x 
+            sm.userdata.center.y = userdata.trash_bin_pose_.pose.pose.position.y
+            sm.userdata.center.theta = 0
+            sm.userdata.radius = 0.8
+            sm.userdata.rotational_sampling_step = 10.0/180.0*math.pi
+            sm.userdata.new_computation_flag = True
+            sm.userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
+            sm.userdata.goal_pose_selection_strategy = 'closest_to_target_gaze_direction'  #'closest_to_target_gaze_direction', 'closest_to_robot'             
+            # introspection -> smach_viewer
+            sis = smach_ros.IntrospectionServer('map_accessibility_analysis_introspection', sm, '/MAP_ACCESSIBILITY_ANALYSIS')             
+            sis.start()
+            sm.execute()
+            sis.stop()
+        except:
+            print('EXCEPTION THROWN')
+            print('Aborting cleanly')
+            os._exit(1)                                              
         return 'MTTBL_success'  
-    
+        
     
     
 class GraspTrashBin(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['GTB_success'])
              
-    def execute(self, userdata ):  
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Grasp_Trash_Bin')                                                
+    def execute(self, userdata ):                             
+        rospy.loginfo('Executing state Grasp_Trash_Bin')  
+        rospy.loginfo('setting robot head and torso position')
+        handle_head = sss.move("head","back",False)
+        handle_head.wait()
+        handle_torso = sss.move("torso","back",False)
+        handle_torso.wait()        
+        rospy.wait_for_service('detect_trash_bin_again_service')
+        try:
+            while 1:
+                req = rospy.ServiceProxy('detect_trash_bin_again_service', DetectFiducials)
+                resp = req('tag_0')
+                print'\nseq: ',resp.waste_bin_location.header.seq 
+                print'frame id: ',resp.waste_bin_location.header.frame_id
+                print'sec: ',resp.waste_bin_location.header.stamp.secs
+                print'nsec: ',resp.waste_bin_location.header.stamp.nsecs
+                print'position.x: ',resp.waste_bin_location.pose.position.x    
+                print'position.y: ',resp.waste_bin_location.pose.position.y  
+                print'position.z: ',resp.waste_bin_location.pose.position.z  
+                print'orientation.x: ',resp.waste_bin_location.pose.orientation.x  
+                print'orientation.y: ',resp.waste_bin_location.pose.orientation.y  
+                print'orientation.z: ',resp.waste_bin_location.pose.orientation.z  
+                print'orientation.w: ',resp.waste_bin_location.pose.orientation.x   
+                if resp.waste_bin_location.pose.position.x != 0:
+                    break
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e                                              
         return 'GTB_success'        
     
     
@@ -767,8 +814,6 @@ class ProcessCleaningVerificationResults(smach.State):
 def main():
     
     rospy.init_node('exploration_detection_cleaning')
-
-
 
     sm_top_exploration = smach.StateMachine(outcomes=['finish'])  
     sm_top_exploration.userdata.sm_trash_bin_counter = 0  
