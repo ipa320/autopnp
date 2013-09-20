@@ -467,30 +467,32 @@ class GoToNextUnprocessedWasteBin(smach.State):
 # to desire trash bin position     
 class MoveToTrashBinLocation(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'])
+        smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'],
+                             output_keys=['center', 'radius', 'rotational_sampling_step', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
              
     def execute(self, userdata ):                              
         rospy.loginfo('Executing state Move_To_Trash_Bin_Location') 
-        try:
-            sm = ApproachPerimeter()
-            sm.userdata.center = Pose2D()
-            sm.userdata.center.x = userdata.trash_bin_pose_.pose.pose.position.x 
-            sm.userdata.center.y = userdata.trash_bin_pose_.pose.pose.position.y
-            sm.userdata.center.theta = 0
-            sm.userdata.radius = 0.8
-            sm.userdata.rotational_sampling_step = 10.0/180.0*math.pi
-            sm.userdata.new_computation_flag = True
-            sm.userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
-            sm.userdata.goal_pose_selection_strategy = 'closest_to_target_gaze_direction'  #'closest_to_target_gaze_direction', 'closest_to_robot'             
+        #try:
+            #sm = ApproachPerimeter()
+        center = Pose2D()
+        center.x = userdata.trash_bin_pose_.pose.pose.position.x 
+        center.y = userdata.trash_bin_pose_.pose.pose.position.y
+        center.theta = 0
+        userdata.center = center
+        userdata.radius = 0.8
+        userdata.rotational_sampling_step = 10.0/180.0*math.pi
+        userdata.new_computation_flag = True
+        userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
+        userdata.goal_pose_selection_strategy = 'closest_to_target_gaze_direction'  #'closest_to_target_gaze_direction', 'closest_to_robot'             
             # introspection -> smach_viewer
-            sis = smach_ros.IntrospectionServer('map_accessibility_analysis_introspection', sm, '/MAP_ACCESSIBILITY_ANALYSIS')             
-            sis.start()
-            sm.execute()
-            sis.stop()
-        except:
-            print('EXCEPTION THROWN')
-            print('Aborting cleanly')
-            os._exit(1)                                              
+#             sis = smach_ros.IntrospectionServer('map_accessibility_analysis_introspection', sm, '/MAP_ACCESSIBILITY_ANALYSIS')             
+#             sis.start()
+#             sm.execute()
+#             sis.stop()
+#         except:
+#             print('EXCEPTION THROWN')
+#             print('Aborting cleanly')
+#             os._exit(1)                                              
         return 'MTTBL_success'  
         
     
@@ -511,21 +513,24 @@ class GraspTrashBin(smach.State):
             while 1:
                 req = rospy.ServiceProxy('detect_trash_bin_again_service', DetectFiducials)
                 resp = req('tag_0')
-                print'\nseq: ',resp.waste_bin_location.header.seq 
-                print'frame id: ',resp.waste_bin_location.header.frame_id
-                print'sec: ',resp.waste_bin_location.header.stamp.secs
-                print'nsec: ',resp.waste_bin_location.header.stamp.nsecs
-                print'position.x: ',resp.waste_bin_location.pose.position.x    
-                print'position.y: ',resp.waste_bin_location.pose.position.y  
-                print'position.z: ',resp.waste_bin_location.pose.position.z  
-                print'orientation.x: ',resp.waste_bin_location.pose.orientation.x  
-                print'orientation.y: ',resp.waste_bin_location.pose.orientation.y  
-                print'orientation.z: ',resp.waste_bin_location.pose.orientation.z  
-                print'orientation.w: ',resp.waste_bin_location.pose.orientation.x   
-                if resp.waste_bin_location.pose.position.x != 0:
+#                 print'\nseq: ',resp.waste_bin_location.header.seq 
+#                 print'frame id: ',resp.waste_bin_location.header.frame_id
+#                 print'sec: ',resp.waste_bin_location.header.stamp.secs
+#                 print'nsec: ',resp.waste_bin_location.header.stamp.nsecs
+#                 print'position.x: ',resp.waste_bin_location.pose.position.x    
+#                 print'position.y: ',resp.waste_bin_location.pose.position.y  
+#                 print'position.z: ',resp.waste_bin_location.pose.position.z  
+#                 print'orientation.x: ',resp.waste_bin_location.pose.orientation.x  
+#                 print'orientation.y: ',resp.waste_bin_location.pose.orientation.y  
+#                 print'orientation.z: ',resp.waste_bin_location.pose.orientation.z  
+#                 print'orientation.w: ',resp.waste_bin_location.pose.orientation.x   
+                if resp.waste_bin_location.header.seq != 0:
                     break
         except rospy.ServiceException, e:
-            print "Service call failed: %s"%e                                              
+            print "Service call failed: %s"%e  
+        
+        handle_torso = sss.move("torso","home",False)
+        handle_torso.wait()                                              
         return 'GTB_success'        
     
     
@@ -815,7 +820,7 @@ def main():
     
     rospy.init_node('exploration_detection_cleaning')
 
-    sm_top_exploration = smach.StateMachine(outcomes=['finish'])  
+    sm_top_exploration = smach.StateMachine(outcomes=['finish', 'failed'])  
     sm_top_exploration.userdata.sm_trash_bin_counter = 0  
 
     with sm_top_exploration:
@@ -898,10 +903,13 @@ def main():
                       'number_of_unprocessed_trash_bin_out_':'sm_trash_bin_counter'})
 
         
-        sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done'],input_keys=['detection_pose'])
+        sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
               
         with sm_sub_clear_waste_bin:
-            smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION',MoveToTrashBinLocation() ,transitions={'MTTBL_success':'GRASP_TRASH_BIN'},
+            smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION',MoveToTrashBinLocation() ,transitions={'MTTBL_success':'APPROACH_PERIMETER'},
+                    remapping = {'trash_bin_pose_':'detection_pose'})
+            
+            smach.StateMachine.add('APPROACH_PERIMETER',ApproachPerimeter(),transitions={'reached':'GRASP_TRASH_BIN', 'not_reached':'failed', 'failed':'failed'},
                     remapping = {'trash_bin_pose_':'detection_pose'})
             
             smach.StateMachine.add('GRASP_TRASH_BIN',GraspTrashBin() ,transitions={'GTB_success':'MOVE_TO_TOOL_WAGON'})

@@ -70,6 +70,7 @@
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <autopnp_scenario/DetectFiducials.h>
 #include <autopnp_scenario/TrashBinDetection.h>
 #include <cob_object_detection_msgs/Detection.h>
 #include <cob_object_detection_msgs/DetectionArray.h>
@@ -81,11 +82,15 @@ class trash_bin_detection
 private:
 	bool trash_bin_detection_active_;
 
+	std::string tag_label_name_;
+	geometry_msgs::PoseStamped fiducials_pose_;
+
 	std::string fiducials_frame_id_;
 	std::string image_detection_label_;
 
 	ros::Subscriber fiducials_msg_sub_;
 	ros::Publisher trash_bin_location_publisher_;
+	ros::ServiceServer detect_trash_bin_again_server_;
 	ros::ServiceServer activate_trash_bin_detection_server_;
 	ros::ServiceServer deactivate_trash_bin_detection_server_;
 
@@ -98,6 +103,7 @@ private:
 
 	void fiducials_data_callback_(const cob_object_detection_msgs::DetectionArray::ConstPtr& fiducials_msg_data);
 	void trash_bin_pose_estimator_(geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id);
+	bool detect_trash_bin_again_callback_(autopnp_scenario::DetectFiducials::Request &req, autopnp_scenario::DetectFiducials::Response &res);
 	bool activate_trash_bin_detection_callback_(autopnp_scenario::ActivateTrashBinDetection::Request &req, autopnp_scenario::ActivateTrashBinDetection::Response &res);
 	bool deactivate_trash_bin_detection_callback_(autopnp_scenario::DeactivateTrashBinDetection::Request &req, autopnp_scenario::DeactivateTrashBinDetection::Response &res);
 	bool similarity_checker_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value, double difference_value );

@@ -15,6 +15,7 @@ void trash_bin_detection::fiducials_init_(ros::NodeHandle& nh)
 	ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
 	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &trash_bin_detection::fiducials_data_callback_,this);
 	ROS_INFO("FiducialsDetectionCheck: data received.");
+	detect_trash_bin_again_server_ = nh.advertiseService("detect_trash_bin_again_service", &trash_bin_detection::detect_trash_bin_again_callback_,this);
 	activate_trash_bin_detection_server_ = nh.advertiseService("activate_trash_bin_detection_service", &trash_bin_detection::activate_trash_bin_detection_callback_, this);
 	deactivate_trash_bin_detection_server_ = nh.advertiseService("deactivate_trash_bin_detection_service", &trash_bin_detection::deactivate_trash_bin_detection_callback_, this);
 	//trash_bin_poses-> So you have to take the data from this topic
@@ -31,11 +32,17 @@ void trash_bin_detection::fiducials_data_callback_(const cob_object_detection_ms
 			ROS_INFO("No markers detected.\n");
 			return;
 		}
-		else if(fiducials_msg_data->detections[loop_counter].label == "tag_0" )
+		else
 		{
-			fiducials_frame_id_ = fiducials_msg_data->detections[loop_counter].header.frame_id;
-			pose_with_respect_to_fiducials_frame_id_= fiducials_msg_data->detections[loop_counter].pose;
-			trash_bin_pose_estimator_(pose_with_respect_to_fiducials_frame_id_ , fiducials_frame_id_ );
+			tag_label_name_ = fiducials_msg_data->detections[loop_counter].label;
+			fiducials_pose_= fiducials_msg_data->detections[loop_counter].pose;
+
+			if(fiducials_msg_data->detections[loop_counter].label == "tag_0" )
+			{
+				fiducials_frame_id_ = fiducials_msg_data->detections[loop_counter].header.frame_id;
+				pose_with_respect_to_fiducials_frame_id_= fiducials_msg_data->detections[loop_counter].pose;
+				trash_bin_pose_estimator_(pose_with_respect_to_fiducials_frame_id_ , fiducials_frame_id_ );
+			}
 		}
 	}
 }
@@ -105,6 +112,20 @@ void trash_bin_detection::trash_bin_pose_estimator_(geometry_msgs::PoseStamped& 
 
 		trash_bin_location_publisher_.publish(trash_bin_location_storage_);
 	}
+}
+
+bool trash_bin_detection::detect_trash_bin_again_callback_(
+		autopnp_scenario::DetectFiducials::Request &req,
+		autopnp_scenario::DetectFiducials::Response &res) {
+
+	ROS_INFO("Received request to detect trash bin.....");
+
+	if((tag_label_name_ == req.tag_name))
+	{
+		res.waste_bin_location = fiducials_pose_ ;
+	}
+
+	return true;
 }
 
 //This function activate the trash bin detection service
