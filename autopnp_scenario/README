@@ -50,7 +50,7 @@ and other small software from autopnp_scenario package-->
 3. roslaunch cob_bringup dashboard.launch
 4. roslaunch cob_bringup rviz.launch
 
-*To run autopnp_software launch the following-->
+*To run autopnp_scenario software launch the following-->
 1. roslaunch autopnp_scenario autopnp_navigation.launch
 1. roslaunch autopnp_scenario autopnp_scenario.launch 
 2. To run only the exploration Algorithm->
