@@ -39,3 +39,21 @@ and other small software from autopnp_scenario package-->
    rosrun autopnp_scenario trash_bin_detection_off_client.py
 6. To only get data from fiducials topic run->
    rosrun autopnp_scenario detect_fiducials_client.py
+   
+   
+#Instruction about running autopnp_scenario software in real robot------------>
+
+*Launch the following launch files which is necessary to run autopnp_scenario software
+and other small software from autopnp_scenario package-->
+1. roscore
+2. roslaunch cob_bringup robot.launch
+3. roslaunch cob_bringup dashboard.launch
+4. roslaunch cob_bringup rviz.launch
+
+*To run autopnp_software launch the following-->
+1. roslaunch autopnp_scenario autopnp_navigation.launch
+1. roslaunch autopnp_scenario autopnp_scenario.launch 
+2. To run only the exploration Algorithm->
+   rosrun autopnp_scenario exploration_smach.py
+3. To run the whole autopnp project->
+   rosrun autopnp_scenario exploration_detection_cleaning.py
