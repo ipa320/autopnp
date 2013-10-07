@@ -96,7 +96,7 @@ class AnalyzeMap(smach.State):
                                                                             'analyze_map_data_room_max_y_'])
 
     def execute(self, userdata):
-        
+        sf = ScreenFormat("AnalyzeMap")
         map_segmentation_action_client_object_ = MapSegmentationActionClient()
         
         rospy.sleep(1)
@@ -136,7 +136,8 @@ class NextUnprocessedRoom(smach.State):
                                                                                           'find_next_unprocessed_room_center_y_'])
      
         
-    def execute(self, userdata ):                       
+    def execute(self, userdata ):
+    	sf = ScreenFormat("NextUnprocessedRoom")
         #rospy.sleep(10)
         rospy.loginfo('Executing state next unprocessed room.....')        
         if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_data_room_center_x_):
@@ -174,7 +175,8 @@ class GoToRoomLocation(smach.State):
                                                                                      'go_to_room_location_loop_counter_in_'],
                                                                         output_keys=['go_to_room_location_loop_counter_out_'])        
         
-    def execute(self, userdata):        
+    def execute(self, userdata):
+    	sf = ScreenFormat("GoToRoomLocation")
         #rospy.sleep(10)
         rospy.loginfo('Executing state go to room location')                
         if userdata.go_to_room_location_loop_counter_in_ == 0 :
@@ -221,7 +223,7 @@ class FindRandomLocation(smach.State):
                                                                                                'random_location_finder_data_img_out_'])        
         
     def execute(self, userdata):
-        
+        sf = ScreenFormat("FindRandomLocation")
         #rospy.sleep(10)
         rospy.loginfo('Executing state find random location')        
         
@@ -265,7 +267,8 @@ class InspectRoom(smach.State):
                                                                      'analyze_map_data_map_origin_y_'],
                                                         output_keys=['inspect_room_img_out_'])         
         
-    def execute(self, userdata):        
+    def execute(self, userdata):
+    	sf = ScreenFormat("InspectRoom")
         #rospy.sleep(10)
         rospy.loginfo('Executing state inspect_room')        
         inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
@@ -295,7 +298,8 @@ class VerifyToolCarLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['no_need_to_move_it','tool_wagon_needs_to_be_moved'])
              
-    def execute(self, userdata ):                               
+    def execute(self, userdata ):
+    	sf = ScreenFormat("VerifyToolCarLocation")
         rospy.loginfo('Executing state Verify_Tool_Car_Location')                                                
         return 'no_need_to_move_it'   
     
@@ -305,7 +309,8 @@ class MoveBaseToLastToolWaggonLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Move_tool_wagon_1'])
              
-    def execute(self, userdata ):                               
+    def execute(self, userdata ):
+    	sf = ScreenFormat("MoveBaseToLastToolWaggonLocation")
         rospy.loginfo('Executing state Move_Base_To_Last_Tool_Waggon_Location')                                                
         return 'Move_tool_wagon_1'    
 
@@ -315,7 +320,8 @@ class DetectToolWaggon(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Move_tool_wagon_2'])
              
-    def execute(self, userdata ):                               
+    def execute(self, userdata ):
+    	sf = ScreenFormat("DetectToolWaggon")
         rospy.loginfo('Executing state Detect_Tool_Waggon')                                                
         return 'Move_tool_wagon_2'
     
@@ -325,7 +331,8 @@ class GraspHandle(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Move_tool_wagon_3'])
              
-    def execute(self, userdata ):                               
+    def execute(self, userdata ):
+    	sf = ScreenFormat("GraspHandle")
         rospy.loginfo('Executing state Grasp_Handle')                                                
         return 'Move_tool_wagon_3' 
 
@@ -334,7 +341,8 @@ class GoToNextToolWaggonLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Move_tool_wagon_4'])
              
-    def execute(self, userdata ):                               
+    def execute(self, userdata ):
+    	sf = ScreenFormat("GoToNextToolWaggonLocation")
         rospy.loginfo('Executing state Go_To_Next_Tool_Waggon_Location')                                                
         return 'Move_tool_wagon_4' 
     
@@ -344,7 +352,8 @@ class ReleaseGrasp(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['Move_tool_wagon_5'])
              
-    def execute(self, userdata ):                               
+    def execute(self, userdata ):
+    	sf = ScreenFormat("ReleaseGrasp")
         rospy.loginfo('Executing state Release_Grasp')                                                
         return 'Move_tool_wagon_5'     
 
@@ -361,7 +370,8 @@ class DirtDetectionOn(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['dd_On'])
              
-    def execute(self, userdata ):         
+    def execute(self, userdata ):
+    	sf = ScreenFormat("DirtDetectionOn")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Dirt_Detection_On')
         rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
@@ -379,7 +389,8 @@ class TrashBinDetectionOn(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['TBD_On'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("TrashBinDetectionOn")  
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Trash_Bin_Detection_On') 
         rospy.wait_for_service('activate_trash_bin_detection_service') 
@@ -397,6 +408,7 @@ class DirtDetectionOff(smach.State):
         smach.State.__init__(self, outcomes=['dd_Off'])
              
     def execute(self, userdata ):
+    	sf = ScreenFormat("DirtDetectionOff")
 #         rospy.sleep(2)                                
         rospy.loginfo('Executing state Dirt_Detection_Off')   
         rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
@@ -414,7 +426,8 @@ class TrashBinDetectionOff(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['trash_can_found','trash_can_not_found'],output_keys=['detected_waste_bin_poses_'])
              
-    def execute(self, userdata ): 
+    def execute(self, userdata ):
+    	sf = ScreenFormat("TrashBinDetectionOff")
 #         rospy.sleep(2)                               
         rospy.loginfo('Executing state Trash_Bin_Detection_Off')     
         rospy.wait_for_service('deactivate_trash_bin_detection_service') 
@@ -436,12 +449,14 @@ class TrashBinDetectionOff(smach.State):
 # give the goal position to go to the next unprocessed trash bin location   
 class GoToNextUnprocessedWasteBin(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['go_to_trash_location','All_the_trash_bin_is_cleared'],input_keys=['go_to_next_unprocessed_waste_bin_in_',
-                                                                                                                'number_of_unprocessed_trash_bin_in_'],
-                                                                                                    output_keys= ['go_to_next_unprocessed_waste_bin_out_',
-                                                                                                                  'number_of_unprocessed_trash_bin_out_'])
+        smach.State.__init__(self, outcomes=['go_to_trash_location','All_the_trash_bin_is_cleared'],
+							input_keys=['go_to_next_unprocessed_waste_bin_in_',
+                                        'number_of_unprocessed_trash_bin_in_'],
+                            output_keys= ['go_to_next_unprocessed_waste_bin_out_',
+                                          'number_of_unprocessed_trash_bin_out_'])
               
-    def execute(self, userdata ): 
+    def execute(self, userdata ):
+    	sf = ScreenFormat("GoToNextUnprocessedWasteBin")
 #         rospy.sleep(2)                               
         rospy.loginfo('Executing state Go_To_Next_Unprocessed_Waste_Bin')
         if (len(userdata.go_to_next_unprocessed_waste_bin_in_)==0 or
@@ -470,7 +485,8 @@ class MoveToTrashBinLocation(smach.State):
         smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'],
                              output_keys=['center', 'radius', 'rotational_sampling_step', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
              
-    def execute(self, userdata ):                              
+    def execute(self, userdata ):
+    	sf = ScreenFormat("MoveToTrashBinLocation")
         rospy.loginfo('Executing state Move_To_Trash_Bin_Location') 
         #try:
             #sm = ApproachPerimeter()
@@ -483,7 +499,7 @@ class MoveToTrashBinLocation(smach.State):
         userdata.rotational_sampling_step = 10.0/180.0*math.pi
         userdata.new_computation_flag = True
         userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
-        userdata.goal_pose_selection_strategy = 'closest_to_target_gaze_direction'  #'closest_to_target_gaze_direction', 'closest_to_robot'             
+        userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'             
             # introspection -> smach_viewer
 #             sis = smach_ros.IntrospectionServer('map_accessibility_analysis_introspection', sm, '/MAP_ACCESSIBILITY_ANALYSIS')             
 #             sis.start()
@@ -498,40 +514,63 @@ class MoveToTrashBinLocation(smach.State):
     
     
 class GraspTrashBin(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['GTB_success'])
-             
-    def execute(self, userdata ):                             
-        rospy.loginfo('Executing state Grasp_Trash_Bin')  
-        rospy.loginfo('setting robot head and torso position')
-        handle_head = sss.move("head","back",False)
-        handle_head.wait()
-        handle_torso = sss.move("torso","back",False)
-        handle_torso.wait()        
-        rospy.wait_for_service('detect_trash_bin_again_service')
-        try:
-            while 1:
-                req = rospy.ServiceProxy('detect_trash_bin_again_service', DetectFiducials)
-                resp = req('tag_0')
-#                 print'\nseq: ',resp.waste_bin_location.header.seq 
-#                 print'frame id: ',resp.waste_bin_location.header.frame_id
-#                 print'sec: ',resp.waste_bin_location.header.stamp.secs
-#                 print'nsec: ',resp.waste_bin_location.header.stamp.nsecs
-#                 print'position.x: ',resp.waste_bin_location.pose.position.x    
-#                 print'position.y: ',resp.waste_bin_location.pose.position.y  
-#                 print'position.z: ',resp.waste_bin_location.pose.position.z  
-#                 print'orientation.x: ',resp.waste_bin_location.pose.orientation.x  
-#                 print'orientation.y: ',resp.waste_bin_location.pose.orientation.y  
-#                 print'orientation.z: ',resp.waste_bin_location.pose.orientation.z  
-#                 print'orientation.w: ',resp.waste_bin_location.pose.orientation.x   
-                if resp.waste_bin_location.header.seq != 0:
-                    break
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e  
-        
-        handle_torso = sss.move("torso","home",False)
-        handle_torso.wait()                                              
-        return 'GTB_success'        
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['GTB_success'])
+		self.client = actionlib.SimpleActionClient('grasp_trash_bin', autopnp_scenario.msg.GraspTrashBinAction)
+		result = self.client.wait_for_server()
+		if result == True:
+			rospy.loginfo("Grasp trash bin server connected ...")
+		else:
+			rospy.logerror("Grasp trash bin server not found ...")
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("GraspTrashBin")                             
+		rospy.loginfo('Executing state Grasp_Trash_Bin')
+		
+		goal = autopnp_scenario.msg.GraspTrashBinGoal()
+		self.client.send_goal(goal)	
+		finished_before_timeout = self.client.wait_for_result()
+		if finished_before_timeout:
+			state = self.client.get_state()
+			if state is 3:
+				state = 'SUCCEEDED'
+				rospy.loginfo("action finished: %s " % state)
+				return 'GTB_success'
+			else:
+				rospy.loginfo("action finished: %s " % state)
+		else:
+			rospy.logwarn("action did not finish before the time out.")		
+
+		  
+# 		rospy.loginfo('setting robot head and torso position')
+# 		handle_head = sss.move("head","back",False)
+# 		handle_head.wait()
+# 		handle_torso = sss.move("torso","back",False)
+# 		handle_torso.wait()        
+# 		rospy.wait_for_service('detect_trash_bin_again_service')
+# 		try:
+# 			while 1:
+# 				req = rospy.ServiceProxy('detect_trash_bin_again_service', DetectFiducials)
+# 				resp = req('tag_0')
+# #                 print'\nseq: ',resp.waste_bin_location.header.seq 
+# #                 print'frame id: ',resp.waste_bin_location.header.frame_id
+# #                 print'sec: ',resp.waste_bin_location.header.stamp.secs
+# #                 print'nsec: ',resp.waste_bin_location.header.stamp.nsecs
+# #                 print'position.x: ',resp.waste_bin_location.pose.position.x    
+# #                 print'position.y: ',resp.waste_bin_location.pose.position.y  
+# #                 print'position.z: ',resp.waste_bin_location.pose.position.z  
+# #                 print'orientation.x: ',resp.waste_bin_location.pose.orientation.x  
+# #                 print'orientation.y: ',resp.waste_bin_location.pose.orientation.y  
+# #                 print'orientation.z: ',resp.waste_bin_location.pose.orientation.z  
+# #                 print'orientation.w: ',resp.waste_bin_location.pose.orientation.x   
+# 				if resp.waste_bin_location.header.seq != 0:
+# 					break
+# 		except rospy.ServiceException, e:
+# 			print "Service call failed: %s"%e  
+#         
+# 		handle_torso = sss.move("torso","home",False)
+# 		handle_torso.wait()                                              
+		return 'failed'
     
     
              
@@ -539,7 +578,8 @@ class MoveToToolWagon(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MTTW_success'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("MoveToToolWagon")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_To_Tool_Wagon')                                                
         return 'MTTW_success'
@@ -550,7 +590,8 @@ class ClearTrashBinIntoToolWagon(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['CTBITW_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("ClearTrashBinIntoToolWagon")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Clear_Trash_Bin_Into_Tool_Wagon')                                                
         return 'CTBITW_done'   
@@ -561,7 +602,8 @@ class MoveToTrashBinPickingLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MTTBPL_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("MoveToTrashBinPickingLocation")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')                                                
         return 'MTTBPL_done'
@@ -572,7 +614,8 @@ class ReleaseTrashBin(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['RTB_finished'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("ReleaseTrashBin")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Release_Trash_Bin')                                                
         return 'RTB_finished'  
@@ -589,7 +632,8 @@ class GoToToolWagonLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['GTTWL_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("GoToToolWagonLocation")  
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Go_To_Tool_Wagon_Location')                                                
         return 'GTTWL_done'
@@ -600,7 +644,8 @@ class DetectSlotForCurrentTool(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['slot_pose'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("DetectSlotForCurrentTool")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Detect_Slot_For_Current_Tool')                                                
         return 'slot_pose'
@@ -611,7 +656,8 @@ class MoveArmToSlot(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MATS_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("MoveArmToSlot")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_Arm_To_Slot')                                                
         return 'MATS_done'
@@ -622,7 +668,8 @@ class ReleaseToolChanger(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['RTC_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("ReleaseToolChanger")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Release_Tool_Changer')                                                
         return 'RTC_done'
@@ -633,7 +680,8 @@ class LiftArm(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['LA_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("LiftArm")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Lift-Arm')                                                
         return 'LA_done'
@@ -644,7 +692,8 @@ class DetectSlotForNewDevice(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['DSFND_slot_pose'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("DetectSlotForNewDevice")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Detect_Slot_For_New_Device')                                                
         return 'DSFND_slot_pose'
@@ -655,7 +704,8 @@ class MoveArmToSlot2(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MATS2_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("MoveArmToSlot2")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_Arm_To_Slot_2')                                                
         return 'MATS2_done'
@@ -666,7 +716,8 @@ class CloseToolChanger(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['CTC_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("CloseToolChanger")  
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Close_Tool_Changer')                                                
         return 'CTC_done'
@@ -677,7 +728,8 @@ class MoveArmToStandardLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MATSL_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("MoveArmToStandardLocation")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_Arm_To_Standard_Location')                                                
         return 'MATSL_done'
@@ -695,7 +747,8 @@ class GetDirtMap(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['list_of_dirt_location'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("GetDirtMap")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Get_Dirt_Map')   
         rospy.wait_for_service('/dirt_detection/get_dirt_map') 
@@ -717,7 +770,8 @@ class SelectNextUnprocssedDirtSpot(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['SNUDS_location','no_dirt_spots_left'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("SelectNextUnprocssedDirtSpot")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Select_Next_Unprocssed_Dirt_Spot')                                                
         return 'no_dirt_spots_left'
@@ -728,7 +782,8 @@ class Move_Location_Perimeter_60cm(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MLP60_arrived_dirt_location','MLP60_unsuccessful'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("Move_Location_Perimeter_60cm")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_Location_Perimeter_60cm')                                                
         return 'MLP60_arrived_dirt_location'
@@ -746,7 +801,8 @@ class Clean(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['clean_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("Clean")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Clean')                                                
         return 'clean_done'
@@ -764,7 +820,8 @@ class Move_Location_Perimeter_180cm(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MLP180_arrived_dirt_location'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("Move_Location_Perimeter_180cm")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Move_Location_Perimeter_180cm')                                                
         return 'MLP180_arrived_dirt_location'
@@ -782,7 +839,8 @@ class verifyCleaningProcess(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['VCP_done'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("verifyCleaningProcess")
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state verify_Cleaning_Process')     
         rospy.wait_for_service('/dirt_detection/validate_cleaning_result') 
@@ -805,7 +863,8 @@ class ProcessCleaningVerificationResults(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['PCVR_finish'])
              
-    def execute(self, userdata ):  
+    def execute(self, userdata ):
+    	sf = ScreenFormat("ProcessCleaningVerificationResults")  
 #         rospy.sleep(2)                              
         rospy.loginfo('Executing state Process_Cleaning_Verification_Results')                                                
         return 'PCVR_finish'
@@ -823,7 +882,13 @@ def main():
 	sm_top_exploration.userdata.sm_trash_bin_counter = 0  
 
 	with sm_top_exploration:
-		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),transitions={'list_of_rooms':'UNPROCESSED_ROOM'},
+		
+		smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
+								transitions={'GTB_success':'finished',
+											 'failed':'failed'})
+		
+		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
+							transitions={'list_of_rooms':'UNPROCESSED_ROOM'},
 							remapping={'analyze_map_data_img_':'sm_img'})                           
 
 		sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],
@@ -917,7 +982,9 @@ def main():
 										'trash_can_not_found':'UNPROCESSED_ROOM'},
 							remapping={'detected_waste_bin_poses_':'trash_detection_poses'})
 
-		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_WASTE_BIN', GoToNextUnprocessedWasteBin() ,transitions={'go_to_trash_location':'CLEAR_WASTE_BIN','All_the_trash_bin_is_cleared':'UNPROCESSED_ROOM'},
+		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_WASTE_BIN', GoToNextUnprocessedWasteBin(),
+							transitions={'go_to_trash_location':'CLEAR_WASTE_BIN',
+										'All_the_trash_bin_is_cleared':'UNPROCESSED_ROOM'},
 							remapping={'go_to_next_unprocessed_waste_bin_in_':'trash_detection_poses',
 										'go_to_next_unprocessed_waste_bin_out_':'detection_pose',
 										'number_of_unprocessed_trash_bin_in_':'sm_trash_bin_counter',
@@ -927,23 +994,34 @@ def main():
 		sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
               
 		with sm_sub_clear_waste_bin:
-		smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION',MoveToTrashBinLocation() ,transitions={'MTTBL_success':'APPROACH_PERIMETER'},
-								remapping = {'trash_bin_pose_':'detection_pose'})
-		
-		smach.StateMachine.add('APPROACH_PERIMETER',ApproachPerimeter(),transitions={'reached':'GRASP_TRASH_BIN', 'not_reached':'failed', 'failed':'failed'},
-								remapping = {'trash_bin_pose_':'detection_pose'})
-		
-		smach.StateMachine.add('GRASP_TRASH_BIN',GraspTrashBin() ,transitions={'GTB_success':'MOVE_TO_TOOL_WAGON'})
-		
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON',MoveToToolWagon() ,transitions={'MTTW_success':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON'})
-		
-		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON',ClearTrashBinIntoToolWagon() ,transitions={'CTBITW_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
-		
-		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION',MoveToTrashBinPickingLocation() ,transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'})
-		
-		smach.StateMachine.add('RELEASE_TRASH_BIN',ReleaseTrashBin() ,transitions={'RTB_finished':'CWB_done'})
+			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
+								transitions={'MTTBL_success':'APPROACH_PERIMETER'},
+									remapping = {'trash_bin_pose_':'detection_pose'})
+			
+			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
+								transitions={'reached':'GRASP_TRASH_BIN', 
+											 'not_reached':'failed',
+											 'failed':'failed'},
+									remapping = {'trash_bin_pose_':'detection_pose'})
+			
+			smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
+								transitions={'GTB_success':'MOVE_TO_TOOL_WAGON',
+											 'failed':'failed'})
+			
+			smach.StateMachine.add('MOVE_TO_TOOL_WAGON', MoveToToolWagon(),
+								transitions={'MTTW_success':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON'})
+			
+			smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON', ClearTrashBinIntoToolWagon(),
+								transitions={'CTBITW_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
+			
+			smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
+								transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'})
+			
+			smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
+								transitions={'RTB_finished':'CWB_done'})
 
-		smach.StateMachine.add('CLEAR_WASTE_BIN', sm_sub_clear_waste_bin ,transitions={'CWB_done':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN'})
+		smach.StateMachine.add('CLEAR_WASTE_BIN', sm_sub_clear_waste_bin,
+							transitions={'CWB_done':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN'})
 		
 		
 		
@@ -968,43 +1046,55 @@ def main():
 			
 			smach.StateMachine.add('MOVE_ARM_TO_STANDARD_LOCATION',MoveArmToStandardLocation() ,transitions={'MATSL_done':'CTH_done'})
             
-		smach.StateMachine.add('CHANGE_TOOL_HAND', sm_sub_change_tool_hand ,transitions={'CTH_done':'GET_DIRT_MAP'})
+		smach.StateMachine.add('CHANGE_TOOL_HAND', sm_sub_change_tool_hand,
+							transitions={'CTH_done':'GET_DIRT_MAP'})
 		
 		
 		
-		smach.StateMachine.add('GET_DIRT_MAP', GetDirtMap() ,transitions={'list_of_dirt_location':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
+		smach.StateMachine.add('GET_DIRT_MAP', GetDirtMap(),
+							transitions={'list_of_dirt_location':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
 		
 		
 		
 		sm_sub_go_to_next_unprocessed_dirt_location = smach.StateMachine(outcomes=['no_dirt_spots_left','arrived_dirt_location'])
         
 		with sm_sub_go_to_next_unprocessed_dirt_location:
-			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot() ,transitions={'SNUDS_location':'MOVE_TO_LOCATION_PERIMETER_60CM','no_dirt_spots_left':'no_dirt_spots_left'})
+			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
+								transitions={'SNUDS_location':'MOVE_TO_LOCATION_PERIMETER_60CM',
+											'no_dirt_spots_left':'no_dirt_spots_left'})
 			
-			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_60CM', Move_Location_Perimeter_60cm() ,transitions={'MLP60_arrived_dirt_location':'arrived_dirt_location','MLP60_unsuccessful':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT'})
+			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_60CM', Move_Location_Perimeter_60cm(),
+								transitions={'MLP60_arrived_dirt_location':'arrived_dirt_location',
+											'MLP60_unsuccessful':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT'})
             
-		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', sm_sub_go_to_next_unprocessed_dirt_location ,transitions={'arrived_dirt_location':'CLEAN','no_dirt_spots_left':'PROCESS_CLEANING_VERIFICATION_RESULTS'})
+		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', sm_sub_go_to_next_unprocessed_dirt_location,
+							transitions={'arrived_dirt_location':'CLEAN',
+										'no_dirt_spots_left':'PROCESS_CLEANING_VERIFICATION_RESULTS'})
 		
 		
 		
-		smach.StateMachine.add('CLEAN', Clean() ,transitions={'clean_done':'GO_TO_INSPECT_LOCATION'})
+		smach.StateMachine.add('CLEAN', Clean(), transitions={'clean_done':'GO_TO_INSPECT_LOCATION'})
 		
 		
 		
 		sm_sub_go_to_inspect_location = smach.StateMachine(outcomes=['GTIL_arrived_dirt_location'])
 
 		with sm_sub_go_to_inspect_location:
-			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_180CM', Move_Location_Perimeter_180cm() ,transitions={'MLP180_arrived_dirt_location':'GTIL_arrived_dirt_location'})
+			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_180CM', Move_Location_Perimeter_180cm(),
+								transitions={'MLP180_arrived_dirt_location':'GTIL_arrived_dirt_location'})
             
-		smach.StateMachine.add('GO_TO_INSPECT_LOCATION', sm_sub_go_to_inspect_location ,transitions={'GTIL_arrived_dirt_location':'VERIFY_CLEANING_SUCCESS'})
+		smach.StateMachine.add('GO_TO_INSPECT_LOCATION', sm_sub_go_to_inspect_location,
+							transitions={'GTIL_arrived_dirt_location':'VERIFY_CLEANING_SUCCESS'})
 		
 		
 		
-		smach.StateMachine.add('VERIFY_CLEANING_SUCCESS', verifyCleaningProcess() ,transitions={'VCP_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
+		smach.StateMachine.add('VERIFY_CLEANING_SUCCESS', verifyCleaningProcess(),
+							transitions={'VCP_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
 		
 		
 		
-		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults() ,transitions={'PCVR_finish':'finish'})        
+		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
+							transitions={'PCVR_finish':'finish'})        
 		
 
         
@@ -1027,8 +1117,3 @@ if __name__ == '__main__':
 		print('EXCEPTION THROWN')
 		print('Aborting cleanly')
 		os._exit(1)
-    
-    
-    
-    
-    

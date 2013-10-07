@@ -4,13 +4,14 @@
 
 //constructor Initialization
 TrashBinDetectionNode::TrashBinDetectionNode(ros::NodeHandle& nh)
-: listener_(nh, ros::Duration(40.0))
+: grasp_trash_bin_server_(nh, "grasp_trash_bin", boost::bind(&TrashBinDetectionNode::graspTrashBin, this, _1), false),	// this initializes the action server; important: always set the last parameter to false
+  listener_(nh, ros::Duration(40.0))
 {
 	trash_bin_detection_active_ = false ;
 }
 
 //Initialize Trash bin detection to receive necessary raw data
-void TrashBinDetectionNode::fiducials_init_(ros::NodeHandle& nh)
+void TrashBinDetectionNode::init(ros::NodeHandle& nh)
 {
 	ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
 	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &TrashBinDetectionNode::fiducials_data_callback_,this);
@@ -20,6 +21,8 @@ void TrashBinDetectionNode::fiducials_init_(ros::NodeHandle& nh)
 	deactivate_trash_bin_detection_server_ = nh.advertiseService("deactivate_trash_bin_detection_service", &TrashBinDetectionNode::deactivate_trash_bin_detection_callback_, this);
 	//trash_bin_poses-> So you have to take the data from this topic
 	trash_bin_location_publisher_ = nh.advertise<autopnp_scenario::TrashBinDetection>("trash_bin_poses", 1, this);
+
+	grasp_trash_bin_server_.start();
 }
 
 //fiducials topic data call-back
@@ -190,6 +193,16 @@ geometry_msgs::PoseStamped TrashBinDetectionNode::average_calculator_(geometry_m
 	return average_value;
 }
 
+void TrashBinDetectionNode::graspTrashBin(const autopnp_scenario::GraspTrashBinGoalConstPtr& goal)
+{
+	ROS_INFO("Grasping trash bin ...");
+
+	autopnp_scenario::GraspTrashBinResult res;
+
+	// this sends the response back to the caller
+	grasp_trash_bin_server_.setSucceeded(res);
+}
+
 int main(int argc, char **argv)
 {
 	/**
@@ -210,7 +223,7 @@ int main(int argc, char **argv)
 	 */
 	ros::NodeHandle nh;
 	TrashBinDetectionNode trash_bin_detection(nh);
-	trash_bin_detection.fiducials_init_(nh);
+	trash_bin_detection.init(nh);
 	ROS_INFO("Trash Bin detection Server initialized.....");
 
 	ros::spin();
