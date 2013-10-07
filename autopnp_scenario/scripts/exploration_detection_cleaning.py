@@ -68,6 +68,7 @@ from random_location_finder_action_client import random_location_finder_client
 from inspect_room_action_client import inspect_room
 
 from autopnp_scenario.srv import *
+from autopnp_scenario.msg import *
 from autopnp_dirt_detection.srv import *
 
 from ApproachPerimeter import *
@@ -515,7 +516,7 @@ class MoveToTrashBinLocation(smach.State):
     
 class GraspTrashBin(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['GTB_success'])
+		smach.State.__init__(self, outcomes=['GTB_success','failed'])
 		self.client = actionlib.SimpleActionClient('grasp_trash_bin', autopnp_scenario.msg.GraspTrashBinAction)
 		result = self.client.wait_for_server()
 		if result == True:
@@ -884,7 +885,7 @@ def main():
 	with sm_top_exploration:
 		
 		smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
-								transitions={'GTB_success':'finished',
+								transitions={'GTB_success':'finish',
 											 'failed':'failed'})
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
