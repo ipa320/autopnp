@@ -77,16 +77,13 @@
 #include <autopnp_scenario/ActivateTrashBinDetection.h>
 #include <autopnp_scenario/DeactivateTrashBinDetection.h>
 
-class trash_bin_detection
+class TrashBinDetectionNode
 {
 private:
 	bool trash_bin_detection_active_;
 
 	std::string tag_label_name_;
 	geometry_msgs::PoseStamped fiducials_pose_;
-
-	std::string fiducials_frame_id_;
-	std::string image_detection_label_;
 
 	ros::Subscriber fiducials_msg_sub_;
 	ros::Publisher trash_bin_location_publisher_;
@@ -96,21 +93,19 @@ private:
 
 	tf::TransformListener listener_;
 
-    geometry_msgs::PoseStamped pose_with_respect_to_fiducials_frame_id_;
-	geometry_msgs::PoseStamped pose_with_respect_to_map_;
-
 	autopnp_scenario::TrashBinDetection trash_bin_location_storage_;
+	std::vector<int> trash_bin_location_average_count_;
 
 	void fiducials_data_callback_(const cob_object_detection_msgs::DetectionArray::ConstPtr& fiducials_msg_data);
-	void trash_bin_pose_estimator_(geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id);
+	void trash_bin_pose_estimator_(const geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id);
 	bool detect_trash_bin_again_callback_(autopnp_scenario::DetectFiducials::Request &req, autopnp_scenario::DetectFiducials::Response &res);
 	bool activate_trash_bin_detection_callback_(autopnp_scenario::ActivateTrashBinDetection::Request &req, autopnp_scenario::ActivateTrashBinDetection::Response &res);
 	bool deactivate_trash_bin_detection_callback_(autopnp_scenario::DeactivateTrashBinDetection::Request &req, autopnp_scenario::DeactivateTrashBinDetection::Response &res);
 	bool similarity_checker_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value, double difference_value );
-	geometry_msgs::PoseStamped average_calculator_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value);
+	geometry_msgs::PoseStamped average_calculator_(geometry_msgs::PoseStamped &present_value, geometry_msgs::PoseStamped &past_value, const int averaged_numbers);
 
 public:
-	trash_bin_detection(ros::NodeHandle& nh);
+	TrashBinDetectionNode(ros::NodeHandle& nh);
 	void fiducials_init_(ros::NodeHandle& nh);
 };
 
