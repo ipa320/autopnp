@@ -2,38 +2,12 @@
 
 
 
-
-//ToolChange::ToolChange(ros::NodeHandle nh)
-//: node_handle_(nh)
-//{
-//	camera_matrix_received_ = false;
-//
-//	// subscribers
-//
-//	// ins action callback
-//	bool arm_finished = false;
-//	input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
-//	input_marker_detection_sub_.registerCallback(boost::bind(&ToolChange::inputCallback, this, _1));
-//
-//	//server
-//	move_to_slot_server(nh, "go_to_slot", boost::bind(&ToolChange::moveToSlot, this, _1), false);
-//	// warten
-//	// slow down the response to show the effect of feedback messages
-//	ros::Rate loop_rate(0.5);
-//	while (arm_finished==false)
-//		loop_rate.sleep();
-//
-//	// ans ende ins action callback, wenn position erreicht
-//	//input_marker_detection_sub_.unsubscribe()
-//}
-
-
-
-ToolChange::ToolChange(std::string name):
-move_to_slot_server(node_handle_, name, boost::bind(&ToolChange::moveToSlot, this, _1), false),
-action_name_(name)
+ToolChange::ToolChange(ros::NodeHandle nh):
+move_to_slot_server(nh, "autopnp_tool_change", boost::bind(&ToolChange::moveToSlot, this, _1), false)
 {
-	move_to_slot_server.start();
+	std::cout << "server constructor" << std::endl;
+
+	node_handle_ = nh;
 	input_marker_detection_sub_.unsubscribe();
 	camera_matrix_received_ = false;
 
@@ -41,14 +15,14 @@ action_name_(name)
 
 	// ins action callback
 	bool arm_finished = false;
+
 	input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
 	input_marker_detection_sub_.registerCallback(boost::bind(&ToolChange::inputCallback, this, _1));
 
-	// warten
-	// slow down the response to show the effect of feedback messages
-	ros::Rate loop_rate(0.5);
-	while (arm_finished==false)
-		loop_rate.sleep();
+
+
+	//while (arm_finished == false)
+	//	loop_rate.sleep();
 
 	// ans ende ins action callback, wenn position erreicht
 	//input_marker_detection_sub_.unsubscribe()
@@ -60,37 +34,41 @@ ToolChange::~ToolChange()
 {
 }
 
-//void init() {
-//	ToolChange::move_to_slot_server.start();
-//}
-void ToolChange::moveToSlot(const autopnp_tool_change::MoveToSlotGoalConstPtr& goal) {
-	// this callback function is executed each time a request (= goal message) comes in for this service server
-	// here we just read the number from the goal message, square it and put the result into the result message
-
-	ROS_INFO("Action Server: Received a request with number ");
-
-	// this command sends a feedback message to the caller, here we transfer that the task is completed 25%
-	autopnp_tool_change::MoveToSlotFeedback feedback;
-
-	ToolChange::move_to_slot_server.publishFeedback(feedback);
-
-	// slow down the response to show the effect of feedback messages
-	ros::Rate loop_rate(0.5);
-	loop_rate.sleep();
-
-	autopnp_tool_change::MoveToSlotResult res;
-
-	// this sends the response back to the caller
-	ToolChange::move_to_slot_server.setSucceeded(res);
+void ToolChange::init() {
+	std::cout << "server init()" << std::endl;
+	ToolChange::move_to_slot_server.start();
 }
 
+void ToolChange::moveToSlot(const autopnp_tool_change::MoveToSlotGoalConstPtr& goal) {
+	// this callback function is executed each time a request (= goal message) comes in for this service server
+	// here we just read the number from the goal message
 
+	ROS_INFO("Action Server: Received a request : "
+			"translation [%u, %u, %u], rotation [%u, %u, %u, %u]",
+
+			(unsigned int) goal->transform.translation.x,
+			(unsigned int) goal->transform.translation.y,
+			(unsigned int) goal->transform.translation.z,
+
+			(unsigned int) goal->transform.rotation.w,
+			(unsigned int) goal->transform.rotation.x,
+			(unsigned int) goal->transform.rotation.y,
+			(unsigned int) goal->transform.rotation.z);
+
+	// this command sends a feedback message to the caller
+	autopnp_tool_change::MoveToSlotFeedback feedback;
+	ToolChange::move_to_slot_server.publishFeedback(feedback);
+
+	// this sends the response back to the caller
+	autopnp_tool_change::MoveToSlotResult res;
+	ToolChange::move_to_slot_server.setSucceeded(res);
+}
 
 
 /// callback for the incoming  data stream
 void ToolChange::inputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg)
 {
-	//std::cout << "Recording data..." << std::endl;
+	std::cout << "Recording data ..." << std::endl;
 
 	if (input_marker_detections_msg->detections.size() == 0)
 	{
@@ -104,9 +82,33 @@ void ToolChange::inputCallback(const cob_object_detection_msgs::DetectionArray::
 
 	ROS_INFO("Averaged %u markers.", (unsigned int)input_marker_detections_msg->detections.size());
 
-	//todo: compute translation and orientation distance between arm marker and board markers
-}
 
+	printPose(fiducial_pose);
+
+	for (unsigned int i = 0; i < input_marker_detections_msg->detections.size(); ++i)
+	{
+		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
+		unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
+		//ROS_INFO("Detected label %s", fiducial_label.c_str());
+
+		if(fiducial_label_num == 4) {
+			ROS_INFO("Detected arm");
+		}
+	}
+
+}
+/**
+ *
+ *Calculates translation and orientation distance between arm marker and board
+ */
+void ToolChange::calculateDistanceToArm(
+		const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg) {
+
+	/**  tf::Vector3 board_translation;
+		tf::Quaternion board_orientation(0.,0.,0.);
+		tf::Vector3 arm_translation;
+		tf::Quaternion arm_orientation(0.,0.,0.);*/
+}
 
 /// Converts a color image message to cv::Mat format.
 bool ToolChange::convertColorImageMessageToMat(const sensor_msgs::Image::ConstPtr& image_msg, cv_bridge::CvImageConstPtr& image_ptr, cv::Mat& image)
@@ -128,32 +130,39 @@ bool ToolChange::convertColorImageMessageToMat(const sensor_msgs::Image::ConstPt
 tf::Transform ToolChange::computeMarkerPose(
 		const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg)
 {
-	tf::Vector3 mean_translation;
-	tf::Quaternion mean_orientation(0.,0.,0.);
-	for (unsigned int i=0; i<input_marker_detections_msg->detections.size(); ++i)
+	tf::Vector3 board_translation;
+	tf::Quaternion board_orientation(0.,0.,0.);
+
+	for (unsigned int i = 0; i < input_marker_detections_msg->detections.size(); ++i)
 	{
 		// todo: only average the 4 markers from the board
+		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
+		unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
 
-		tf::Point translation;
-		tf::pointMsgToTF(input_marker_detections_msg->detections[i].pose.pose.position, translation);
-		tf::Quaternion orientation;
-		tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
+		if(fiducial_label_num != 4) {
 
-		if (i==0)
-		{
-			mean_translation = translation;
-			mean_orientation = orientation;
-		}
-		else
-		{
-			mean_translation += translation;
-			mean_orientation += orientation;
+			tf::Point translation;
+			tf::pointMsgToTF(input_marker_detections_msg->detections[i].pose.pose.position, translation);
+			tf::Quaternion orientation;
+			tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
+
+			if (i==0)
+			{
+				board_translation = translation;
+				board_orientation = orientation;
+			}
+			else
+			{
+				board_translation += translation;
+				board_orientation += orientation;
+			}
 		}
 	}
-	mean_translation /= (double)input_marker_detections_msg->detections.size();
-	mean_orientation /= (double)input_marker_detections_msg->detections.size();
-	mean_orientation.normalize();
-	return tf::Transform(mean_orientation, mean_translation);
+	board_translation /= (double)input_marker_detections_msg->detections.size();
+	board_orientation /= (double)input_marker_detections_msg->detections.size();
+	board_orientation.normalize();
+
+	return tf::Transform(board_orientation, board_translation);
 }
 
 unsigned long ToolChange::ProjectXYZ(double x, double y, double z, int& u, int& v)
@@ -203,18 +212,33 @@ void ToolChange::calibrationCallback(const sensor_msgs::CameraInfo::ConstPtr& ca
 	}
 }
 
+void ToolChange::printPose(tf::Transform& trans_msg)
+{
+
+	ROS_INFO("translation [%f, %f, %f] , orientation [%f, %f, %f, %f]",
+			(float) trans_msg.getOrigin().m_floats[0],
+			(float) trans_msg.getOrigin().m_floats[1],
+			(float) trans_msg.getOrigin().m_floats[2],
+
+			(float) trans_msg.getRotation().getX(),
+			(float) trans_msg.getRotation().getY(),
+			(float) trans_msg.getRotation().getZ(),
+			(float) trans_msg.getRotation().getW());
+
+}
 
 int main (int argc, char** argv)
 {
 	// Initialize ROS, specify name of node
-	ros::init(argc, argv, "autopnp_tool_change");
+	ros::init(argc, argv, "autopnp_tool_change_server");
+
 
 	// Create a handle for this node, initialize node
 	ros::NodeHandle nh;
 
 	// Create and initialize an instance of Object
-	ToolChange toolChange(ros::this_node::getName());
-
+	ToolChange toolChange(nh);
+	toolChange.init();
 
 	ros::spin();
 

@@ -290,6 +290,19 @@ autopnp_tool_change/fast:
 .PHONY : autopnp_tool_change/fast
 
 #=============================================================================
+# Target rules for targets named autopnp_tool_change_client
+
+# Build rule for target.
+autopnp_tool_change_client: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 autopnp_tool_change_client
+.PHONY : autopnp_tool_change_client
+
+# fast build rule for target.
+autopnp_tool_change_client/fast:
+	$(MAKE) -f CMakeFiles/autopnp_tool_change_client.dir/build.make CMakeFiles/autopnp_tool_change_client.dir/build
+.PHONY : autopnp_tool_change_client/fast
+
+#=============================================================================
 # Target rules for targets named clean_test_results
 
 # Build rule for target.
@@ -560,6 +573,30 @@ ros/src/autopnp_tool_change.cpp.s:
 	$(MAKE) -f CMakeFiles/autopnp_tool_change.dir/build.make CMakeFiles/autopnp_tool_change.dir/ros/src/autopnp_tool_change.cpp.s
 .PHONY : ros/src/autopnp_tool_change.cpp.s
 
+ros/src/autopnp_tool_change_client.o: ros/src/autopnp_tool_change_client.cpp.o
+.PHONY : ros/src/autopnp_tool_change_client.o
+
+# target to build an object file
+ros/src/autopnp_tool_change_client.cpp.o:
+	$(MAKE) -f CMakeFiles/autopnp_tool_change_client.dir/build.make CMakeFiles/autopnp_tool_change_client.dir/ros/src/autopnp_tool_change_client.cpp.o
+.PHONY : ros/src/autopnp_tool_change_client.cpp.o
+
+ros/src/autopnp_tool_change_client.i: ros/src/autopnp_tool_change_client.cpp.i
+.PHONY : ros/src/autopnp_tool_change_client.i
+
+# target to preprocess a source file
+ros/src/autopnp_tool_change_client.cpp.i:
+	$(MAKE) -f CMakeFiles/autopnp_tool_change_client.dir/build.make CMakeFiles/autopnp_tool_change_client.dir/ros/src/autopnp_tool_change_client.cpp.i
+.PHONY : ros/src/autopnp_tool_change_client.cpp.i
+
+ros/src/autopnp_tool_change_client.s: ros/src/autopnp_tool_change_client.cpp.s
+.PHONY : ros/src/autopnp_tool_change_client.s
+
+# target to generate assembly for a file
+ros/src/autopnp_tool_change_client.cpp.s:
+	$(MAKE) -f CMakeFiles/autopnp_tool_change_client.dir/build.make CMakeFiles/autopnp_tool_change_client.dir/ros/src/autopnp_tool_change_client.cpp.s
+.PHONY : ros/src/autopnp_tool_change_client.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -577,6 +614,7 @@ help:
 	@echo "... actionlib_msgs_generate_messages_lisp"
 	@echo "... actionlib_msgs_generate_messages_py"
 	@echo "... autopnp_tool_change"
+	@echo "... autopnp_tool_change_client"
 	@echo "... clean_test_results"
 	@echo "... doxygen"
 	@echo "... edit_cache"
@@ -606,6 +644,9 @@ help:
 	@echo "... ros/src/autopnp_tool_change.o"
 	@echo "... ros/src/autopnp_tool_change.i"
 	@echo "... ros/src/autopnp_tool_change.s"
+	@echo "... ros/src/autopnp_tool_change_client.o"
+	@echo "... ros/src/autopnp_tool_change_client.i"
+	@echo "... ros/src/autopnp_tool_change_client.s"
 .PHONY : help
 
 

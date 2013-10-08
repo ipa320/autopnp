@@ -29,7 +29,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
 		    ${PROJECT_SOURCE_DIR}/common/include)
 
 rosbuild_add_executable(autopnp_tool_change ros/src/autopnp_tool_change.cpp)
-#rosbuild_add_executable(autopnp_tool_change_client ros/src/autopnp_tool_change_client.cpp)
+rosbuild_add_executable(autopnp_tool_change_client ros/src/autopnp_tool_change_client.cpp)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)

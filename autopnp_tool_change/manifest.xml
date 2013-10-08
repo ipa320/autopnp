@@ -1,23 +1,25 @@
 <package>
-  <description brief="autopnp_tool_change">
+	<description brief="autopnp_tool_change">
 
-     autopnp_tool_change
+		autopnp_tool_change
 
-  </description>
-  <author>Olha Meyer</author>
-  <license>LGPL</license>
-  <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/autopnp_tool_change</url>
-  
-  <depend package="opencv2"/>
-  <depend package="roscpp"/>
-  <depend package="roslib"/>
-  <depend package="actionlib"/>
-  <depend package="actionlib_msgs"/>
-  <depend package="cv_bridge"/>
-  <depend package="message_filters"/>
-  <depend package="cob_object_detection_msgs"/>
-  
+	</description>
+	<author>Olha Meyer</author>
+	<license>LGPL</license>
+	<review status="unreviewed" notes="" />
+	<url>http://ros.org/wiki/autopnp_tool_change</url>
+
+	<depend package="opencv2" />
+	<depend package="roscpp" />
+	<depend package="roslib" />
+	<depend package="actionlib" />
+	<depend package="actionlib_msgs" />
+	<depend package="cv_bridge" />
+	<depend package="message_filters" />
+	<depend package="cob_object_detection_msgs" />
+
+
+
 </package>
 
 
