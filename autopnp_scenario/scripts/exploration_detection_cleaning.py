@@ -526,49 +526,55 @@ class GraspTrashBin(smach.State):
 # 			rospy.logerror("Grasp trash bin server not found ...")
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("GraspTrashBin")                             
+		sf = ScreenFormat("GraspTrashBin")							
 		rospy.loginfo('Executing state Grasp_Trash_Bin')
-		
- 		# 1. arm: folded -> over trash bin
- 		handle_arm = sss.move("arm",[])
- 		
- 		# 2. open hand
- 		sss.move("sdh", [[0.0, 0.0, 0.0, -1.4, 0.0, -1.4, 0.0]])
- 		
- 		# 3.a) arm: over trash bin -> into trash bin
- 		handle_arm = sss.move("arm",[])
- 		
- 		# 3.b) robot: move left
- 		sss.move("base", [])
-		
+
+		# 1. arm: folded -> over trash bin
+		handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]])
+		handle_arm = sss.move("arm",[[0.10646567493677139, -0.9334499835968018, 3.0960710048675537, 0.7012139558792114, -0.05262168124318123, 0.738262951374054, -2.813400983810425]])
+
+		# 2. open hand
+		sss.move("sdh", [[0.0, 0.0, 0.0, -1.4, 0.0, -1.4, 0.0]])
+
+		# 3.a) arm: over trash bin -> into trash bin
+		handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]])
+
+		# 3.b) robot: move left
+		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		rospy.sleep(5)
+
 		# 4. close hand
-		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
-		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
-		
- 		# 5. arm: lift up
- 		handle_arm = sss.move("arm",[])
- 		
- 		# 6. arm: turn around
- 		handle_arm = sss.move("arm",[])
- 		
- 		# 7. arm: back to upright trash bin pose
- 		handle_arm = sss.move("arm",[])
- 		
- 		# 8. arm: put down
- 		handle_arm = sss.move("arm",[])
- 		
- 		# 9. open hand
- 		sss.move("sdh", "cylopen")
- 		
- 		# 10. arm: trash bin -> over trash bin
- 		handle_arm = sss.move("arm",[])
- 		
- 		# 11. close hand
- 		sss.move("sdh", "home")
- 		
- 		# 12. arm: over trash bin -> folded
- 		handle_arm = sss.move("arm",["folded"])
-		
+		handle_sdh = sss.move("sdh",[[0.47,0,0,0.45,-0,0.45,-0]])
+	   
+		# 5. arm: lift up
+		handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
+		handle_arm = sss.move("arm",[[1.162199854850769, -0.21367885172367096, 2.4674811363220215, 1.1584975719451904, -0.3269248604774475, 1.0696042776107788, -2.8133485317230225]])
+		handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
+
+		# 6. arm: turn around
+		handle_arm = sss.move("arm",[[1.7032876014709473, -0.5807051062583923, 2.3603627681732178, 1.1806684732437134, -2.2949676513671875, 1.7723535299301147, -2.81252121925354]])
+
+		# 7. arm: back to upright trash bin pose
+		handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
+		handle_arm = sss.move("arm",[[1.162199854850769, -0.21367885172367096, 2.4674811363220215, 1.1584975719451904, -0.3269248604774475, 1.0696042776107788, -2.8133485317230225]])
+		handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
+
+		# 8. arm: put down
+		handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]])
+
+		# 9. open hand
+		sss.move("sdh", "cylopen")
+
+		# 10. arm: trash bin -> over trash bin
+		handle_arm = sss.move("arm",[[0.10646567493677139, -0.9334499835968018, 3.0960710048675537, 0.7012139558792114, -0.05262168124318123, 0.738262951374054, -2.813400983810425]])
+		handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]])
+	   
+		# 11. close hand
+		sss.move("sdh", "home")
+
+		# 12. arm: over trash bin -> folded
+		handle_arm = sss.move("arm",["folded"])		
 		
 		
 # 		goal = autopnp_scenario.msg.GraspTrashBinGoal()
