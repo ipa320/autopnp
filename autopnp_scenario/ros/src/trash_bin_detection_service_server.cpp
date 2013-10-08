@@ -5,6 +5,7 @@
 //constructor Initialization
 TrashBinDetectionNode::TrashBinDetectionNode(ros::NodeHandle& nh)
 : grasp_trash_bin_server_(nh, "grasp_trash_bin", boost::bind(&TrashBinDetectionNode::graspTrashBin, this, _1), false),	// this initializes the action server; important: always set the last parameter to false
+  sdh_follow_joint_client_("/sdh_controller/follow_joint_trajectory", true),
   listener_(nh, ros::Duration(40.0))
 {
 	trash_bin_detection_active_ = false ;
@@ -23,6 +24,9 @@ void TrashBinDetectionNode::init(ros::NodeHandle& nh)
 	trash_bin_location_publisher_ = nh.advertise<autopnp_scenario::TrashBinDetection>("trash_bin_poses", 1, this);
 
 	grasp_trash_bin_server_.start();
+	sdh_follow_joint_client_.waitForServer();
+
+	ROS_INFO("TrashBinDetectionNode: initialized.");
 }
 
 //fiducials topic data call-back
@@ -196,6 +200,69 @@ geometry_msgs::PoseStamped TrashBinDetectionNode::average_calculator_(geometry_m
 void TrashBinDetectionNode::graspTrashBin(const autopnp_scenario::GraspTrashBinGoalConstPtr& goal)
 {
 	ROS_INFO("Grasping trash bin ...");
+/*
+	// open hand
+//header:
+//  seq: 6
+//  stamp:
+//    secs: 156
+//    nsecs: 580000000
+//  frame_id: ''
+//goal_id:
+//  stamp:
+//    secs: 156
+//    nsecs: 580000000
+//  id: /cob_console-6-156.580
+//goal:
+//  trajectory:
+//    header:
+//      seq: 0
+//      stamp:
+//        secs: 157
+//        nsecs: 80000000
+//      frame_id: ''
+//    joint_names: ['sdh_knuckle_joint', 'sdh_thumb_2_joint', 'sdh_thumb_3_joint', 'sdh_finger_12_joint', 'sdh_finger_13_joint', 'sdh_finger_22_joint', 'sdh_finger_23_joint']
+//    points:
+//      -
+//        positions: [0.0, 0.0, 0.0, -1.4, 0.0, -1.4, 0.0]
+//        velocities: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+//        accelerations: []
+//        time_from_start:
+//          secs: 3
+//          nsecs: 0
+//  path_tolerance: []
+//  goal_tolerance: []
+//  goal_time_tolerance:
+//    secs: 0
+//    nsecs: 0
+
+//	control_msgs::FollowJointTrajectoryGoal sdh_goal;
+//	sdh_goal.trajectory.joint_names.push_back("sdh_knuckle_joint");
+//	sdh_goal.trajectory.joint_names.push_back("sdh_thumb_2_joint");
+//	sdh_goal.trajectory.joint_names.push_back("sdh_thumb_3_joint");
+//	sdh_goal.trajectory.joint_names.push_back("sdh_finger_12_joint");
+//	sdh_goal.trajectory.joint_names.push_back("sdh_finger_13_joint");
+//	sdh_goal.trajectory.joint_names.push_back("sdh_finger_22_joint");
+//	sdh_goal.trajectory.joint_names.push_back("sdh_finger_23_joint");
+//	trajectory_msgs::JointTrajectoryPoint point;
+//	point.positions.push_back(0.0);
+//	point.positions.push_back(0.0);
+//	point.positions.push_back(0.0);
+//	point.positions.push_back(-1.4);
+//	point.positions.push_back(0.0);
+//	point.positions.push_back(-1.4);
+//	point.positions.push_back(0.0);
+//	point.time_from_start.sec = 3;
+//	sdh_goal.trajectory.points.push_back(point);
+//	sdh_follow_joint_client_.sendGoal(sdh_goal);
+//	bool finished_before_timeout = sdh_follow_joint_client_.waitForResult(ros::Duration(15.0));
+//	if (finished_before_timeout)
+//	{
+//		actionlib::SimpleClientGoalState state = sdh_follow_joint_client_.getState();
+//		ROS_INFO("TrashBinDetectionNode::graspTrashBin: Action finished: %s",state.toString().c_str());
+//	}
+//	else
+//		ROS_INFO("TrashBinDetectionNode::graspTrashBin: Action did not finish before the time out.");
 
 	// move arm
 	// --------
@@ -252,7 +319,7 @@ void TrashBinDetectionNode::graspTrashBin(const autopnp_scenario::GraspTrashBinG
 //	else
 //		ROS_WARN("No valid plan found for arm movement.");
 
-
+*/
 	// this sends the response back to the caller
 	autopnp_scenario::GraspTrashBinResult res;
 	grasp_trash_bin_server_.setSucceeded(res);

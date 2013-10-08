@@ -484,7 +484,7 @@ class GoToNextUnprocessedWasteBin(smach.State):
 class MoveToTrashBinLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'],
-                             output_keys=['center', 'radius', 'rotational_sampling_step', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
+                             output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
              
     def execute(self, userdata ):
     	sf = ScreenFormat("MoveToTrashBinLocation")
@@ -498,6 +498,7 @@ class MoveToTrashBinLocation(smach.State):
         userdata.center = center
         userdata.radius = 0.8
         userdata.rotational_sampling_step = 10.0/180.0*math.pi
+        userdata.goal_pose_theta_offset = math.pi/2.0
         userdata.new_computation_flag = True
         userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
         userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'             
@@ -517,31 +518,75 @@ class MoveToTrashBinLocation(smach.State):
 class GraspTrashBin(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['GTB_success','failed'])
-		self.client = actionlib.SimpleActionClient('grasp_trash_bin', autopnp_scenario.msg.GraspTrashBinAction)
-		result = self.client.wait_for_server()
-		if result == True:
-			rospy.loginfo("Grasp trash bin server connected ...")
-		else:
-			rospy.logerror("Grasp trash bin server not found ...")
+# 		self.client = actionlib.SimpleActionClient('grasp_trash_bin', autopnp_scenario.msg.GraspTrashBinAction)
+# 		result = self.client.wait_for_server()
+# 		if result == True:
+# 			rospy.loginfo("Grasp trash bin server connected ...")
+# 		else:
+# 			rospy.logerror("Grasp trash bin server not found ...")
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("GraspTrashBin")                             
 		rospy.loginfo('Executing state Grasp_Trash_Bin')
 		
-		goal = autopnp_scenario.msg.GraspTrashBinGoal()
-		self.client.send_goal(goal)	
-		finished_before_timeout = self.client.wait_for_result()
-		if finished_before_timeout:
-			state = self.client.get_state()
-			if state is 3:
-				state = 'SUCCEEDED'
-				rospy.loginfo("action finished: %s " % state)
-				return 'GTB_success'
-			else:
-				rospy.loginfo("action finished: %s " % state)
-		else:
-			rospy.logwarn("action did not finish before the time out.")		
+ 		# 1. arm: folded -> over trash bin
+ 		handle_arm = sss.move("arm",[])
+ 		
+ 		# 2. open hand
+ 		sss.move("sdh", [[0.0, 0.0, 0.0, -1.4, 0.0, -1.4, 0.0]])
+ 		
+ 		# 3.a) arm: over trash bin -> into trash bin
+ 		handle_arm = sss.move("arm",[])
+ 		
+ 		# 3.b) robot: move left
+ 		sss.move("base", [])
+		
+		# 4. close hand
+		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		
+ 		# 5. arm: lift up
+ 		handle_arm = sss.move("arm",[])
+ 		
+ 		# 6. arm: turn around
+ 		handle_arm = sss.move("arm",[])
+ 		
+ 		# 7. arm: back to upright trash bin pose
+ 		handle_arm = sss.move("arm",[])
+ 		
+ 		# 8. arm: put down
+ 		handle_arm = sss.move("arm",[])
+ 		
+ 		# 9. open hand
+ 		sss.move("sdh", "cylopen")
+ 		
+ 		# 10. arm: trash bin -> over trash bin
+ 		handle_arm = sss.move("arm",[])
+ 		
+ 		# 11. close hand
+ 		sss.move("sdh", "home")
+ 		
+ 		# 12. arm: over trash bin -> folded
+ 		handle_arm = sss.move("arm",["folded"])
+		
+		
+		
+# 		goal = autopnp_scenario.msg.GraspTrashBinGoal()
+# 		self.client.send_goal(goal)	
+# 		finished_before_timeout = self.client.wait_for_result()
+# 		if finished_before_timeout:
+# 			state = self.client.get_state()
+# 			if state is 3:
+# 				state = 'SUCCEEDED'
+# 				rospy.loginfo("action finished: %s " % state)
+# 				return 'GTB_success'
+# 			else:
+# 				rospy.loginfo("action finished: %s " % state)
+# 		else:
+# 			rospy.logwarn("action did not finish before the time out.")		
 
+		  
+		  
 		  
 # 		rospy.loginfo('setting robot head and torso position')
 # 		handle_head = sss.move("head","back",False)
@@ -570,8 +615,11 @@ class GraspTrashBin(smach.State):
 # 			print "Service call failed: %s"%e  
 #         
 # 		handle_torso = sss.move("torso","home",False)
-# 		handle_torso.wait()                                              
-		return 'failed'
+# 		handle_torso.wait()     
+                                         
+		#return 'failed'
+		
+		return 'GTB_success'
     
     
              
