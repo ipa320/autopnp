@@ -143,6 +143,7 @@ rosbuild_add_executable(inspect_room_action_server ros/src/inspect_room_action_s
 
 			#Trash Bin detection Server			
 rosbuild_add_executable(trash_bin_detection_service_server ros/src/trash_bin_detection_service_server.cpp)
+target_link_libraries(trash_bin_detection_service_server moveit_move_group_interface)
 
 			#Activate Trash Bin Detection Client 			
 rosbuild_add_executable(activate_trash_bin_detection_client ros/src/activate_trash_bin_detection_client.cpp)

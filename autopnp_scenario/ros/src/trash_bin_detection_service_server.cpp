@@ -197,9 +197,64 @@ void TrashBinDetectionNode::graspTrashBin(const autopnp_scenario::GraspTrashBinG
 {
 	ROS_INFO("Grasping trash bin ...");
 
-	autopnp_scenario::GraspTrashBinResult res;
+	// move arm
+	// --------
+
+	// this connecs to a running instance of the move_group node
+	moveit::planning_interface::MoveGroup group("arm");
+	// specify that our target will be a random one
+	geometry_msgs::PoseStamped pose;
+//	trash bin (pre-)grasp back-right
+//	- Translation: [-0.518, -0.421, 0.566]
+//	- Rotation: in Quaternion [0.014, 0.001, 0.014, 1.000]
+//	            in RPY [0.027, 0.001, 0.027]
+
+	// trash bin (pre-)grasp right
+//	- Translation: [-0.002, -0.580, 0.743]
+//	- Rotation: in Quaternion [0.014, -0.006, 0.737, 0.676]
+//	            in RPY [0.010, -0.028, 1.656]
+
+	pose.pose.position.x = 0.0;
+	pose.pose.position.y = -0.580;
+	pose.pose.position.z =  0.743;
+	tf::Quaternion q;
+	q.setRPY(0.0, 0.0, 1.57079632679);
+	tf::quaternionTFToMsg(q, pose.pose.orientation);
+
+//	pose.pose.position.x = -0.466;
+//	pose.pose.position.y = -0.538;
+//	pose.pose.position.z =  1.538;
+//	tf::Quaternion q;
+//	q.setRPY(3.141, 0.051, 1.307);
+//	tf::quaternionTFToMsg(q, pose.pose.orientation);
+//	-0.466, -0.538, 1.538
+//	0.999, -0.027, 0.012, 0.025
+
+	pose.header.frame_id = "base_link";
+	pose.header.stamp = ros::Time::now();
+	group.setPoseTarget(pose, "arm_7_link");
+
+//	pose = group.getCurrentPose();
+//	pose.pose.position.y += 0.05;
+//	group.setGoalTolerance(0.01);
+
+	group.setPoseReferenceFrame("base_link");
+	std::cout << "group.getEndEffectorLink()=" << group.getEndEffectorLink() << "  group.getPoseReferenceFrame()=" << group.getPoseReferenceFrame() << std::endl;
+
+	group.move();
+	// plan the motion and then move the group to the sampled target
+//	bool have_plan = false;
+//	moveit::planning_interface::MoveGroup::Plan plan;
+//	for (int trial=0; have_plan==false && trial<5; ++trial)
+//		have_plan = group.plan(plan);
+//	if (have_plan==true)
+//		group.execute(plan);
+//	else
+//		ROS_WARN("No valid plan found for arm movement.");
+
 
 	// this sends the response back to the caller
+	autopnp_scenario::GraspTrashBinResult res;
 	grasp_trash_bin_server_.setSucceeded(res);
 }
 

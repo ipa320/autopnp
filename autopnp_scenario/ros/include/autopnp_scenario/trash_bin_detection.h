@@ -67,8 +67,12 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
+
+#include <moveit/move_group_interface/move_group.h>
+
 #include <geometry_msgs/PoseStamped.h>
 #include <autopnp_scenario/DetectFiducials.h>
 #include <autopnp_scenario/TrashBinDetection.h>
