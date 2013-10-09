@@ -32,7 +32,7 @@
 
 		<!-- start map_accessibility_analysis -->
 		<include file="$(find cob_map_accessibility_analysis)/ros/launch/map_accessibility_analysis.launch"/>
-
+		
 	</group>
 
 	<group>
@@ -41,9 +41,6 @@
 		<!-- start trash bin detection -->
 		<include file="$(find autopnp_scenario)/ros/launch/trash_bin_detection_service_server.launch"/>
 
-		<!-- start detect_trash_bin_again -->
- 		<node name="detect_trash_bin_again" pkg="autopnp_scenario" type="detect_fiducials_service_server" output="screen" />
- 		
 		<!-- start dirt detection -->
 		<include file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.launch" />
 

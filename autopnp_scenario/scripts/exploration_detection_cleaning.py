@@ -368,22 +368,27 @@ class ReleaseGrasp(smach.State):
         
         
 class DirtDetectionOn(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['dd_On'])
-             
-    def execute(self, userdata ):
-    	sf = ScreenFormat("DirtDetectionOn")
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['dd_On'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("DirtDetectionOn")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Dirt_Detection_On')
-        rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
-        try:
-            req = rospy.ServiceProxy('/dirt_detection/activate_dirt_detection',ActivateDirtDetection)
-            resp = req()
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
-        return 'dd_On' 
-    
-    
+		rospy.loginfo('Executing state Dirt_Detection_On')
+        
+		# move torso and head to frontal inspection perspective
+		sss.move("torso","front_extreme")
+		sss.move("head","front")
+
+		rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
+		try:
+			req = rospy.ServiceProxy('/dirt_detection/activate_dirt_detection',ActivateDirtDetection)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call failed: %s"%e
+		return 'dd_On' 
+
+
 # The TrashBinDetectionOn class defines a state machine of smach which basically 
 # use the ActivateTrashBinDetection service to activate Trash Bin Detection
 class TrashBinDetectionOn(smach.State):
@@ -405,22 +410,26 @@ class TrashBinDetectionOn(smach.State):
     
     
 class DirtDetectionOff(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['dd_Off'])
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['dd_Off'])
              
-    def execute(self, userdata ):
-    	sf = ScreenFormat("DirtDetectionOff")
+	def execute(self, userdata ):
+		sf = ScreenFormat("DirtDetectionOff")
 #         rospy.sleep(2)                                
-        rospy.loginfo('Executing state Dirt_Detection_Off')   
-        rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
-        try:
-            req = rospy.ServiceProxy('/dirt_detection/deactivate_dirt_detection',DeactivateDirtDetection)
-            resp = req()
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e                                             
-        return 'dd_Off'  
+		rospy.loginfo('Executing state Dirt_Detection_Off')
 
-  
+		# move torso back to normal position
+		sss.move("torso","home")
+
+		rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
+		try:
+			req = rospy.ServiceProxy('/dirt_detection/deactivate_dirt_detection',DeactivateDirtDetection)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call failed: %s"%e                                             
+		return 'dd_Off'  
+
+
 # The TrashBinDetectionOff class defines a state machine of smach which basically 
 # use the DeactivateTrashBinDetection service to deactivate Trash Bin Detection
 class TrashBinDetectionOff(smach.State):
@@ -496,9 +505,9 @@ class MoveToTrashBinLocation(smach.State):
         center.y = userdata.trash_bin_pose_.pose.pose.position.y
         center.theta = 0
         userdata.center = center
-        userdata.radius = 0.8
+        userdata.radius = 0.8		# adjust this for right distance to trash bin
         userdata.rotational_sampling_step = 10.0/180.0*math.pi
-        userdata.goal_pose_theta_offset = math.pi/2.0
+        userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
         userdata.new_computation_flag = True
         userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
         userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'             
@@ -551,30 +560,6 @@ class GraspTrashBin(smach.State):
 		handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
 		handle_arm = sss.move("arm",[[1.162199854850769, -0.21367885172367096, 2.4674811363220215, 1.1584975719451904, -0.3269248604774475, 1.0696042776107788, -2.8133485317230225]])
 		handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
-
-		# 6. arm: turn around
-		handle_arm = sss.move("arm",[[1.7032876014709473, -0.5807051062583923, 2.3603627681732178, 1.1806684732437134, -2.2949676513671875, 1.7723535299301147, -2.81252121925354]])
-
-		# 7. arm: back to upright trash bin pose
-		handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
-		handle_arm = sss.move("arm",[[1.162199854850769, -0.21367885172367096, 2.4674811363220215, 1.1584975719451904, -0.3269248604774475, 1.0696042776107788, -2.8133485317230225]])
-		handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
-
-		# 8. arm: put down
-		handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]])
-
-		# 9. open hand
-		sss.move("sdh", "cylopen")
-
-		# 10. arm: trash bin -> over trash bin
-		handle_arm = sss.move("arm",[[0.10646567493677139, -0.9334499835968018, 3.0960710048675537, 0.7012139558792114, -0.05262168124318123, 0.738262951374054, -2.813400983810425]])
-		handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]])
-	   
-		# 11. close hand
-		sss.move("sdh", "home")
-
-		# 12. arm: over trash bin -> folded
-		handle_arm = sss.move("arm",["folded"])		
 		
 		
 # 		goal = autopnp_scenario.msg.GraspTrashBinGoal()
@@ -636,19 +621,33 @@ class MoveToToolWagon(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("MoveToToolWagon")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_To_Tool_Wagon')                                                
+        rospy.loginfo('Executing state Move_To_Tool_Wagon')
+        
+        # todo: go to the big trash bin for clearing the smaller one
+        
+                                                       
         return 'MTTW_success'
     
     
     
 class ClearTrashBinIntoToolWagon(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['CTBITW_done'])
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['CTBITW_done'])
              
-    def execute(self, userdata ):
-    	sf = ScreenFormat("ClearTrashBinIntoToolWagon")
+	def execute(self, userdata ):
+		sf = ScreenFormat("ClearTrashBinIntoToolWagon")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Clear_Trash_Bin_Into_Tool_Wagon')                                                
+		rospy.loginfo('Executing state Clear_Trash_Bin_Into_Tool_Wagon')
+        
+		# 6. arm: turn around
+		handle_arm = sss.move("arm",[[1.7032876014709473, -0.5807051062583923, 2.3603627681732178, 1.1806684732437134, -2.2949676513671875, 1.7723535299301147, -2.81252121925354]])
+
+		# 7. arm: back to upright trash bin pose
+		handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
+		handle_arm = sss.move("arm",[[1.162199854850769, -0.21367885172367096, 2.4674811363220215, 1.1584975719451904, -0.3269248604774475, 1.0696042776107788, -2.8133485317230225]])
+		handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
+
+                                                        
         return 'CTBITW_done'   
     
     
@@ -660,20 +659,40 @@ class MoveToTrashBinPickingLocation(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("MoveToTrashBinPickingLocation")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')                                                
+        rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')
+        
+        # todo: move back to location where trash bin was grabbed
+                                                    
         return 'MTTBPL_done'
     
     
     
 class ReleaseTrashBin(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['RTB_finished'])
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['RTB_finished'])
              
-    def execute(self, userdata ):
-    	sf = ScreenFormat("ReleaseTrashBin")
+	def execute(self, userdata ):
+		sf = ScreenFormat("ReleaseTrashBin")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Release_Trash_Bin')                                                
-        return 'RTB_finished'  
+		rospy.loginfo('Executing state Release_Trash_Bin')
+        
+		# 8. arm: put down
+		handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]])
+
+		# 9. open hand
+		sss.move("sdh", "cylopen")
+
+		# 10. arm: trash bin -> over trash bin
+		handle_arm = sss.move("arm",[[0.10646567493677139, -0.9334499835968018, 3.0960710048675537, 0.7012139558792114, -0.05262168124318123, 0.738262951374054, -2.813400983810425]])
+		handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]])
+	   
+		# 11. close hand
+		sss.move("sdh", "home")
+
+		# 12. arm: over trash bin -> folded
+		handle_arm = sss.move("arm",["folded"])		
+
+		return 'RTB_finished'  
     
  
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -933,14 +952,54 @@ class ProcessCleaningVerificationResults(smach.State):
 def main():
 	rospy.init_node('exploration_detection_cleaning')
 	
+	
+	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
+	sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
+	sm_sub_clear_waste_bin.userdata.detection_pose = Pose2D() # todo: insert a pose with x and y of your trash bin here
+	
+	with sm_sub_clear_waste_bin:
+		smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
+					transitions={'MTTBL_success':'APPROACH_PERIMETER'},
+						remapping = {'trash_bin_pose_':'detection_pose'})
+		
+		smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
+					transitions={'reached':'GRASP_TRASH_BIN', 
+								 'not_reached':'failed',
+								 'failed':'failed'},
+						remapping = {'trash_bin_pose_':'detection_pose'})
+		
+		smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
+					transitions={'GTB_success':'MOVE_TO_TOOL_WAGON',
+								 'failed':'failed'})
+		
+		smach.StateMachine.add('MOVE_TO_TOOL_WAGON', MoveToToolWagon(),
+					transitions={'MTTW_success':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON'})
+		
+		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON', ClearTrashBinIntoToolWagon(),
+					transitions={'CTBITW_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
+		
+		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
+					transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'})
+		
+		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
+					transitions={'RTB_finished':'CWB_done'})
+	
+	outcome = sm_sub_clear_waste_bin.execute()
+# end of trash bin clearung sub state machine, comment until here when you like to use the full scenario
+	
+'''	
 	sm_top_exploration = smach.StateMachine(outcomes=['finish', 'failed'])  
 	sm_top_exploration.userdata.sm_trash_bin_counter = 0  
 
 	with sm_top_exploration:
 		
-		smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
-								transitions={'GTB_success':'finish',
-											 'failed':'failed'})
+		# todo: comment these 3 lines to get the full scenario
+		# smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
+		#						transitions={'GTB_success':'finish',
+		#									 'failed':'failed'})
+		# end commenting
+		
+		
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
 							transitions={'list_of_rooms':'UNPROCESSED_ROOM'},
@@ -1150,7 +1209,7 @@ def main():
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
 							transitions={'PCVR_finish':'finish'})        
-		
+
 
         
 	# Create and start the introspection server
@@ -1163,7 +1222,7 @@ def main():
 	#rospy.spin()
 	
 	sis.stop()
-
+'''
 
 if __name__ == '__main__':
 	try:

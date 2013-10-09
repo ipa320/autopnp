@@ -59,6 +59,9 @@ void TrashBinDetectionNode::fiducials_data_callback_(const cob_object_detection_
 //This function process the data to calculate the trash bin location
 void TrashBinDetectionNode::trash_bin_pose_estimator_(const geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id)
 {
+	// todo: make this a parameter
+	double trash_bin_radius = 0.15;
+
 	tf::Stamped<tf::Pose> original_pose(
 	tf::Pose(
 			tf::Quaternion(
@@ -69,7 +72,7 @@ void TrashBinDetectionNode::trash_bin_pose_estimator_(const geometry_msgs::PoseS
 			tf::Vector3(
 					pose_from_fiducials_frame_id.pose.position.x,
 					pose_from_fiducials_frame_id.pose.position.y,
-					pose_from_fiducials_frame_id.pose.position.z)),
+					pose_from_fiducials_frame_id.pose.position.z-trash_bin_radius)),
 			ros::Time(0), frame_id);
 	tf::Stamped<tf::Pose> transformed_pose;
 	try
@@ -102,12 +105,14 @@ void TrashBinDetectionNode::trash_bin_pose_estimator_(const geometry_msgs::PoseS
 			{
 				trash_bin_location_storage_.trash_bin_locations[i] = average_calculator_(pose_with_respect_to_map, trash_bin_location_storage_.trash_bin_locations[i], trash_bin_location_average_count_[i]);
 				trash_bin_location_average_count_[i]++;
+				ROS_INFO("Updated trash bin location of entry %i.", i);
 				break;
 			}
 			else if (i == (trash_bin_location_storage_.trash_bin_locations.size() - 1))
 			{
 				trash_bin_location_storage_.trash_bin_locations.push_back(pose_with_respect_to_map);
 				trash_bin_location_average_count_.push_back(1);
+				ROS_INFO("Added a new trash bin location.");
 			}
 		}
 	}

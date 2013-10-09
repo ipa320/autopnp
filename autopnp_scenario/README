@@ -1,3 +1,38 @@
+################## new ####################
+
+# short instructions for running the scenario with the real robot
+1. start roscore, bringup, (ROS) navigation
+2. roslaunch autopnp_scenario autopnp_scenario.launch    (starts all necessary software on pc 1 and 2 for the scenario)
+3. rosrun autopnp_scenario exploration_detection_cleaning.py   (starts the scenario state machine)
+
+
+attention:
+- during DirtDetectionOn we use torso pose front_extreme, if this is not in your torso_joint_configurations.yaml, please add the line
+front_extreme: [[-0.2,0.0,-0.35]]
+(corresponding to the joint_names: ["torso_lower_neck_tilt_joint","torso_pan_joint","torso_upper_neck_tilt_joint"])
+and test this configuration carefully with the cob_console
+- the fiducial marker on your trash bin has a number (e.g. 0, 1, 2, or 3), make sure this number is the same as in ros/src/trash_bin_detection_service_server.cpp where "tag_0" needs to be replaced by "tag_x" (x stands for your tag number)
+- ensure that the Kinect topics in ros/launch/fiducials/fiducials.launch are adapted to your local names
+- not so important for the moment, but please check that autopnp_dirt_detection/ros/launch/dirt_detection.launch has the correct topics set up for the Kinect sensor
+(i.e. <remap from="image_color" to="/cam3d/rgb/image_color"/> and <remap from="colored_point_cloud" to="/cam3d/depth_registered/points"/> might be changed to the local names of these topics)
+- when a trash bin is detected by its marker, the trash bin center is computed from the marker by subtracting the trash bin radius from the z-coordinate in the marker coordinate system. The trash bin radius is set to 0.19m for the moment and may be adjusted in file ros/src/trash_bin_detection_service_server.cpp at line
+double trash_bin_radius = 0.15;
+- you need to get the latest cob_fiducials from the repository https://github.com/ipa320/cob_object_perception (branch groovy_dev)
+- you need the latest cob_generic_states_experimental from the rmb repository https://github.com/ipa-rmb/cob_scenario_states (branch master),
+this stack is already on the robot (so be careful with changes so that the accompany scenario is not harmed), maybe even in the accompany-cob3-6 account -> make a new branch for rmb version or make a temporary overlay somewhere else which is used instead of the standard version
+
+
+todos in scenario script exploration_detection_cleaning.py:
+- adjust userdata.radius = 0.8 and userdata.goal_pose_theta_offset = math.pi/2.0 in MoveToTrashBinLocation for the correct approach position relative to the trash bin
+- add the base movements at MoveToToolWagon and MoveToTrashBinPickingLocation
+- go to main function and insert your trash bin pose manually for the moment
+- if the whole trash bin approach and clearing sub-machine works well, comment this part in the main function and uncomment the big state machine for the full scenario
+- try to get the whole thing working 
+
+
+
+###########################################
+
 #Instruction about running autopnp_scenario software in simulation------------>
 
 *Launch the following launch files which is necessary to run autopnp_scenario software
