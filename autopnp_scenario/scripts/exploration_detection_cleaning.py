@@ -1159,7 +1159,8 @@ def main():
 								transitions={'CTBITW_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
 			
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-								transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'})
+								transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
 								transitions={'RTB_finished':'CWB_done'})
