@@ -501,8 +501,8 @@ class MoveToTrashBinLocation(smach.State):
         #try:
             #sm = ApproachPerimeter()
         center = Pose2D()
-        center.x = userdata.trash_bin_pose_.x #userdata.trash_bin_pose_.pose.pose.position.x 
-        center.y = userdata.trash_bin_pose_.y #userdata.trash_bin_pose_.pose.pose.position.y
+        center.x = userdata.trash_bin_pose_.pose.pose.position.x 
+        center.y = userdata.trash_bin_pose_.pose.pose.position.y
         center.theta = 0
         userdata.center = center
         userdata.radius = 0.75		# adjust this for right distance to trash bin
@@ -663,8 +663,8 @@ class MoveToTrashBinPickingLocation(smach.State):
         #try:
             #sm = ApproachPerimeter()
         center = Pose2D()
-        center.x = userdata.trash_bin_pose_.x #userdata.trash_bin_pose_.pose.pose.position.x 
-        center.y = userdata.trash_bin_pose_.y #userdata.trash_bin_pose_.pose.pose.position.y
+        center.x = userdata.trash_bin_pose_.pose.pose.position.x 
+        center.y = userdata.trash_bin_pose_.pose.pose.position.y
         center.theta = 0
         userdata.center = center
         userdata.radius = 0.75		# adjust this for right distance to trash bin

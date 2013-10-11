@@ -160,12 +160,22 @@ bool TrashBinDetectionNode::deactivate_trash_bin_detection_callback_(autopnp_sce
 	trash_bin_detection_active_ = false;
 
 	cob_object_detection_msgs::Detection temp_detection_obj;
-
 	for(unsigned int i=0; i<trash_bin_location_storage_.trash_bin_locations.size() ; i++)
 	{
 		//temp_detection_obj.pose.pose = trash_bin_location_storage_.trash_bin_locations[i].pose;
 		temp_detection_obj.pose = trash_bin_location_storage_.trash_bin_locations[i];
 		temp_detection_obj.header =  trash_bin_location_storage_.trash_bin_locations[i].header;
+		res.detected_trash_bin_poses.detections.push_back(temp_detection_obj);
+	}
+
+	// hack for demo in holland
+	if (trash_bin_location_storage_.trash_bin_locations.size() == 0)
+	{
+		temp_detection_obj.pose.header.frame_id = "/map";
+		temp_detection_obj.pose.pose.position.x = 0.0;
+		temp_detection_obj.pose.pose.position.y = 0.0;
+		temp_detection_obj.pose.pose.position.z = 0.0;
+		temp_detection_obj.header.frame_id = "/map";
 		res.detected_trash_bin_poses.detections.push_back(temp_detection_obj);
 	}
 
