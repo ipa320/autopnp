@@ -10,7 +10,7 @@
   
   <!-- send parameters to parameter server -->
   <rosparam command="load" ns="fiducials" file="$(find autopnp_scenario)/ros/launch/fiducials/$(arg yaml_file)"/>
-  <param name="fiducials/model_directory" value="$(find cob_fiducials)/common/files/models/"/>
+  <param name="fiducials/model_directory" value="$(find autopnp_scenario)/common/files/models/"/>
 
   <!-- start left camera -->
   <node pkg="cob_fiducials" ns="fiducials" type="fiducials" name="fiducials" output="screen">

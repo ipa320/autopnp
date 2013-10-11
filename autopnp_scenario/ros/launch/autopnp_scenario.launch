@@ -8,7 +8,7 @@
 	<arg name="pc3" default="$(arg robot)-pc3"/>
 
 	<group>
-		<machine name="pc1" address="$(arg pc1)" default="true"/>
+		<machine name="pc1" address="$(arg pc1)" env-loader="/u/robot/git/care-o-bot/env.sh" default="true"/>
 
 		<!-- start navigation -->
 		<!--include file="$(find cob_navigation_global)/launch/2dnav_ros_dwa.launch" >
@@ -36,7 +36,7 @@
 	</group>
 
 	<group>
-		<machine name="pc2" address="$(arg pc2)" default="true"/>
+		<machine name="pc2" address="$(arg pc2)" env-loader="/u/robot/git/care-o-bot/env.sh" default="true"/>
 		
 		<!-- start trash bin detection -->
 		<include file="$(find autopnp_scenario)/ros/launch/trash_bin_detection_service_server.launch"/>

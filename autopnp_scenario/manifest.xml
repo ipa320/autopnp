@@ -20,6 +20,7 @@
   <depend package="cob_generic_states_experimental"/>
   <depend package="cob_trajectory_controller"/>
   <depend package="cob_map_accessibility_analysis"/>
+  <depend package="cob_fiducials"/>
   
   <!--depend package="moveit_ros_move_group"/>
   <depend package="control_msgs"/>
