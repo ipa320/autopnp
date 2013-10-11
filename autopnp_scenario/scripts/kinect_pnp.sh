@@ -18,3 +18,4 @@ roslaunch openni2_launch openni2.launch camera:=cam3d depth_registration:=true
 # 3. update rules
 # sudo udevadm control --reload-rules
 # 4. try out pnp
+# -> if it works, you will find a kinect device for: ls -l /dev/kinect
