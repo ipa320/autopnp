@@ -18,7 +18,7 @@ public:
 		display_image_function_ptr_ = displayImageFunction;
 
 		it_ = new image_transport::ImageTransport(node_handle_);
-		color_camera_image_sub_.subscribe(*it_, "/camera/rgb/image_color", 1);
+		color_camera_image_sub_.subscribe(*it_, "/cam3d/rgb/image", 1);
 		color_camera_image_sub_.registerCallback(boost::bind(&ImageReceiver::imageCallback, this, _1));
 	}
 
@@ -28,11 +28,9 @@ private:
 
 	void imageCallback(const sensor_msgs::ImageConstPtr& color_image_msg)
 	{
-		ROS_INFO("Received image with width=%i, height=%i and first pixel=(%i,%i,%i)", color_image_msg->width, color_image_msg->height, color_image_msg->data[0], color_image_msg->data[1], color_image_msg->data[2]);
+		//ROS_INFO("Received image with width=%i, height=%i and first pixel=(%i,%i,%i)", color_image_msg->width, color_image_msg->height, color_image_msg->data[0], color_image_msg->data[1], color_image_msg->data[2]);
 
 		(*display_image_function_ptr_)(color_image_msg->width, color_image_msg->height, color_image_msg->step, color_image_msg->data);
-//		QPixmap image("C:\\bla.bmp");
-//		qlabel->setPixmap(image);
 	}
 
 	ros::NodeHandle node_handle_;
@@ -40,7 +38,7 @@ private:
 };
 
 
-RosInit::RosInit(int argc, char *argv[], void (*displayImageFunction)(unsigned int, unsigned int, unsigned int, const std::vector<unsigned char>&))
+void RosInit::init(int argc, char *argv[], void (*displayImageFunction)(unsigned int, unsigned int, unsigned int, const std::vector<unsigned char>&))
 {
 	ros::init(argc, argv, "xme_ros_gui");
 
@@ -50,8 +48,15 @@ RosInit::RosInit(int argc, char *argv[], void (*displayImageFunction)(unsigned i
 
 	ROS_INFO("Connection to robot initialized.");
 
-	while (ros::ok())
+	while (ros::ok() && terminateRosThread==0)
+	{
 		ros::spinOnce();
+	}
+}
+
+RosInit::RosInit()
+{
+
 }
 
 RosInit::~RosInit()

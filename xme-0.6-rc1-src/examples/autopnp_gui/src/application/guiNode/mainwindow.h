@@ -25,6 +25,7 @@ signals:
 private slots:
 	void writeText(QString text);
 	void buttonPushed();
+	void terminateApplication();
     void displayImage(QImage image);
 
 private:

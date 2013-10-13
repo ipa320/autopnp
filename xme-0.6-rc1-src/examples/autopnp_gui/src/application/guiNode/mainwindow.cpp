@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(this, SIGNAL(writeTextSignal(QString)), this, SLOT(writeText(QString)));
 	connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(buttonPushed()));
+	connect(ui->pushButtonQuit, SIGNAL(clicked()), this, SLOT(terminateApplication()));
 	connect(this, SIGNAL(displayImageSignal(QImage)), this, SLOT(displayImage(QImage)));
 }
 
@@ -43,29 +44,33 @@ void MainWindow::buttonPushed()
 	writeButtonStateWrapper(state);
 }
 
+void MainWindow::terminateApplication()
+{
+	QApplication::quit();
+	terminateApplicationWrapper();
+}
+
 void MainWindow::displayImage(QImage image)
 {
 	if(initialized)
 	{
-		std::cout << "displayImage\n";
 		ui->imageDisplay->setPixmap(QPixmap::fromImage(image));
 	}
 }
 
 void MainWindow::emitDisplayImage(unsigned int width, unsigned int height, unsigned int step, const std::vector<unsigned char>& data)
 {
-	std::cout << "emitDisplayImage\n";
 	// deep copy
 	QImage image(width, height, QImage::Format_RGB888);
-	//image.fill(0);
 	for (int v=0; v<height; ++v)
 	{
 		uchar* imgdata = image.scanLine(v);
-		for (int u=0; u<3*width; u+=3)
+		for (int u=0; u<3*width; ++u)
 		{
-			imgdata[u] = data[v*step + u+2];
-			imgdata[u+1] = data[v*step + u+1];
-			imgdata[u+2] = data[v*step + u];
+			imgdata[u] = data[v*step + u];
+//			imgdata[u] = data[v*step + u+2];
+//			imgdata[u+1] = data[v*step + u+1];
+//			imgdata[u+2] = data[v*step + u];
 		}
 	}
 	emit displayImageSignal(image);

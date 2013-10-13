@@ -34,6 +34,8 @@
 #include "xme/hal/include/mem.h"
 #include "headerFile.h"
 #include <pthread.h>
+
+#include <unistd.h>
 //#include <boost/thread/thread.hpp>
 
 //#include <Windows.h>
@@ -54,6 +56,7 @@ portButtonPushedData;
 
 // PROTECTED REGION ID(CHROMOSOMEGUI_ADV_GUICOMPONENT_SENDBUTTONSTATEFUNCTION_C_STATICVARIABLES) ENABLED START
 static int buttonState;
+static int terminateApplicationValue;
 /*
  * Added these lines to create the GUI thread
  */
@@ -77,6 +80,11 @@ writeButtonState
 )
 {
     buttonState = buttonPushed;
+}
+
+void terminateApplicationCall(void)
+{
+	terminateApplicationValue = 1;
 }
 
 /*
@@ -140,7 +148,11 @@ chromosomeGui_adv_guiComponent_sendButtonStateFunction_init
 	//unsigned int threadId;
 	threadData_t* threadData;
     char text = 'C';
+    int ret_thread;
+    int ret_ros_thread;
+
     buttonState = 0;
+    terminateApplicationValue = 0;
 	//End insertion
     /*
 	 * Added these lines to create the GUI thread
@@ -153,16 +165,28 @@ chromosomeGui_adv_guiComponent_sendButtonStateFunction_init
 	/* create a thread */
 	if (pthread_create(&thread_ref, NULL, startGuiThread, (void*)threadData))
 	{
-		fprintf(stderr, "Error creating thread\n");
+		fprintf(stderr, "Error creating startGuiThread\n");
 		return 1;
 	}
 
 	/* create a thread */
 	if (pthread_create(&ros_thread_ref, NULL, initRosThread, (void*)threadData))
 	{
-		fprintf(stderr, "Error creating thread\n");
+		fprintf(stderr, "Error creating initRosThread\n");
 		return 1;
 	}
+
+	fprintf(stdout, "All threads running.\n");
+	while (terminateApplicationValue == 0)
+		sleep(0.01);
+
+	fprintf(stdout, "Terminating Application.\n");
+	ret_thread = pthread_join(thread_ref, NULL);
+	fprintf(stdout, "Gui thread return value = %i.\n", ret_thread);
+	ret_ros_thread = pthread_join(ros_thread_ref, NULL);
+	fprintf(stdout, "ROS thread return valus %i.\n", ret_ros_thread);
+
+	terminateApplicationValue = 2;
 
 //	guiThread = CreateThread(NULL, 0, (/*LPTHREAD_START_ROUTINE*/void*) &startGuiThread, (void*)threadData, 0, &threadId);
 	//End insertion
@@ -200,6 +224,9 @@ chromosomeGui_adv_guiComponent_sendButtonStateFunction_step
 			portButtonPushedData.buttonPushed = state;
 			buttonState = 0;
 		}
+
+		if (terminateApplicationValue==2)
+			exit(0);
         
         // PROTECTED REGION END
     }

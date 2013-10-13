@@ -1,14 +1,14 @@
 /********************************************************************************
-** Form generated from reading UI file 'mainwindowZK7901.ui'
+** Form generated from reading UI file 'mainwindowoN5547.ui'
 **
-** Created: Fri Oct 11 14:01:04 2013
+** Created: Sun Oct 13 11:03:07 2013
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef MAINWINDOWZK7901_H
-#define MAINWINDOWZK7901_H
+#ifndef MAINWINDOWON5547_H
+#define MAINWINDOWON5547_H
 
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -33,6 +33,7 @@ public:
     QPushButton *pushButton;
     QTextEdit *textEdit;
     QLabel *imageDisplay;
+    QPushButton *pushButtonQuit;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -41,26 +42,30 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(583, 430);
+        MainWindow->resize(812, 570);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(490, 20, 75, 31));
+        pushButton->setGeometry(QRect(700, 30, 91, 41));
         textEdit = new QTextEdit(centralWidget);
         textEdit->setObjectName(QString::fromUtf8("textEdit"));
-        textEdit->setGeometry(QRect(490, 30, 71, 21));
+        textEdit->setGeometry(QRect(710, 40, 71, 21));
         imageDisplay = new QLabel(centralWidget);
         imageDisplay->setObjectName(QString::fromUtf8("imageDisplay"));
-        imageDisplay->setGeometry(QRect(20, 10, 461, 341));
+        imageDisplay->setGeometry(QRect(20, 10, 640, 480));
         imageDisplay->setAlignment(Qt::AlignCenter);
+        pushButtonQuit = new QPushButton(centralWidget);
+        pushButtonQuit->setObjectName(QString::fromUtf8("pushButtonQuit"));
+        pushButtonQuit->setGeometry(QRect(700, 90, 91, 41));
         MainWindow->setCentralWidget(centralWidget);
         textEdit->raise();
         imageDisplay->raise();
         pushButton->raise();
+        pushButtonQuit->raise();
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 583, 25));
+        menuBar->setGeometry(QRect(0, 0, 812, 25));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -79,6 +84,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
         pushButton->setText(QApplication::translate("MainWindow", "Clean", 0, QApplication::UnicodeUTF8));
         imageDisplay->setText(QApplication::translate("MainWindow", "ImageDisplay", 0, QApplication::UnicodeUTF8));
+        pushButtonQuit->setText(QApplication::translate("MainWindow", "Quit", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
@@ -89,4 +95,5 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // MAINWINDOWZK7901_H
+#endif // MAINWINDOWON5547_H
+

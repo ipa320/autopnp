@@ -22,3 +22,4 @@ extern "C" {
 }
 #endif
 void writeButtonStateWrapper(int state);
+void terminateApplicationWrapper(void);

@@ -3,3 +3,5 @@ writeButtonState
 (
 	int buttonPushed
 );
+
+void terminateApplicationCall(void);

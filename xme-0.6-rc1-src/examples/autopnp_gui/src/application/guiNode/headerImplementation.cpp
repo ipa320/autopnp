@@ -52,6 +52,12 @@ void writeButtonStateWrapper(int state)
 	writeButtonState(state);
 }
 
+void terminateApplicationWrapper(void)
+{
+	rosInit.terminateRosThread = 1;
+	terminateApplicationCall();
+}
+
 void displayImage(unsigned int width, unsigned int height, unsigned int step, const std::vector<unsigned char>& data)
 {
 	w->emitDisplayImage(width, height, step, data);
@@ -59,9 +65,10 @@ void displayImage(unsigned int width, unsigned int height, unsigned int step, co
 
 extern "C" int initRos(int argc, char *argv[])
 {
+	rosInit.terminateRosThread = 0;
 	while (window_initialized == 0)
 		sleep(0.01);
 	void (*displayImageFunction)(unsigned int, unsigned int, unsigned int, const std::vector<unsigned char>& data);
 	displayImageFunction = displayImage;
-	RosInit rosInit(argc, argv, displayImageFunction);
+	rosInit.init(argc, argv, displayImageFunction);
 }

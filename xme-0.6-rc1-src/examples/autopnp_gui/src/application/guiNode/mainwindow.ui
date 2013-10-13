@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>583</width>
-    <height>430</height>
+    <width>812</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>20</y>
-      <width>75</width>
-      <height>31</height>
+      <x>700</x>
+      <y>30</y>
+      <width>91</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -30,8 +30,8 @@
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>30</y>
+      <x>710</x>
+      <y>40</y>
       <width>71</width>
       <height>21</height>
      </rect>
@@ -42,8 +42,8 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>461</width>
-      <height>341</height>
+      <width>640</width>
+      <height>480</height>
      </rect>
     </property>
     <property name="text">
@@ -53,16 +53,30 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButtonQuit">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>90</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Quit</string>
+    </property>
+   </widget>
    <zorder>textEdit</zorder>
    <zorder>imageDisplay</zorder>
    <zorder>pushButton</zorder>
+   <zorder>pushButtonQuit</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>583</width>
+     <width>812</width>
      <height>25</height>
     </rect>
    </property>
