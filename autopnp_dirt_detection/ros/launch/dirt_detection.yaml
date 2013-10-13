@@ -85,10 +85,10 @@ experimentSubFolder: test
 # all flags are of type bool
 
 # displays the original source image that comes with the point cloud data
-showOriginalImage: true
+showOriginalImage: false #true
 
 # shows only the part of the color image that belongs to the plane, the remainder is masked black
-showPlaneColorImage: true
+showPlaneColorImage: false #true
 
 # shows the warped color image of the plane
 showWarpedOriginalImage: false
@@ -103,13 +103,13 @@ showColorWithArtificialDirt: false
 showSaliencyWithArtificialDirt: false
 
 # displays the rescaled saliency image
-showSaliencyDetection: true
+showSaliencyDetection: false #true
 
 # displays the detected lines in the image that might be used to shadow false positives
 showDetectedLines: false
 
 # displays the dirt detection results drawn into the color image
-showDirtDetections: true
+showDirtDetections: false #true
 
 # displays the grid that illustrates the number of observations of each floor cell (the image might be displayed rotated)
 showObservationsGrid: false

@@ -138,12 +138,13 @@ protected:
 	ros::Subscriber camera_depth_points_sub_;
 	ros::Subscriber floor_plan_sub_;
 
-	ros::Publisher floor_plane_pub_;
+	//ros::Publisher floor_plane_pub_;
 	ros::Publisher camera_depth_points_from_bag_pub_;
 	ros::Publisher clock_pub_;
 	ros::Publisher ground_truth_map_pub_;
 	ros::Publisher detection_map_pub_;
 	image_transport::Publisher dirt_detection_image_pub_; ///< topic for publishing the image containing the people positions
+	image_transport::Publisher dirt_detection_image_with_map_pub_;	///< image containing the map and the found dirt regions (mainly usable for visualization)
 
 	// labeling
 	bool labelingStarted_;

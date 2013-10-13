@@ -1,14 +1,14 @@
 /********************************************************************************
-** Form generated from reading UI file 'mainwindowoN5547.ui'
+** Form generated from reading UI file 'mainwindowq19885.ui'
 **
-** Created: Sun Oct 13 11:03:07 2013
+** Created: Sun Oct 13 19:58:04 2013
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef MAINWINDOWON5547_H
-#define MAINWINDOWON5547_H
+#ifndef MAINWINDOWQ19885_H
+#define MAINWINDOWQ19885_H
 
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -42,22 +42,23 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(812, 570);
+        MainWindow->resize(915, 637);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(700, 30, 91, 41));
+        pushButton->setGeometry(QRect(810, 30, 91, 41));
         textEdit = new QTextEdit(centralWidget);
         textEdit->setObjectName(QString::fromUtf8("textEdit"));
-        textEdit->setGeometry(QRect(710, 40, 71, 21));
+        textEdit->setGeometry(QRect(820, 40, 71, 21));
         imageDisplay = new QLabel(centralWidget);
         imageDisplay->setObjectName(QString::fromUtf8("imageDisplay"));
-        imageDisplay->setGeometry(QRect(20, 10, 640, 480));
+        imageDisplay->setGeometry(QRect(20, 10, 768, 544));
+        imageDisplay->setScaledContents(true);
         imageDisplay->setAlignment(Qt::AlignCenter);
         pushButtonQuit = new QPushButton(centralWidget);
         pushButtonQuit->setObjectName(QString::fromUtf8("pushButtonQuit"));
-        pushButtonQuit->setGeometry(QRect(700, 90, 91, 41));
+        pushButtonQuit->setGeometry(QRect(810, 90, 91, 41));
         MainWindow->setCentralWidget(centralWidget);
         textEdit->raise();
         imageDisplay->raise();
@@ -65,7 +66,7 @@ public:
         pushButtonQuit->raise();
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 812, 25));
+        menuBar->setGeometry(QRect(0, 0, 915, 25));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -95,5 +96,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // MAINWINDOWON5547_H
-
+#endif // MAINWINDOWQ19885_H

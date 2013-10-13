@@ -967,8 +967,8 @@ class ProcessCleaningVerificationResults(smach.State):
  
 def main():
 	rospy.init_node('exploration_detection_cleaning')
-	
-'''	
+
+	'''	
 	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
 	sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
 	sm_sub_clear_waste_bin.userdata.detection_pose = Pose2D() # todo: insert a pose with x and y of your trash bin here
@@ -1016,7 +1016,7 @@ def main():
 	
 	outcome = sm_sub_clear_waste_bin.execute()
 # end of trash bin clearung sub state machine, comment until here when you like to use the full scenario
-'''		
+	'''		
 
 	sm_top_exploration = smach.StateMachine(outcomes=['finish', 'failed'])  
 	sm_top_exploration.userdata.sm_trash_bin_counter = 0  
@@ -1028,7 +1028,6 @@ def main():
 		#						transitions={'GTB_success':'finish',
 		#									 'failed':'failed'})
 		# end commenting
-		
 		
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),

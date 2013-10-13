@@ -34,8 +34,12 @@
 #include "xme/hal/include/mem.h"
 #include "headerFile.h"
 #include <pthread.h>
+#include <signal.h>
 
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
+#include <errno.h>
 //#include <boost/thread/thread.hpp>
 
 //#include <Windows.h>
@@ -54,9 +58,14 @@
 static chromosomeGui_topic_ButtonSignal_t
 portButtonPushedData;
 
+
+
 // PROTECTED REGION ID(CHROMOSOMEGUI_ADV_GUICOMPONENT_SENDBUTTONSTATEFUNCTION_C_STATICVARIABLES) ENABLED START
 static int buttonState;
+static int scenarioState;
 static int terminateApplicationValue;
+
+static int scenarioProcessID;
 /*
  * Added these lines to create the GUI thread
  */
@@ -67,7 +76,7 @@ typedef struct
 }threadData_t;
 
 /* this variable is our reference to the thread */
-static pthread_t thread_ref, ros_thread_ref;
+static pthread_t thread_ref, ros_thread_ref, scenario_thread_ref;
 
 /******************************************************************************/
 /***   Helper function                                                     ***/
@@ -129,6 +138,28 @@ static void* initRosThread( void* lpParam )
 
     return NULL;
 }
+
+static void* scenarioThread( void* lpParam );
+
+/*
+ * Added these lines to create the GUI thread
+ */
+static void* scenarioThread( void* lpParam )
+{
+	fprintf(stdout, "Starting scenario thread.\n");
+	if (lpParam == NULL) // just because the compiler does not like lpParam to be of any use
+	{
+		;
+	}
+	scenarioProcessID = fork();
+	if (scenarioProcessID==0)
+	{
+		execl("../../../../../autopnp_scenario/scripts/exploration_detection_cleaning.py", "", (char*) 0);
+	}
+	scenarioState = 0;
+
+    return NULL;
+}
 // PROTECTED REGION END
 
 /******************************************************************************/
@@ -148,11 +179,13 @@ chromosomeGui_adv_guiComponent_sendButtonStateFunction_init
 	//unsigned int threadId;
 	threadData_t* threadData;
     char text = 'C';
-    int ret_thread;
-    int ret_ros_thread;
+    int ret_thread, ret_ros_thread, ret_scenario_thread;
+    int status;
 
     buttonState = 0;
     terminateApplicationValue = 0;
+    scenarioState = 0;
+
 	//End insertion
     /*
 	 * Added these lines to create the GUI thread
@@ -178,13 +211,46 @@ chromosomeGui_adv_guiComponent_sendButtonStateFunction_init
 
 	fprintf(stdout, "All threads running.\n");
 	while (terminateApplicationValue == 0)
+	{
 		sleep(0.01);
+
+		if(buttonState == 1)
+		{
+			buttonState = 0;
+
+			if (scenarioState==0)
+			{
+				scenarioState = 1;
+				if (pthread_create(&scenario_thread_ref, NULL, scenarioThread, NULL))
+				{
+					fprintf(stderr, "Error creating scenarioThread\n");
+				}
+			}
+		}
+	}
 
 	fprintf(stdout, "Terminating Application.\n");
 	ret_thread = pthread_join(thread_ref, NULL);
 	fprintf(stdout, "Gui thread return value = %i.\n", ret_thread);
 	ret_ros_thread = pthread_join(ros_thread_ref, NULL);
-	fprintf(stdout, "ROS thread return valus %i.\n", ret_ros_thread);
+	fprintf(stdout, "ROS thread return value %i.\n", ret_ros_thread);
+	if(kill(scenarioProcessID, SIGTERM) != -1)
+	{
+		sleep(1); // 1 Sekunde Zeit zum beenden geben
+		if(kill(scenarioProcessID, SIGKILL) == -1 && errno != EINVAL)
+		{
+			// EINVAL == pid ungültig => Prozess hat sich beendet
+		}
+		else
+		{
+			if(waitpid(scenarioProcessID, &status, 0) == -1)
+			{
+				;
+			}
+		}
+	}
+	ret_scenario_thread = pthread_join(scenario_thread_ref, NULL);
+	fprintf(stdout, "Scenario thread return value %i.\n", ret_scenario_thread);
 
 	terminateApplicationValue = 2;
 
@@ -212,16 +278,17 @@ chromosomeGui_adv_guiComponent_sendButtonStateFunction_step
     {
         // PROTECTED REGION ID(CHROMOSOMEGUI_ADV_GUICOMPONENT_SENDBUTTONSTATEFUNCTION_STEP_C) ENABLED START
 		int state = 1;
-		portButtonPushedData.buttonPushed = 0;
+		//portButtonPushedData.buttonPushed = 0;
         // TODO: Auto-generated stub
     
         XME_UNUSED_PARAMETER(param);
         XME_UNUSED_PARAMETER(status);
+        XME_UNUSED_PARAMETER(state);
 
 		if(buttonState == 1)
 		{
 			XME_LOG(XME_LOG_ALWAYS, "Button was pressed\n");
-			portButtonPushedData.buttonPushed = state;
+			//portButtonPushedData.buttonPushed = state;
 			buttonState = 0;
 		}
 

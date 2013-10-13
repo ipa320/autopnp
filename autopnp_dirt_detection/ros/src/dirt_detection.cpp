@@ -148,7 +148,8 @@ void DirtDetection::init()
 	if (gridResolution_ < 0.)
 		gridResolution_ = 1./floor_plan_.info.resolution;
 	gridOrigin_ = cv::Point2d(floor_plan_.info.origin.position.x, floor_plan_.info.origin.position.y);
-	gridDimensions_ = cv::Point2i(floor_plan_.info.width, floor_plan_.info.height) * floor_plan_.info.resolution*gridResolution_;
+	double scale = floor_plan_.info.resolution*gridResolution_;
+	gridDimensions_ = cv::Point2i(cvRound(floor_plan_.info.width*scale), cvRound(floor_plan_.info.height*scale));
 #else
 	// use standard values for map properties
 #endif
@@ -159,6 +160,7 @@ void DirtDetection::init()
 	it_ = new image_transport::ImageTransport(node_handle_);
 //	color_camera_image_sub_ = it_->subscribe("image_color", 1, boost::bind(&DirtDetection::imageDisplayCallback, this, _1));
 	dirt_detection_image_pub_ = it_->advertise("dirt_detections", 1);
+	dirt_detection_image_with_map_pub_ = it_->advertise("map_with_dirt_detections", 1);
 
 	// dirt detection on at the beginning?
 	dirtDetectionCallbackActive_ = dirtDetectionActivatedOnStartup_;
@@ -934,6 +936,24 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 			cv::imshow("observations grid", gridObservationsDisplay);
 			cvMoveWindow("observations grid", 340, 0);
 		}
+
+		// publish image of map and dirt spots
+		cv::Mat map_with_dirt(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_8UC3);
+		map_with_dirt.setTo(cv::Scalar(255,255,255));
+		double scale = 1./(floor_plan_.info.resolution*gridResolution_);
+		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
+		{
+			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+			{
+				int index = v*scale*gridPositiveVotes_.cols*scale + u*scale;
+				map_with_dirt.at<cv::Vec3b>(v,gridPositiveVotes_.cols-u) = cv::Vec3b((100-floor_plan_.data[index])*2.55,(100-floor_plan_.data[index])*2.55,(100-floor_plan_.data[index])*2.55);
+				if (detectionMap.data[i] == 100)
+					map_with_dirt.at<cv::Vec3b>(v,gridPositiveVotes_.cols-u) = cv::Vec3b(0,0,255);
+			}
+		}
+		cv_ptr.image = map_with_dirt;
+		cv_ptr.encoding = "bgr8";
+		dirt_detection_image_with_map_pub_.publish(cv_ptr.toImageMsg());
 #endif
 
 		if (debug_["showWarpedOriginalImage"] == true)

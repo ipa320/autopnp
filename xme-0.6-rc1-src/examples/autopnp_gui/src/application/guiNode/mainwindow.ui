@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>812</width>
-    <height>570</height>
+    <width>915</width>
+    <height>637</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>810</x>
       <y>30</y>
       <width>91</width>
       <height>41</height>
@@ -30,7 +30,7 @@
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>710</x>
+      <x>820</x>
       <y>40</y>
       <width>71</width>
       <height>21</height>
@@ -42,12 +42,15 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>640</width>
-      <height>480</height>
+      <width>768</width>
+      <height>544</height>
      </rect>
     </property>
     <property name="text">
      <string>ImageDisplay</string>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -56,7 +59,7 @@
    <widget class="QPushButton" name="pushButtonQuit">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>810</x>
       <y>90</y>
       <width>91</width>
       <height>41</height>
@@ -76,7 +79,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>812</width>
+     <width>915</width>
      <height>25</height>
     </rect>
    </property>

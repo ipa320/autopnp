@@ -18,7 +18,8 @@ public:
 		display_image_function_ptr_ = displayImageFunction;
 
 		it_ = new image_transport::ImageTransport(node_handle_);
-		color_camera_image_sub_.subscribe(*it_, "/cam3d/rgb/image", 1);
+		//color_camera_image_sub_.subscribe(*it_, "/cam3d/rgb/image", 1);
+		color_camera_image_sub_.subscribe(*it_, "/dirt_detection/map_with_dirt_detections", 1);
 		color_camera_image_sub_.registerCallback(boost::bind(&ImageReceiver::imageCallback, this, _1));
 	}
 
