@@ -12,7 +12,7 @@ spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
 # double
-dirtThreshold: 0.15 #0.09 #0.2  #0.35 #0.5
+dirtThreshold: 0.2 #0.09 #0.2  #0.35 #0.5
 
 # number of time steps used for the detection history logging (in [1,10000])
 # int

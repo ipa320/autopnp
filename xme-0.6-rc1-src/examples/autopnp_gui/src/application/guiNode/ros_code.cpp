@@ -9,17 +9,19 @@
 //#include <cv_bridge/cv_bridge.h>
 //#include <sensor_msgs/image_encodings.h>
 
+#include <string.h>
+
 class ImageReceiver
 {
 public:
-	ImageReceiver(ros::NodeHandle nh, void (*displayImageFunction)(unsigned int, unsigned int, unsigned int, const std::vector<unsigned char>&))
+	ImageReceiver(ros::NodeHandle nh, std::string display_topic_name, void (*displayImageFunction)(unsigned int, unsigned int, unsigned int, const std::vector<unsigned char>&))
 	{
 		node_handle_ = nh;
 		display_image_function_ptr_ = displayImageFunction;
 
 		it_ = new image_transport::ImageTransport(node_handle_);
 		//color_camera_image_sub_.subscribe(*it_, "/cam3d/rgb/image", 1);
-		color_camera_image_sub_.subscribe(*it_, "/dirt_detection/map_with_dirt_detections", 1);
+		color_camera_image_sub_.subscribe(*it_, display_topic_name, 1);
 		color_camera_image_sub_.registerCallback(boost::bind(&ImageReceiver::imageCallback, this, _1));
 	}
 
@@ -45,7 +47,26 @@ void RosInit::init(int argc, char *argv[], void (*displayImageFunction)(unsigned
 
 	ros::NodeHandle nh;
 
-	ImageReceiver ir(nh, displayImageFunction);
+	std::string topic_name = "";
+//	topic_name = "/cam3d/rgb/image";	// kinect pnp with openni2
+//	topic_name = "/cam3d/rgb/image_color";		// kinect pnp with openni
+	topic_name = "/dirt_detection/map_with_dirt_detections";	// display dirt detections
+
+//	Chromosome does not provide the real argv
+//	std::cout << "argc=" << argc << "\n";
+//	if (argc==0)
+//		topic_name = "/dirt_detection/map_with_dirt_detections";
+//	else
+//	{
+//		fprintf(stdout, argv[0]);
+//		if (strcmp(argv[0], "pnp-openni") == 0)
+//			topic_name = "/cam3d/rgb/image_color";
+//		else if (strcmp(argv[0], "pnp-openni2") == 0)
+//			topic_name = "/cam3d/rgb/image";
+//	}
+
+
+	ImageReceiver ir(nh, topic_name, displayImageFunction);
 
 	ROS_INFO("Connection to robot initialized.");
 
