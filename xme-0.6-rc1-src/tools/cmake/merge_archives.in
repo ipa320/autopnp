@@ -1,0 +1,25 @@
+# This script merges many static libraries into one big library on Unix.
+set(TARGET_LOCATION "@TARGET_LOCATION@")
+set(TARGET "@TARGET@")
+set(STATIC_LIBS @STATIC_LIBS@)
+set(CMAKE_CURRENT_BINARY_DIR "@CMAKE_CURRENT_BINARY_DIR@")
+set(CMAKE_AR "@CMAKE_AR@")
+set(CMAKE_RANLIB "@CMAKE_RANLIB@")
+set(TEMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/merge-${TARGET})
+make_directory(${TEMP_DIR})
+
+# Extract every dependent library into a series of object files
+foreach (LIB ${STATIC_LIBS})
+    get_filename_component (LIBNAME ${LIB} NAME)
+    file (MAKE_DIRECTORY ${TEMP_DIR}/${LIBNAME})
+    execute_process (COMMAND ${CMAKE_AR} x ${LIB} WORKING_DIRECTORY ${TEMP_DIR}/${LIBNAME})
+    file (GLOB_RECURSE LIB_OBJECTS "${TEMP_DIR}/${LIBNAME}/*")
+    set (ALL_OBJECTS ${ALL_OBJECTS} ${LIB_OBJECTS})
+endforeach (LIB)
+
+# Now pack the objects into library with ar.
+execute_process(COMMAND ${CMAKE_AR} -r ${TARGET_LOCATION} ${ALL_OBJECTS} WORKING_DIRECTORY ${TEMP_DIR})
+execute_process(COMMAND ${CMAKE_RANLIB} ${TARGET_LOCATION} WORKING_DIRECTORY ${TEMP_DIR})
+
+# Cleanup and delete all leftover object files
+file(REMOVE_RECURSE ${TEMP_DIR})

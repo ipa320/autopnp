@@ -9,7 +9,7 @@ roslaunch openni2_launch openni2.launch camera:=cam3d depth_registration:=true
 
 # usage
 # -----
-# 1. create udev rule
+# 1. create udev rule on pc 2 of the robot
 # sudo gedit /etc/udev/rules.d/01-kinect.rules
 # -> insert the following line into the file: SUBSYSTEMS=="usb", ATTRS{idVendor}=="1d27", MODE="0666", SYMLINK+="kinect", RUN+="/home/rbormann/git/autopnp/autopnp_scenario/scripts/kinect_pnp.sh"
 # -> adapt path for the rule

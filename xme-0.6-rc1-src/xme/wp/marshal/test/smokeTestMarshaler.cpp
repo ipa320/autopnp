@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2011-2013, fortiss GmbH.
+ * Licensed under the Apache License, Version 2.0.
+ *
+ * Use, modification and distribution are subject to the terms specified
+ * in the accompanying license file LICENSE.txt located at the root directory
+ * of this software distribution. A copy is available at
+ * http://chromosome.fortiss.org/.
+ *
+ * This file is part of CHROMOSOME.
+ *
+ * $Id: smokeTestMarshaler.cpp 4779 2013-08-26 13:28:25Z wiesmueller $
+ */
+
+/**
+ * \file
+ *         Marshaler waypoint test.
+ */
+
+/******************************************************************************/
+/***   Includes                                                             ***/
+/******************************************************************************/
+#include <gtest/gtest.h>
+#include <cstring>
+#include <vector>
+
+#include "marshaler.h"
+#include "deMarshalerTestTopic.h"
+#include "deMarshalerTestTopicData.h"
+
+#include "xme/hal/include/mem.h"
+#include "xme/hal/include/net.h"
+
+#include "xme/wp/waypoint.h"
+
+class MarshalerSmokeTest : public testing::Test
+{
+protected:
+    MarshalerSmokeTest()
+    {
+    }
+
+    ~MarshalerSmokeTest()
+    {
+        // Do nothing
+    }
+};
+
+TEST_F(MarshalerSmokeTest, DemarshalerInitAndFini)
+{
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_init());
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_fini());
+}
+
+TEST_F(MarshalerSmokeTest, DemarshalerFiniBeforeInit)
+{
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_fini());
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_init());
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_fini());
+}
+
+TEST_F(MarshalerSmokeTest, DemarshalerRunInvalidInstanceId)
+{
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_init());
+    ASSERT_EQ(XME_STATUS_INVALID_HANDLE, xme_wp_marshal_marshaler_run(XME_WP_WAYPOINT_INSTANCEID_INVALID));
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_fini());
+}
+
+TEST_F(MarshalerSmokeTest, DemarshalerRunMaxInstanceId)
+{
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_init());
+    ASSERT_EQ(XME_STATUS_INVALID_HANDLE, xme_wp_marshal_marshaler_run(XME_WP_WAYPOINT_INSTANCEID_MAX));
+    ASSERT_EQ(XME_STATUS_SUCCESS, xme_wp_marshal_marshaler_fini());
+}
+
+int main(int argc, char **argv)
+{
+    int retval;
+    
+    ::testing::InitGoogleTest(&argc, argv);
+    retval = RUN_ALL_TESTS();
+    
+    return retval;
+}
