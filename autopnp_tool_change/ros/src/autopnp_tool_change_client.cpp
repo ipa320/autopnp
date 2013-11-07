@@ -2,29 +2,31 @@
 #include "autopnp_tool_change/autopnp_tool_change_client.h"
 #include "vector"
 
-MoveToSlotClient::MoveToSlotClient(ros::NodeHandle nh)
-:move_to_slot_client("autopnp_tool_change", true)
+MoveToWagonClient::MoveToWagonClient(ros::NodeHandle nh)
+:move_to_wagon_client("tool_change", true)
 {
 	node_ = nh;
 }
 
-
-bool MoveToSlotClient::init()
+/*
+ * Wait till the service is available.
+ */
+bool MoveToWagonClient::init()
 {
-	// here we wait until the service is available;
-	//please use the same service name as the one in the server; you may define a timeout if the service does not show up
 	std::cout << "Waiting for action server to become available..." << std::endl;
-	return move_to_slot_client.waitForServer(ros::Duration(7.0));
+	return move_to_wagon_client.waitForServer();
 }
 
-
-void MoveToSlotClient::run()
+/*
+ * Send the goal message to server.
+ */
+void MoveToWagonClient::run()
 {
 	// prepare the goal message
-	autopnp_tool_change::MoveToSlotGoal goal;
+	autopnp_tool_change::MoveToWagonGoal goal;
 	ROS_INFO("Sending goal");
 
-	while(1) {
+
 	//translation
 	geometry_msgs::Vector3 vec;
 	vec.x = 2.;
@@ -41,34 +43,30 @@ void MoveToSlotClient::run()
 
 	goal.transform = trans;
 
-	// this calls the action server to process our goal message and send result message which will cause the execution of the doneCb callback function
-	// this call is not blocking, i.e. this program can proceed immediately after the action call
-	//ROS_INFO("processing goal");
+	move_to_wagon_client.sendGoal(goal,
+			boost::bind(&MoveToWagonClient::doneCb, this, _1, _2),
+			boost::bind(&MoveToWagonClient::activeCb, this),
+			boost::bind(&MoveToWagonClient::feedbackCb, this, _1));
 
-	move_to_slot_client.sendGoal(goal,
-			boost::bind(&MoveToSlotClient::doneCb, this, _1, _2),
-			boost::bind(&MoveToSlotClient::activeCb, this),
-			boost::bind(&MoveToSlotClient::feedbackCb, this, _1));
 
-	}
 }
 
-// Called once when the goal completes
-void MoveToSlotClient::doneCb(
-		const actionlib::SimpleClientGoalState& state, const autopnp_tool_change::MoveToSlotResultConstPtr& result)
+// Called once when the goal completes.
+void MoveToWagonClient::doneCb(
+		const actionlib::SimpleClientGoalState& state, const autopnp_tool_change::MoveToWagonResultConstPtr& result)
 {
 	ROS_INFO("Finished in state [%s]", state.toString().c_str());
 	ROS_INFO("Result accomplished.");
 }
 
-// Called once when the goal becomes active
-void MoveToSlotClient::activeCb()
+// Called once when the goal becomes active.
+void MoveToWagonClient::activeCb()
 {
 	ROS_INFO("Goal just went active");
 }
 
-// Called every time feedback is received for the goal
-void MoveToSlotClient::feedbackCb(const autopnp_tool_change::MoveToSlotFeedbackConstPtr& feedback)
+// Called every time feedback is received for the goal.
+void MoveToWagonClient::feedbackCb(const autopnp_tool_change::MoveToWagonFeedbackConstPtr& feedback)
 {
 	ROS_INFO("Computation accomplished. Feedback.");
 }
@@ -79,8 +77,8 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "autopnp_tool_change_client");
 	ros::NodeHandle n;
 
-	MoveToSlotClient client(n);
-
+	MoveToWagonClient client(n);
+    ROS_INFO("client started");
 	// only proceed if the action server is available
 	bool serverAvailable = client.init();
 
@@ -91,7 +89,7 @@ int main(int argc, char **argv)
 	}
 	std::cout << "The action server was found.\n" << std::endl;
 
-	// start the interactive client
+	// start the client
 	client.run();
 
 	return 0;

@@ -5,32 +5,30 @@
  *      Author: rmb-om
  */
 
-#ifndef AUTOPNP_TOOL_CHANGE_CLIENT_H_
-#define AUTOPNP_TOOL_CHANGE_CLIENT_H_
+#ifndef AUTOPNP_TOOL_CHANGE_CLIENT_H
+#define AUTOPNP_TOOL_CHANGE_CLIENT_H
 
 #include "ros/ros.h"
 // actions
 #include <actionlib/client/simple_action_client.h>
-#include <autopnp_tool_change/MoveToSlotAction.h> // here you have to include the header file with exactly the same name as your message in the /action folder (the Message.h is automatically generated from your Message.action file during compilation)
+#include <autopnp_tool_change/MoveToWagonAction.h>
 
-// this typedef just establishes the abbreviation SquareActionServer for the long data type
-typedef actionlib::SimpleActionClient<autopnp_tool_change::MoveToSlotAction> MoveToSlotActionClient;
 
-class MoveToSlotClient
+class MoveToWagonClient
 {
 public:
-	MoveToSlotClient(ros::NodeHandle nh);
+	MoveToWagonClient(ros::NodeHandle nh);
 	bool init();
 	void run();
 
 protected:
-	void doneCb(const actionlib::SimpleClientGoalState& state, const autopnp_tool_change::MoveToSlotResultConstPtr& result);
+	void doneCb(const actionlib::SimpleClientGoalState& state, const autopnp_tool_change::MoveToWagonResultConstPtr& result);
 	void activeCb();
-	void feedbackCb(const autopnp_tool_change::MoveToSlotFeedbackConstPtr& feedback);
+	void feedbackCb(const autopnp_tool_change::MoveToWagonFeedbackConstPtr& feedback);
 
 	ros::NodeHandle node_;
 
-	MoveToSlotActionClient move_to_slot_client;
+	actionlib::SimpleActionClient<autopnp_tool_change::MoveToWagonAction> move_to_wagon_client;
 };
 
-#endif /* AUTOPNP_TOOL_CHANGE_CLIENT_H_ */
+#endif /* AUTOPNP_TOOL_CHANGE_CLIENT_*/
