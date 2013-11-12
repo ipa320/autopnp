@@ -32,6 +32,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
 #include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
+#include <std_msgs/ColorRGBA.h>
 
 #include <vector>
 #include <autopnp_tool_change/MoveToWagonAction.h>
@@ -81,6 +82,8 @@ protected:
 	/// SUBSCRIBERS
 	message_filters::Subscriber<cob_object_detection_msgs::DetectionArray> input_marker_detection_sub;
 	message_filters::Subscriber<sensor_msgs::JointState> joint_states_sub;
+	///PUBLISHERS
+	ros::Publisher vis_pub;
 	/// SERVER
 	actionlib::SimpleActionServer<autopnp_tool_change::MoveToWagonAction> move_to_wagon_server;
 
@@ -111,6 +114,7 @@ protected:
 	void jointInputCallback(const sensor_msgs::JointState::ConstPtr& input_joint_msg);
 	/// Callback for the incoming pointcloud data stream.
 	void markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
+
 	//calculates translation and orientation distance between arm marker
 	// and board marker
 	tf::Transform calculateTransformationToArm(const tf::Transform& board, const tf::Transform& arm);
@@ -124,7 +128,9 @@ protected:
 	/// Callback function for receiving the camera calibration.
 	void calibrationCallback(const sensor_msgs::CameraInfo::ConstPtr& calibration_msg);
 	void moveArm();
-
+	void drawArrow( double r,  double g, double b, double a, const geometry_msgs::PoseStamped& pose);
+	void drawLine( double r,  double g, double b, double a, const geometry_msgs::PoseStamped& pose_start,
+			const geometry_msgs::PoseStamped& pose_end);
 };
 
 

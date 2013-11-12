@@ -13,8 +13,8 @@ using namespace std;
  * allows the calculation of the background processes
  * and sleeping functions to run simultaneously .
  */
-ToolChange::ToolChange(ros::NodeHandle nh):
-				move_to_wagon_server(nh, "tool_change", boost::bind(&ToolChange::moveToWagon, this, _1), false)
+ToolChange::ToolChange(ros::NodeHandle nh): move_to_wagon_server
+		(nh, "tool_change", boost::bind(&ToolChange::moveToWagon, this, _1), false)
 {
 	cout << "Starting server." << endl;
 
@@ -27,6 +27,8 @@ ToolChange::ToolChange(ros::NodeHandle nh):
 	// subscribers
 	//joint_states_sub_.subscribe(node_handle_, "/joint_states",1);
 	//joint_states_sub_.registerCallback(boost::bind(&ToolChange::jointInputCallback, this, _1));
+	vis_pub = node_handle.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
+
 
 	input_marker_detection_sub.subscribe(node_handle, "input_marker_detections", 1);
 	input_marker_detection_sub.registerCallback(boost::bind(&ToolChange::markerInputCallback, this, _1));
@@ -34,8 +36,8 @@ ToolChange::ToolChange(ros::NodeHandle nh):
 	//sleep
 	while(slot_position_detected == false)
 	{
-		ros::spinOnce();
 
+		ros::spinOnce();
 	}
 	//subscription quit
 	input_marker_detection_sub.unsubscribe();
@@ -120,7 +122,7 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 	fiducial_pose_arm = result_components.arm.translation;
 
 
-	//if the incoming data are not empty, calculate the distance
+	//if the incoming data are not empty, calculate the distance and orientation
 	bool empty_data = (fiducial_pose_board.getOrigin().length() == 0 ||
 			fiducial_pose_arm.getOrigin().length() == 0);
 
@@ -131,7 +133,6 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		//ToolChange::printPose(fiducial_pose_board);
 		//ToolChange::printPose(fiducial_pose_arm);
 		//ToolChange::printPose(arm_board_transform);
-
 
 		/*
 		 ROS_INFO("Board distance %f, arm distance %f, distance %f",
@@ -209,22 +210,36 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 	return result;
 }
 
-/**
+/*
+ * Calculates translation and orientation distance between arm marker and wagon board.
+ * Vector orientation points from arm to board. Arm quaternion must be inverted to justify its
+ * parent position according to a child position of the board.
  *
- *Calculates translation and orientation distance between arm marker and wagon board.
- *Vector orientation points from arm to board. Arm quaternion must be inverted to justify its
- *parent position according to a child position of the board.
+ * Simulates the endeffector pose depending on the precise chosen position
+ * of the fiducial, which has been fixed/clamped to the arm_7_link.
+ * Here : in initial arm position (x-down, y-right, z-to observer)
+ * corresponds to a rotation around y-axes to its left (positive angle).
  */
 tf::Transform ToolChange::calculateTransformationToArm(
 		const tf::Transform& board_pose, const tf::Transform& arm_pose)
 {
+	tf::Quaternion rotate_Y_45_left;
+	rotate_Y_45_left.setRPY(0.0, M_PI/2, 0.0);
 
-	tf::Vector3 translation = (arm_pose.getOrigin() - board_pose.getOrigin());
-	tf::Quaternion orientation = arm_pose.getRotation().inverse() * board_pose.getRotation();
+	tf::Transform arm_pose_simulated;
 
-	return tf::Transform(orientation, translation);
+	//tf::Vector3 translation = (- arm_pose_simulated.getOrigin() + board_pose.getOrigin());
+	//tf::Quaternion orientation =
+	//	((arm_pose_simulated.getRotation() * rotate_Y_45_left).inverse()) * board_pose.getRotation();
+	arm_pose_simulated.setRotation(arm_pose.getRotation() * rotate_Y_45_left);
+	arm_pose_simulated.setOrigin(arm_pose.getOrigin());
+
+	tf::Transform result;
+	result = (arm_pose_simulated.inverse()) * board_pose;
+
+	//return tf::Transform(orientation, translation);
+	return result;
 }
-
 
 /*
  * Converts a color image message to cv::Mat format.
@@ -301,15 +316,24 @@ void ToolChange::moveArm()
 	pose.header.stamp = ros::Time::now();
 	group.setPoseReferenceFrame("base_link");
 
-	tf::Vector3 v = arm_board_transform.getOrigin();
-	tf::Quaternion q = arm_board_transform.getRotation();
+	//get the position of the end effector (= arm_7_joint)
+	geometry_msgs::PoseStamped link_7_pose = group.getCurrentPose("arm_7_link");
 
-	pose.pose.position.x = v.getX();
-	pose.pose.position.y = v.getY();
-	pose.pose.position.z = v.getZ();
+	//transform end effector msg pose in tf
+	tf::Transform link_pose_transform;
+	tf::poseMsgToTF(link_7_pose.pose, link_pose_transform);
 
-	tf::quaternionTFToMsg(q, pose.pose.orientation);
+    //calculate a new end effector position in respect to the reference frame (= base_frame)
+	tf::Transform new_link_7_pose = link_pose_transform * arm_board_transform;
 
+    //transform tf to msg
+	pose.pose.position.x = new_link_7_pose.getOrigin().getX();
+	pose.pose.position.y = new_link_7_pose.getOrigin().getY();
+	pose.pose.position.z = new_link_7_pose.getOrigin().getZ();
+	tf::quaternionTFToMsg(new_link_7_pose.getRotation(), pose.pose.orientation);
+
+	//draw transformation in rviz
+	drawLine(0.85, 0.55, 0.0, 1.0, group.getCurrentPose("arm_7_link"), pose);
 	/*
 	 * gazebo sumu
 	 *
@@ -329,22 +353,44 @@ void ToolChange::moveArm()
 	/*
 	 * schunk simu
 	 */
-
 	/*
-	pose.pose.position.x = 0.20;
+	tf::Quaternion rotate_X_45_left;
+	rotate_X_45_left.setRPY(0.0, M_PI, 0.0);
+
+	pose.pose.position.x = 0.60;
 	pose.pose.position.y = 0.0;
-	pose.pose.position.z = 0.75;
-	q.setRPY(0.0,1.57,0.0);
+	pose.pose.position.z = 1.00;
+	tf::Quaternion q;
+	tf::Quaternion w;
+	tf::Vector3 v = tf::Vector3(0.60, 0.0, 1.0);
+	tf::Transform t;
+
+	q.setRPY(M_PI/2, 0.0, -M_PI/2);
+	t.setOrigin(v);
+	t.setRotation(q);
+
+	w.setRPY(M_PI/2, 0.0, 0.0);
+	//tf::quaternionTFToMsg(q, pose.pose.orientation);
+	//tf::quaternionTFToMsg(q, pose.pose.orientation);
+
+	tf::quaternionTFToMsg(t.getRotation()*w, pose.pose.orientation);
+	pose.pose.position.x = t.getOrigin().getX();
+	pose.pose.position.y = t.getOrigin().getY();
+	pose.pose.position.z = t.getOrigin().getZ();
+
+	geometry_msgs::PoseStamped link_pose = group.getCurrentPose("arm_7_link");
 	 */
 	/*
+    tf::Quaternion q;
 	pose.pose.position.x = 0.05;
 	pose.pose.position.y = 0.0;
 	pose.pose.position.z = 1.40;
 	q.setRPY(1.57,0.0,1.57);
+
 	//tf to geometry_msgs
 	tf::quaternionTFToMsg(q, pose.pose.orientation);
-	 */
 
+	 */
 
 	group.setPoseTarget(pose, "arm_7_link");
 
@@ -352,7 +398,7 @@ void ToolChange::moveArm()
 	bool have_plan = false;
 	moveit::planning_interface::MoveGroup::Plan plan;
 
-	//for (int i = 0; have_plan == false && i < 1; ++i)
+	//for (int i = 0; have_plan == false && i < 2; ++i)
 	have_plan = group.plan(plan);
 	if (have_plan==true)
 		group.execute(plan);
@@ -371,6 +417,7 @@ void ToolChange::moveArm()
 	group.move();
 	 */
 }
+
 
 unsigned long ToolChange::ProjectXYZ(double x, double y, double z, int& u, int& v)
 {
@@ -469,6 +516,67 @@ void ToolChange::printVector(const std::vector<double> v)
 	std::cout<<std::endl;
 
 }
+/*
+ * A helper function to draw a simple arrow in rviz.
+ */
+void ToolChange::drawArrow (const double r, const double g, const double b, const double a,
+		const geometry_msgs::PoseStamped& pose)
+{
+	visualization_msgs::Marker marker;
+	marker.pose.position.x = pose.pose.position.x;
+	marker.pose.position.y = pose.pose.position.y;
+	marker.pose.position.z = pose.pose.position.z;
+
+	marker.pose.orientation.x = pose.pose.orientation.x;
+	marker.pose.orientation.y = pose.pose.orientation.y;
+	marker.pose.orientation.z = pose.pose.orientation.z;
+	marker.pose.orientation.w = pose.pose.orientation.w;
+
+	marker.scale.x = 1;
+	marker.scale.y = 0.025;
+	marker.scale.z = 0.025;
+
+	marker.color.r = r;
+	marker.color.g = g;
+	marker.color.b = b;
+	marker.color.a = a;
+
+	vis_pub.publish(marker);
+}
+/**
+ * A helper function to draw a simple line in rviz.
+ */
+void ToolChange::drawLine (const double r, const double g, const double b, const double a,
+		const geometry_msgs::PoseStamped& pose_start, const geometry_msgs::PoseStamped& pose_end)
+{
+	visualization_msgs::Marker marker;
+	marker.header.frame_id = "base_link";
+	marker.header.stamp = ros::Time::now();
+	marker.action = visualization_msgs::Marker::ADD;
+	marker.type = visualization_msgs::Marker::LINE_STRIP;
+	geometry_msgs::Point p;
+	p.x = pose_start.pose.position.x;
+	p.y = pose_start.pose.position.y;
+	p.z = pose_start.pose.position.z;
+	marker.points.push_back(p);
+	p.x =pose_end.pose.position.x;
+	p.y = pose_end.pose.position.y;
+	p.z = pose_end.pose.position.z;
+
+	marker.points.push_back(p);
+
+	marker.scale.x = 0.025;
+	marker.scale.y = 0.0;
+	marker.scale.z = 0.0;
+
+	marker.color.r = r;
+	marker.color.g = g;
+	marker.color.b = b;
+	marker.color.a = a;
+
+	vis_pub.publish(marker);
+}
+
 int main (int argc, char** argv)
 {
 	// Initialize ROS, specify name of node
