@@ -72,8 +72,8 @@ def find_next_unprocessed_room( input_img, x_coordinate_of_room_center, y_coordi
     client.wait_for_server()    
     rospy.loginfo("find next unprocessed room action server started, sending goal.....")          
     goal = autopnp_scenario.msg.FindNextUnprocessedRoomGoal( input_map = input_img, 
-                                                             room_center_x = x_coordinate_of_room_center, 
-                                                             room_center_y = y_coordinate_of_room_center,
+                                                             room_center_x = x_coordinate_of_room_center, # in pixel
+                                                             room_center_y = y_coordinate_of_room_center, # in pixel
                                                              map_resolution = map_resolution,
                                                              map_origin_x = map_origin_x,
                                                              map_origin_y = map_origin_y )

@@ -12,7 +12,6 @@ unprocessed_room_finder::unprocessed_room_finder(std::string name_of_the_action)
 
 void unprocessed_room_finder::find_next_room_(const cv::Mat &map_from_goal_definition)
 {
-	double robot_distance_From_Center = 10000;
 	x_coordinate_of_room_center_position_ = 0, y_coordinate_of_room_center_position_ = 0;
 	cv::Point robot_location_in_pixel;
 
@@ -38,33 +37,29 @@ void unprocessed_room_finder::find_next_room_(const cv::Mat &map_from_goal_defin
 	ROS_INFO("pixel value in robot location point: %d",Pixel_Value);
 
 	//get the distances between the room center point
-	for (unsigned int n = 0; n < center_of_room_.size(); n++)
+	double min_robot_distance_from_center = 1e10;
+	unsigned int min_robot_distance_from_center_index = 0;
+	for (unsigned int n = 0; n < center_of_room_.size(); ++n)
 	{
 		if (map_from_goal_definition.at<unsigned char>(center_of_room_[n]) != 255 && map_from_goal_definition.at<unsigned char>(center_of_room_[n]) != 0)
 		{
-			robot_distance_From_Center = std::min(robot_distance_From_Center,
-					std::sqrt(
-							((x_coordinate_of_room_center_[n] - robot_location_in_pixel.x) * (x_coordinate_of_room_center_[n] - robot_location_in_pixel.x))
-									+ ((y_coordinate_of_room_center_[n] - robot_location_in_pixel.y) * (y_coordinate_of_room_center_[n] - robot_location_in_pixel.y))));
+			double dist = std::sqrt( ((x_coordinate_of_room_center_[n] - robot_location_in_pixel.x) * (x_coordinate_of_room_center_[n] - robot_location_in_pixel.x))
+					+ ((y_coordinate_of_room_center_[n] - robot_location_in_pixel.y) * (y_coordinate_of_room_center_[n] - robot_location_in_pixel.y)));
+			if (min_robot_distance_from_center > dist)
+			{
+				min_robot_distance_from_center = dist;
+				min_robot_distance_from_center_index = n;
+			}
 		}
 	}
 
-	ROS_INFO("Robot Distance from Nearest Room Location: %f",robot_distance_From_Center);
+	ROS_INFO("Robot Distance from Nearest Room Location: %f",min_robot_distance_from_center);
 
 	//get the nearest room center point from current robot location
-	for (unsigned int n = 0; n < center_of_room_.size(); n++)
-	{
-		if (std::sqrt(
-				((x_coordinate_of_room_center_[n] - robot_location_in_pixel.x) * (x_coordinate_of_room_center_[n] - robot_location_in_pixel.x))
-						+ ((y_coordinate_of_room_center_[n] - robot_location_in_pixel.y) * (y_coordinate_of_room_center_[n] - robot_location_in_pixel.y)))
-				== robot_distance_From_Center)
-		{
-			x_coordinate_of_room_center_position_ = x_coordinate_of_room_center_[n];
-			y_coordinate_of_room_center_position_ = y_coordinate_of_room_center_[n];
-			room_number_.push_back(n);
-			ROS_INFO("Next room to Visit: %d",room_number_.back());
-		}
-	}
+	x_coordinate_of_room_center_position_ = x_coordinate_of_room_center_[min_robot_distance_from_center_index];
+	y_coordinate_of_room_center_position_ = y_coordinate_of_room_center_[min_robot_distance_from_center_index];
+	room_number_.push_back(min_robot_distance_from_center_index);
+	ROS_INFO("Next room to Visit: %d",room_number_.back());
 
 #ifdef __DEBUG_DISPLAYS__
 	cv::Mat debug_image_for_next_room = map_from_goal_definition.clone();
@@ -81,9 +76,9 @@ void unprocessed_room_finder::execute_find_next_unprocessed_room_action_server(c
 	ros::Rate r(1);
 
 	//get the necessary room information from goal definition from client
-	map_resolution_ = goal->map_resolution;
-	map_origin_.x = goal->map_origin_x;
-	map_origin_.y = goal->map_origin_y;
+//	map_resolution_ = goal->map_resolution;			// todo: never used
+//	map_origin_.x = goal->map_origin_x;
+//	map_origin_.y = goal->map_origin_y;
 
 	//initialize the container
 	x_coordinate_of_room_center_ = goal->room_center_x;
@@ -95,7 +90,7 @@ void unprocessed_room_finder::execute_find_next_unprocessed_room_action_server(c
 	{
 		temp_center_point.x = x_coordinate_of_room_center_[loop_counter];
 		temp_center_point.y = y_coordinate_of_room_center_[loop_counter];
-		center_of_room_.push_back(temp_center_point);
+		center_of_room_.push_back(temp_center_point);							// todo: center_of_room is unnecessary, may be replaced in remainder of file
 	}
 
 	//convert the image msg to cv mat format
@@ -111,7 +106,7 @@ void unprocessed_room_finder::execute_find_next_unprocessed_room_action_server(c
 
 	//set the resultant value for the action server
 	result_.room_number = room_number_;
-	result_.center_position_x = x_coordinate_of_room_center_position_;
+	result_.center_position_x = x_coordinate_of_room_center_position_; // in pixel
 	result_.center_position_y = y_coordinate_of_room_center_position_;
 
 	//when no unprocessed room is left,then clear the room_number and initialize for the new task

@@ -127,14 +127,14 @@ class NextUnprocessedRoom(smach.State):
                                                                                           'analyze_map_data_map_resolution_',
                                                                                           'analyze_map_data_map_origin_x_',
                                                                                           'analyze_map_data_map_origin_y_',
-                                                                                          'analyze_map_data_room_center_x_',
-                                                                                          'analyze_map_data_room_center_y_',
+                                                                                          'analyze_map_data_room_center_x_',	# in pixel
+                                                                                          'analyze_map_data_room_center_y_',    # in pixel
                                                                                           'find_next_unprocessed_room_number_in_',
                                                                                           'find_next_unprocessed_room_loop_counter_in_'],                             
-                                                                             output_keys=['find_next_unprocessed_room_number_out_',
+                                                                             output_keys=['find_next_unprocessed_room_number_out_',   # a vector with next target room at back
                                                                                           'find_next_unprocessed_room_loop_counter_out_',
-                                                                                          'find_next_unprocessed_room_center_x_',
-                                                                                          'find_next_unprocessed_room_center_y_'])
+                                                                                          'find_next_unprocessed_room_center_x_',   # in pixel
+                                                                                          'find_next_unprocessed_room_center_y_'])  # in pixel
      
         
     def execute(self, userdata ):
@@ -143,8 +143,8 @@ class NextUnprocessedRoom(smach.State):
         rospy.loginfo('Executing state next unprocessed room.....')        
         if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_data_room_center_x_):
             find_next_unprocessed_room_action_server_result_ = find_next_unprocessed_room( userdata.find_next_unprocessed_room_data_img_,
-                                                                                           userdata.analyze_map_data_room_center_x_,
-                                                                                           userdata.analyze_map_data_room_center_y_,
+                                                                                           userdata.analyze_map_data_room_center_x_,   # in pixel
+                                                                                           userdata.analyze_map_data_room_center_y_,   # in pixel
                                                                                            userdata.analyze_map_data_map_resolution_,
                                                                                            userdata.analyze_map_data_map_origin_x_,
                                                                                            userdata.analyze_map_data_map_origin_y_ )
@@ -169,8 +169,8 @@ class GoToRoomLocation(smach.State):
                                                                                      'analyze_map_data_map_resolution_',
                                                                                      'analyze_map_data_map_origin_x_',
                                                                                      'analyze_map_data_map_origin_y_',
-                                                                                     'find_next_unprocessed_room_center_x_',
-                                                                                     'find_next_unprocessed_room_center_y_',
+                                                                                     'find_next_unprocessed_room_center_x_',   # in pixel
+                                                                                     'find_next_unprocessed_room_center_y_',   # in pixel
                                                                                      'random_location_finder_random_location_x_',
                                                                                      'random_location_finder_random_location_y_',
                                                                                      'go_to_room_location_loop_counter_in_'],
@@ -297,11 +297,16 @@ class InspectRoom(smach.State):
         
 class VerifyToolCarLocation(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['no_need_to_move_it','tool_wagon_needs_to_be_moved'])
+        smach.State.__init__(self, outcomes=['no_need_to_move_it','tool_wagon_needs_to_be_moved'],
+							input_keys=['find_next_unprocessed_room_center_x_',  # in pixel
+										'find_next_unprocessed_room_center_y_']) # in pixel
              
     def execute(self, userdata ):
     	sf = ScreenFormat("VerifyToolCarLocation")
-        rospy.loginfo('Executing state Verify_Tool_Car_Location')                                                
+        rospy.loginfo('Executing state Verify_Tool_Car_Location')
+        
+        # compare tool wagon location with next goal position (find_next_unprocessed_room_center_x_/y_) -> if to far, move tool wagon
+                                                      
         return 'no_need_to_move_it'   
     
     
@@ -569,8 +574,6 @@ class GraspTrashBin(smach.State):
 		##handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
 		
 
-		raw_input("Please abort script now.")
-		
 # 		goal = autopnp_scenario.msg.GraspTrashBinGoal()
 # 		self.client.send_goal(goal)	
 # 		finished_before_timeout = self.client.wait_for_result()
@@ -633,7 +636,7 @@ class MoveToToolWagon(smach.State):
         rospy.loginfo('Executing state Move_To_Tool_Wagon')
         
         # todo: go to the big trash bin for clearing the smaller one
-        sss.move('base',[3.2, 2.8, -1.2])                                               
+#        sss.move('base',[3.2, 2.8, -1.2])                                               
         return 'MTTW_success'
     
     
@@ -658,6 +661,10 @@ class ClearTrashBinIntoToolWagon(smach.State):
 		# 7. arm: back to upright trash bin pose
 		#handle_arm = sss.move("arm",[[2.5890188217163086, -1.3564121723175049, 2.3780744075775146, 1.9312158823013306, 0.43163323402404785, 0.4533853530883789, -2.814291000366211]]) # small trash bin
 
+
+		raw_input("Please abort script now.")
+		
+
 		return 'CTBITW_done'   
     
     
@@ -673,18 +680,18 @@ class MoveToTrashBinPickingLocation(smach.State):
         rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location') 
         #try:
             #sm = ApproachPerimeter()
-        center = Pose2D()
-        center.x = userdata.trash_bin_pose_.pose.pose.position.x 
-        center.y = userdata.trash_bin_pose_.pose.pose.position.y
-        center.theta = 0
-        userdata.center = center
-        userdata.radius = 0.75		# adjust this for right distance to trash bin
-        userdata.rotational_sampling_step = 10.0/180.0*math.pi
-        userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
-        userdata.new_computation_flag = True
-        userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
-        userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
-        rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')
+#        center = Pose2D()
+#        center.x = userdata.trash_bin_pose_.pose.pose.position.x 
+#        center.y = userdata.trash_bin_pose_.pose.pose.position.y
+#        center.theta = 0
+#        userdata.center = center
+#        userdata.radius = 0.75		# adjust this for right distance to trash bin
+#        userdata.rotational_sampling_step = 10.0/180.0*math.pi
+#        userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+#        userdata.new_computation_flag = True
+#        userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
+#        userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
+#        rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')
         
         # todo: move back to location where trash bin was grabbed
         #sss.move('base',[userdata.trash_bin_pose_.x, userdata.trash_bin_pose_.y, userdata.trash_bin_pose_.theta])
@@ -978,8 +985,8 @@ class ProcessCleaningVerificationResults(smach.State):
  
 def main():
 	rospy.init_node('exploration_detection_cleaning')
-
-
+	
+	'''
 	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
 	sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
 	sm_sub_clear_waste_bin.userdata.detection_pose = Pose2D() # todo: insert a pose with x and y of your trash bin here
@@ -1026,8 +1033,8 @@ def main():
 					transitions={'RTB_finished':'CWB_done'})
 	
 	outcome = sm_sub_clear_waste_bin.execute()
-# end of trash bin clearung sub state machine, comment until here when you like to use the full scenario
-	'''		
+# end of trash bin clearing sub state machine, comment until here when you like to use the full scenario
+'''
 
 	sm_top_exploration = smach.StateMachine(outcomes=['finish', 'failed'])  
 	sm_top_exploration.userdata.sm_trash_bin_counter = 0  
@@ -1057,10 +1064,10 @@ def main():
 																			'analyze_map_data_room_min_y_',
 																			'analyze_map_data_room_max_y_'],
 																output_keys=['sm_RoomNo'])
-        
+		
 		sm_sub_go_to_next_unproccessed_room.userdata.sm_counter = 1
 		sm_sub_go_to_next_unproccessed_room.userdata.sm_location_counter = 0                                
-        
+		
 		with sm_sub_go_to_next_unproccessed_room:                 
 			smach.StateMachine.add('FIND_NEXT_ROOM', NextUnprocessedRoom(),
 								transitions={'location':'VERIFY_TOOL_CAR_LOCATION',
@@ -1076,11 +1083,10 @@ def main():
 											'tool_wagon_needs_to_be_moved':'MOVE_TOOL_WAGON'})
 
 			sm_sub_move_tool_wagon = smach.StateMachine(outcomes=['wagon_location'])
-
 			with sm_sub_move_tool_wagon:
 				smach.StateMachine.add('MOVE_BASE_TO_LAST_TOOL_WAGGON_LOCATION', MoveBaseToLastToolWaggonLocation(),
 									transitions={'Move_tool_wagon_1':'DETECT_TOOL_WAGGON'})
-				
+	
 				smach.StateMachine.add('DETECT_TOOL_WAGGON', DetectToolWaggon(),
 									transitions={'Move_tool_wagon_2':'GRASP_HANDLE'})
 				
@@ -1092,6 +1098,7 @@ def main():
 				
 				smach.StateMachine.add('RELEASE_GRASP', ReleaseGrasp(),
 									transitions={'Move_tool_wagon_5':'wagon_location'})
+
 
 			smach.StateMachine.add('MOVE_TOOL_WAGON', sm_sub_move_tool_wagon,
 								transitions={'wagon_location':'GO_TO_LOCATION'})
@@ -1111,7 +1118,7 @@ def main():
 										'random_location_finder_counter_in_':'sm_location_counter',
 										'random_location_finder_counter_out_':'sm_location_counter',
 										'random_location_finder_room_number_':'sm_RoomNo'}) 
-        
+
 		smach.StateMachine.add('UNPROCESSED_ROOM', sm_sub_go_to_next_unproccessed_room,
 							transitions={'arrived':'DIRT_DETECTION_ON',
 										'no_more_rooms_left':'CHANGE_TOOL_HAND'})
@@ -1127,7 +1134,7 @@ def main():
 							remapping={'inspect_room_data_img_in_':'sm_img',
 										'inspect_room_img_out_':'sm_img',
 										'inspect_room_room_number_':'sm_RoomNo'})
-        
+
 		smach.StateMachine.add('DIRT_DETECTION_OFF', DirtDetectionOff(),
 							transitions={'dd_Off':'TRASH_BIN_DETECTION_OFF'})
 		
@@ -1144,9 +1151,9 @@ def main():
 										'number_of_unprocessed_trash_bin_in_':'sm_trash_bin_counter',
 										'number_of_unprocessed_trash_bin_out_':'sm_trash_bin_counter'})
 
-        
+
 		sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
-              
+
 		with sm_sub_clear_waste_bin:
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
 								transitions={'MTTBL_success':'APPROACH_PERIMETER'},
@@ -1200,7 +1207,7 @@ def main():
 			smach.StateMachine.add('CLOSE_TOOL_CHANGER',CloseToolChanger() ,transitions={'CTC_done':'MOVE_ARM_TO_STANDARD_LOCATION'})
 			
 			smach.StateMachine.add('MOVE_ARM_TO_STANDARD_LOCATION',MoveArmToStandardLocation() ,transitions={'MATSL_done':'CTH_done'})
-            
+
 		smach.StateMachine.add('CHANGE_TOOL_HAND', sm_sub_change_tool_hand,
 							transitions={'CTH_done':'GET_DIRT_MAP'})
 		
@@ -1212,7 +1219,7 @@ def main():
 		
 		
 		sm_sub_go_to_next_unprocessed_dirt_location = smach.StateMachine(outcomes=['no_dirt_spots_left','arrived_dirt_location'])
-        
+
 		with sm_sub_go_to_next_unprocessed_dirt_location:
 			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
 								transitions={'SNUDS_location':'MOVE_TO_LOCATION_PERIMETER_60CM',
@@ -1221,7 +1228,7 @@ def main():
 			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_60CM', Move_Location_Perimeter_60cm(),
 								transitions={'MLP60_arrived_dirt_location':'arrived_dirt_location',
 											'MLP60_unsuccessful':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT'})
-            
+
 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', sm_sub_go_to_next_unprocessed_dirt_location,
 							transitions={'arrived_dirt_location':'CLEAN',
 										'no_dirt_spots_left':'PROCESS_CLEANING_VERIFICATION_RESULTS'})
@@ -1237,7 +1244,7 @@ def main():
 		with sm_sub_go_to_inspect_location:
 			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_180CM', Move_Location_Perimeter_180cm(),
 								transitions={'MLP180_arrived_dirt_location':'GTIL_arrived_dirt_location'})
-            
+
 		smach.StateMachine.add('GO_TO_INSPECT_LOCATION', sm_sub_go_to_inspect_location,
 							transitions={'GTIL_arrived_dirt_location':'VERIFY_CLEANING_SUCCESS'})
 		
@@ -1251,8 +1258,7 @@ def main():
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
 							transitions={'PCVR_finish':'finish'})        
 
-'''
-        
+
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_top_exploration, '/SM_ROOT')
 	sis.start()

@@ -104,8 +104,8 @@ class unprocessed_room_finder
 {
 private:
 
-	double map_resolution_;		// in [m/cell]
-	cv::Point2d map_origin_;	// in [m]
+//	double map_resolution_;		// in [m/cell]
+//	cv::Point2d map_origin_;	// in [m]
 
 	int x_coordinate_of_room_center_position_;
 	int y_coordinate_of_room_center_position_;

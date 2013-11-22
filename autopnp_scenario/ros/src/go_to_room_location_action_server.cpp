@@ -76,7 +76,7 @@ std::string go_inside_of_the_room::go_to_room_center_location_(const cv::Mat &or
 	move_base_client_obj.waitForResult();
 
 	ROS_INFO("333333333333 go to location action server 333333333333");
-	ROS_INFO("robot is trying to enter inside of the room.....");
+	ROS_INFO("robot is trying to enter the room.....");
 	move_base_client_obj.waitForServer();
 	move_base_client_obj.sendGoalAndWait(move_in_pixel_(goal_room_center_x_, goal_room_center_y_),ros::Duration(60.0));
 

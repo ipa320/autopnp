@@ -96,7 +96,7 @@ class MapSegmentationActionClient():
                     self.map_[v][u] = 0
                 i += 1                
         
-    def map_segmentation_action_client_(self):                      
+    def map_segmentation_action_client_(self):                      ######## this function is called
         mat = cv.fromarray(self.map_)
 #         cv.ShowImage( "map_image", mat )
 #         cv.WaitKey()   
