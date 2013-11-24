@@ -69,4 +69,40 @@
 		<!-- Rectangle describing the area for sharpness computation in 2d coordinates within the marker plane with respect to the marker origin -->
 		<SharpnessArea x="-0.01" y="-0.01" width="0.12" height="0.12"/>
 	</PI>
+	<PI>
+		<ID value="tool_wagon_front" />
+		<!-- Tag size in [m] -->
+		<LineWidthHeight value="0.100" />
+		
+		<!-- Cross ratios line 0 and 1-->
+		<!-- Measurements in % relative to the tag size-->
+		<CrossRatioLine0 AB="0.45" AC="0.75" />
+		<CrossRatioLine1 AB="0.40" AC="0.74" />
+				
+		<!-- Offset for native tag corrdinates -->
+		<!-- e.g. position of tag in object centric ccordinate system -->
+		<Offset x="0.009" y="0.190" />
+		<!--Offset x="-0.05" y="0.05" /-->
+		
+		<!-- Rectangle describing the area for sharpness computation in 2d coordinates within the marker plane with respect to the marker origin -->
+		<SharpnessArea x="-0.01" y="-0.01" width="0.12" height="0.12"/>
+	</PI>
+	<PI>
+		<ID value="tool_wagon_rear" />
+		<!-- Tag size in [m] -->
+		<LineWidthHeight value="0.100" />
+		
+		<!-- Cross ratios line 0 and 1-->
+		<!-- Measurements in % relative to the tag size-->
+		<CrossRatioLine0 AB="0.45" AC="0.75" />
+		<CrossRatioLine1 AB="0.40" AC="0.74" />
+				
+		<!-- Offset for native tag corrdinates -->
+		<!-- e.g. position of tag in object centric ccordinate system -->
+		<Offset x="0.009" y="0.190" />
+		<!--Offset x="-0.05" y="0.05" /-->
+		
+		<!-- Rectangle describing the area for sharpness computation in 2d coordinates within the marker plane with respect to the marker origin -->
+		<SharpnessArea x="-0.01" y="-0.01" width="0.12" height="0.12"/>
+	</PI>
 </FiducialDetector>

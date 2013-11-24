@@ -73,11 +73,30 @@ from autopnp_scenario.srv import *
 from autopnp_scenario.msg import *
 from autopnp_dirt_detection.srv import *
 from cob_object_detection_msgs.srv import DetectionArray, Detection
+from geometry_msgs import *
 
 from ApproachPerimeter import *
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
+
+
+#-------------------------------------------------------- Global Definitions ---------------------------------------------------------------------------------------
+global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
+MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.00 # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
+
+global TOOL_WAGON_LOCATIONS
+TOOL_WAGON_LOCATIONS=[]  # valid parking positions of tool wagon in current map [in m and rad]
+TOOL_WAGON_LOCATIONS.append(Pose2D(x=0, y=0, theta=0))
+TOOL_WAGON_LOCATIONS.append(Pose2D(x=3, y=3, theta=0))
+
+global TOOL_WAGON_MARKER_OFFSETS
+TOOL_WAGON_MARKER_OFFSETS={
+						"front":	Transform(translation=Vector3(x=0, y=0, z=0), rotation=Quaternion(x=0, y=0, z=0, w=1)),
+						"rear":		Transform(translation=Vector3(x=0, y=0, z=0), rotation=Quaternion(x=0, y=0, z=0, w=1)),
+						"left":		Transform(translation=Vector3(x=0, y=0, z=0), rotation=Quaternion(x=0, y=0, z=0, w=1)),
+						"right":	Transform(translation=Vector3(x=0, y=0, z=0), rotation=Quaternion(x=0, y=0, z=0, w=1))
+						}  # offset transformations from respective markers to tool wagon base/center coordinate system
 
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
@@ -348,9 +367,6 @@ class VerifyToolCarLocation(smach.State):
 										'analyze_map_data_map_resolution_',
 										'analyze_map_data_map_origin_x_',
 										'analyze_map_data_map_origin_y_',])
-		self.tool_wagon_locations = []  # in m
-		self.tool_wagon_locations.append(Pose2D(x=0, y=0, theta=0))
-		self.tool_wagon_locations.append(Pose2D(x=3, y=3, theta=0))
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("VerifyToolCarLocation")
@@ -362,12 +378,11 @@ class VerifyToolCarLocation(smach.State):
 		dist = math.sqrt((userdata.tool_wagon_pose.x-next_room_center_x_m)*(userdata.tool_wagon_pose.x-next_room_center_x_m) + (userdata.tool_wagon_pose.y-next_room_center_y_m)*(userdata.tool_wagon_pose.y-next_room_center_y_m))
 		
 		# compare to maximally allowed tool wagon distance
-		max_tool_wagon_dist = 200.00 # in m
-		if (dist > max_tool_wagon_dist):
+		if (dist > MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM):
 			# select closest position where to move the tool wagon
 			tool_wagon_goal_pose = Pose2D
 			closest_goal_pose = 1e10
-			for location in self.tool_wagon_locations:
+			for location in self.TOOL_WAGON_LOCATIONS:
 				dist = math.sqrt((next_room_center_x_m-location.x)*(next_room_center_x_m-location.x) + (next_room_center_y_m-location.y)*(next_room_center_y_m-location.y))
 				if closest_goal_pose > dist:
 					closest_goal_pose = dist
@@ -378,67 +393,96 @@ class VerifyToolCarLocation(smach.State):
 		return 'no_need_to_move_it'
 
 
-class MoveBaseToLastToolWaggonLocation(smach.State):
+class MoveToToolWaggonFront(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['Move_tool_wagon_1'], input_keys=['tool_wagon_pose'])
+		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
 
 	def fiducial_callback(self, fiducials):
 		for fiducial in fiducials.detections:
-			if fiducial.label=='tag_1':
+			# transform to base pose of tool wagon and then convert to map coordinate system
+			if fiducial.label=='tag_tool_wagon_front':
+				print TOOL_WAGON_MARKER_OFFSETS['front']
+			elif fiducial.label=='tag_tool_wagon_rear':
+				print TOOL_WAGON_MARKER_OFFSETS['rear']
+			elif fiducial.label=='tag_tool_wagon_left':
+				print TOOL_WAGON_MARKER_OFFSETS['left']
+			elif fiducial.label=='tag_tool_wagon_right':
+				print TOOL_WAGON_MARKER_OFFSETS['right']
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("MoveBaseToLastToolWaggonLocation")
+		sf = ScreenFormat("MoveToToolWaggonFront")
 		rospy.loginfo('Executing state Move_Base_To_Last_Tool_Waggon_Location')
 
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, fiducial_callback)
+		
+		# 1. move to last known position
+		# move_base, tool_wagon_pose + robot offset
+		
+		# 2. detect fiducials and move to corrected pose
+		
+		# 3. detect + move_base_rel fine tuning
 
-		return 'Move_tool_wagon_1'
+		return 'arrived'
 
 
 
-class DetectToolWaggon(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['Move_tool_wagon_2'])
-             
-    def execute(self, userdata ):
-    	sf = ScreenFormat("DetectToolWaggon")
-        rospy.loginfo('Executing state Detect_Tool_Waggon')                                                
-        return 'Move_tool_wagon_2'
-    
-    
-    
 class GraspHandle(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['Move_tool_wagon_3'])
-             
-    def execute(self, userdata ):
-    	sf = ScreenFormat("GraspHandle")
-        rospy.loginfo('Executing state Grasp_Handle')                                                
-        return 'Move_tool_wagon_3' 
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['grasped'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("GraspHandle")
+		rospy.loginfo('Executing state Grasp_Handle')
+		
+		# 1. move arm in position over wagon
+		
+		# 2. open hand
+		
+		# 3. lower arm into handle
+		
+		# 4. close hand
+		
+		return 'grasped' 
 
 
 class GoToNextToolWaggonLocation(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['Move_tool_wagon_4'])
-             
-    def execute(self, userdata ):
-    	sf = ScreenFormat("GoToNextToolWaggonLocation")
-        rospy.loginfo('Executing state Go_To_Next_Tool_Waggon_Location')                                                
-        return 'Move_tool_wagon_4' 
-    
-    
-    
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_goal_pose'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("GoToNextToolWaggonLocation")
+		rospy.loginfo('Executing state Go_To_Next_Tool_Waggon_Location')
+		
+		# 1. adjust base footprint
+		
+		# 2. move robot to new position (robot offset to tool_wagon_goal_pose)
+		
+		# 3. reset base footprint
+		
+		return 'arrived' 
+
+
+
 class ReleaseGrasp(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['Move_tool_wagon_5'])
-             
-    def execute(self, userdata ):
-    	sf = ScreenFormat("ReleaseGrasp")
-        rospy.loginfo('Executing state Release_Grasp')                                                
-        return 'Move_tool_wagon_5'     
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['released'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("ReleaseGrasp")
+		rospy.loginfo('Executing state Release_Grasp')
+		
+		# 1. open hand
+		
+		# 2. lift arm
+		
+		# 3. hand to home
+		
+		# 4. arm to folded
+		
+		return 'released'
 
 
-     
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 

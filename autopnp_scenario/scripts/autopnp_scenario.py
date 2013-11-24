@@ -168,28 +168,25 @@ def main():
 								transitions={'no_need_to_move_it':'GO_TO_LOCATION',
 											'tool_wagon_needs_to_be_moved':'MOVE_TOOL_WAGON'})
 
-			sm_sub_move_tool_wagon = smach.StateMachine(outcomes=['wagon_location'],
+			sm_sub_move_tool_wagon = smach.StateMachine(outcomes=['finished'],
 														input_keys=['tool_wagon_pose',
 																	'tool_wagon_goal_pose'])
 			with sm_sub_move_tool_wagon:
-				smach.StateMachine.add('MOVE_BASE_TO_LAST_TOOL_WAGGON_LOCATION', MoveBaseToLastToolWaggonLocation(),
-									transitions={'Move_tool_wagon_1':'DETECT_TOOL_WAGGON'})
-	
-				smach.StateMachine.add('DETECT_TOOL_WAGGON', DetectToolWaggon(),
-									transitions={'Move_tool_wagon_2':'GRASP_HANDLE'})
+				smach.StateMachine.add('MOVE_BASE_TO_LAST_TOOL_WAGGON_LOCATION', MoveToToolWaggonFront(),
+									transitions={'arrived':'GRASP_HANDLE'})
 				
 				smach.StateMachine.add('GRASP_HANDLE', GraspHandle(),
-									transitions={'Move_tool_wagon_3':'GO_TO_NEXT_TOOL_WAGGON_LOCATION'})
+									transitions={'grasped':'GO_TO_NEXT_TOOL_WAGGON_LOCATION'})
 				
 				smach.StateMachine.add('GO_TO_NEXT_TOOL_WAGGON_LOCATION', GoToNextToolWaggonLocation(),
-									transitions={'Move_tool_wagon_4':'RELEASE_GRASP'})
+									transitions={'arrived':'RELEASE_GRASP'})
 				
 				smach.StateMachine.add('RELEASE_GRASP', ReleaseGrasp(),
-									transitions={'Move_tool_wagon_5':'wagon_location'})
+									transitions={'released':'finished'})
 
 
 			smach.StateMachine.add('MOVE_TOOL_WAGON', sm_sub_move_tool_wagon,
-								transitions={'wagon_location':'GO_TO_LOCATION'})
+								transitions={'finished':'GO_TO_LOCATION'})
 			
 			smach.StateMachine.add('GO_TO_LOCATION', GoToRoomLocation(),
 								transitions={'successful':'arrived',
