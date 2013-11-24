@@ -94,8 +94,6 @@ typedef actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction>
 class TrashBinDetectionNode
 {
 private:
-	bool trash_bin_detection_active_;
-
 	std::string tag_label_name_;
 	geometry_msgs::PoseStamped fiducials_pose_;
 

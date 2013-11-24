@@ -8,15 +8,11 @@ TrashBinDetectionNode::TrashBinDetectionNode(ros::NodeHandle& nh)
   sdh_follow_joint_client_("/sdh_controller/follow_joint_trajectory", true),
   listener_(nh, ros::Duration(40.0))
 {
-	trash_bin_detection_active_ = false ;
 }
 
 //Initialize Trash bin detection to receive necessary raw data
 void TrashBinDetectionNode::init(ros::NodeHandle& nh)
 {
-	ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
-	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &TrashBinDetectionNode::fiducials_data_callback_,this);
-	ROS_INFO("FiducialsDetectionCheck: data received.");
 	detect_trash_bin_again_server_ = nh.advertiseService("detect_trash_bin_again_service", &TrashBinDetectionNode::detect_trash_bin_again_callback_,this);
 	activate_trash_bin_detection_server_ = nh.advertiseService("activate_trash_bin_detection_service", &TrashBinDetectionNode::activate_trash_bin_detection_callback_, this);
 	deactivate_trash_bin_detection_server_ = nh.advertiseService("deactivate_trash_bin_detection_service", &TrashBinDetectionNode::deactivate_trash_bin_detection_callback_, this);
@@ -32,9 +28,6 @@ void TrashBinDetectionNode::init(ros::NodeHandle& nh)
 //fiducials topic data call-back
 void TrashBinDetectionNode::fiducials_data_callback_(const cob_object_detection_msgs::DetectionArray::ConstPtr& fiducials_msg_data)
 {
-	if (trash_bin_detection_active_ == false)
-		return;
-
 	for (unsigned int i=0; i<fiducials_msg_data->detections.size(); i++)
 	{
 		if (fiducials_msg_data->detections.size() == 0)
@@ -141,12 +134,15 @@ bool TrashBinDetectionNode::detect_trash_bin_again_callback_(autopnp_scenario::D
 bool TrashBinDetectionNode::activate_trash_bin_detection_callback_(autopnp_scenario::ActivateTrashBinDetection::Request &req, autopnp_scenario::ActivateTrashBinDetection::Response &res)
 {
 	ROS_INFO("Received request to turn-on trash bin detection.....");
-	ROS_INFO("Trash bin detection is turned-on.");
 
 	trash_bin_location_storage_.trash_bin_locations.clear();
 	trash_bin_location_average_count_.clear();
 
-	trash_bin_detection_active_ = true;
+	ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
+	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &TrashBinDetectionNode::fiducials_data_callback_,this);
+	ROS_INFO("FiducialsDetectionCheck: data received.");
+
+	ROS_INFO("Trash bin detection is turned-on.");
 
 	return true;
 }
@@ -155,9 +151,8 @@ bool TrashBinDetectionNode::activate_trash_bin_detection_callback_(autopnp_scena
 bool TrashBinDetectionNode::deactivate_trash_bin_detection_callback_(autopnp_scenario::DeactivateTrashBinDetection::Request &req, autopnp_scenario::DeactivateTrashBinDetection::Response &res)
 {
 	ROS_INFO("Received request to turn-off trash bin detection.....");
+	fiducials_msg_sub_.shutdown();
 	ROS_INFO("Trash bin detection is turned-off.");
-
-	trash_bin_detection_active_ = false;
 
 	cob_object_detection_msgs::Detection temp_detection_obj;
 	for(unsigned int i=0; i<trash_bin_location_storage_.trash_bin_locations.size() ; i++)
