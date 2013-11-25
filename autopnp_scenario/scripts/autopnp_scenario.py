@@ -135,7 +135,7 @@ def main():
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
 							transitions={'list_of_rooms':'UNPROCESSED_ROOM'},
-							remapping={'analyze_map_data_img_':'sm_img'})                           
+							remapping={'analyze_map_data_img_':'sm_img'})
 
 		sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],
 																input_keys=['sm_img',
@@ -152,9 +152,9 @@ def main():
 																output_keys=['sm_RoomNo'])
 		
 		sm_sub_go_to_next_unproccessed_room.userdata.sm_counter = 1
-		sm_sub_go_to_next_unproccessed_room.userdata.sm_location_counter = 0                                
+		sm_sub_go_to_next_unproccessed_room.userdata.sm_location_counter = 0
 		
-		with sm_sub_go_to_next_unproccessed_room:                 
+		with sm_sub_go_to_next_unproccessed_room:
 			smach.StateMachine.add('FIND_NEXT_ROOM', NextUnprocessedRoom(),
 								transitions={'location':'VERIFY_TOOL_CAR_LOCATION',
 											'no_rooms':'no_more_rooms_left'},
