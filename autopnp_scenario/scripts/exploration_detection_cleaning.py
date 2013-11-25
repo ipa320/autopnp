@@ -396,23 +396,37 @@ class VerifyToolCarLocation(smach.State):
 class MoveToToolWaggonFront(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
+		self.tool_wagon_pose = None
 
 	def fiducial_callback(self, fiducials):
+		t = tf.TransformerROS(True, rospy.Duration(10.0))
 		for fiducial in fiducials.detections:
 			# transform to base pose of tool wagon and then convert to map coordinate system
+			offset = None
 			if fiducial.label=='tag_tool_wagon_front':
-				print TOOL_WAGON_MARKER_OFFSETS['front']
+				offset = TOOL_WAGON_MARKER_OFFSETS['front']
 			elif fiducial.label=='tag_tool_wagon_rear':
-				print TOOL_WAGON_MARKER_OFFSETS['rear']
+				offset = TOOL_WAGON_MARKER_OFFSETS['rear']
 			elif fiducial.label=='tag_tool_wagon_left':
-				print TOOL_WAGON_MARKER_OFFSETS['left']
+				offset = TOOL_WAGON_MARKER_OFFSETS['left']
 			elif fiducial.label=='tag_tool_wagon_right':
-				print TOOL_WAGON_MARKER_OFFSETS['right']
+				offset = TOOL_WAGON_MARKER_OFFSETS['right']
+			
+			if offset != None:  # i.e. if a tool wagon marker was detected
+				offset_mat = t.fromTranslationRotation((offset.translation.x, offset.translation.y, offset.translation.z), (offset.rotation.x, offset.rotation.y, offset.rotation.z, offset.rotation.w))
+				fiducial_pose_mat = t.fromTranslationRotation((fiducial.pose.pose.position.x, fiducial.pose.pose.position.y, fiducial.pose.pose.position.z), (fiducial.pose.pose.orientation.x, fiducial.pose.pose.orientation.y, fiducial.pose.pose.orientation.z, fiducial.pose.pose.orientation.w))
+				tool_wagon_pose_mat = fiducial_pose_mat*offset_mat
+				
+				q = t.quaternion_from_matrix(tool_wagon_pose_mat)
+				self.tool_wagon_pose = Pose(position=Point(x=tool_wagon_pose_mat[0,3], y=tool_wagon_pose_mat[1,3], z=tool_wagon_pose_mat[2,3]),
+										orientation=Quaternion(x=q[0], y=q[1], z=q[2], w=q[3]))
+				
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("MoveToToolWaggonFront")
 		rospy.loginfo('Executing state Move_Base_To_Last_Tool_Waggon_Location')
 
+		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, fiducial_callback)
 		
 		# 1. move to last known position
