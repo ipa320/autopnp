@@ -3,8 +3,6 @@
 #include <tf/transform_broadcaster.h>
 #include <moveit/move_group_interface/move_group.h>
 
-using namespace std;
-
 /*
  * Initializing the server before start and waiting for data :
  * Starts all needed subscriptions and publications.
@@ -13,35 +11,32 @@ using namespace std;
  * allows the calculation of the background processes
  * and sleeping functions to run simultaneously .
  */
-ToolChange::ToolChange(ros::NodeHandle nh): move_to_wagon_server
-		(nh, "tool_change", boost::bind(&ToolChange::moveToWagon, this, _1), false)
+ToolChange::ToolChange(ros::NodeHandle nh): move_to_wagon_server_
+(nh, "tool_change", boost::bind(&ToolChange::moveToWagonSlot, this, _1), false)
 {
-	cout << "Starting server." << endl;
+	std::cout << "Starting server..." << std::endl;
 
-	node_handle = nh;
-	input_marker_detection_sub.unsubscribe();
-	joint_states_sub.unsubscribe();
-	camera_matrix_received = false;
-	slot_position_detected = false;
+	node_handle_ = nh;
+	input_marker_detection_sub_.unsubscribe();
+	joint_states_sub_.unsubscribe();
+	slot_position_detected_ = false;
+	reached_pregrasp_pose_ = false;
+	marker_id_ = 0;
 
 	// subscribers
 	//joint_states_sub_.subscribe(node_handle_, "/joint_states",1);
 	//joint_states_sub_.registerCallback(boost::bind(&ToolChange::jointInputCallback, this, _1));
-	vis_pub = node_handle.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
+	vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
+	input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
+	input_marker_detection_sub_.registerCallback(boost::bind(&ToolChange::markerInputCallback, this, _1));
 
 
-	input_marker_detection_sub.subscribe(node_handle, "input_marker_detections", 1);
-	input_marker_detection_sub.registerCallback(boost::bind(&ToolChange::markerInputCallback, this, _1));
-
-	//sleep
-	while(slot_position_detected == false)
+	//sleep till the transformation found
+	while(slot_position_detected_ == false)
 	{
-
 		ros::spinOnce();
 	}
-	//subscription quit
-	input_marker_detection_sub.unsubscribe();
-	joint_states_sub.unsubscribe();
+
 }
 
 /*
@@ -57,7 +52,8 @@ ToolChange::~ToolChange()
  */
 void ToolChange::init()
 {
-	ToolChange::move_to_wagon_server.start();
+	ToolChange::move_to_wagon_server_.start();
+
 }
 
 /**
@@ -70,8 +66,8 @@ void ToolChange::jointInputCallback(const sensor_msgs::JointState::ConstPtr& inp
 {
 	sensor_msgs::JointState jm;
 
-	jointVelocities.clear();
-	jointPositions.clear();
+	jointVelocities_.clear();
+	jointPositions_.clear();
 
 	jm.name = input_joint_msg->name;
 	jm.header.stamp = input_joint_msg->header.stamp;
@@ -81,11 +77,11 @@ void ToolChange::jointInputCallback(const sensor_msgs::JointState::ConstPtr& inp
 
 	for (auto s: input_joint_msg->velocity)
 	{
-		jointVelocities.push_back(s);
+		jointVelocities_.push_back(s);
 	}
 	for(auto s : input_joint_msg->position)
 	{
-		jointPositions.push_back(s);
+		jointPositions_.push_back(s);
 	}
 
 	//ToolChange::printVector(jointPositions);
@@ -105,48 +101,33 @@ void ToolChange::jointInputCallback(const sensor_msgs::JointState::ConstPtr& inp
 void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg)
 {
 
-	if (input_marker_detections_msg->detections.size() == 0)
-	{
-		ROS_INFO("ToolChange::inputCallback: No markers detected.\n");
-		return;
-	}
 	//ROS_INFO("InputCallback for input_marker_detections_msg received.");
 	struct ToolChange::components result_components;
 	tf::Transform fiducial_pose_board;
 	tf::Transform fiducial_pose_arm;
+	tf::Transform arm_board;
 
-
-	// compute mean coordinate system if multiple markers detected
-	result_components = computeMarkerPose(input_marker_detections_msg);
-	fiducial_pose_board = result_components.board.translation;
-	fiducial_pose_arm = result_components.arm.translation;
-
-
-	//if the incoming data are not empty, calculate the distance and orientation
-	bool empty_data = (fiducial_pose_board.getOrigin().length() == 0 ||
-			fiducial_pose_arm.getOrigin().length() == 0);
-
-	if(! empty_data)
+	if (input_marker_detections_msg->detections.size() != 0 )
 	{
-		arm_board_transform = calculateTransformationToArm(fiducial_pose_board, fiducial_pose_arm);
+		//set marker components if such detected
+		result_components = computeMarkerPose(input_marker_detections_msg);
 
-		//ToolChange::printPose(fiducial_pose_board);
-		//ToolChange::printPose(fiducial_pose_arm);
-		//ToolChange::printPose(arm_board_transform);
+		//use marker components only if both,
+		//arm and board markers detected
+		//else the components are empty
+		if(detected_both_fiducials_ == true)
+		{
+			fiducial_pose_board = result_components.board.translation;
+			fiducial_pose_arm = result_components.arm.translation;
 
-		/*
-		 ROS_INFO("Board distance %f, arm distance %f, distance %f",
-				(float) fiducial_pose_board.getOrigin().length(),
-				(float) fiducial_pose_arm.getOrigin().length(),
-				(float)arm_board_transform.getOrigin().length());
-		 */
+			arm_board = calculateArmBoardTransformation(fiducial_pose_board, fiducial_pose_arm);
 
-		if(arm_board_transform.getOrigin().length() != 0) {
-
-			ROS_INFO("Slot position has been detected. ");
-			input_marker_detection_sub.unsubscribe();
-			ToolChange::slot_position_detected = true;
-
+			if(!arm_board.getOrigin().isZero())
+			{
+				//ROS_INFO("Slot position has been detected. ");
+				arm_board_transform_ = arm_board;
+				slot_position_detected_ = true;
+			}
 		}
 	}
 }
@@ -162,23 +143,28 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 {
 	ToolChange::components result;
 	unsigned int count = 0;
+	detected_both_fiducials_ = false;
+	bool detected_arm_fiducial = false;
+	bool detected_board_fiducial = false;
+	tf::Point translation;
+	tf::Quaternion orientation;
 
 	for (unsigned int i = 0; i < input_marker_detections_msg->detections.size(); ++i)
 	{
+
 		//retrieve the number of label and format the string message to an int number
 		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
 		unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
-
-		tf::Point translation;
-		tf::Quaternion orientation;
+		//ROS_INFO("number %u , ", (unsigned int) fiducial_label_num) ;
 
 		//convert translation and orientation Points msgs to Points respectively
 		tf::pointMsgToTF(input_marker_detections_msg->detections[i].pose.pose.position, translation);
 		tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
 
 		// average only the 4 markers from the board (label values 0,1,2,3 set in common/files)
-		if(fiducial_label_num < 4) {
-
+		if(fiducial_label_num < 4)
+		{
+			detected_board_fiducial = true;
 			count++;
 			if (i==0)
 			{
@@ -191,9 +177,11 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 				result.board.translation.getRotation() += orientation;
 			}
 		}
-		// set the arm marker (label value 4 set in common/files)
-		if(fiducial_label_num == 4) {
 
+		// set the arm marker (label value 4 set in common/files)
+		if(fiducial_label_num == 4)
+		{
+			detected_arm_fiducial = true;
 			result.arm.translation.setOrigin(translation);
 			result.arm.translation.setRotation(orientation);
 			result.arm.translation.getRotation().normalize();
@@ -202,10 +190,12 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 	if(count != 0)
 	{
-		result.board.translation.getOrigin() /= (double)count;
+		result.board.translation.getOrigin() /=(double)count;
 		result.board.translation.getRotation() /= (double)count;
 		result.board.translation.getRotation().normalize();
 	}
+
+	detected_both_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
 	return result;
 }
@@ -215,50 +205,70 @@ struct ToolChange::components ToolChange::computeMarkerPose(
  * Vector orientation points from arm to board. Arm quaternion must be inverted to justify its
  * parent position according to a child position of the board.
  *
+ * Both fiducial positions are not real. Thats why they must undergo
+ * simulated transformations. After those it will be possible
+ * to calculate the real transformation between arm and board positions.
+ *
+ *
  * Simulates the endeffector pose depending on the precise chosen position
  * of the fiducial, which has been fixed/clamped to the arm_7_link.
- * Here : in initial arm position (x-down, y-right, z-to observer)
- * corresponds to a rotation around y-axes to its left (positive angle).
+ * Here :
+ * - arm fiducial position (x-up, y-left, z-to observer) is shifted to its
+ * corresponding arm position : rotation around x-axes in 45 (left) and after it
+ * around y-axes in 45 degrees(left).
+ * - board fiducial position (x-down, y-right, z-to observer) is shifted
+ * to its original position : rotation around y-axes in 45 degrees(left).
+ *
  */
-tf::Transform ToolChange::calculateTransformationToArm(
+tf::Transform ToolChange::calculateArmBoardTransformation(
 		const tf::Transform& board_pose, const tf::Transform& arm_pose)
 {
-	tf::Quaternion rotate_Y_45_left;
-	rotate_Y_45_left.setRPY(0.0, M_PI/2, 0.0);
-
+	//define tf poses
+	tf::Transform board_pose_simulated;
 	tf::Transform arm_pose_simulated;
+	tf::Transform result;
 
-	//tf::Vector3 translation = (- arm_pose_simulated.getOrigin() + board_pose.getOrigin());
-	//tf::Quaternion orientation =
-	//	((arm_pose_simulated.getRotation() * rotate_Y_45_left).inverse()) * board_pose.getRotation();
-	arm_pose_simulated.setRotation(arm_pose.getRotation() * rotate_Y_45_left);
+	//define rotations
+	tf::Quaternion rotate_Y_45_right;
+	tf::Quaternion rotate_Y_45_left;
+	tf::Quaternion rotate_X_pi_4_left;
+
+	//set rotations
+	rotate_X_pi_4_left.setRPY( M_PI/4, 0.0, 0.0);
+	rotate_Y_45_left.setRPY(0.0, -M_PI/2, 0.0);
+	rotate_Y_45_left.setRPY(0.0, -M_PI/2, 0.0);
+
+	//set tf poses according to there real
+	//orientation and position to the arm and board
+	board_pose_simulated.setRotation(board_pose.getRotation() * rotate_Y_45_left);
+	board_pose_simulated.setOrigin(board_pose.getOrigin());
+
+	arm_pose_simulated.setRotation(((arm_pose.getRotation()) * rotate_X_pi_4_left) * rotate_Y_45_left);
 	arm_pose_simulated.setOrigin(arm_pose.getOrigin());
 
-	tf::Transform result;
-	result = (arm_pose_simulated.inverse()) * board_pose;
+	//calculate the transformation between arm and board
+	result.mult(arm_pose_simulated.inverse() ,(board_pose_simulated));
 
-	//return tf::Transform(orientation, translation);
+	/// JUST DRAWING IN RVIZ FOR TEST PURPOSES
+	tf::Transform a_tf;
+	tf::Transform b_tf;
+	geometry_msgs::PoseStamped a = origin;
+	geometry_msgs::PoseStamped pose;
+	geometry_msgs::PoseStamped base;
+	geometry_msgs::PoseStamped result_stamped;
+
+	tf::poseMsgToTF(a.pose, a_tf);
+	b_tf = a_tf * result;
+
+	tf::poseTFToMsg(b_tf, pose.pose);
+	tf::poseTFToMsg(result, result_stamped.pose);
+
+	drawLine(0.85, 0.55, 0.0, 1.0, a, pose);
+	drawLine(0.85, 0.55, 0.0, 1.0, base, result_stamped);
+	///END DRAWING
+
 	return result;
-}
 
-/*
- * Converts a color image message to cv::Mat format.
- */
-bool ToolChange::convertColorImageMessageToMat(
-		const sensor_msgs::Image::ConstPtr& image_msg, cv_bridge::CvImageConstPtr& image_ptr, cv::Mat& image)
-{
-	try
-	{
-		image_ptr = cv_bridge::toCvShare(image_msg, sensor_msgs::image_encodings::BGR8);
-	}
-	catch (cv_bridge::Exception& e)
-	{
-		ROS_ERROR("ObjectCategorization: cv_bridge exception: %s", e.what());
-		return false;
-	}
-	image = image_ptr->image;
-
-	return true;
 }
 
 /*
@@ -268,7 +278,7 @@ bool ToolChange::convertColorImageMessageToMat(
  * to be taken from the wagon). Starting move commands for the arm from here..
  *
  */
-void ToolChange::moveToWagon(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal) {
+void ToolChange::moveToWagonSlot(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal) {
 
 	/*
 	ROS_INFO(" Received a goal request ");
@@ -283,20 +293,80 @@ void ToolChange::moveToWagon(const autopnp_tool_change::MoveToWagonGoalConstPtr&
 			goal->transform.rotation.y,
 			goal->transform.rotation.z);
 	 */
-	//to do: set initial arm position as goal
+	//TO DO: set initial arm position as goal
 
 	ToolChange::moveArm();
 
 	// this command sends a feedback message to the caller
 	autopnp_tool_change::MoveToWagonFeedback feedback;
-	ToolChange::move_to_wagon_server.publishFeedback(feedback);
+	ToolChange::move_to_wagon_server_.publishFeedback(feedback);
 
 	// this sends the response back to the caller
 	autopnp_tool_change::MoveToWagonResult res;
-	ToolChange::move_to_wagon_server.setSucceeded(res);
+	ToolChange::move_to_wagon_server_.setSucceeded(res);
 
 }
+/*
+ * Executes the motion operations for the arm
+ * using the moveIt interface utilities.
+ * The reference frame, the "base_link" frame,
+ * initializes the starting point of the coordinate system.
+ * the goal frame describes the end effector ("arm_7_link")
+ * which will be moved to a new position according to
+ * its given pre-grasp (with hand down) position and orientation.
+ */
+void ToolChange::moveToInitialPose()
+{
+	ROS_INFO("Moving to initial position.");
 
+	//start from base
+	geometry_msgs::PoseStamped pose;
+	//endeffector msg pose
+	geometry_msgs::PoseStamped link_pose;
+	tf::Quaternion q;
+
+	moveit::planning_interface::MoveGroup group("arm");
+
+	pose.header.frame_id = "base_link";
+	pose.header.stamp = ros::Time::now();
+	group.setPoseReferenceFrame("base_link");
+
+	link_pose = group.getCurrentPose("arm_7_link");
+	origin = link_pose;
+
+	q.setRPY(0.0, 0.0, M_PI/4);
+	//q.setRPY(0.0, 0.0, 0.0);
+	//q.setRPY(0.0,M_PI, 0.0);
+
+	pose.pose.position.x = link_pose.pose.position.x - 0.4;
+	pose.pose.position.y = link_pose.pose.position.y;
+	pose.pose.position.z = link_pose.pose.position.z - 0.6;
+
+	tf::quaternionTFToMsg(q, pose.pose.orientation);
+
+	drawLine(0.55, 0.55, 0.0, 1.0, group.getCurrentPose("arm_7_link"), pose);
+	group.setPoseTarget(pose, "arm_7_link");
+
+	// plan the motion and then move the group to the target
+	bool have_plan = false;
+	moveit::planning_interface::MoveGroup::Plan plan;
+
+	have_plan = group.plan(plan);
+
+	//EXECUTE !!!!!! BE CAREFUL
+	if (have_plan==true) {
+		group.execute(plan);
+		group.move();
+		reached_pregrasp_pose_ = true;
+	}
+	else
+	{
+		ROS_WARN("No valid plan found for arm movement.");
+		reached_pregrasp_pose_ = false;
+	}
+
+
+}
 /*
  * Executes the motion operations for the arm
  * using the moveIt interface utilities.
@@ -308,38 +378,43 @@ void ToolChange::moveToWagon(const autopnp_tool_change::MoveToWagonGoalConstPtr&
  */
 void ToolChange::moveArm()
 {
-	ROS_INFO("Starting move motion.");
-
-	moveit::planning_interface::MoveGroup group("arm");
+	//endeffector tf pose
+	tf::Transform link_7_pose_tf;
+	//arm-to-board transformation
+	tf::Transform arm_board_tf;
+	//base start pose
 	geometry_msgs::PoseStamped pose;
-	pose.header.frame_id = "base_link";
-	pose.header.stamp = ros::Time::now();
-	group.setPoseReferenceFrame("base_link");
+	//endeffector msg pose
+	geometry_msgs::PoseStamped link_7_pose;
 
-	//get the position of the end effector (= arm_7_joint)
-	geometry_msgs::PoseStamped link_7_pose = group.getCurrentPose("arm_7_link");
+	moveToInitialPose();
 
-	//transform end effector msg pose in tf
-	tf::Transform link_pose_transform;
-	tf::poseMsgToTF(link_7_pose.pose, link_pose_transform);
+	//wait till pre_grasp position has been reached
+	if(reached_pregrasp_pose_ != false)
+	{
+		//set the planning interface group
+		moveit::planning_interface::MoveGroup group("arm");
+		pose.header.frame_id = "base_link";
+		pose.header.stamp = ros::Time::now();
+		group.setPoseReferenceFrame("base_link");
 
-    //calculate a new end effector position in respect to the reference frame (= base_frame)
-	tf::Transform new_link_7_pose = link_pose_transform * arm_board_transform;
+		if(! arm_board_transform_.getOrigin().isZero())
+		{
+			//get the position of the end effector (= arm_7_joint)
+			link_7_pose = group.getCurrentPose("arm_7_link");
+			origin = link_7_pose;
+            //translate msg to tf
+			tf::poseMsgToTF(link_7_pose.pose, link_7_pose_tf);
+            //calculate transformation tf pose from arm to board
+			arm_board_tf = link_7_pose_tf * arm_board_transform_;
+			//transform tf pose to msg
+			tf::poseTFToMsg(arm_board_tf, pose.pose);
 
-    //transform tf to msg
-	pose.pose.position.x = new_link_7_pose.getOrigin().getX();
-	pose.pose.position.y = new_link_7_pose.getOrigin().getY();
-	pose.pose.position.z = new_link_7_pose.getOrigin().getZ();
-	tf::quaternionTFToMsg(new_link_7_pose.getRotation(), pose.pose.orientation);
-
-	//draw transformation in rviz
-	drawLine(0.85, 0.55, 0.0, 1.0, group.getCurrentPose("arm_7_link"), pose);
-	/*
-	 * gazebo sumu
-	 *
-	//pose.pose.position.x = 0.0;
-	//pose.pose.position.y = -0.580;
-	//pose.pose.position.z = 0.743;
+			drawLine(0.85, 0.55, 0.0, 1.0, group.getCurrentPose("arm_7_link"), pose);
+			/*
+			 * gazebo sumu
+			 *
+	tf::Quaternion q;
 
 	//geometry_msgs !!
 	pose.pose.position.x = 0.0;
@@ -347,124 +422,39 @@ void ToolChange::moveArm()
 	pose.pose.position.z = 0.943;
 	//tf msgs !!
 	q.setRPY(-0.17, -0.42, 0.0);
-	tf::quaternionTFToMsg(q, pose.pose.orientation);
-	 */
+			 */
 
-	/*
-	 * schunk simu
-	 */
-	/*
-	tf::Quaternion rotate_X_45_left;
-	rotate_X_45_left.setRPY(0.0, M_PI, 0.0);
+			group.setPoseTarget(pose, "arm_7_link");
 
-	pose.pose.position.x = 0.60;
-	pose.pose.position.y = 0.0;
-	pose.pose.position.z = 1.00;
-	tf::Quaternion q;
-	tf::Quaternion w;
-	tf::Vector3 v = tf::Vector3(0.60, 0.0, 1.0);
-	tf::Transform t;
+			// plan the motion and then move the group to the target
+			bool have_plan = false;
+			moveit::planning_interface::MoveGroup::Plan plan;
 
-	q.setRPY(M_PI/2, 0.0, -M_PI/2);
-	t.setOrigin(v);
-	t.setRotation(q);
+			//for (int i = 0; have_plan == false && i < 2; ++i)
+			have_plan = group.plan(plan);
 
-	w.setRPY(M_PI/2, 0.0, 0.0);
-	//tf::quaternionTFToMsg(q, pose.pose.orientation);
-	//tf::quaternionTFToMsg(q, pose.pose.orientation);
-
-	tf::quaternionTFToMsg(t.getRotation()*w, pose.pose.orientation);
-	pose.pose.position.x = t.getOrigin().getX();
-	pose.pose.position.y = t.getOrigin().getY();
-	pose.pose.position.z = t.getOrigin().getZ();
-
-	geometry_msgs::PoseStamped link_pose = group.getCurrentPose("arm_7_link");
-	 */
-	/*
-    tf::Quaternion q;
-	pose.pose.position.x = 0.05;
-	pose.pose.position.y = 0.0;
-	pose.pose.position.z = 1.40;
-	q.setRPY(1.57,0.0,1.57);
-
-	//tf to geometry_msgs
-	tf::quaternionTFToMsg(q, pose.pose.orientation);
-
-	 */
-
-	group.setPoseTarget(pose, "arm_7_link");
-
-	// plan the motion and then move the group to the sampled target
-	bool have_plan = false;
-	moveit::planning_interface::MoveGroup::Plan plan;
-
-	//for (int i = 0; have_plan == false && i < 2; ++i)
-	have_plan = group.plan(plan);
-	if (have_plan==true)
-		group.execute(plan);
-	else
-		ROS_WARN("No valid plan found for arm movement.");
-	group.move();
-
-
-	/*
-	 * random movement
-	 */
-	/*group.setRandomTarget();
-	printVector(group.getCurrentJointValues());
-	printVector(group.getCurrentRPY("arm_7_link"));
-	geometry_msgs::PoseStamped t = group.getCurrentPose("arm_7_link");
-	group.move();
-	 */
-}
-
-
-unsigned long ToolChange::ProjectXYZ(double x, double y, double z, int& u, int& v)
-{
-	cv::Mat XYZ(4, 1, CV_64FC1);
-	cv::Mat UVW(3, 1, CV_64FC1);
-
-	x *= 1000;
-	y *= 1000;
-	z *= 1000;
-
-	double* d_ptr = XYZ.ptr<double>(0);
-	d_ptr[0] = x;
-	d_ptr[1] = y;
-	d_ptr[2] = z;
-	d_ptr[3] = 1.;
-
-	UVW = color_camera_matrix * XYZ;
-
-	d_ptr = UVW.ptr<double>(0);
-	double du = d_ptr[0];
-	double dv = d_ptr[1];
-	double dw = d_ptr[2];
-
-	u = cvRound(du/dw);
-	v = cvRound(dv/dw);
-
-	return 1;
-}
-
-void ToolChange::calibrationCallback(const sensor_msgs::CameraInfo::ConstPtr& calibration_msg)
-{
-	if (camera_matrix_received == false)
-	{
-		//	pointcloud_height_ = calibration_msg->height;
-		//	pointcloud_width_ = calibration_msg->width;
-		cv::Mat temp(3,4,CV_64FC1);
-		for (int i=0; i<12; i++)
-			temp.at<double>(i/4,i%4) = calibration_msg->P.at(i);
-		//		std::cout << "projection_matrix: [";
-		//		for (int v=0; v<3; v++)
-		//			for (int u=0; u<4; u++)
-		//				std::cout << temp.at<double>(v,u) << " ";
-		//		std::cout << "]" << std::endl;
-		color_camera_matrix = temp;
-		camera_matrix_received = true;
+			//BE CAREFUL, IT IS GOING TO EXECUTE !!!!!!
+			if (have_plan==true) {
+				group.execute(plan);
+				group.move();
+			}
+			else
+			{
+				ROS_WARN("No valid plan found for arm movement.");
+			}
+		}
+		else
+		{
+			ROS_WARN("Invalid arm-to-board transformation.");
+		}
 	}
+
 }
+
+
+
+
+
 /**
  * A helper function to print the results of
  * a transform message.
@@ -523,6 +513,12 @@ void ToolChange::drawArrow (const double r, const double g, const double b, cons
 		const geometry_msgs::PoseStamped& pose)
 {
 	visualization_msgs::Marker marker;
+	marker.header.frame_id = "base_link";
+	marker.header.stamp = ros::Time::now();
+	marker.id = marker_id_;
+	marker.action = visualization_msgs::Marker::ADD;
+	marker.type = visualization_msgs::Marker::ARROW;
+
 	marker.pose.position.x = pose.pose.position.x;
 	marker.pose.position.y = pose.pose.position.y;
 	marker.pose.position.z = pose.pose.position.z;
@@ -532,7 +528,7 @@ void ToolChange::drawArrow (const double r, const double g, const double b, cons
 	marker.pose.orientation.z = pose.pose.orientation.z;
 	marker.pose.orientation.w = pose.pose.orientation.w;
 
-	marker.scale.x = 1;
+	marker.scale.x = 0.25;
 	marker.scale.y = 0.025;
 	marker.scale.z = 0.025;
 
@@ -541,7 +537,9 @@ void ToolChange::drawArrow (const double r, const double g, const double b, cons
 	marker.color.b = b;
 	marker.color.a = a;
 
-	vis_pub.publish(marker);
+	vis_pub_.publish(marker);
+
+	marker_id_++;
 }
 /**
  * A helper function to draw a simple line in rviz.
@@ -552,6 +550,7 @@ void ToolChange::drawLine (const double r, const double g, const double b, const
 	visualization_msgs::Marker marker;
 	marker.header.frame_id = "base_link";
 	marker.header.stamp = ros::Time::now();
+	marker.id = marker_id_;
 	marker.action = visualization_msgs::Marker::ADD;
 	marker.type = visualization_msgs::Marker::LINE_STRIP;
 	geometry_msgs::Point p;
@@ -565,7 +564,7 @@ void ToolChange::drawLine (const double r, const double g, const double b, const
 
 	marker.points.push_back(p);
 
-	marker.scale.x = 0.025;
+	marker.scale.x = 0.005;
 	marker.scale.y = 0.0;
 	marker.scale.z = 0.0;
 
@@ -574,7 +573,8 @@ void ToolChange::drawLine (const double r, const double g, const double b, const
 	marker.color.b = b;
 	marker.color.a = a;
 
-	vis_pub.publish(marker);
+	vis_pub_.publish(marker);
+	marker_id_++;
 }
 
 int main (int argc, char** argv)
