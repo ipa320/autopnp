@@ -1,8 +1,6 @@
 /*
- * object_recording.h
- *
- *  Created on: 02.07.2013
- *      Author: rbormann
+ *autopnp_tool_change.h
+ *Author: rmb-om
  */
 
 #ifndef AUTOPNP_TOOL_CHANGE_
@@ -32,6 +30,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <sensor_msgs/JointState.h>
 #include <pr2_controllers_msgs/JointTrajectoryControllerState.h>
+#include <moveit_msgs/ExecuteKnownTrajectory.h>
 #include <std_msgs/ColorRGBA.h>
 
 #include <vector>
@@ -56,6 +55,24 @@
  *  detected fiducials
  */
 
+///Static constant variables
+static const int COUPLE = 1;
+static const int DECOUPLE = 2;
+
+static const double MAX_STEP_MIL = 0.001;
+static const double MAX_STEP_CM = 0.01;
+
+static const std::string PLANNING_GROUP_NAME = "arm";
+static const std::string BASE_LINK = "base_link";
+static const std::string EE_NAME = "arm_7_link";
+
+static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, 0.02);
+static const tf::Vector3 FORWARD = tf::Vector3(-0.3, 0.0, 0.0);
+static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.02);
+static const tf::Vector3 BACK = tf::Vector3(0.3, 0.0, 0.0);
+
+
+
 class ToolChange
 {
 
@@ -63,10 +80,11 @@ public:
 
 	ToolChange(ros::NodeHandle nh);
 	~ToolChange();
-	void moveToWagonSlot(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal);
+	void changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal);
 	void init();
 
 protected:
+
 
 	/// array of two transform msgs
 	struct fiducials;
@@ -94,7 +112,9 @@ protected:
 	///PUBLISHERS
 	ros::Publisher vis_pub_;
 	/// SERVER
-	actionlib::SimpleActionServer<autopnp_tool_change::MoveToWagonAction> move_to_wagon_server_;
+	actionlib::SimpleActionServer<autopnp_tool_change::MoveToWagonAction> change_tool_server_;
+	/// CLIENTS
+	 ros::ServiceClient execute_known_traj_client_ ;
 
 	/// messages that are used to published feedback/result
 	autopnp_tool_change::MoveToWagonFeedback feedback_;
@@ -102,6 +122,7 @@ protected:
 
 	bool slot_position_detected_;
 	bool reached_pregrasp_pose_;
+	bool move_action_;
 	bool detected_both_fiducials_;
 
 	///container for the joint msgs
@@ -110,6 +131,7 @@ protected:
 
 	///transformation data between the arm and the wagon slot
 	tf::Transform arm_board_transform_;
+	geometry_msgs::PoseStamped current_ee_pose_;
 
 	//CALLBACKS
 	/// Callback for the incoming data of joints' state.
@@ -122,10 +144,18 @@ protected:
 	/// Computes an average pose from multiple detected markers.
 	struct components computeMarkerPose(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
 
-	///executes the arm movement with regard to the detected fiducials
+	///processes the goal message
+	bool processGoal(const geometry_msgs::PoseStamped& pose);
+	///execution of the process in question
+	bool coupleOrDecouple(const int command, const geometry_msgs::PoseStamped& pose);
+	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose, const double offset);
+	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
 	void moveArm();
+	void waitForMoveit();
 	///executes the arm movement to the set initial position
-	void moveToInitialPose();
+	void moveToStartPose(const geometry_msgs::PoseStamped& start_pose);
+	bool moveToStartPosition(const geometry_msgs::PoseStamped& start_pose);
+	bool moveToWagonFiducial(const double offset);
 
 	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ
 	geometry_msgs::PoseStamped origin ;

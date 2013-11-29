@@ -11,8 +11,8 @@
  * allows the calculation of the background processes
  * and sleeping functions to run simultaneously .
  */
-ToolChange::ToolChange(ros::NodeHandle nh): move_to_wagon_server_
-(nh, "tool_change", boost::bind(&ToolChange::moveToWagonSlot, this, _1), false)
+ToolChange::ToolChange(ros::NodeHandle nh): change_tool_server_
+(nh, "tool_change", boost::bind(&ToolChange::changeTool, this, _1), false)
 {
 	std::cout << "Starting server..." << std::endl;
 
@@ -21,6 +21,7 @@ ToolChange::ToolChange(ros::NodeHandle nh): move_to_wagon_server_
 	joint_states_sub_.unsubscribe();
 	slot_position_detected_ = false;
 	reached_pregrasp_pose_ = false;
+	move_action_ = false;
 	marker_id_ = 0;
 
 	// subscribers
@@ -36,7 +37,6 @@ ToolChange::ToolChange(ros::NodeHandle nh): move_to_wagon_server_
 	{
 		ros::spinOnce();
 	}
-
 }
 
 /*
@@ -52,7 +52,7 @@ ToolChange::~ToolChange()
  */
 void ToolChange::init()
 {
-	ToolChange::move_to_wagon_server_.start();
+	ToolChange::change_tool_server_.start();
 
 }
 
@@ -247,7 +247,7 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
 	arm_pose_simulated.setOrigin(arm_pose.getOrigin());
 
 	//calculate the transformation between arm and board
-	result.mult(arm_pose_simulated.inverse() ,(board_pose_simulated));
+	result.mult(arm_pose_simulated.inverse() , board_pose_simulated);
 
 	/// JUST DRAWING IN RVIZ FOR TEST PURPOSES
 	tf::Transform a_tf;
@@ -278,7 +278,19 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
  * to be taken from the wagon). Starting move commands for the arm from here..
  *
  */
-void ToolChange::moveToWagonSlot(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal) {
+void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal) {
+
+	geometry_msgs::PoseStamped fake_goal;
+	tf::Quaternion q;
+	q.setRPY(0.0, 0.0, M_PI/4);
+	//q.setRPY(0.0, 0.0, 0.0);
+	//q.setRPY(0.0,M_PI, 0.0);
+	tf::quaternionTFToMsg(q, fake_goal.pose.orientation);
+
+	fake_goal.pose.position.x = - 0.4;
+	fake_goal.pose.position.y =  0.0;
+	fake_goal.pose.position.z =  0.85;
+
 
 	/*
 	ROS_INFO(" Received a goal request ");
@@ -295,165 +307,301 @@ void ToolChange::moveToWagonSlot(const autopnp_tool_change::MoveToWagonGoalConst
 	 */
 	//TO DO: set initial arm position as goal
 
-	ToolChange::moveArm();
-
 	// this command sends a feedback message to the caller
 	autopnp_tool_change::MoveToWagonFeedback feedback;
-	ToolChange::move_to_wagon_server_.publishFeedback(feedback);
+	ToolChange::change_tool_server_.publishFeedback(feedback);
 
 	// this sends the response back to the caller
 	autopnp_tool_change::MoveToWagonResult res;
-	ToolChange::move_to_wagon_server_.setSucceeded(res);
+
+	//res = processGoal(fake_goal);
+	processGoal(fake_goal);
+	change_tool_server_.setSucceeded(res);
 
 }
+
 /*
- * Executes the motion operations for the arm
- * using the moveIt interface utilities.
- * The reference frame, the "base_link" frame,
- * initializes the starting point of the coordinate system.
- * the goal frame describes the end effector ("arm_7_link")
- * which will be moved to a new position according to
- * its given pre-grasp (with hand down) position and orientation.
+ * Goal processing. Returns true if the process succeeded, false if not.
  */
-void ToolChange::moveToInitialPose()
+//bool ToolChange::processGoal(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal);
+bool ToolChange::processGoal(const geometry_msgs::PoseStamped& start_pose)
 {
-	ROS_INFO("Moving to initial position.");
+	int fake_command = 1;
 
-	//start from base
-	geometry_msgs::PoseStamped pose;
-	//endeffector msg pose
-	geometry_msgs::PoseStamped link_pose;
-	tf::Quaternion q;
+	return coupleOrDecouple(fake_command, start_pose);
+}
 
-	moveit::planning_interface::MoveGroup group("arm");
+/*
+ * Executes series of tasks to process coupling and decoupling.
+ * Works with the initial start position of the arm {@value start_pose}
+ * and the command {@value command} to execute. Here: couple or decouple.
+ */
+bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseStamped& pose)
+{
+	//--------------------------------------------------------------------------------------
+	// move arm to a start position
+	//--------------------------------------------------------------------------------------
+	tf::Vector3 direction;
 
-	pose.header.frame_id = "base_link";
-	pose.header.stamp = ros::Time::now();
-	group.setPoseReferenceFrame("base_link");
+	ROS_INFO("Moving arm to a pre-grasp position.");
 
-	link_pose = group.getCurrentPose("arm_7_link");
-	origin = link_pose;
+	double offset = 0.0;
+	if(!executeMoveCommand(pose, offset))
+	{
+		ROS_WARN("Error occurred executing move to start position.");
+		return false;
+	}
+	waitForMoveit();
 
-	q.setRPY(0.0, 0.0, M_PI/4);
-	//q.setRPY(0.0, 0.0, 0.0);
-	//q.setRPY(0.0,M_PI, 0.0);
+	//--------------------------------------------------------------------------------------
+	// move arm to the wagon (pre-start position) using fiducials
+	//--------------------------------------------------------------------------------------
+	ROS_INFO("Moving arm to wagon fiducial position.");
 
-	pose.pose.position.x = link_pose.pose.position.x - 0.4;
-	pose.pose.position.y = link_pose.pose.position.y;
-	pose.pose.position.z = link_pose.pose.position.z - 0.6;
+	//TO DO: compute current fiducial position.
+	if(!moveToWagonFiducial(offset))
+	{
+		ROS_WARN("Error occurred executing move to wagon fiducial position.");
+		return false;
+	}
 
-	tf::quaternionTFToMsg(q, pose.pose.orientation);
 
-	drawLine(0.55, 0.55, 0.0, 1.0, group.getCurrentPose("arm_7_link"), pose);
-	group.setPoseTarget(pose, "arm_7_link");
 
-	// plan the motion and then move the group to the target
-	bool have_plan = false;
-	moveit::planning_interface::MoveGroup::Plan plan;
+	//   COUPLE / DECOUPLE
 
-	have_plan = group.plan(plan);
+	//--------------------------------------------------------------------------------------
+	// move arm straight forward
+	//--------------------------------------------------------------------------------------
+	direction = FORWARD;
 
-	//EXECUTE !!!!!! BE CAREFUL
-	if (have_plan==true) {
-		group.execute(plan);
-		group.move();
-		reached_pregrasp_pose_ = true;
+	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
+	{
+		ROS_WARN("Error occurred executing move to wagon fiducial.");
+		return false;
+	}
+
+
+
+	//--------------------------------------------------------------------------------------
+	// move arm down to coupler
+	//--------------------------------------------------------------------------------------
+	direction = DOWN;
+
+	if(!executeStraightMoveCommand(direction, MAX_STEP_MIL))
+	{
+		ROS_WARN("Error occurred executing move arm down to coupler .");
+		return false;
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// couple / decouple (different services !!!)
+	//--------------------------------------------------------------------------------------
+	if(command == COUPLE)
+	{
+		ROS_INFO("Start to couple.");
+	}
+	if(command == DECOUPLE)
+	{
+		ROS_INFO("Start to decouple.");
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// move arm straight up
+	//--------------------------------------------------------------------------------------
+	direction = UP;
+
+	if(!executeStraightMoveCommand(direction, MAX_STEP_MIL))
+	{
+		ROS_WARN("Error occurred executing move arm straight up.");
+		return false;
+	}
+	waitForMoveit();
+
+	//--------------------------------------------------------------------------------------
+	// move arm straight back
+	//--------------------------------------------------------------------------------------
+	direction = BACK;
+
+	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
+	{
+		ROS_WARN("Error occurred executing move arm straight back.");
+		return false;
+	}
+
+	return true;
+}
+
+
+bool ToolChange::moveToWagonFiducial(const double offset)
+{
+	geometry_msgs::PoseStamped ee_pose;
+	geometry_msgs::PoseStamped goal_pose;
+	tf::Transform ee_pose_tf;
+	tf::Transform goal_pose_tf;
+
+	while(!move_action_)
+	{
+		ros::spinOnce();
+	}
+
+	if(! arm_board_transform_.getOrigin().isZero())
+	{
+		//get the position of the end effector (= arm_7_joint)
+		ee_pose = current_ee_pose_;
+		//msg -> tf
+		tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
+		//calculate transformation tf pose from arm to board
+		goal_pose_tf = ee_pose_tf * arm_board_transform_;
+		//tf -> msg
+		tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
 	}
 	else
 	{
-		ROS_WARN("No valid plan found for arm movement.");
-		reached_pregrasp_pose_ = false;
+		ROS_WARN("Arm to board transformation fails.");
+		return false;
 	}
 
-
+	return executeMoveCommand(goal_pose, offset);
 }
 /*
- * Executes the motion operations for the arm
- * using the moveIt interface utilities.
+ * Move arm to the wagon using fiducials.
+ */
+/*
+ * Execute a planning action with moveIt interface utilities.
  * The reference frame, the "base_link" frame,
  * initializes the starting point of the coordinate system.
  * the goal frame describes the end effector ("arm_7_link")
- * which will be moved to a new position according to
- * its given position and orientation.
+ * which will be moved to a new position.
  */
-void ToolChange::moveArm()
+bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose, const double offset)
 {
-	//endeffector tf pose
-	tf::Transform link_7_pose_tf;
-	//arm-to-board transformation
-	tf::Transform arm_board_tf;
-	//base start pose
+	ROS_INFO("************** move ***********");
+	move_action_ = false;
+
 	geometry_msgs::PoseStamped pose;
-	//endeffector msg pose
-	geometry_msgs::PoseStamped link_7_pose;
+	geometry_msgs::PoseStamped ee_pose;
 
-	moveToInitialPose();
+	pose.pose = goal_pose.pose;
 
-	//wait till pre_grasp position has been reached
-	if(reached_pregrasp_pose_ != false)
+	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
+	pose.header.frame_id = BASE_LINK;
+	pose.header.stamp = ros::Time::now();
+	group.setPoseReferenceFrame(BASE_LINK);
+
+	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
+	drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, pose);
+
+	group.setPoseTarget(pose, EE_NAME);
+
+	// plan the motion
+	bool have_plan = false;
+	moveit::planning_interface::MoveGroup::Plan plan;
+	have_plan = group.plan(plan);
+
+	//EXECUTE THE PLAN !!!!!! BE CAREFUL
+	if (have_plan==true) {
+		group.execute(plan);
+		group.move();
+	}
+	else
 	{
-		//set the planning interface group
-		moveit::planning_interface::MoveGroup group("arm");
-		pose.header.frame_id = "base_link";
-		pose.header.stamp = ros::Time::now();
-		group.setPoseReferenceFrame("base_link");
-
-		if(! arm_board_transform_.getOrigin().isZero())
-		{
-			//get the position of the end effector (= arm_7_joint)
-			link_7_pose = group.getCurrentPose("arm_7_link");
-			origin = link_7_pose;
-            //translate msg to tf
-			tf::poseMsgToTF(link_7_pose.pose, link_7_pose_tf);
-            //calculate transformation tf pose from arm to board
-			arm_board_tf = link_7_pose_tf * arm_board_transform_;
-			//transform tf pose to msg
-			tf::poseTFToMsg(arm_board_tf, pose.pose);
-
-			drawLine(0.85, 0.55, 0.0, 1.0, group.getCurrentPose("arm_7_link"), pose);
-			/*
-			 * gazebo sumu
-			 *
-	tf::Quaternion q;
-
-	//geometry_msgs !!
-	pose.pose.position.x = 0.0;
-	pose.pose.position.y = -0.580;
-	pose.pose.position.z = 0.943;
-	//tf msgs !!
-	q.setRPY(-0.17, -0.42, 0.0);
-			 */
-
-			group.setPoseTarget(pose, "arm_7_link");
-
-			// plan the motion and then move the group to the target
-			bool have_plan = false;
-			moveit::planning_interface::MoveGroup::Plan plan;
-
-			//for (int i = 0; have_plan == false && i < 2; ++i)
-			have_plan = group.plan(plan);
-
-			//BE CAREFUL, IT IS GOING TO EXECUTE !!!!!!
-			if (have_plan==true) {
-				group.execute(plan);
-				group.move();
-			}
-			else
-			{
-				ROS_WARN("No valid plan found for arm movement.");
-			}
-		}
-		else
-		{
-			ROS_WARN("Invalid arm-to-board transformation.");
-		}
+		ROS_WARN("No valid plan found for the arm movement.");
+		move_action_ = false;
+		return false;
 	}
 
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	move_action_ = true;
+
+	return true;
 }
 
+/*
+ * Execute straight movement with the help of
+ * cartesian path. {@variable step} is the maximum step
+ * between the interpolated points for the resulting path.
+ */
+bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, const double ee_max_step)
+{
+	/** \brief Compute a Cartesian path that follows specified waypoints with a step size of at most \e eef_step meters
+	      between end effector configurations of consecutive points in the result \e trajectory. The reference frame for the
+	      waypoints is that specified by setPoseReferenceFrame(). No more than \e jump_threshold
+	      is allowed as change in distance in the configuration space of the robot (this is to prevent 'jumps' in IK solutions).
+	      Collisions are avoided if \e avoid_collisions is set to true. If collisions cannot be avoided, the function fails.
+	      Return a value that is between 0.0 and 1.0 indicating the fraction of the path achieved as described by the waypoints.
+	      Return -1.0 in case of error. */
+
+	move_action_ = false;
+	double jump_threshold = 0.0;
+
+	execute_known_traj_client_ = node_handle_.serviceClient<moveit_msgs::ExecuteKnownTrajectory>("/execute_kinematic_path");
+
+	geometry_msgs::PoseStamped pose;
+	geometry_msgs::PoseStamped ee_pose;
+	tf::Transform pose_tf;
+	tf::Transform ee_pose_tf;
+	tf::Transform transf;
+
+	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
+	pose.header.frame_id = BASE_LINK;
+	pose.header.stamp = ros::Time::now();
+	group.setPoseReferenceFrame(BASE_LINK);
+
+	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
+	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
+
+	transf.setOrigin(goal_direction);
+
+	pose_tf.setOrigin((ee_pose_tf * transf).getOrigin());
+	pose_tf.setRotation(ee_pose_tf.getRotation());
+
+	//tf -> msg
+	tf::poseTFToMsg(pose_tf, pose.pose);
+
+	group.setPoseTarget(pose);
+
+	// set waypoints for which to compute path
+	std::vector<geometry_msgs::Pose> waypoints;
+	waypoints.push_back(group.getCurrentPose().pose);
+	waypoints.push_back(pose.pose);
+
+	drawLine(0.55, 0.85, 0.0, 1.0, ee_pose, pose);
+
+   moveit_msgs::ExecuteKnownTrajectory srv;
+
+	// compute cartesian path
+	double frac = group.computeCartesianPath(waypoints, ee_max_step, jump_threshold, srv.request.trajectory, false);
+
+	if(frac < 0){
+		// no path could be computed
+		ROS_ERROR("Unable to compute Cartesian path!");
+	} else if (frac < 1){
+		// path started to be computed, but did not finish
+		ROS_WARN_STREAM("Cartesian path computation finished " << frac * 100 << "% only!");
+	}
+
+	// send trajectory to arm controller
+	srv.request.wait_for_execution = true;
+	execute_known_traj_client_.call(srv);
+
+	ros::Duration(0.20).sleep();
+    current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	move_action_ = true;
 
 
+	return true;
+}
 
+void ToolChange::waitForMoveit()
+{
+	while(!move_action_)
+		{
+			ros::spinOnce();
+		}
+
+}
 
 /**
  * A helper function to print the results of
