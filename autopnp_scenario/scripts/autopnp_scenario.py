@@ -68,14 +68,23 @@ def main():
 	rospy.init_node('exploration_detection_cleaning')
 	
 	'''
-	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
-	sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
-	sm_sub_clear_waste_bin.userdata.detection_pose = Pose2D() # todo: insert a pose with x and y of your trash bin here
-	sm_sub_clear_waste_bin.userdata.detection_pose.x=0
-	sm_sub_clear_waste_bin.userdata.detection_pose.y=0
-	sm_sub_clear_waste_bin.userdata.detection_pose.theta=0
+	# manual tool change
+	sm_scenario = smach.StateMachine(outcomes=['CTM_done'])
+	with sm_scenario:
+		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
+								transitions={'CTM_done':'CTM_done'})
+	'''
 	
-	with sm_sub_clear_waste_bin:
+	'''
+	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
+	# sub state machine for trash bin clearing
+	sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
+	
+	with sm_scenario:
+		userdata.detection_pose = Pose2D() # todo: insert a pose with x and y of your trash bin here
+		userdata.detection_pose.x=0
+		userdata.detection_pose.y=0
+		userdata.detection_pose.theta=0
 #		smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
 #					transitions={'MTTBL_success':'APPROACH_PERIMETER'},
 #						remapping = {'trash_bin_pose_':'detection_pose'})
@@ -112,15 +121,13 @@ def main():
 		
 		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
 					transitions={'RTB_finished':'CWB_done'})
-	
-	outcome = sm_sub_clear_waste_bin.execute()
 # end of trash bin clearing sub state machine, comment until here when you like to use the full scenario
 '''
 
-	sm_top_exploration = smach.StateMachine(outcomes=['finish', 'failed'])  
-	sm_top_exploration.userdata.sm_trash_bin_counter = 0  
+	sm_scenario = smach.StateMachine(outcomes=['finish', 'failed'])
+	sm_scenario.userdata.sm_trash_bin_counter = 0  
 
-	with sm_top_exploration:
+	with sm_scenario:
 		
 		# todo: comment these 3 lines to get the full scenario
 		# smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
@@ -206,7 +213,7 @@ def main():
 
 		smach.StateMachine.add('UNPROCESSED_ROOM', sm_sub_go_to_next_unproccessed_room,
 							transitions={'arrived':'DIRT_DETECTION_ON',
-										'no_more_rooms_left':'CHANGE_TOOL_HAND'})
+										'no_more_rooms_left':'CHANGE_TOOL_MANUAL'}) #'CHANGE_TOOL_HAND'})
 		
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
 							transitions={'dd_On':'TRASH_BIN_DETECTION_ON'})
@@ -272,10 +279,12 @@ def main():
 		
 		
 		
-		sm_sub_change_tool_hand = smach.StateMachine(outcomes=['CTH_done'])
-
+		sm_sub_change_tool_hand = smach.StateMachine(outcomes=['CTH_done'],
+													input_keys=['tool_wagon_pose'])
 		with sm_sub_change_tool_hand:
-			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION',GoToToolWagonLocation() ,transitions={'GTTWL_done':'DETECT_SLOT_FOR_CURRENT_TOOL'})
+			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonRear(),
+								transitions={'arrived':'DETECT_SLOT_FOR_CURRENT_TOOL'})
+			#smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION',GoToToolWagonLocation() ,transitions={'GTTWL_done':'DETECT_SLOT_FOR_CURRENT_TOOL'})
 			
 			smach.StateMachine.add('DETECT_SLOT_FOR_CURRENT_TOOL',DetectSlotForCurrentTool() ,transitions={'slot_pose':'MOVE_ARM_TO_SLOT'})
 			
@@ -295,7 +304,19 @@ def main():
 
 		smach.StateMachine.add('CHANGE_TOOL_HAND', sm_sub_change_tool_hand,
 							transitions={'CTH_done':'GET_DIRT_MAP'})
+
+
+		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['CTM_done'],
+														input_keys=['tool_wagon_pose'])
+		with sm_sub_change_tool_manual:
+			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonRear(),
+								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION'})
+			
+			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
+								transitions={'CTM_done':'CTM_done'})
 		
+		smach.StateMachine.add('CHANGE_TOOL_MANUAL', sm_sub_change_tool_manual,
+							transitions={'CTM_done':'GET_DIRT_MAP'})
 		
 		
 		smach.StateMachine.add('GET_DIRT_MAP', GetDirtMap(),
@@ -345,11 +366,11 @@ def main():
 
 
 	# Create and start the introspection server
-	sis = smach_ros.IntrospectionServer('server_name', sm_top_exploration, '/SM_ROOT')
+	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/SM_ROOT')
 	sis.start()
 	
 	# Execute SMACH plan
-	outcome = sm_top_exploration.execute()
+	outcome = sm_scenario.execute()
 	
 	#rospy.spin()
 	

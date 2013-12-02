@@ -56,12 +56,14 @@
 #
 #################################################################
 
-import roslib; roslib.load_manifest('autopnp_scenario')
+import roslib; roslib.load_manifest('autopnp_scenario') #; roslib.load_manifest('cob_navigation_global')
 import rospy
 import smach
 import smach_ros
 import threading
 import tf
+
+import dynamic_reconfigure.client
 
 from map_segmentation_action_client import MapSegmentationActionClient
 from find_next_unprocessed_room_action_client import find_next_unprocessed_room
@@ -74,6 +76,7 @@ from autopnp_scenario.msg import *
 from autopnp_dirt_detection.srv import *
 from cob_object_detection_msgs.msg import DetectionArray, Detection
 from geometry_msgs import *
+from cob_phidgets.srv import SetDigitalSensor
 
 from ApproachPerimeter import *
 
@@ -91,25 +94,31 @@ TOOL_WAGON_LOCATIONS.append(Pose2D(x=0, y=0, theta=0))
 TOOL_WAGON_LOCATIONS.append(Pose2D(x=3, y=3, theta=0))
 
 global TOOL_WAGON_MARKER_OFFSETS
-TOOL_WAGON_MARKER_OFFSETS={
-						"front":	Transform(translation=Vector3(x=1.0, y=0.0, z=0.0), rotation=Quaternion(x=0.0, y=-0.70710678, z=0.0, w=0.70710678)),   # quaternion_from_euler(0.0, -90.0/180.0*math.pi, 0.0, 'rzyx')
-						"rear":		Transform(translation=Vector3(x=1.0, y=0.0, z=0.0), rotation=Quaternion(x=-0.707106781, y=0.0, z=0.707106781, w=0.0)),   # quaternion_from_euler(math.pi, 90.0/180.0*math.pi, 0.0, 'rzyx')
-						"left":		Transform(translation=Vector3(x=1.0, y=0.0, z=0.0), rotation=Quaternion(x=-0.5, y=0.5, z=-0.5, w=0.5)),   # quaternion_from_euler(-90.0/180.0*math.pi, 0.0, -90.0/180.0*math.pi, 'rzyx')
-						"right":	Transform(translation=Vector3(x=1.0, y=0.0, z=0.0), rotation=Quaternion(x=-0.5, y=-0.5, z=0.5, w=0.5))   # quaternion_from_euler(90.0/180.0*math.pi, 0.0, -90.0/180.0*math.pi, 'rzyx')
+TOOL_WAGON_MARKER_OFFSETS={ #todo: measure translational offsets
+						"front":	Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=-0.5, y=-0.5, z=-0.5, w=0.5)),   # quaternion_from_euler(-90.0/180.0*math.pi, -90.0/180.0*math.pi, 0.0, 'rzyx')
+						"rear":		Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=-0.5, y=0.5, z=0.5, w=0.5)),   # quaternion_from_euler(90.0/180.0*math.pi, 90.0/180.0*math.pi, 0.0, 'rzyx')
+						"left":		Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=0.0, y=0.707106781, z=0.707106781, w=0.0)),   # quaternion_from_euler(math.pi, 0.0, 90.0/180.0*math.pi, 'rzyx')
+						"right":	Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=-0.70710678, y=0.0, z=0.0, w=0.70710678))   # quaternion_from_euler(0.0, 0.0, -90.0/180.0*math.pi, 'rzyx')
 						}  # offset transformations from respective markers to tool wagon base/center coordinate system
 
 global TOOL_WAGON_ROBOT_OFFSETS
 TOOL_WAGON_ROBOT_OFFSETS={
-						"front":	Pose2D(x=-1.0, y=0.0, theta=0.0)
+						"front":	Pose2D(x=-1.0, y=0.0, theta=0.0),
+						"rear":		Pose2D(x=-1.0, y=0.0, theta=math.pi)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
 
 global FIDUCIALS_MARKER_DICTIONARY
 FIDUCIALS_MARKER_DICTIONARY={
-						"tag_tool_wagon_front":		"tag_2",
-						"tag_tool_wagon_rear":		"tag_3",
-						"tag_tool_wagon_right":		"tag_4",
-						"tag_tool_wagon_left":		"tag_5"
-							}
+						"tag_tool_wagon_front_l":		"tag_48",  # left = +y of tool wagon base frame
+						"tag_tool_wagon_front_c":		"tag_55",
+						"tag_tool_wagon_front_r":		"tag_36",  # right = -y
+						"tag_tool_wagon_rear_l":		"tag_38",  # left = +y
+						"tag_tool_wagon_rear_c":		"tag_79",
+						"tag_tool_wagon_rear_r":		"tag_73",  # right = -y
+						"tag_tool_wagon_right":			"tag_64",
+						"tag_tool_wagon_left":			"tag_69",
+						"trash_bin":					"tag_25"
+						}
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
@@ -218,7 +227,7 @@ class NextUnprocessedRoom(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat("NextUnprocessedRoom")
 		#rospy.sleep(10)
-		rospy.loginfo('Executing state next unprocessed room.....')        
+		rospy.loginfo('Executing state next unprocessed room.....')
 		if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_data_room_center_x_):
 			find_next_unprocessed_room_action_server_result_ = find_next_unprocessed_room( userdata.find_next_unprocessed_room_data_img_,
 																							userdata.analyze_map_data_room_center_x_,   # in pixel
@@ -256,7 +265,7 @@ class GoToRoomLocation(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat("GoToRoomLocation")
 		#rospy.sleep(10)
-		rospy.loginfo('Executing state go to room location')                
+		rospy.loginfo('Executing state go to room location')
 		if userdata.go_to_room_location_loop_counter_in_ == 0 :
 			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
 																			userdata.find_next_unprocessed_room_center_x_ , 
@@ -272,11 +281,11 @@ class GoToRoomLocation(smach.State):
 																			userdata.analyze_map_data_map_origin_x_,
 																			userdata.analyze_map_data_map_origin_y_)
 
-		if go_to_room_location_action_server_result_.output_flag == 'True':        
-			return 'successful'        
+		if go_to_room_location_action_server_result_.output_flag == 'True':
+			return 'successful'
 		else:
 			userdata.go_to_room_location_loop_counter_out_ = userdata.go_to_room_location_loop_counter_in_ + 1
-			return 'unsuccessful' 
+			return 'unsuccessful'
 
 
 # The FindRandomLocation class defines a state machine of smach which basically 
@@ -405,52 +414,86 @@ class VerifyToolCarLocation(smach.State):
 		return 'no_need_to_move_it'
 
 
+def computeToolWagonPoseFromFiducials(fiducials):
+	trROS = tf.TransformerROS(True, rospy.Duration(10.0))
+	averaged_tool_wagon_pose = None
+	averaged_tool_wagon_markers = 0.0
+	for fiducial in fiducials.detections:
+		# transform to base pose of tool wagon and then convert to map coordinate system
+		offset = None
+		if fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_front_l"] or fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_front_c"] or fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_front_r"]:
+			offset = TOOL_WAGON_MARKER_OFFSETS['front']
+		elif fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_rear_l"] or fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_rear_c"] or fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_rear_r"]:
+			offset = TOOL_WAGON_MARKER_OFFSETS['rear']
+		elif fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_left"]:
+			offset = TOOL_WAGON_MARKER_OFFSETS['left']
+		elif fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_right"]:
+			offset = TOOL_WAGON_MARKER_OFFSETS['right']
+		
+		if offset != None:  # i.e. if a tool wagon marker was detected
+			# compute tool wagon center
+			offset_mat = trROS.fromTranslationRotation((offset.translation.x, offset.translation.y, offset.translation.z), (offset.rotation.x, offset.rotation.y, offset.rotation.z, offset.rotation.w))
+			fiducial_pose_mat = trROS.fromTranslationRotation((fiducial.pose.pose.position.x, fiducial.pose.pose.position.y, fiducial.pose.pose.position.z), (fiducial.pose.pose.orientation.x, fiducial.pose.pose.orientation.y, fiducial.pose.pose.orientation.z, fiducial.pose.pose.orientation.w))
+			tool_wagon_pose_mat = numpy.dot(fiducial_pose_mat, offset_mat)
+			q = quaternion_from_matrix(tool_wagon_pose_mat)
+			tool_wagon_pose = PoseStamped(header=fiducial.pose.header, pose=Pose(position=Point(x=tool_wagon_pose_mat[0,3], y=tool_wagon_pose_mat[1,3], z=tool_wagon_pose_mat[2,3]),
+									orientation=Quaternion(x=q[0], y=q[1], z=q[2], w=q[3])))
+			#print "fidpose, offset: ", fiducial.pose, offset
+			#print "twpose: ", tool_wagon_pose
+			#print "twpose ypr: ", euler_from_quaternion([tool_wagon_pose.pose.orientation.x, tool_wagon_pose.pose.orientation.y, tool_wagon_pose.pose.orientation.z, tool_wagon_pose.pose.orientation.w], "rzyx")
+			
+			# transform to map system
+			try:
+				listener = get_transform_listener()
+				listener.waitForTransform('/map', tool_wagon_pose.header.frame_id, tool_wagon_pose.header.stamp, rospy.Duration(10))
+				tool_wagon_pose_map = listener.transformPose('/map', tool_wagon_pose)
+				print 'tool_wagon_pose = ', tool_wagon_pose_map
+				print "tool_wagon_pose ypr: ", euler_from_quaternion([tool_wagon_pose_map.pose.orientation.x, tool_wagon_pose_map.pose.orientation.y, tool_wagon_pose_map.pose.orientation.z, tool_wagon_pose_map.pose.orientation.w], "rzyx")
+				# average position when multiple detections are present
+				if averaged_tool_wagon_pose==None:
+					averaged_tool_wagon_pose = tool_wagon_pose_map
+					averaged_tool_wagon_markers = 1.0
+				else:
+					averaged_tool_wagon_pose.pose.position.x = averaged_tool_wagon_pose.pose.position.x + tool_wagon_pose_map.pose.position.x
+					averaged_tool_wagon_pose.pose.position.y = averaged_tool_wagon_pose.pose.position.y + tool_wagon_pose_map.pose.position.y
+					averaged_tool_wagon_pose.pose.position.z = averaged_tool_wagon_pose.pose.position.z + tool_wagon_pose_map.pose.position.z
+					averaged_tool_wagon_pose.pose.orientation.x = averaged_tool_wagon_pose.pose.orientation.x + tool_wagon_pose_map.pose.orientation.x
+					averaged_tool_wagon_pose.pose.orientation.y = averaged_tool_wagon_pose.pose.orientation.y + tool_wagon_pose_map.pose.orientation.y
+					averaged_tool_wagon_pose.pose.orientation.z = averaged_tool_wagon_pose.pose.orientation.z + tool_wagon_pose_map.pose.orientation.z
+					averaged_tool_wagon_pose.pose.orientation.w = averaged_tool_wagon_pose.pose.orientation.w + tool_wagon_pose_map.pose.orientation.w
+					averaged_tool_wagon_markers = averaged_tool_wagon_markers + 1.0
+			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
+				print "computeToolWagonPoseFromFiducials: Could not lookup robot pose: %s" %e
+	# finalize averaging and normalizationroslib.load_manifest(PACKAGE)
+	if averaged_tool_wagon_markers > 0.0:
+		averaged_tool_wagon_pose.pose.position.x = averaged_tool_wagon_pose.pose.position.x/averaged_tool_wagon_markers
+		averaged_tool_wagon_pose.pose.position.y = averaged_tool_wagon_pose.pose.position.y/averaged_tool_wagon_markers
+		averaged_tool_wagon_pose.pose.position.z = averaged_tool_wagon_pose.pose.position.z/averaged_tool_wagon_markers
+		averaged_tool_wagon_pose.pose.orientation.x = averaged_tool_wagon_pose.pose.orientation.x/averaged_tool_wagon_markers
+		averaged_tool_wagon_pose.pose.orientation.y = averaged_tool_wagon_pose.pose.orientation.y/averaged_tool_wagon_markers
+		averaged_tool_wagon_pose.pose.orientation.z = averaged_tool_wagon_pose.pose.orientation.z/averaged_tool_wagon_markers
+		averaged_tool_wagon_pose.pose.orientation.w = averaged_tool_wagon_pose.pose.orientation.w/averaged_tool_wagon_markers
+		norm = math.sqrt(averaged_tool_wagon_pose.pose.orientation.x*averaged_tool_wagon_pose.pose.orientation.x + averaged_tool_wagon_pose.pose.orientation.y*averaged_tool_wagon_pose.pose.orientation.y + averaged_tool_wagon_pose.pose.orientation.z*averaged_tool_wagon_pose.pose.orientation.z + averaged_tool_wagon_pose.pose.orientation.w*averaged_tool_wagon_pose.pose.orientation.w)
+		averaged_tool_wagon_pose.pose.orientation.x = averaged_tool_wagon_pose.pose.orientation.x/norm
+		averaged_tool_wagon_pose.pose.orientation.y = averaged_tool_wagon_pose.pose.orientation.y/norm
+		averaged_tool_wagon_pose.pose.orientation.z = averaged_tool_wagon_pose.pose.orientation.z/norm
+		averaged_tool_wagon_pose.pose.orientation.w = averaged_tool_wagon_pose.pose.orientation.w/norm
+		
+		return averaged_tool_wagon_pose
+
 class MoveToToolWaggonFront(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
 		self.tool_wagon_pose = None
 
 	def fiducial_callback(self, fiducials):
-		trROS = tf.TransformerROS(True, rospy.Duration(10.0))
-		for fiducial in fiducials.detections:
-			# transform to base pose of tool wagon and then convert to map coordinate system
-			offset = None
-			if fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_front"]:
-				offset = TOOL_WAGON_MARKER_OFFSETS['front']
-			elif fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_rear"]:
-				offset = TOOL_WAGON_MARKER_OFFSETS['rear']
-			elif fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_left"]:
-				offset = TOOL_WAGON_MARKER_OFFSETS['left']
-			elif fiducial.label==FIDUCIALS_MARKER_DICTIONARY["tag_tool_wagon_right"]:
-				offset = TOOL_WAGON_MARKER_OFFSETS['right']
-			
-			if offset != None:  # i.e. if a tool wagon marker was detected
-				# compute tool wagon center
-				offset_mat = trROS.fromTranslationRotation((offset.translation.x, offset.translation.y, offset.translation.z), (offset.rotation.x, offset.rotation.y, offset.rotation.z, offset.rotation.w))
-				fiducial_pose_mat = trROS.fromTranslationRotation((fiducial.pose.pose.position.x, fiducial.pose.pose.position.y, fiducial.pose.pose.position.z), (fiducial.pose.pose.orientation.x, fiducial.pose.pose.orientation.y, fiducial.pose.pose.orientation.z, fiducial.pose.pose.orientation.w))
-				tool_wagon_pose_mat = numpy.dot(fiducial_pose_mat, offset_mat)
-				q = quaternion_from_matrix(tool_wagon_pose_mat)
-				tool_wagon_pose = PoseStamped(header=fiducial.pose.header, pose=Pose(position=Point(x=tool_wagon_pose_mat[0,3], y=tool_wagon_pose_mat[1,3], z=tool_wagon_pose_mat[2,3]),
-										orientation=Quaternion(x=q[0], y=q[1], z=q[2], w=q[3])))
-				#print "fidpose, offset: ", fiducial.pose, offset
-				#print "twpose: ", tool_wagon_pose
-				#print "twpose ypr: ", euler_from_quaternion([tool_wagon_pose.pose.orientation.x, tool_wagon_pose.pose.orientation.y, tool_wagon_pose.pose.orientation.z, tool_wagon_pose.pose.orientation.w], "rzyx")
-				
-				# transform to map system
-				try:
-					listener = get_transform_listener()
-					listener.waitForTransform('/map', tool_wagon_pose.header.frame_id, tool_wagon_pose.header.stamp, rospy.Duration(10))
-					self.tool_wagon_pose = listener.transformPose('/map', tool_wagon_pose)
-					print 'tool_wagon_pose = ', self.tool_wagon_pose
-					print "tool_wagon_pose ypr: ", euler_from_quaternion([self.tool_wagon_pose.pose.orientation.x, self.tool_wagon_pose.pose.orientation.y, self.tool_wagon_pose.pose.orientation.z, self.tool_wagon_pose.pose.orientation.w], "rzyx")
-				except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
-					print "MoveToToolWaggonFront: Could not lookup robot pose: %s" %e
+		self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
 
-	def execute(self, userdata ):
+	def execute(self, userdata):
 		sf = ScreenFormat("MoveToToolWaggonFront")
-		rospy.loginfo('Executing state Move_Base_To_Last_Tool_Waggon_Location')
+		#rospy.loginfo('Executing state Move_Base_To_Last_Tool_Waggon_Location')
 
-		sss.move("head","back")
+		sss.move("head", "back")
 		sss.move("torso", "home")
 
 		self.tool_wagon_pose = None
@@ -478,7 +521,73 @@ class MoveToToolWaggonFront(smach.State):
 			robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
 									y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
 									theta=tool_wagon_pose.theta - robot_offset.theta)
-			handle_base = sss.move("base", [robot_goal_pose.x, robot_goal_pose.y, robot_goal_pose.theta])
+			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)])
+			
+			# read out current robot pose
+			try:
+				listener = get_transform_listener()
+				t = rospy.Time(0)
+				listener.waitForTransform('/map', '/base_link', t, rospy.Duration(10))
+				(robot_pose_translation, robot_pose_rotation) = listener.lookupTransform('/map', '/base_link', t)
+			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
+				print "Could not lookup robot pose: %s" %e
+				continue
+			robot_pose_rotation_euler = tf.transformations.euler_from_quaternion(robot_pose_rotation, 'rzyx') # yields yaw, pitch, roll
+			
+			# verify distance to goal pose
+			dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
+			print "(x,y)-dist: ", dist
+			if dist > 0.02:		# in m
+				self.tool_wagon_pose = None
+			else:
+				robot_approximately_well_positioned = True
+		
+		# 3. unsubscribe to fiducials
+		fiducials_sub.unregister()
+		
+		return 'arrived'
+
+class MoveToToolWaggonRear(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
+		self.tool_wagon_pose = None
+
+	def fiducial_callback(self, fiducials):
+		self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
+
+	def execute(self, userdata):
+		sf = ScreenFormat("MoveToToolWaggonFront")
+		#rospy.loginfo('Executing state Move_Base_To_Last_Tool_Waggon_Location')
+
+		sss.move("head", "back")
+		sss.move("torso", "home")
+
+		self.tool_wagon_pose = None
+		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
+		
+		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
+		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["rear"]
+		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
+		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
+							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
+							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		
+		# 2. detect fiducials and move to corrected pose
+		# wait until wagon is detected
+		robot_approximately_well_positioned = False
+		while robot_approximately_well_positioned==False:
+			while self.tool_wagon_pose == None:
+				rospy.sleep(0.2)
+			# move to corrected pose
+			tool_wagon_pose_3d = self.tool_wagon_pose.pose
+			tool_wagon_pose_3d_euler = tf.transformations.euler_from_quaternion([tool_wagon_pose_3d.orientation.x,tool_wagon_pose_3d.orientation.y,tool_wagon_pose_3d.orientation.z,tool_wagon_pose_3d.orientation.w], 'rzyx') # yields yaw, pitch, roll
+			tool_wagon_pose = Pose2D(x=tool_wagon_pose_3d.position.x, y=tool_wagon_pose_3d.position.y, theta=tool_wagon_pose_3d_euler[0])
+			robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
+									y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
+									theta=tool_wagon_pose.theta - robot_offset.theta)
+			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)])
 			
 			# read out current robot pose
 			try:
@@ -505,7 +614,6 @@ class MoveToToolWaggonFront(smach.State):
 		return 'arrived'
 
 
-
 class GraspHandle(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['grasped'])
@@ -528,16 +636,26 @@ class GraspHandle(smach.State):
 class GoToNextToolWaggonLocation(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_goal_pose'])
+		self.navigation_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("GoToNextToolWaggonLocation")
 		rospy.loginfo('Executing state Go_To_Next_Tool_Waggon_Location')
 		
-		# 1. adjust base footprint
+		# 1. adjust base movement speeds
+		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.01, "min_vel_y":-0.01,"max_rot_vel":0.1})
 		
 		# 2. move robot to new position (robot offset to tool_wagon_goal_pose)
+		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
+		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
+		robot_pose = Pose2D(x = userdata.tool_wagon_goal_pose.x + dx*math.cos(userdata.tool_wagon_goal_pose.theta)-dy*math.sin(userdata.tool_wagon_goal_pose.theta),
+							y = userdata.tool_wagon_goal_pose.y + dx*math.sin(userdata.tool_wagon_goal_pose.theta)+dy*math.cos(userdata.tool_wagon_goal_pose.theta),
+							theta = userdata.tool_wagon_goal_pose.theta - robot_offset.theta)
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
 		
-		# 3. reset base footprint
+		# 3. reset base movement speeds
+		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2,"max_rot_vel":0.6})
 		
 		return 'arrived' 
 
@@ -567,18 +685,18 @@ class ReleaseGrasp(smach.State):
 
 
 #-------------------------------------------------------- Dirt Detection ----------------------------------------------------------------------------------------
-        
-        
-        
+
+
+
 class DirtDetectionOn(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['dd_On'])
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("DirtDetectionOn")
-#         rospy.sleep(2)                              
+#		rospy.sleep(2)
 		rospy.loginfo('Executing state Dirt_Detection_On')
-        
+
 		# move torso and head to frontal inspection perspective
 		sss.move("torso","front_extreme")
 		sss.move("head","front")
@@ -589,36 +707,36 @@ class DirtDetectionOn(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
-		return 'dd_On' 
+		return 'dd_On'
 
 
 # The TrashBinDetectionOn class defines a state machine of smach which basically 
 # use the ActivateTrashBinDetection service to activate Trash Bin Detection
 class TrashBinDetectionOn(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['TBD_On'])
-             
-    def execute(self, userdata ):
-    	sf = ScreenFormat("TrashBinDetectionOn")  
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Trash_Bin_Detection_On') 
-        rospy.wait_for_service('activate_trash_bin_detection_service') 
-        try:
-            req = rospy.ServiceProxy('activate_trash_bin_detection_service',ActivateTrashBinDetection)
-            resp = req()
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e                                               
-        return 'TBD_On'               
-     
-    
-    
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['TBD_On'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("TrashBinDetectionOn")
+#		rospy.sleep(2)
+		rospy.loginfo('Executing state Trash_Bin_Detection_On')
+		rospy.wait_for_service('activate_trash_bin_detection_service')
+		try:
+			req = rospy.ServiceProxy('activate_trash_bin_detection_service', ActivateTrashBinDetection)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call failed: %s"%e
+		return 'TBD_On'
+
+
+
 class DirtDetectionOff(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['dd_Off'])
-             
+
 	def execute(self, userdata ):
 		sf = ScreenFormat("DirtDetectionOff")
-#         rospy.sleep(2)                                
+#		rospy.sleep(2)
 		rospy.loginfo('Executing state Dirt_Detection_Off')
 
 		# move torso back to normal position
@@ -629,8 +747,8 @@ class DirtDetectionOff(smach.State):
 			req = rospy.ServiceProxy('/dirt_detection/deactivate_dirt_detection',DeactivateDirtDetection)
 			resp = req()
 		except rospy.ServiceException, e:
-			print "Service call failed: %s"%e                                             
-		return 'dd_Off'  
+			print "Service call failed: %s"%e
+		return 'dd_Off'
 
 
 # The TrashBinDetectionOff class defines a state machine of smach which basically 
@@ -761,7 +879,7 @@ class GraspTrashBin(smach.State):
 
 		# 4. close hand
 		handle_sdh = sss.move("sdh",[[0.47,0,0,0.45,-0,0.45,-0]])
-	   
+
 		# 5. arm: lift up
 		handle_arm = sss.move("arm",[[0.6609504818916321, -0.46957021951675415, 2.051220178604126, 1.7225379943847656, 1.0994664430618286, 0.6991068720817566, -3.7607481479644775]])
 		#handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]]) # small trash bin
@@ -786,9 +904,9 @@ class GraspTrashBin(smach.State):
 # 		else:
 # 			rospy.logwarn("action did not finish before the time out.")		
 
-		  
-		  
-		  
+		
+		
+		
 # 		rospy.loginfo('setting robot head and torso position')
 # 		handle_head = sss.move("head","back",False)
 # 		handle_head.wait()
@@ -817,13 +935,13 @@ class GraspTrashBin(smach.State):
 #         
 # 		handle_torso = sss.move("torso","home",False)
 # 		handle_torso.wait()     
-                                         
+
 		#return 'failed'
 		
 		return 'GTB_success'
-    
-    
-             
+
+
+
 class MoveToToolWagon(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['MTTW_success'])
@@ -834,6 +952,7 @@ class MoveToToolWagon(smach.State):
         rospy.loginfo('Executing state Move_To_Tool_Wagon')
         
         # todo: go to the big trash bin for clearing the smaller one
+        #use movetotoolwagonfront
 #        sss.move('base',[3.2, 2.8, -1.2])                                               
         return 'MTTW_success'
     
@@ -931,17 +1050,66 @@ class ReleaseTrashBin(smach.State):
  
  
 #--------------------------------------------------------Change Tool Hand --> Vacuum Cleaner---------------------------------------------------------------------
- 
-    
-    
+
+class ChangeToolManual(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['CTM_done'])
+		
+	def execute(self, userdata):
+		sf = ScreenFormat("ChangeToolManual")
+		
+		# move arm with tool facing up (so it cannot fall down on opening)
+		#handle_arm = sss.move("arm",[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+		
+		tool_change_successful = ''
+		while tool_change_successful!='yes':
+			# wait for confirmation to release tool
+			raw_input("Please hold the tool tightly with your hands and then press <Enter> and remove the tool quickly.")
+			rospy.wait_for_service('/set_digital') 
+			try:
+				req = rospy.ServiceProxy('/set_digital', SetDigitalSensor)
+				resp = req(uri='tool_changer_pin2', state=1)
+				print 'Opening tool changer response: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+				resp = req(uri='tool_changer_pin2', state=0)
+				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			tool_change_successful = raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat.")
+		
+		# move arm with end facing down
+		#handle_arm = sss.move("arm",[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+
+		tool_change_successful = ''
+		while tool_change_successful!='yes':
+			# wait for confirmation to attach tool
+			raw_input("Please attach the tool manually and then press <Enter>.")
+			rospy.wait_for_service('/set_digital') 
+			try:
+				req = rospy.ServiceProxy('/set_digital', SetDigitalSensor)
+				resp = req(uri='tool_changer_pin4', state=1)
+				print 'Closing tool changer response: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+				resp = req(uri='tool_changer_pin4', state=0)
+				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			tool_change_successful = raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat.")
+		
+		print 'Manual tool change successfully completed.'
+		
+		return 'CTM_done'
+
+
+
 class GoToToolWagonLocation(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['GTTWL_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("GoToToolWagonLocation")  
+    	sf = ScreenFormat("GoToToolWagonLocation")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Go_To_Tool_Wagon_Location')                                                
+        rospy.loginfo('Executing state Go_To_Tool_Wagon_Location')
         return 'GTTWL_done'
     
     
@@ -952,8 +1120,8 @@ class DetectSlotForCurrentTool(smach.State):
              
     def execute(self, userdata ):
     	sf = ScreenFormat("DetectSlotForCurrentTool")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Detect_Slot_For_Current_Tool')                                                
+#         rospy.sleep(2)
+        rospy.loginfo('Executing state Detect_Slot_For_Current_Tool')
         return 'slot_pose'
     
     
@@ -965,7 +1133,7 @@ class MoveArmToSlot(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("MoveArmToSlot")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_Arm_To_Slot')                                                
+        rospy.loginfo('Executing state Move_Arm_To_Slot')
         return 'MATS_done'
     
     
@@ -977,7 +1145,7 @@ class ReleaseToolChanger(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("ReleaseToolChanger")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Release_Tool_Changer')                                                
+        rospy.loginfo('Executing state Release_Tool_Changer')
         return 'RTC_done'
     
     
@@ -989,7 +1157,7 @@ class LiftArm(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("LiftArm")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Lift-Arm')                                                
+        rospy.loginfo('Executing state Lift-Arm')
         return 'LA_done'
     
     
@@ -1001,7 +1169,7 @@ class DetectSlotForNewDevice(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("DetectSlotForNewDevice")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Detect_Slot_For_New_Device')                                                
+        rospy.loginfo('Executing state Detect_Slot_For_New_Device')
         return 'DSFND_slot_pose'
     
     
@@ -1013,7 +1181,7 @@ class MoveArmToSlot2(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("MoveArmToSlot2")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_Arm_To_Slot_2')                                                
+        rospy.loginfo('Executing state Move_Arm_To_Slot_2')
         return 'MATS2_done'
       
     
@@ -1025,7 +1193,7 @@ class CloseToolChanger(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("CloseToolChanger")  
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Close_Tool_Changer')                                                
+        rospy.loginfo('Executing state Close_Tool_Changer')
         return 'CTC_done'
     
     
@@ -1037,7 +1205,7 @@ class MoveArmToStandardLocation(smach.State):
     def execute(self, userdata ):
     	sf = ScreenFormat("MoveArmToStandardLocation")
 #         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_Arm_To_Standard_Location')                                                
+        rospy.loginfo('Executing state Move_Arm_To_Standard_Location')
         return 'MATSL_done'
 
 

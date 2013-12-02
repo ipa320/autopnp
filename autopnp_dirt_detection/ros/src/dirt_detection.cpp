@@ -351,7 +351,7 @@ bool DirtDetection::validateCleaningResult(autopnp_dirt_detection::ValidateClean
 		cv::imshow("dirty region after cleaning", roi);
 		cv::waitKey();
 
-		// todo: save internally
+		// todo: save image internally
 	}
 
 	// response message
