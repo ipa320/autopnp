@@ -95,15 +95,15 @@ TOOL_WAGON_LOCATIONS.append(Pose2D(x=3, y=3, theta=0))
 
 global TOOL_WAGON_MARKER_OFFSETS
 TOOL_WAGON_MARKER_OFFSETS={ #todo: measure translational offsets
-						"front":	Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=-0.5, y=-0.5, z=-0.5, w=0.5)),   # quaternion_from_euler(-90.0/180.0*math.pi, -90.0/180.0*math.pi, 0.0, 'rzyx')
-						"rear":		Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=-0.5, y=0.5, z=0.5, w=0.5)),   # quaternion_from_euler(90.0/180.0*math.pi, 90.0/180.0*math.pi, 0.0, 'rzyx')
-						"left":		Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=0.0, y=0.707106781, z=0.707106781, w=0.0)),   # quaternion_from_euler(math.pi, 0.0, 90.0/180.0*math.pi, 'rzyx')
-						"right":	Transform(translation=Vector3(x=0.0, y=-1.0, z=0.0), rotation=Quaternion(x=-0.70710678, y=0.0, z=0.0, w=0.70710678))   # quaternion_from_euler(0.0, 0.0, -90.0/180.0*math.pi, 'rzyx')
+						"front":	Transform(translation=Vector3(x=0.055, y=-0.975, z=0.0), rotation=Quaternion(x=-0.5, y=-0.5, z=-0.5, w=0.5)),   # quaternion_from_euler(-90.0/180.0*math.pi, -90.0/180.0*math.pi, 0.0, 'rzyx')
+						"rear":		Transform(translation=Vector3(x=0.06, y=-1.025, z=-0.46), rotation=Quaternion(x=-0.5, y=0.5, z=0.5, w=0.5)),   # quaternion_from_euler(90.0/180.0*math.pi, 90.0/180.0*math.pi, 0.0, 'rzyx')
+						"left":		Transform(translation=Vector3(x=-0.17, y=-1.0, z=-0.275), rotation=Quaternion(x=0.0, y=0.707106781, z=0.707106781, w=0.0)),   # quaternion_from_euler(math.pi, 0.0, 90.0/180.0*math.pi, 'rzyx')
+						"right":	Transform(translation=Vector3(x=0.29, y=-1.0, z=-0.275), rotation=Quaternion(x=-0.70710678, y=0.0, z=0.0, w=0.70710678))   # quaternion_from_euler(0.0, 0.0, -90.0/180.0*math.pi, 'rzyx')
 						}  # offset transformations from respective markers to tool wagon base/center coordinate system
 
 global TOOL_WAGON_ROBOT_OFFSETS
 TOOL_WAGON_ROBOT_OFFSETS={
-						"front":	Pose2D(x=-1.0, y=0.0, theta=0.0),
+						"front":	Pose2D(x=-1.1, y=0.0, theta=0.0),
 						"rear":		Pose2D(x=-1.0, y=0.0, theta=math.pi)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
 
@@ -455,7 +455,7 @@ def computeToolWagonPoseFromFiducials(fiducials):
 					averaged_tool_wagon_markers = 1.0
 				else:
 					averaged_tool_wagon_pose.pose.position.x = averaged_tool_wagon_pose.pose.position.x + tool_wagon_pose_map.pose.position.x
-					averaged_tool_wagon_pose.pose.position.y = averaged_tool_wagon_pose.pose.position.y + tool_wagon_pose_map.pose.position.y
+					averaged_tool_wagon_pose.pose.position.y = averaged_too/cob_phidgets_toolchanger/ifk_toolchanger/set_digitall_wagon_pose.pose.position.y + tool_wagon_pose_map.pose.position.y
 					averaged_tool_wagon_pose.pose.position.z = averaged_tool_wagon_pose.pose.position.z + tool_wagon_pose_map.pose.position.z
 					averaged_tool_wagon_pose.pose.orientation.x = averaged_tool_wagon_pose.pose.orientation.x + tool_wagon_pose_map.pose.orientation.x
 					averaged_tool_wagon_pose.pose.orientation.y = averaged_tool_wagon_pose.pose.orientation.y + tool_wagon_pose_map.pose.orientation.y
@@ -1061,13 +1061,14 @@ class ChangeToolManual(smach.State):
 		# move arm with tool facing up (so it cannot fall down on opening)
 		#handle_arm = sss.move("arm",[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
 		
+		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
 		tool_change_successful = ''
 		while tool_change_successful!='yes':
 			# wait for confirmation to release tool
 			raw_input("Please hold the tool tightly with your hands and then press <Enter> and remove the tool quickly.")
-			rospy.wait_for_service('/set_digital') 
+			rospy.wait_for_service(service_name) 
 			try:
-				req = rospy.ServiceProxy('/set_digital', SetDigitalSensor)
+				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
 				resp = req(uri='tool_changer_pin2', state=1)
 				print 'Opening tool changer response: uri=', resp.uri, '  state=', resp.state
 				rospy.sleep(1.0)
@@ -1084,9 +1085,9 @@ class ChangeToolManual(smach.State):
 		while tool_change_successful!='yes':
 			# wait for confirmation to attach tool
 			raw_input("Please attach the tool manually and then press <Enter>.")
-			rospy.wait_for_service('/set_digital') 
+			rospy.wait_for_service(service_name) 
 			try:
-				req = rospy.ServiceProxy('/set_digital', SetDigitalSensor)
+				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
 				resp = req(uri='tool_changer_pin4', state=1)
 				print 'Closing tool changer response: uri=', resp.uri, '  state=', resp.state
 				rospy.sleep(1.0)
