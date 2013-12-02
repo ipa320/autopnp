@@ -6,7 +6,7 @@
 TrashBinDetectionNode::TrashBinDetectionNode(ros::NodeHandle& nh)
 : grasp_trash_bin_server_(nh, "grasp_trash_bin", boost::bind(&TrashBinDetectionNode::graspTrashBin, this, _1), false),	// this initializes the action server; important: always set the last parameter to false
   sdh_follow_joint_client_("/sdh_controller/follow_joint_trajectory", true),
-  listener_(nh, ros::Duration(40.0))
+  listener_(nh, ros::Duration(40.0)), nh_(nh)
 {
 }
 
@@ -139,7 +139,7 @@ bool TrashBinDetectionNode::activate_trash_bin_detection_callback_(autopnp_scena
 	trash_bin_location_average_count_.clear();
 
 	ROS_INFO("FiducialsDetectionServer: Waiting to receive data.....");
-	fiducials_msg_sub_ = nh.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &TrashBinDetectionNode::fiducials_data_callback_,this);
+	fiducials_msg_sub_ = nh_.subscribe<cob_object_detection_msgs::DetectionArray>("/fiducials/detect_fiducials", 1, &TrashBinDetectionNode::fiducials_data_callback_,this);
 	ROS_INFO("FiducialsDetectionCheck: data received.");
 
 	ROS_INFO("Trash bin detection is turned-on.");
