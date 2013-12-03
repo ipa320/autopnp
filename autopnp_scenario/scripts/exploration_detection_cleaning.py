@@ -448,15 +448,15 @@ def computeToolWagonPoseFromFiducials(fiducials):
 				listener = get_transform_listener()
 				listener.waitForTransform('/map', tool_wagon_pose.header.frame_id, tool_wagon_pose.header.stamp, rospy.Duration(10))
 				tool_wagon_pose_map = listener.transformPose('/map', tool_wagon_pose)
-				print 'tool_wagon_pose = ', tool_wagon_pose_map
-				print "tool_wagon_pose ypr: ", euler_from_quaternion([tool_wagon_pose_map.pose.orientation.x, tool_wagon_pose_map.pose.orientation.y, tool_wagon_pose_map.pose.orientation.z, tool_wagon_pose_map.pose.orientation.w], "rzyx")
+				#print 'tool_wagon_pose = ', tool_wagon_pose_map
+				#print "tool_wagon_pose ypr: ", euler_from_quaternion([tool_wagon_pose_map.pose.orientation.x, tool_wagon_pose_map.pose.orientation.y, tool_wagon_pose_map.pose.orientation.z, tool_wagon_pose_map.pose.orientation.w], "rzyx")
 				# average position when multiple detections are present
 				if averaged_tool_wagon_pose==None:
 					averaged_tool_wagon_pose = tool_wagon_pose_map
 					averaged_tool_wagon_markers = 1.0
 				else:
 					averaged_tool_wagon_pose.pose.position.x = averaged_tool_wagon_pose.pose.position.x + tool_wagon_pose_map.pose.position.x
-					averaged_tool_wagon_pose.pose.position.y = averaged_too/cob_phidgets_toolchanger/ifk_toolchanger/set_digitall_wagon_pose.pose.position.y + tool_wagon_pose_map.pose.position.y
+					averaged_tool_wagon_pose.pose.position.y = averaged_tool_wagon_pose.pose.position.y + tool_wagon_pose_map.pose.position.y
 					averaged_tool_wagon_pose.pose.position.z = averaged_tool_wagon_pose.pose.position.z + tool_wagon_pose_map.pose.position.z
 					averaged_tool_wagon_pose.pose.orientation.x = averaged_tool_wagon_pose.pose.orientation.x + tool_wagon_pose_map.pose.orientation.x
 					averaged_tool_wagon_pose.pose.orientation.y = averaged_tool_wagon_pose.pose.orientation.y + tool_wagon_pose_map.pose.orientation.y
@@ -486,9 +486,12 @@ class MoveToToolWaggonFront(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
 		self.tool_wagon_pose = None
+		self.last_callback_time = rospy.Time.now()
 
 	def fiducial_callback(self, fiducials):
-		self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
+		if (rospy.Time.now()-self.last_callback_time) > rospy.Duration(1.0):
+			self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
+			self.last_callback_time = rospy.Time.now()
 
 	def execute(self, userdata):
 		sf = ScreenFormat("MoveToToolWaggonFront")
@@ -522,6 +525,7 @@ class MoveToToolWaggonFront(smach.State):
 			robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
 									y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
 									theta=tool_wagon_pose.theta - robot_offset.theta)
+			print "moving to ", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)]
 			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)])
 			
 			# read out current robot pose
@@ -554,6 +558,7 @@ class MoveToToolWaggonRear(smach.State):
 		self.tool_wagon_pose = None
 
 	def fiducial_callback(self, fiducials):
+		
 		self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
 
 	def execute(self, userdata):
@@ -623,13 +628,29 @@ class GraspHandle(smach.State):
 		sf = ScreenFormat("GraspHandle")
 		rospy.loginfo('Executing state Grasp_Handle')
 		
+		##intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
+		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
+		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
+		overhandle_position = [2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
+		
+		athandle_position = [1.8774855829553403, -1.153348476302893, -0.6841865200742971, -0.928602428523583, 2.9091846103942283, -1.5784583222111517, -1.263129686253336]
+		# deepathandle_position = [1.87750303624786, -1.153348476302893, -0.6841865200742971, -0.9696351192379697, 2.9091846103942283, -1.481435469092787, -1.263129686253336]
+		
 		# 1. move arm in position over wagon
+		handle_arm = sss.move("arm",[intermediate1_folded2overhandle_position, intermediate2_folded2overhandle_position, overhandle_position])
+		print "handle.get_state()=", handle_arm.get_state()  # 3 = ok
 		
 		# 2. open hand
+		sss.move("sdh", "cylopen")
 		
 		# 3. lower arm into handle
+		handle_arm = sss.move("arm",[athandle_position])
+		print "handle.get_state()=", handle_arm.get_state()
+		
+		raw_input("Press <Enter>.")
 		
 		# 4. close hand
+		sss.move("sdh", "cylclosed")
 		
 		return 'grasped' 
 
@@ -643,6 +664,7 @@ class GoToNextToolWaggonLocation(smach.State):
 		sf = ScreenFormat("GoToNextToolWaggonLocation")
 		rospy.loginfo('Executing state Go_To_Next_Tool_Waggon_Location')
 		
+		'''
 		# 1. adjust base movement speeds
 		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.01, "min_vel_y":-0.01,"max_rot_vel":0.1})
 		
@@ -656,7 +678,7 @@ class GoToNextToolWaggonLocation(smach.State):
 		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
 		
 		# 3. reset base movement speeds
-		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2,"max_rot_vel":0.6})
+		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2,"max_rot_vel":0.6})'''
 		
 		return 'arrived' 
 
@@ -670,13 +692,32 @@ class ReleaseGrasp(smach.State):
 		sf = ScreenFormat("ReleaseGrasp")
 		rospy.loginfo('Executing state Release_Grasp')
 		
+		##intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
+		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
+		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
+		overhandle_position = [2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
+		
+		athandle_position = [1.8774855829553403, -1.153348476302893, -0.6841865200742971, -0.928602428523583, 2.9091846103942283, -1.5784583222111517, -1.263129686253336]
+		# deepathandle_position = [1.87750303624786, -1.153348476302893, -0.6841865200742971, -0.9696351192379697, 2.9091846103942283, -1.481435469092787, -1.263129686253336]
+
+		
 		# 1. open hand
+		sss.move("sdh", "cylopen")
 		
 		# 2. lift arm
+		handle_arm = sss.move("arm", [overhandle_position])
+		print "handle.get_state()=", handle_arm.get_state()
 		
 		# 3. hand to home
+		sss.move("sdh", "home")
 		
 		# 4. arm to folded
+		handle_arm = sss.move("arm",[intermediate2_folded2overhandle_position, intermediate1_folded2overhandle_position])
+		print "handle.get_state()=", handle_arm.get_state()
+		handle_arm = sss.move("arm", "folded")
+		print "handle.get_state()=", handle_arm.get_state()
+		
+		raw_input("quit here")
 		
 		return 'released'
 
@@ -1081,7 +1122,7 @@ class ChangeToolManual(smach.State):
 				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
 			except rospy.ServiceException, e:
 				print "Service call failed: %s"%e
-			tool_change_successful = raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat.")
+			tool_change_successful = raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
 		# move arm with end facing down
 		handle_arm = sss.move("arm",[[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
@@ -1101,7 +1142,7 @@ class ChangeToolManual(smach.State):
 				#print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
 			except rospy.ServiceException, e:
 				print "Service call failed: %s"%e
-			tool_change_successful = raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat.")
+			tool_change_successful = raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
 		print 'Manual tool change successfully completed.'
 		
