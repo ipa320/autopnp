@@ -1055,6 +1055,9 @@ class ReleaseTrashBin(smach.State):
 class ChangeToolManual(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['CTM_done'])
+		# command line usage:
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin2", state: 0}'
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("ChangeToolManual")
@@ -1297,17 +1300,19 @@ class Clean(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
-		
+
+		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		intermediate1_position = [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447] # intermediate 1
+		intermediate2_position = [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447] # intermediate 2
+		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
+		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
+		cleaning_position = [-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position
+
 		# move arm from storage position to cleaning position
-		handle_arm = sss.move("arm",[[1.978522693353292, -0.9161756842493833, 0.08923868465447007, -1.796921184683282, 2.3705236433512185, -1.2165817551026474, -1.8850952184940355]]) # carrying position
-		handle_arm = sss.move("arm",[[1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2085221821811047, -1.234576099690709, -2.1410652065915237]]) # intermediate 1
-		handle_arm = sss.move("arm",[[0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 1.9985241665811468, -0.9095783396768448, -2.1410652065915237]]) # intermediate 2
-		handle_arm = sss.move("arm",[[-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.6655153453006288, -0.2646093678948603, -2.1410652065915237]]) # ca. 20cm above cleaning position
-		handle_arm = sss.move("arm",[[-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.6655153453006288, -0.2646093678948603, -2.1410652065915237]]) # just 5cm above cleaning position
- 		handle_arm = sss.move("arm",[[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.6655153453006288, -0.2646093678948603, -2.1410652065915237]]) # cleaning position
- 		
- 		# turn vacuum cleaner on
- 		rospy.wait_for_service(vacuum_on_service_name) 
+		handle_arm = sss.move("arm",[carrying_position, intermediate1_position, intermediate2_position, above_cleaning_20cm_position, above_cleaning_5cm_position, cleaning_position])
+		
+		# turn vacuum cleaner on
+		rospy.wait_for_service(vacuum_on_service_name) 
 		try:
 			req = rospy.ServiceProxy(vacuum_on_service_name, Trigger)
 			resp = req()
@@ -1315,10 +1320,10 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 		
 		# move base (if necessary)
-		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
-		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
 		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
 		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
  		
  		# turn vacuum cleaner off
  		rospy.wait_for_service(vacuum_off_service_name) 
@@ -1329,11 +1334,7 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 		
 		# move arm back to storage position
-		handle_arm = sss.move("arm",[[-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.6655153453006288, -0.2646093678948603, -2.1410652065915237]]) # just 5cm above cleaning position
-		handle_arm = sss.move("arm",[[-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.6655153453006288, -0.2646093678948603, -2.1410652065915237]]) # ca. 20cm above cleaning position
-		handle_arm = sss.move("arm",[[0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 1.9985241665811468, -0.9095783396768448, -2.1410652065915237]]) # intermediate 2
-		handle_arm = sss.move("arm",[[1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2085221821811047, -1.234576099690709, -2.1410652065915237]]) # intermediate 1
-		handle_arm = sss.move("arm",[[1.978522693353292, -0.9161756842493833, 0.08923868465447007, -1.796921184683282, 2.3705236433512185, -1.2165817551026474, -1.8850952184940355]]) # carrying position
+		handle_arm = sss.move("arm",[above_cleaning_5cm_position, above_cleaning_20cm_position, intermediate2_position, intermediate1_position, carrying_position])
 		
  		raw_input("Quit program")
 		#handle_arm = sss.move("arm",[[]]) #
