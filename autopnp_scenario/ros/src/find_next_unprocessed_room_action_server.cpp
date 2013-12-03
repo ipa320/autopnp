@@ -76,9 +76,9 @@ void unprocessed_room_finder::execute_find_next_unprocessed_room_action_server(c
 	ros::Rate r(1);
 
 	//get the necessary room information from goal definition from client
-//	map_resolution_ = goal->map_resolution;			// todo: never used
-//	map_origin_.x = goal->map_origin_x;
-//	map_origin_.y = goal->map_origin_y;
+	map_resolution_ = goal->map_resolution;
+	map_origin_.x = goal->map_origin_x;
+	map_origin_.y = goal->map_origin_y;
 
 	//initialize the container
 	x_coordinate_of_room_center_ = goal->room_center_x;

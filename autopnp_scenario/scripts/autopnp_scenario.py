@@ -67,6 +67,12 @@ from exploration_detection_cleaning import *
 def main():
 	rospy.init_node('exploration_detection_cleaning')
 	
+	# clean
+	sm_scenario = smach.StateMachine(outcomes=['clean_done'])
+	with sm_scenario:
+		smach.StateMachine.add('CLEAN', Clean(),
+								transitions={'clean_done':'clean_done'})
+	
 	'''
 	# manual tool change
 	sm_scenario = smach.StateMachine(outcomes=['CTM_done'])
@@ -122,8 +128,9 @@ def main():
 		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
 					transitions={'RTB_finished':'CWB_done'})
 # end of trash bin clearing sub state machine, comment until here when you like to use the full scenario
-'''
-
+	'''
+	
+	'''
 	sm_scenario = smach.StateMachine(outcomes=['finish', 'failed'])
 	sm_scenario.userdata.sm_trash_bin_counter = 0  
 
@@ -363,8 +370,8 @@ def main():
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
 							transitions={'PCVR_finish':'finish'})        
-
-
+	'''
+	
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/SM_ROOT')
 	sis.start()
