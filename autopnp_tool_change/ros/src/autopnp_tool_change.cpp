@@ -53,7 +53,6 @@ ToolChange::~ToolChange()
 void ToolChange::init()
 {
 	ToolChange::change_tool_server_.start();
-
 }
 
 /**
@@ -202,16 +201,14 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 /*
  * Calculates translation and orientation distance between arm marker and wagon board.
- * Vector orientation points from arm to board. Arm quaternion must be inverted to justify its
- * parent position according to a child position of the board.
+ * Vector orientation points from arm to board.
  *
- * Both fiducial positions are not real. Thats why they must undergo
+ * Arm fiducial and wagon-board fiducial, in particular, their quaternions must be inverted
+ * to justify the real positions of the arm and wagon. Thats why they must undergo
  * simulated transformations. After those it will be possible
  * to calculate the real transformation between arm and board positions.
  *
  *
- * Simulates the endeffector pose depending on the precise chosen position
- * of the fiducial, which has been fixed/clamped to the arm_7_link.
  * Here :
  * - arm fiducial position (x-up, y-left, z-to observer) is shifted to its
  * corresponding arm position : rotation around x-axes in 45 (left) and after it
@@ -275,7 +272,7 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
  * This callback function is executed each time a request (= goal message)
  * comes to this server (eventually this will be an initial
  * position message for the arm or a number of the tool
- * to be taken from the wagon). Starting move commands for the arm from here..
+ * to be taken from the wagon). Starting move commands for the arm from here.
  *
  */
 void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal) {
@@ -352,7 +349,6 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		return false;
 	}
 	waitForMoveit();
-
 	//--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
@@ -364,9 +360,6 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move to wagon fiducial position.");
 		return false;
 	}
-
-
-
 	//   COUPLE / DECOUPLE
 
 	//--------------------------------------------------------------------------------------
@@ -379,9 +372,6 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move to wagon fiducial.");
 		return false;
 	}
-
-
-
 	//--------------------------------------------------------------------------------------
 	// move arm down to coupler
 	//--------------------------------------------------------------------------------------
@@ -392,8 +382,6 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move arm down to coupler .");
 		return false;
 	}
-
-
 	//--------------------------------------------------------------------------------------
 	// couple / decouple (different services !!!)
 	//--------------------------------------------------------------------------------------
@@ -405,8 +393,6 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	{
 		ROS_INFO("Start to decouple.");
 	}
-
-
 	//--------------------------------------------------------------------------------------
 	// move arm straight up
 	//--------------------------------------------------------------------------------------
@@ -418,7 +404,6 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		return false;
 	}
 	waitForMoveit();
-
 	//--------------------------------------------------------------------------------------
 	// move arm straight back
 	//--------------------------------------------------------------------------------------
@@ -441,6 +426,7 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 	tf::Transform ee_pose_tf;
 	tf::Transform goal_pose_tf;
 
+	//wait for all moveit commands to be comleted
 	while(!move_action_)
 	{
 		ros::spinOnce();
@@ -474,6 +460,7 @@ bool ToolChange::moveToWagonFiducial(const double offset)
  * initializes the starting point of the coordinate system.
  * the goal frame describes the end effector ("arm_7_link")
  * which will be moved to a new position.
+ * Returns true, if the planned action has been executed.
  */
 bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose, const double offset)
 {
@@ -519,9 +506,12 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose,
 }
 
 /*
- * Execute straight movement with the help of
- * cartesian path. {@variable step} is the maximum step
- * between the interpolated points for the resulting path.
+ * Executes straight movement with the help of
+ * cartesian path. {@variable ee_max_step} is the maximum step
+ * between the interpolated points for the resulting path and
+ * {@variable jump_threshold} is the fraction of the path
+ * or the average distance.
+ * jump_threshold, also called "jump", is disabled if it is set to 0.0.
  */
 bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, const double ee_max_step)
 {
@@ -559,6 +549,7 @@ bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, c
 
 	//tf -> msg
 	tf::poseTFToMsg(pose_tf, pose.pose);
+	executeMoveCommand(pose, 0.0);
 
 	group.setPoseTarget(pose);
 
@@ -567,39 +558,48 @@ bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, c
 	waypoints.push_back(group.getCurrentPose().pose);
 	waypoints.push_back(pose.pose);
 
+	//DRAW IN RVIZ
 	drawLine(0.55, 0.85, 0.0, 1.0, ee_pose, pose);
+	//END DRAW
 
-   moveit_msgs::ExecuteKnownTrajectory srv;
-
+	moveit_msgs::ExecuteKnownTrajectory srv;
 	// compute cartesian path
 	double frac = group.computeCartesianPath(waypoints, ee_max_step, jump_threshold, srv.request.trajectory, false);
+
+	ROS_WARN_STREAM(" Fraction is " << frac<< "%.");
 
 	if(frac < 0){
 		// no path could be computed
 		ROS_ERROR("Unable to compute Cartesian path!");
+		move_action_ = true;
+		return false;
 	} else if (frac < 1){
 		// path started to be computed, but did not finish
 		ROS_WARN_STREAM("Cartesian path computation finished " << frac * 100 << "% only!");
+		move_action_ = true;
+		return false;
 	}
 
 	// send trajectory to arm controller
 	srv.request.wait_for_execution = true;
 	execute_known_traj_client_.call(srv);
 
-	ros::Duration(0.20).sleep();
-    current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
 	move_action_ = true;
-
 
 	return true;
 }
-
+/*
+ * A helper function to slow the execution
+ * of the server commands.
+ */
 void ToolChange::waitForMoveit()
 {
 	while(!move_action_)
-		{
-			ros::spinOnce();
-		}
+	{
+		ros::spinOnce();
+	}
+
 
 }
 
