@@ -105,7 +105,8 @@ TOOL_WAGON_MARKER_OFFSETS={ #todo: measure translational offsets
 global TOOL_WAGON_ROBOT_OFFSETS
 TOOL_WAGON_ROBOT_OFFSETS={
 						"front":	Pose2D(x=-1.1, y=0.0, theta=0.0),
-						"rear":		Pose2D(x=-1.0, y=0.0, theta=math.pi)
+						"rear":		Pose2D(x=-1.0, y=0.0, theta=math.pi),
+						"front_frontal_far":	Pose2D(x=1.4, y=0.0, theta=math.pi)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
 
 global FIDUCIALS_MARKER_DICTIONARY
@@ -482,6 +483,36 @@ def computeToolWagonPoseFromFiducials(fiducials):
 		
 		return averaged_tool_wagon_pose
 
+def positionControlLoopLinear(self_tool_wagon_pose, dx, dy):
+	# move to corrected pose
+	tool_wagon_pose_3d = self_tool_wagon_pose.pose
+	tool_wagon_pose_3d_euler = tf.transformations.euler_from_quaternion([tool_wagon_pose_3d.orientation.x,tool_wagon_pose_3d.orientation.y,tool_wagon_pose_3d.orientation.z,tool_wagon_pose_3d.orientation.w], 'rzyx') # yields yaw, pitch, roll
+	tool_wagon_pose = Pose2D(x=tool_wagon_pose_3d.position.x, y=tool_wagon_pose_3d.position.y, theta=tool_wagon_pose_3d_euler[0])
+	robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
+							y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
+							theta=tool_wagon_pose.theta - robot_offset.theta)
+	print "moving to ", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)]
+	handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)], mode='linear')
+	
+	# read out current robot pose
+	try:
+		listener = get_transform_listener()
+		t = rospy.Time(0)
+		listener.waitForTransform('/map', '/base_link', t, rospy.Duration(10))
+		(robot_pose_translation, robot_pose_rotation) = listener.lookupTransform('/map', '/base_link', t)
+	except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
+		print "Could not lookup robot pose: %s" %e
+		continue
+	robot_pose_rotation_euler = tf.transformations.euler_from_quaternion(robot_pose_rotation, 'rzyx') # yields yaw, pitch, roll
+	
+	# verify distance to goal pose
+	dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
+	print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
+	if dist > 0.02 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
+		return False
+	else:
+		return True
+
 class MoveToToolWaggonFront(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
@@ -521,34 +552,9 @@ class MoveToToolWaggonFront(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
-			# move to corrected pose
-			tool_wagon_pose_3d = self.tool_wagon_pose.pose
-			tool_wagon_pose_3d_euler = tf.transformations.euler_from_quaternion([tool_wagon_pose_3d.orientation.x,tool_wagon_pose_3d.orientation.y,tool_wagon_pose_3d.orientation.z,tool_wagon_pose_3d.orientation.w], 'rzyx') # yields yaw, pitch, roll
-			tool_wagon_pose = Pose2D(x=tool_wagon_pose_3d.position.x, y=tool_wagon_pose_3d.position.y, theta=tool_wagon_pose_3d_euler[0])
-			robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
-									y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
-									theta=tool_wagon_pose.theta - robot_offset.theta)
-			print "moving to ", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)]
-			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)], mode='linear')
-			
-			# read out current robot pose
-			try:
-				listener = get_transform_listener()
-				t = rospy.Time(0)
-				listener.waitForTransform('/map', '/base_link', t, rospy.Duration(10))
-				(robot_pose_translation, robot_pose_rotation) = listener.lookupTransform('/map', '/base_link', t)
-			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
-				print "Could not lookup robot pose: %s" %e
-				continue
-			robot_pose_rotation_euler = tf.transformations.euler_from_quaternion(robot_pose_rotation, 'rzyx') # yields yaw, pitch, roll
-			
-			# verify distance to goal pose
-			dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
-			print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
-			if dist > 0.02 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy)
+			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
-			else:
-				robot_approximately_well_positioned = True
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
@@ -592,33 +598,54 @@ class MoveToToolWaggonRear(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
-			# move to corrected pose
-			tool_wagon_pose_3d = self.tool_wagon_pose.pose
-			tool_wagon_pose_3d_euler = tf.transformations.euler_from_quaternion([tool_wagon_pose_3d.orientation.x,tool_wagon_pose_3d.orientation.y,tool_wagon_pose_3d.orientation.z,tool_wagon_pose_3d.orientation.w], 'rzyx') # yields yaw, pitch, roll
-			tool_wagon_pose = Pose2D(x=tool_wagon_pose_3d.position.x, y=tool_wagon_pose_3d.position.y, theta=tool_wagon_pose_3d_euler[0])
-			robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
-									y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
-									theta=tool_wagon_pose.theta - robot_offset.theta)
-			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)], mode='linear')
-			
-			# read out current robot pose
-			try:
-				listener = get_transform_listener()
-				t = rospy.Time(0)
-				listener.waitForTransform('/map', '/base_link', t, rospy.Duration(10))
-				(robot_pose_translation, robot_pose_rotation) = listener.lookupTransform('/map', '/base_link', t)
-			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
-				print "Could not lookup robot pose: %s" %e
-				continue
-			robot_pose_rotation_euler = tf.transformations.euler_from_quaternion(robot_pose_rotation, 'rzyx') # yields yaw, pitch, roll
-			
-			# verify distance to goal pose
-			dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
-			print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
-			if dist > 0.02 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy)
+			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
-			else:
-				robot_approximately_well_positioned = True
+		
+		# 3. unsubscribe to fiducials
+		fiducials_sub.unregister()
+		
+		return 'arrived'
+
+class MoveToToolWaggonFrontFrontalFar(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
+		self.tool_wagon_pose = None
+		self.last_callback_time = rospy.Time.now()
+
+	def fiducial_callback(self, fiducials):
+		if (rospy.Time.now()-self.last_callback_time) > rospy.Duration(1.0):
+			self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
+			self.last_callback_time = rospy.Time.now()
+
+	def execute(self, userdata):
+		sf = ScreenFormat("MoveToToolWaggonFront")
+		#rospy.loginfo('Executing state Move_Base_To_Last_Tool_Waggon_Location')
+
+		sss.move("head", "front")
+		sss.move("torso", "home")
+
+		self.tool_wagon_pose = None
+		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
+		
+		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
+		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].x-0.4, y=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].theta)
+		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
+		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
+							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
+							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		
+		# 2. detect fiducials and move to corrected pose
+		# wait until wagon is detected
+		robot_approximately_well_positioned = False
+		while robot_approximately_well_positioned==False:
+			while self.tool_wagon_pose == None:
+				rospy.sleep(0.2)
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy)
+			if robot_approximately_well_positioned==False:
+				self.tool_wagon_pose = None
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
@@ -1017,25 +1044,29 @@ class GraspTrashBin(smach.State):
 
 
 class MoveToToolWagon(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['MTTW_success'])
-             
-    def execute(self, userdata ):
-    	sf = ScreenFormat("MoveToToolWagon")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_To_Tool_Wagon')
-        
-        # todo: go to the big trash bin for clearing the smaller one
-        #use movetotoolwagonfront
-#        sss.move('base',[3.2, 2.8, -1.2])                                               
-        return 'MTTW_success'
-    
-    
-    
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['MTTW_success'], input_keys=['tool_wagon_pose'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("MoveToToolWagon")
+#		rospy.sleep(2)
+		rospy.loginfo('Executing state Move_To_Tool_Wagon')
+
+		sss.move("head", "front")
+		sss.move("torso", "home")
+		
+		
+
+		#use movetotoolwagonfront
+		#sss.move('base',[3.2, 2.8, -1.2])
+		return 'MTTW_success'
+
+
+
 class ClearTrashBinIntoToolWagon(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['CTBITW_done'])
-             
+
 	def execute(self, userdata ):
 		sf = ScreenFormat("ClearTrashBinIntoToolWagon")
 #         rospy.sleep(2)                              
@@ -1067,8 +1098,7 @@ class ClearTrashBinIntoToolWagon(smach.State):
 		
 		raw_input("Press key.")
 		
-		sss.move("arm",[intermediate4_carry2clear_position,
-					intermediate5_carry2clear_position, intermediate6_carry2clear_position, intermediate7_carry2clear_position, clear])
+		sss.move("arm",[intermediate4_carry2clear_position, intermediate5_carry2clear_position, intermediate6_carry2clear_position, intermediate7_carry2clear_position, clear])
 		#lwaintermediate4_carry2clear_position
 		#handle_arm = sss.move("arm",[[2.7794463634490967, -0.5230057239532471, 2.12442684173584, 0.8296095132827759, -0.4476940631866455, 1.7776577472686768, -2.813380002975464]])
 		#handle_arm = sss.move("arm",[[2.9369261264801025, -0.11826770752668381, -0.3997747302055359, 0.5886469483375549, -0.48628100752830505, 1.5983763933181763, -3.4693655967712402]])
