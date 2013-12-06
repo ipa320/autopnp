@@ -504,7 +504,7 @@ class MoveToToolWaggonFront(smach.State):
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
-		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
+		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front"].x-0.2, y=TOOL_WAGON_ROBOT_OFFSETS["front"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front"].theta)
 		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
 		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
@@ -513,6 +513,9 @@ class MoveToToolWaggonFront(smach.State):
 		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
 		
 		# 2. detect fiducials and move to corrected pose
+		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
+		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
 		# wait until wagon is detected
 		robot_approximately_well_positioned = False
 		while robot_approximately_well_positioned==False:
@@ -526,7 +529,7 @@ class MoveToToolWaggonFront(smach.State):
 									y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
 									theta=tool_wagon_pose.theta - robot_offset.theta)
 			print "moving to ", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)]
-			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)])
+			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)], mode='linear')
 			
 			# read out current robot pose
 			try:
@@ -541,8 +544,8 @@ class MoveToToolWaggonFront(smach.State):
 			
 			# verify distance to goal pose
 			dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
-			print "(x,y)-dist: ", dist
-			if dist > 0.02:		# in m
+			print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
+			if dist > 0.02 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
 				self.tool_wagon_pose = None
 			else:
 				robot_approximately_well_positioned = True
@@ -572,7 +575,7 @@ class MoveToToolWaggonRear(smach.State):
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
-		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["rear"]
+		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["rear"].x-0.2, y=TOOL_WAGON_ROBOT_OFFSETS["rear"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["rear"].theta)
 		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
 		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
@@ -581,6 +584,9 @@ class MoveToToolWaggonRear(smach.State):
 		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
 		
 		# 2. detect fiducials and move to corrected pose
+		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["rear"]
+		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
 		# wait until wagon is detected
 		robot_approximately_well_positioned = False
 		while robot_approximately_well_positioned==False:
@@ -593,7 +599,7 @@ class MoveToToolWaggonRear(smach.State):
 			robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
 									y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
 									theta=tool_wagon_pose.theta - robot_offset.theta)
-			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)])
+			handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)], mode='linear')
 			
 			# read out current robot pose
 			try:
@@ -608,8 +614,8 @@ class MoveToToolWaggonRear(smach.State):
 			
 			# verify distance to goal pose
 			dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
-			print "(x,y)-dist: ", dist
-			if dist > 0.02:		# in m
+			print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
+			if dist > 0.02 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
 				self.tool_wagon_pose = None
 			else:
 				robot_approximately_well_positioned = True
@@ -631,9 +637,9 @@ class GraspHandle(smach.State):
 		##intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
-		overhandle_position = [2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
+		overhandle_position = [2.0912709630321253, -1.0194293627973678, -0.6451958645847439, -0.9112713090512793, 2.8221799471823106, -1.6184612686668618, -1.2679642482813605]   #[2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
 		
-		athandle_position = [1.8774855829553403, -1.153348476302893, -0.6841865200742971, -0.928602428523583, 2.9091846103942283, -1.5784583222111517, -1.263129686253336]
+		athandle_position = [1.877206330275021, -1.195515631031076, -0.6841167069042173, -0.8776039077803086, 2.978247288895644, -1.5683877724271442, -1.1731230567279887]  #[1.8774855829553403, -1.153348476302893, -0.6841865200742971, -0.928602428523583, 2.9091846103942283, -1.5784583222111517, -1.263129686253336]
 		# deepathandle_position = [1.87750303624786, -1.153348476302893, -0.6841865200742971, -0.9696351192379697, 2.9091846103942283, -1.481435469092787, -1.263129686253336]
 		
 		# 1. move arm in position over wagon
@@ -643,11 +649,11 @@ class GraspHandle(smach.State):
 		# 2. open hand
 		sss.move("sdh", "cylopen")
 		
+		raw_input("Press <Enter>.")
+		
 		# 3. lower arm into handle
 		handle_arm = sss.move("arm",[athandle_position])
 		print "handle.get_state()=", handle_arm.get_state()
-		
-		raw_input("Press <Enter>.")
 		
 		# 4. close hand
 		sss.move("sdh", "cylclosed")
@@ -695,11 +701,10 @@ class ReleaseGrasp(smach.State):
 		##intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
-		overhandle_position = [2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
+		overhandle_position = [2.0912709630321253, -1.0194293627973678, -0.6451958645847439, -0.9112713090512793, 2.8221799471823106, -1.6184612686668618, -1.2679642482813605]   #[2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
 		
-		athandle_position = [1.8774855829553403, -1.153348476302893, -0.6841865200742971, -0.928602428523583, 2.9091846103942283, -1.5784583222111517, -1.263129686253336]
-		# deepathandle_position = [1.87750303624786, -1.153348476302893, -0.6841865200742971, -0.9696351192379697, 2.9091846103942283, -1.481435469092787, -1.263129686253336]
-
+		
+		raw_input("Press <Enter>.")
 		
 		# 1. open hand
 		sss.move("sdh", "cylopen")
@@ -712,9 +717,9 @@ class ReleaseGrasp(smach.State):
 		sss.move("sdh", "home")
 		
 		# 4. arm to folded
-		handle_arm = sss.move("arm",[intermediate2_folded2overhandle_position, intermediate1_folded2overhandle_position])
+		handle_arm = sss.move("arm",[intermediate2_folded2overhandle_position, intermediate1_folded2overhandle_position, "folded"])
 		print "handle.get_state()=", handle_arm.get_state()
-		handle_arm = sss.move("arm", "folded")
+		handle_arm = sss.move("arm",["folded"])
 		print "handle.get_state()=", handle_arm.get_state()
 		
 		raw_input("quit here")
@@ -910,7 +915,7 @@ class GraspTrashBin(smach.State):
 		
 		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
 		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
-		carry_position = [1.9642633533644984, -0.9694605863127703, 0.26181684109166936, -1.5311948060671452, 2.3328943446782207, -1.4966547401701773, -0.407516927048156]
+		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 		
 		# 1. arm: folded -> over trash bin
 		#lwa4d
@@ -942,7 +947,8 @@ class GraspTrashBin(smach.State):
 
 		# 5. close hand
 		# todo: optimize grasp
-		handle_sdh = sss.move("sdh",[[0.47,0,0,0.45,-0,0.45,-0]])
+		handle_sdh = sss.move("sdh",[[0.20,0,0,0.6,-0.15,0.6,-0.15]])	# large trash bin
+		#handle_sdh = sss.move("sdh",[[0.47,0,0,0.45,-0,0.45,-0]])	# small trash bin
 
 		# 6. arm: lift up
 		#lwa4d
@@ -1047,16 +1053,21 @@ class ClearTrashBinIntoToolWagon(smach.State):
 		# try out with tool wagon, maybe better wagon avoidance or move base
 		intermediate1_carry2clear_position = [1.6047953406237458, -0.9250419568495145, 0.5463578690443048, -1.2438961578963585, 2.005610203344244, -1.6329125948733747, -1.0737614624119514]
 		intermediate2_carry2clear_position = [1.4538243603262366, -1.0659947472405766, 0.6813939932711062, -0.22266910596943656, 1.4894814369444809, -1.7758899671967503, -1.1778005391233333]
-		intermediate3_carry2clear_position = [1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
-		intermediate4_carry2clear_position = [1.8468026947052798, -1.6619548736265604, 0.3801850709619248, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
+		intermediate3_carry2clear_position = [1.8488796365151532, -1.091738353707493, 0.8273733319079118, 0.7019365185670795, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]   #[1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
+		intermediate4_carry2clear_position = [1.7169851049419416, -1.6298582686823848, 0.3803596038871242, 0.7778408877363129, 0.9197187026309318, -1.754806389832659, 2.2837109663570203]   #[1.8468026947052798, -1.6619548736265604, 0.3801850709619248, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
 		intermediate5_carry2clear_position = [1.5208275503102988, -1.85292880037978, -0.10279989294246601, 0.6450562382445842, 0.8517032216807128, -1.793814498614732, 2.3077266968644623]
-		intermediate6_carry2clear_position = [1.327776681747206, -1.8629469902862275, -0.15077899407979012, 0.46406559481277226, 0.8517206749732329, -1.7937970453222118, 2.3077266968644623]
-		intermediate7_carry2clear_position = [1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.30407126228245207, 0.5157098873792845, -1.8158056471898605, 2.3077266968644623]
+		intermediate6_carry2clear_position = [1.4417641351949557, -1.910803918375912, -0.15067427432467048, 0.6390523056177237, 0.8522093671637911, -1.7937795920296922, 2.3077266968644623]   #[1.327776681747206, -1.8629469902862275, -0.15077899407979012, 0.46406559481277226, 0.8517206749732329, -1.7937970453222118, 2.3077266968644623]
+		intermediate7_carry2clear_position = [1.3697693035501897, -1.9599872966971121, -0.16287412579611082, 0.3929957876715632, 0.5164603789576421, -1.8158056471898605, 2.3077266968644623]   #[1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.30407126228245207, 0.5157098873792845, -1.8158056471898605, 2.3077266968644623]
 		clear = [1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.2030865117620602, -0.21528636323350056, -1.8157881938973404, 2.3077266968644623]
-		carry_position = [1.9642633533644984, -0.9694605863127703, 0.26181684109166936, -1.5311948060671452, 2.3328943446782207, -1.4966547401701773, -0.407516927048156]
+		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 		
 		# 6. arm: move up, turn aroundintermediate3_carry2clear_position
-		sss.move("arm",[intermediate1_carry2clear_position, intermediate2_carry2clear_position, intermediate3_carry2clear_position, intermediate4_carry2clear_position,
+		sss.move("arm",[intermediate1_carry2clear_position, intermediate2_carry2clear_position, intermediate3_carry2clear_position])
+		# bis hier 1,40m Entfernung, dann 1,05m
+		
+		raw_input("Press key.")
+		
+		sss.move("arm",[intermediate4_carry2clear_position,
 					intermediate5_carry2clear_position, intermediate6_carry2clear_position, intermediate7_carry2clear_position, clear])
 		#lwaintermediate4_carry2clear_position
 		#handle_arm = sss.move("arm",[[2.7794463634490967, -0.5230057239532471, 2.12442684173584, 0.8296095132827759, -0.4476940631866455, 1.7776577472686768, -2.813380002975464]])
@@ -1071,9 +1082,6 @@ class ClearTrashBinIntoToolWagon(smach.State):
 					intermediate3_carry2clear_position, intermediate2_carry2clear_position, intermediate1_carry2clear_position, carry_position])
 		#handle_arm = sss.move("arm",[[2.5890188217163086, -1.3564121723175049, 2.3780744075775146, 1.9312158823013306, 0.43163323402404785, 0.4533853530883789, -2.814291000366211]]) # small trash bin
 
-
-		raw_input("Please abort script now.")
-		
 
 		return 'CTBITW_done'   
     
@@ -1119,7 +1127,20 @@ class ReleaseTrashBin(smach.State):
 #         rospy.sleep(2)                              
 		rospy.loginfo('Executing state Release_Trash_Bin')
 
+		#lwa4d:
+		intermediate_folded2overtrashbin_position = [0.8592779506343683, -0.2794097599517722, -0.6911329304972346, -1.6704895336688126, 2.7189611752193663, -0.6486690697962125, -0.00013962634015954637]
+		overtrashbin_position = [-0.7597243701006117, -0.29044024082437636, 0.35585518118912385, -1.8774681296628202, 3.024934846386492, -0.23268729587588402, 2.3328594380931804]
+		
+		intrashbin_position = [-0.7597069168080918, -0.7994306105834827, 0.35585518118912385, -1.6194910129255382, 3.024934846386492, -0.02567379329683659, 2.3328594380931804]
+		deepintrashbin_position = [-0.7846651251116107, -0.9414131452332214, 0.35585518118912385, -1.456459807496748, 3.021932880073062, -0.02567379329683659, 2.475854263709076]
+		
+		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
+		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
+		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
+
+
 		# 8. arm: put down
+		handle_arm = sss.move("arm",[intermediate2_deep2carry, intermediate1_deep2carry, intrashbin_position])
 		#lwa
 		#handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
 		#handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]])
@@ -1128,6 +1149,7 @@ class ReleaseTrashBin(smach.State):
 		sss.move("sdh", "cylopen")
 
 		# 10. arm: trash bin -> over trash bin
+		handle_arm = sss.move("arm",[overtrashbin_position])
 		#lwa
 		#handle_arm = sss.move("arm",[[0.10646567493677139, -0.9334499835968018, 3.0960710048675537, 0.7012139558792114, -0.05262168124318123, 0.738262951374054, -2.813400983810425]])
 		#handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]])
@@ -1136,11 +1158,13 @@ class ReleaseTrashBin(smach.State):
 		sss.move("sdh", "home")
 
 		# 12. arm: over trash bin -> folded
-		handle_arm = sss.move("arm",["folded"])		
+		handle_arm = sss.move("arm",[intermediate_folded2overtrashbin_position, "folded"])
+		
+		raw_input("Please abort script now.")
 
 		return 'RTB_finished'  
-    
- 
+
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
  
  

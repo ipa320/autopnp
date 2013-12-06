@@ -82,6 +82,8 @@ def main():
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
 								transitions={'CTM_done':'CTM_done'})
 	'''
+	
+	
 	sm_scenario = smach.StateMachine(outcomes=['CWB_done', 'failed'])
 	with sm_scenario:
 		
@@ -101,7 +103,8 @@ def main():
 		
 		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
 							transitions={'RTB_finished':'CWB_done'})
-
+	
+	
 	'''
 	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
 	# sub state machine for trash bin clearing
