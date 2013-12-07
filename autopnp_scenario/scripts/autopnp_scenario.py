@@ -83,19 +83,41 @@ def main():
 								transitions={'CTM_done':'CTM_done'})
 	'''
 	
-	'''
-	sm_scenario = smach.StateMachine(outcomes=['CWB_done', 'failed'])
+	# trash bin clearing stand alone
+	sm_scenario = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['tool_wagon_pose'])
 	with sm_scenario:
+		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
+					transitions={'initialized':'MOVE_TO_TRASH_BIN_LOCATION',
+								'failed':'failed'})
+		
+		smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
+							transitions={'MTTBL_success':'APPROACH_PERIMETER'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
+		
+		smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
+							transitions={'reached':'GRASP_TRASH_BIN', 
+										 'not_reached':'failed',
+										 'failed':'failed'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
 		
 		smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
-							transitions={'GTB_success':'MOVE_TO_TOOL_WAGON',
+							transitions={'GTB_success':'MOVE_TO_TOOL_WAGON_FRONTAL',
 										 'failed':'failed'})
 		
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON', MoveToToolWagon(),
-							transitions={'MTTW_success':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON'})
+		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL', MoveToToolWaggonFrontFrontalFar(),
+							transitions={'arrived':'MOVE_TO_TOOL_WAGON_TURN180'})
 		
-		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON', ClearTrashBinIntoToolWagon(),
-							transitions={'CTBITW_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
+		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_TURN180', Turn180(),
+							transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON'})
+		
+		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART1', ClearTrashBinIntoToolWagonPart1(),
+							transitions={'finished':'MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING'})
+		
+		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
+							transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2'})
+		
+		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2', ClearTrashBinIntoToolWagonPart2(),
+							transitions={'finished':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
 		
 		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
 							transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'},
@@ -103,7 +125,7 @@ def main():
 		
 		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
 							transitions={'RTB_finished':'CWB_done'})
-	'''
+
 	
 	'''
 	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
@@ -154,7 +176,7 @@ def main():
 # end of trash bin clearing sub state machine, comment until here when you like to use the full scenario
 	'''
 	
-	
+	'''
 	# full scenario
 	sm_scenario = smach.StateMachine(outcomes=['finish', 'failed'])
 	sm_scenario.userdata.sm_trash_bin_counter = 0  
@@ -294,10 +316,19 @@ def main():
 											 'failed':'failed'})
 			
 			smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL', MoveToToolWaggonFrontFrontalFar(),
+								transitions={'arrived':'MOVE_TO_TOOL_WAGON_TURN180'})
+			
+			smach.StateMachine.add('MOVE_TO_TOOL_WAGON_TURN180', Turn180(),
 								transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON'})
 			
-			smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON', ClearTrashBinIntoToolWagon(),
-								transitions={'CTBITW_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
+			smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART1', ClearTrashBinIntoToolWagonPart1(),
+								transitions={'finished':'MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING'})
+			
+			smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
+								transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2'})
+			
+			smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2', ClearTrashBinIntoToolWagonPart2(),
+								transitions={'finished':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
 			
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
 								transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'},
@@ -395,7 +426,7 @@ def main():
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
 							transitions={'PCVR_finish':'finish'})
-	
+	'''
 	
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/SM_ROOT')
