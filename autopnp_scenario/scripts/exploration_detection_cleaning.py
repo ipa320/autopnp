@@ -511,21 +511,21 @@ def currentRobotPose():
 	
 	return (robot_pose_translation, robot_pose_rotation, robot_pose_rotation_euler)
 
-def positionControlLoopLinear(self_tool_wagon_pose, dx, dy):
+def positionControlLoopLinear(self_tool_wagon_pose, dx, dy, dtheta):
 	# move to corrected pose
 	tool_wagon_pose_3d = self_tool_wagon_pose.pose
 	tool_wagon_pose_3d_euler = tf.transformations.euler_from_quaternion([tool_wagon_pose_3d.orientation.x,tool_wagon_pose_3d.orientation.y,tool_wagon_pose_3d.orientation.z,tool_wagon_pose_3d.orientation.w], 'rzyx') # yields yaw, pitch, roll
 	tool_wagon_pose = Pose2D(x=tool_wagon_pose_3d.position.x, y=tool_wagon_pose_3d.position.y, theta=tool_wagon_pose_3d_euler[0])
 	robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx*math.cos(tool_wagon_pose.theta)-dy*math.sin(tool_wagon_pose.theta),
 							y=tool_wagon_pose.y + dx*math.sin(tool_wagon_pose.theta)+dy*math.cos(tool_wagon_pose.theta),
-							theta=tool_wagon_pose.theta - robot_offset.theta)
+							theta=tool_wagon_pose.theta - dtheta)
 	print "moving to ", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)]
 	handle_base = sss.move("base", [float(robot_goal_pose.x), float(robot_goal_pose.y), float(robot_goal_pose.theta)], mode='linear')
 	
 	# read out current robot pose
 	(robot_pose_translation, robot_pose_rotation, robot_pose_rotation_euler) = currentRobotPose()
 	if (robot_pose_translation == None):
-		continue
+		return False
 #	try:
 # 		listener = get_transform_listener()
 # 		t = rospy.Time(0)
@@ -584,7 +584,7 @@ class MoveToToolWaggonFront(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
-			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy)
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
 			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
 		
@@ -630,7 +630,7 @@ class MoveToToolWaggonRear(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
-			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy)
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
 			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
 		
@@ -675,7 +675,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
-			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy)
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
 			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
 		
@@ -723,7 +723,7 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
-			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy)
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
 			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
 		
