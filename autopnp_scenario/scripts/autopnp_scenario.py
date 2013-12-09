@@ -83,6 +83,8 @@ def main():
 								transitions={'CTM_done':'CTM_done'})
 	'''
 	
+	
+	'''
 	# trash bin clearing stand alone
 	sm_scenario = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['tool_wagon_pose'])
 	with sm_scenario:
@@ -125,7 +127,7 @@ def main():
 		
 		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
 							transitions={'RTB_finished':'CWB_done'})
-
+	'''
 	
 	'''
 	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
@@ -176,7 +178,7 @@ def main():
 # end of trash bin clearing sub state machine, comment until here when you like to use the full scenario
 	'''
 	
-	'''
+	
 	# full scenario
 	sm_scenario = smach.StateMachine(outcomes=['finish', 'failed'])
 	sm_scenario.userdata.sm_trash_bin_counter = 0  
@@ -387,16 +389,22 @@ def main():
 		
 		
 		
-		sm_sub_go_to_next_unprocessed_dirt_location = smach.StateMachine(outcomes=['no_dirt_spots_left','arrived_dirt_location'])
+		sm_sub_go_to_next_unprocessed_dirt_location = smach.StateMachine(outcomes=['no_dirt_spots_left','arrived_dirt_location'],
+																		input_keys=['list_of_dirt_locations', 'last_visited_dirt_location'],
+																		output_keys=['next_dirt_location'])
 
 		with sm_sub_go_to_next_unprocessed_dirt_location:
 			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
-								transitions={'SNUDS_location':'MOVE_TO_LOCATION_PERIMETER_60CM',
+								transitions={'selected_next_dirt_location':'MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING',
 											'no_dirt_spots_left':'no_dirt_spots_left'})
 			
-			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_60CM', Move_Location_Perimeter_60cm(),
-								transitions={'MLP60_arrived_dirt_location':'arrived_dirt_location',
-											'MLP60_unsuccessful':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT'})
+			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING', MoveLocationPerimeterCleaning(),
+								transitions={'movement_prepared':'APPROACH_PERIMETER_CLEANING'})
+			
+			smach.StateMachine.add('APPROACH_PERIMETER_CLEANING', ApproachPerimeter(),
+								transitions={'reached':'arrived_dirt_location', 
+											 'not_reached':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT',
+											 'failed':'failed'})
 
 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', sm_sub_go_to_next_unprocessed_dirt_location,
 							transitions={'arrived_dirt_location':'CLEAN',
@@ -404,29 +412,34 @@ def main():
 		
 		
 		
-		smach.StateMachine.add('CLEAN', Clean(), transitions={'clean_done':'GO_TO_INSPECT_LOCATION'})
+		smach.StateMachine.add('CLEAN', Clean(), transitions={'cleaning_done':'GO_TO_INSPECT_LOCATION'})
 		
 		
 		
-		sm_sub_go_to_inspect_location = smach.StateMachine(outcomes=['GTIL_arrived_dirt_location'])
+		sm_sub_go_to_inspect_location = smach.StateMachine(outcomes=['arrived_cleaning_inspection_location'])
 
 		with sm_sub_go_to_inspect_location:
-			smach.StateMachine.add('MOVE_TO_LOCATION_PERIMETER_180CM', Move_Location_Perimeter_180cm(),
-								transitions={'MLP180_arrived_dirt_location':'GTIL_arrived_dirt_location'})
+			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_VALIDATION', MoveLocationPerimeterValidation(),
+								transitions={'movement_prepared':'APPROACH_PERIMETER_VALIDATION'})
+			
+			smach.StateMachine.add('APPROACH_PERIMETER_VALIDATION', ApproachPerimeter(),
+								transitions={'reached':'arrived_cleaning_inspection_location', 
+											 'not_reached':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION',
+											 'failed':'failed'})
 
 		smach.StateMachine.add('GO_TO_INSPECT_LOCATION', sm_sub_go_to_inspect_location,
-							transitions={'GTIL_arrived_dirt_location':'VERIFY_CLEANING_SUCCESS'})
+							transitions={'arrived_cleaning_inspection_location':'VERIFY_CLEANING_SUCCESS'})
 		
 		
 		
-		smach.StateMachine.add('VERIFY_CLEANING_SUCCESS', verifyCleaningProcess(),
+		smach.StateMachine.add('VERIFY_CLEANING_SUCCESS', VerifyCleaningProcess(),
 							transitions={'VCP_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
 		
 		
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
 							transitions={'PCVR_finish':'finish'})
-	'''
+	
 	
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/SM_ROOT')
