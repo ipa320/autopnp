@@ -67,13 +67,13 @@ import actionlib
 import autopnp_scenario.msg
 
 def inspect_room( input_map_, room_number_, room_center_x_, room_center_y_, room_min_x_, room_max_x_, room_min_y_, room_max_y_ , map_resolution_ , map_origin_x_ , map_origin_y_ ):      
-    client = actionlib.SimpleActionClient( 'inspect_room', autopnp_scenario.msg.InspectRoomAction )    
-    rospy.loginfo("waiting for the inspect room action server to start.....")    
+    client = actionlib.SimpleActionClient( 'inspect_room', autopnp_scenario.msg.InspectRoomAction )
+    rospy.loginfo("waiting for the inspect room action server to start.....")
     client.wait_for_server()        
-    rospy.loginfo("inspect room action server started, sending goal.....")       
+    rospy.loginfo("inspect room action server started, sending goal.....")
     goal = autopnp_scenario.msg.InspectRoomGoal( input_img = input_map_,
-                                                 room_number = room_number_, 
-                                                 room_center_x = room_center_x_, 
+                                                 room_number = room_number_,
+                                                 room_center_x = room_center_x_,
                                                  room_center_y = room_center_y_,
                                                  room_min_x = room_min_x_,
                                                  room_max_x = room_max_x_,
@@ -93,13 +93,5 @@ def inspect_room( input_map_, room_number_, room_center_x_, room_center_y_, room
         else:
             rospy.loginfo("action finished: %s " % state)
     else:
-        rospy.loginfo("action did not finish before the time out.")        
+        rospy.loginfo("action did not finish before the time out.")
     return client.get_result()
-
-
-
-
-
-
-
-

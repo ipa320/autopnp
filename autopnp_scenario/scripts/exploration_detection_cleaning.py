@@ -909,7 +909,7 @@ class DirtDetectionOn(smach.State):
 		rospy.loginfo('Executing state Dirt_Detection_On')
 
 		# move torso and head to frontal inspection perspective
-		sss.move("torso","front_extreme")
+		sss.move("torso","front_extreme", False)
 		sss.move("head","front")
 
 		rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
@@ -981,7 +981,7 @@ class TrashBinDetectionOff(smach.State):
 
 		userdata.detected_waste_bin_poses_ = resp.detected_trash_bin_poses.detections
 		
-		print "userdata.detected_waste_bin_poses: ", userdata.detected_waste_bin_poses_
+		print "userdata.detected_waste_bin_poses: ", resp.detected_trash_bin_poses.detections
 		
 		if len(resp.detected_trash_bin_poses.detections)==0:
 			return 'trash_can_not_found'
