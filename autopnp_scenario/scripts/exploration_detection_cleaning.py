@@ -1105,7 +1105,6 @@ class GraspTrashBin(smach.State):
 		#rospy.sleep(5)
 
 		# 4. get deeper into trash bin
-		raw_input("get pose")
 		handle_arm = sss.move("arm",[deepintrashbin_position_small])
 		
 		# 5. close hand
@@ -1271,18 +1270,9 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		raw_input("Press key.")
 		
 		# clear trash bin
-		#sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
-		#			ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["clear_small"]])
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
-		raw_input("4 ok?")
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"]])
-		raw_input("5 ok?")
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"]])
-		raw_input("6 ok?")
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"]])
-		raw_input("7 ok?")
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["clear_small"]])
-		raw_input("clear ok?")
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
+					ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["clear_small"]])
+
 		#lwaintermediate4_carry2clear_position
 		#handle_arm = sss.move("arm",[[2.7794463634490967, -0.5230057239532471, 2.12442684173584, 0.8296095132827759, -0.4476940631866455, 1.7776577472686768, -2.813380002975464]])
 		#handle_arm = sss.move("arm",[[2.9369261264801025, -0.11826770752668381, -0.3997747302055359, 0.5886469483375549, -0.48628100752830505, 1.5983763933181763, -3.4693655967712402]])
