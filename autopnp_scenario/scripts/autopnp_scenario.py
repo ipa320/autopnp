@@ -347,7 +347,7 @@ def main():
 		sm_sub_change_tool_hand = smach.StateMachine(outcomes=['CTH_done'],
 													input_keys=['tool_wagon_pose'])
 		with sm_sub_change_tool_hand:
-			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonRear(),
+			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonFrontFar(),
 								transitions={'arrived':'DETECT_SLOT_FOR_CURRENT_TOOL'})
 			#smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION',GoToToolWagonLocation() ,transitions={'GTTWL_done':'DETECT_SLOT_FOR_CURRENT_TOOL'})
 			

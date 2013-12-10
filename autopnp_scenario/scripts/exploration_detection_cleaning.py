@@ -1295,40 +1295,40 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 
 
 class MoveToTrashBinPickingLocation(smach.State):
-    def __init__(self):
-        #smach.State.__init__(self, outcomes=['MTTBPL_done'],input_keys=['trash_bin_pose_'])
-        smach.State.__init__(self, outcomes=['MTTBPL_done'],input_keys=['trash_bin_pose_'],
-                             output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
+	def __init__(self):
+		#smach.State.__init__(self, outcomes=['MTTBPL_done'],input_keys=['trash_bin_pose_'])
+		smach.State.__init__(self, outcomes=['MTTBPL_done'],input_keys=['trash_bin_pose_'],
+							output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
 
-    def execute(self, userdata ):
-    	sf = ScreenFormat("MoveToTrashBinPickingLocation")
-        rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location') 
-        #try:
-         #sm = ApproachPerimeter()
-#        center = Pose2D()
-#        center.x = userdata.trash_bin_pose_.pose.pose.position.x 
-#        center.y = userdata.trash_bin_pose_.pose.pose.position.y
-#        center.theta = 0
-#        userdata.center = center
-#        userdata.radius = 0.75		# adjust this for right distance to trash bin
-#        userdata.rotational_sampling_step = 10.0/180.0*math.pi
-#        userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
-#        userdata.new_computation_flag = True
-#        userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
-#        userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
-#        rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')
-        
-        # todo: move back to location where trash bin was grabbed
-        #sss.move('base',[userdata.trash_bin_pose_.x, userdata.trash_bin_pose_.y, userdata.trash_bin_pose_.theta])
-                         
-        return 'MTTBPL_done'
-    
-    
-    
+	def execute(self, userdata ):
+		sf = ScreenFormat("MoveToTrashBinPickingLocation")
+		rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location') 
+		#try:
+		#sm = ApproachPerimeter()
+		center = Pose2D()
+		center.x = userdata.trash_bin_pose_.pose.pose.position.x 
+		center.y = userdata.trash_bin_pose_.pose.pose.position.y
+		center.theta = 0
+		userdata.center = center
+		userdata.radius = 0.75		# adjust this for right distance to trash bin
+		userdata.rotational_sampling_step = 10.0/180.0*math.pi
+		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.new_computation_flag = True
+		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
+		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
+		rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')
+
+		 # todo: move back to location where trash bin was grabbed
+		 #sss.move('base',[userdata.trash_bin_pose_.x, userdata.trash_bin_pose_.y, userdata.trash_bin_pose_.theta])
+
+		return 'MTTBPL_done'
+
+
+
 class ReleaseTrashBin(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['RTB_finished'])
-             
+
 	def execute(self, userdata ):
 		sf = ScreenFormat("ReleaseTrashBin")
 #         rospy.sleep(2)                              
@@ -1366,8 +1366,6 @@ class ReleaseTrashBin(smach.State):
 
 		# 12. arm: over trash bin -> folded
 		handle_arm = sss.move("arm",[intermediate_folded2overtrashbin_position, "folded"])
-		
-		raw_input("Please abort script now.")
 
 		return 'RTB_finished'  
 
@@ -1761,7 +1759,11 @@ class VerifyCleaningProcess(smach.State):
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("verifyCleaningProcess")
-#		rospy.sleep(2)                              
+#		rospy.sleep(2)
+		
+		sss.move("head", "front")
+		sss.move("torso", "front_extreme")
+		
 		rospy.loginfo('Executing state verify_Cleaning_Process')
 		rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
 		try:
@@ -1769,6 +1771,9 @@ class VerifyCleaningProcess(smach.State):
 			resp = req(validationPositions=Point(), numberValidationImages=-1)
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
+		
+		sss.move("torso", "home", False)
+		
 		return 'VCP_done'
 
 
