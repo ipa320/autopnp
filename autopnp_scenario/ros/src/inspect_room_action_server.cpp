@@ -101,6 +101,7 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 
 					if (res_points.accessibility_flags[0] == true)
 					{
+						std::cout << "Point " << accessible_point.x << ", " << accessible_point.y << " is accessible." << std::endl;
 						pixel_point_next.x = map_row_value;
 						pixel_point_next.y = map_column_value;
 
@@ -131,6 +132,8 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 						}
 #endif
 					}
+					else
+						std::cout << "Point not accessible." << std::endl;
 				}
 			}
 

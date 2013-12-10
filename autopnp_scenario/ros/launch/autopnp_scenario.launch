@@ -4,8 +4,8 @@
 	<!-- args -->
 	<arg name="robot" default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/>
 	<arg name="pc1" default="cob3-5-pc1"/> <!-- "$(arg robot)-pc1" -->
-	<arg name="pc2" default="cob3-5-pc2"/>
-	<arg name="pc3" default="cob3-5-pc3"/>
+	<arg name="pc2" default="192.168.5.102"/>
+	<arg name="pc3" default="192.168.5.103"/>
 	<arg name="simulation" default="false"/>
 
 	<group>
