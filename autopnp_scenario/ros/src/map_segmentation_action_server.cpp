@@ -72,6 +72,7 @@ cv::Mat segmentation_algorithm::Image_Segmentation_method(cv::Mat &Original_Map_
 
 	for (unsigned int idx = 0; idx < saved_contours_.size(); idx++)
 	{
+		std::cout << "Segmentation found " << saved_contours_.size() << " rooms." << std::endl;
 		//0-for obstacles and it's a black pixel
 		//255-for white value and accessible area
 		cv::Scalar color_to_fill(rand() % 253 + 1);
@@ -297,6 +298,9 @@ void segmentation_algorithm::execute_map_segmentation_server(const autopnp_scena
 	cv_image.encoding = "mono8";
 	cv_image.image = Segmented_map;
 	cv_image.toImageMsg(action_result_.output_map);
+
+	//cv::imshow("segmentation", Segmented_map);
+	//cv::waitKey();
 
 	//setting value to the action msgs to publish
 	action_result_.map_resolution = goal->map_resolution;

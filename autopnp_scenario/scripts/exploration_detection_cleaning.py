@@ -87,12 +87,12 @@ sss = simple_script_server()
 
 #-------------------------------------------------------- Global Definitions ---------------------------------------------------------------------------------------
 global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
-MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 0.20000 # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
+MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.0 # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
 
 global TOOL_WAGON_LOCATIONS
 TOOL_WAGON_LOCATIONS=[]  # valid parking positions of tool wagon in current map [in m and rad]
+TOOL_WAGON_LOCATIONS.append(Pose2D(x=5.3, y=0, theta=math.pi))
 TOOL_WAGON_LOCATIONS.append(Pose2D(x=0, y=0, theta=0))
-TOOL_WAGON_LOCATIONS.append(Pose2D(x=3, y=3, theta=0))
 
 global TOOL_WAGON_MARKER_OFFSETS
 TOOL_WAGON_MARKER_OFFSETS={ #todo: measure translational offsets
@@ -226,7 +226,7 @@ class AnalyzeMap(smach.State):
 		userdata.analyze_map_data_room_min_y_ = map_segmentation_action_server_result_.room_min_y_in_pixel
 		userdata.analyze_map_data_room_max_y_ = map_segmentation_action_server_result_.room_max_y_in_pixel
 		
-		return 'list_of_rooms'  
+		return 'list_of_rooms'
 
 # The NextUnprocessedRoom class defines a state machine of smach which basically 
 # call the find next unprocessed room action client object and execute the function
@@ -828,14 +828,14 @@ class GraspHandle(smach.State):
 
 class GoToNextToolWaggonLocation(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_goal_pose'])
+		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_goal_pose'], output_keys=['tool_wagon_pose'])
 		self.navigation_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("GoToNextToolWaggonLocation")
 		rospy.loginfo('Executing state Go_To_Next_Tool_Waggon_Location')
 		
-		'''
+		
 		# 1. adjust base movement speeds
 		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.01, "min_vel_y":-0.01,"max_rot_vel":0.1})
 		
@@ -849,7 +849,8 @@ class GoToNextToolWaggonLocation(smach.State):
 		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
 		
 		# 3. reset base movement speeds
-		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2,"max_rot_vel":0.6})'''
+		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2,"max_rot_vel":0.6})
+		userdata.tool_wagon_pose = userdata.tool_wagon_goal_pose
 		
 		return 'arrived' 
 
@@ -886,8 +887,6 @@ class ReleaseGrasp(smach.State):
 		print "handle.get_state()=", handle_arm.get_state()
 		handle_arm = sss.move("arm",["folded"])
 		print "handle.get_state()=", handle_arm.get_state()
-		
-		raw_input("quit here")
 		
 		return 'released'
 
@@ -981,6 +980,8 @@ class TrashBinDetectionOff(smach.State):
 			print "Service call failed: %s"%e
 
 		userdata.detected_waste_bin_poses_ = resp.detected_trash_bin_poses.detections
+		
+		print "userdata.detected_waste_bin_poses: ", userdata.detected_waste_bin_poses_
 		
 		if len(resp.detected_trash_bin_poses.detections)==0:
 			return 'trash_can_not_found'
@@ -1182,8 +1183,7 @@ class GraspTrashBin(smach.State):
 class Turn180(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'])
-		self.global_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/global_costmap")
-		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/local_costmap")
+		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("Turn180")
@@ -1196,25 +1196,18 @@ class Turn180(smach.State):
 			(robot_pose_translation, robot_pose_rotation, robot_pose_rotation_euler) = currentRobotPose()
 		
 		# 1. adjust base footprint
-		global_config = self.global_costmap_dynamic_reconfigure_client.get_configuration(5.0)
 		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.global_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.46,0.36],[-0.46,0.36],[-0.46,-0.36],[0.46,-0.36]]"})
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.46,0.36],[-0.46,0.36],[-0.46,-0.36],[0.46,-0.36]]"})
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.40,0.36],[-0.40,0.36],[-0.40,-0.36],[0.40,-0.36]]"})
 
 		# 2. turn around
 		sss.move('base', [robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0]+math.pi], mode='linear')
 
 		# 3. reset footprint
-		if global_config["footprint"]!=None:
-			self.global_costmap_dynamic_reconfigure_client.update_configuration({"footprint": global_config["footprint"]})
-		else:
-			rospy.logwarn("Could not read our previous global footprint configuration, resetting to standard value: [[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]].")
-			self.global_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]"})
 		if local_config["footprint"]!=None:
 			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
 		else:
-			rospy.logwarn("Could not read our previous local footprint configuration, resetting to standard value: [[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]].")
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]"})
+			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 
 		return 'arrived'
 
@@ -1623,7 +1616,7 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 class MoveLocationPerimeterCleaning(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['movement_prepared'],
-							input_key=['next_dirt_location'],
+							input_keys=['next_dirt_location'],
 							output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
 	
 	def execute(self, userdata ):
@@ -1732,7 +1725,7 @@ class Clean(smach.State):
 class MoveLocationPerimeterValidation(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['movement_prepared'],
-							input_key=['next_dirt_location'],
+							input_keys=['next_dirt_location'],
 							output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
 	
 	def execute(self, userdata ):
