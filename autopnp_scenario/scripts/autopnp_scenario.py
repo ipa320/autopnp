@@ -88,9 +88,9 @@ def main():
 	# trash bin clearing stand alone
 	sm_scenario = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['tool_wagon_pose'])
 	with sm_scenario:
-# 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
-# 					transitions={'initialized':'MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING',
-# 								'failed':'failed'})
+		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
+					transitions={'initialized':'GRASP_TRASH_BIN',
+								'failed':'failed'})
 		
 # 		smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
 # 							transitions={'MTTBL_success':'APPROACH_PERIMETER'},

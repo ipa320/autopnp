@@ -105,6 +105,7 @@ TOOL_WAGON_MARKER_OFFSETS={ #todo: measure translational offsets
 global TOOL_WAGON_ROBOT_OFFSETS
 TOOL_WAGON_ROBOT_OFFSETS={
 						"front":	Pose2D(x=-1.1, y=0.0, theta=0.0),
+						"front_far":	Pose2D(x=-1.4, y=0.0, theta=0.0),
 						"rear":		Pose2D(x=-1.0, y=0.0, theta=math.pi),
 						"front_frontal_far":	Pose2D(x=1.4, y=0.0, theta=math.pi),
 						"front_trash_clearing":	Pose2D(x=-1.05, y=0.0, theta=0.0)
@@ -128,11 +129,16 @@ ARM_JOINT_CONFIGURATIONS={
 		"intermediate1_carry2clear": [1.6047953406237458, -0.9250419568495145, 0.5463578690443048, -1.2438961578963585, 2.005610203344244, -1.6329125948733747, -1.0737614624119514],
 		"intermediate2_carry2clear": [1.4538243603262366, -1.0659947472405766, 0.6813939932711062, -0.22266910596943656, 1.4894814369444809, -1.7758899671967503, -1.1778005391233333],
 		"intermediate3_carry2clear": [1.8488796365151532, -1.091738353707493, 0.8273733319079118, 0.7019365185670795, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404],   #[1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
-		"intermediate4_carry2clear": [1.7169851049419416, -1.6298582686823848, 0.3803596038871242, 0.7778408877363129, 0.9197187026309318, -1.754806389832659, 2.2837109663570203],   #[1.8468026947052798, -1.6619548736265604, 0.3801850709619248, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
-		"intermediate5_carry2clear": [1.5208275503102988, -1.85292880037978, -0.10279989294246601, 0.6450562382445842, 0.8517032216807128, -1.793814498614732, 2.3077266968644623],
-		"intermediate6_carry2clear": [1.4417641351949557, -1.910803918375912, -0.15067427432467048, 0.6390523056177237, 0.8522093671637911, -1.7937795920296922, 2.3077266968644623],   #[1.327776681747206, -1.8629469902862275, -0.15077899407979012, 0.46406559481277226, 0.8517206749732329, -1.7937970453222118, 2.3077266968644623]
-		"intermediate7_carry2clear": [1.3697693035501897, -1.9599872966971121, -0.16287412579611082, 0.3929957876715632, 0.5164603789576421, -1.8158056471898605, 2.3077266968644623],   #[1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.30407126228245207, 0.5157098873792845, -1.8158056471898605, 2.3077266968644623]
-		"clear": [1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.2030865117620602, -0.21528636323350056, -1.8157881938973404, 2.3077266968644623],
+		"intermediate4_carry2clear_large": [1.7169851049419416, -1.6298582686823848, 0.3803596038871242, 0.7778408877363129, 0.9197187026309318, -1.754806389832659, 2.2837109663570203],   #[1.8468026947052798, -1.6619548736265604, 0.3801850709619248, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
+		"intermediate4_carry2clear_small": [1.760915042214639, -1.775104569033353, 0.3801850709619248, 0.7269645400406781, 0.919701249338412, -1.7547889365401388, 2.2837109663570203],
+		"intermediate5_carry2clear_large": [1.5208275503102988, -1.85292880037978, -0.10279989294246601, 0.6450562382445842, 0.8517032216807128, -1.793814498614732, 2.3077266968644623],
+		"intermediate5_carry2clear_small": [1.5206704706776195, -1.9089887759538378, -0.10300933245270533, 0.4019144201492542, 0.8616166918320407, -1.8318626763082082, 2.3077441501569824],
+		"intermediate6_carry2clear_large": [1.4417641351949557, -1.910803918375912, -0.15067427432467048, 0.6390523056177237, 0.8522093671637911, -1.7937795920296922, 2.3077266968644623],   #[1.327776681747206, -1.8629469902862275, -0.15077899407979012, 0.46406559481277226, 0.8517206749732329, -1.7937970453222118, 2.3077266968644623]
+		"intermediate6_carry2clear_small": [1.5316311383801438, -1.942795803564968, -0.31066860685499065, 0.4072725809528768, 0.850149878646438, -1.8257365706337085, 2.3077266968644623],
+		"intermediate7_carry2clear_large": [1.3697693035501897, -1.9599872966971121, -0.16287412579611082, 0.3929957876715632, 0.5164603789576421, -1.8158056471898605, 2.3077266968644623],   #[1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.30407126228245207, 0.5157098873792845, -1.8158056471898605, 2.3077266968644623]
+		"intermediate7_carry2clear_small": [1.414624265326444, -1.959969843404592, -0.1627868593335111, 0.3280695394973741, 0.42593015065669615, -1.8157881938973404, 2.3077266968644623],
+		"clear_large": [1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.2030865117620602, -0.21528636323350056, -1.8157881938973404, 2.3077266968644623],
+		"clear_small": [1.4147813449591236, -1.8628597238236275, -0.16273449945595128, 0.07897614865274341, -0.21584486859413876, -1.8157881938973404, 2.3077441501569824],
 		"carry": [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 		}
 
@@ -540,7 +546,7 @@ def positionControlLoopLinear(self_tool_wagon_pose, dx, dy, dtheta):
 	# verify distance to goal pose
 	dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
 	print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
-	if dist > 0.02 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
+	if dist > 0.03 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
 		return False
 	else:
 		return True
@@ -592,6 +598,55 @@ class MoveToToolWaggonFront(smach.State):
 		fiducials_sub.unregister()
 		
 		return 'arrived'
+
+class MoveToToolWaggonFrontFar(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
+		self.tool_wagon_pose = None
+		self.last_callback_time = rospy.Time.now()
+
+	def fiducial_callback(self, fiducials):
+		if (rospy.Time.now()-self.last_callback_time) > rospy.Duration(1.0):
+			self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
+			self.last_callback_time = rospy.Time.now()
+
+	def execute(self, userdata):
+		sf = ScreenFormat("MoveToToolWaggonFrontFar")
+		#rospy.loginfo('Executing state MoveToToolWaggonFrontFar')
+
+		sss.move("head", "back")
+		sss.move("torso", "home")
+
+		self.tool_wagon_pose = None
+		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
+		
+		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
+		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_far"].x, y=TOOL_WAGON_ROBOT_OFFSETS["front_far"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_far"].theta)
+		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
+		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
+							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
+							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		
+		# 2. detect fiducials and move to corrected pose
+		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front_far"]
+		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
+		# wait until wagon is detected
+		robot_approximately_well_positioned = False
+		while robot_approximately_well_positioned==False:
+			while self.tool_wagon_pose == None:
+				rospy.sleep(0.2)
+			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
+			if robot_approximately_well_positioned==False:
+				self.tool_wagon_pose = None
+		
+		# 3. unsubscribe to fiducials
+		fiducials_sub.unregister()
+		
+		return 'arrived'
+
 
 class MoveToToolWaggonRear(smach.State):
 	def __init__(self):
@@ -655,13 +710,13 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonFrontFrontalFar')
 
 		sss.move("head", "front")
-		sss.move("torso", "home")
+		sss.move("torso", "front")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
-		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].x-0.4, y=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].theta)
+		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].x+0.0, y=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_frontal_far"].theta)
 		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
 		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
@@ -675,6 +730,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
+			print "tool_wagon_pose", self.tool_wagon_pose
 			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
 			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
@@ -705,14 +761,14 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
-		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
-		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
-		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
-		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
-		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
-							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
-							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+# 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
+# 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
+# 		dx = -(robot_offset.x*math.cos(robot_offset.theta)+robot_offset.y*math.sin(robot_offset.theta))
+# 		dy = -(-robot_offset.x*math.sin(robot_offset.theta)+robot_offset.y*math.cos(robot_offset.theta))
+# 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
+# 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
+# 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
+# 		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"]
@@ -723,6 +779,7 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		while robot_approximately_well_positioned==False:
 			while self.tool_wagon_pose == None:
 				rospy.sleep(0.2)
+			print "tool_wagon_pose", self.tool_wagon_pose
 			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
 			if robot_approximately_well_positioned==False:
 				self.tool_wagon_pose = None
@@ -1019,10 +1076,12 @@ class GraspTrashBin(smach.State):
 		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
 		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
 		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
+							# [1.9474732859603128, -0.9245881712439961, -0.31063370026995074, -1.9436335616059253, 2.4089034336025734, -0.8307069107792211, -0.8225038632948477]
 		
 		# 1. arm: folded -> over trash bin
 		#lwa4d
-		handle_arm = sss.move("arm",[intermediate_folded2overtrashbin_position, overtrashbin_position])
+		#handle_arm = sss.move("arm",[intermediate_folded2overtrashbin_position, overtrashbin_position])
+		handle_arm = sss.move("arm",[carry_position, intermediate2_deep2carry, intermediate1_deep2carry, overtrashbin_position])
 		
 		# lwa
 		#handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]]) # large trash bin
@@ -1124,6 +1183,8 @@ class GraspTrashBin(smach.State):
 class Turn180(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'])
+		self.global_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/global_costmap")
+		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/local_costmap")
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("Turn180")
@@ -1135,7 +1196,26 @@ class Turn180(smach.State):
 		while robot_pose_translation==None:
 			(robot_pose_translation, robot_pose_rotation, robot_pose_rotation_euler) = currentRobotPose()
 		
-		sss.move('base', [robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0]+math.pi])
+		# 1. adjust base footprint
+		global_config = self.global_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.global_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.46,0.36],[-0.46,0.36],[-0.46,-0.36],[0.46,-0.36]]"})
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.46,0.36],[-0.46,0.36],[-0.46,-0.36],[0.46,-0.36]]"})
+
+		# 2. turn around
+		sss.move('base', [robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0]+math.pi], mode='linear')
+
+		# 3. reset footprint
+		if global_config["footprint"]!=None:
+			self.global_costmap_dynamic_reconfigure_client.update_configuration({"footprint": global_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read our previous global footprint configuration, resetting to standard value: [[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]].")
+			self.global_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]"})
+		if local_config["footprint"]!=None:
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read our previous local footprint configuration, resetting to standard value: [[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]"})
 
 		return 'arrived'
 
@@ -1170,6 +1250,9 @@ class ClearTrashBinIntoToolWagonPart1(smach.State):
 		clear = [1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.2030865117620602, -0.21528636323350056, -1.8157881938973404, 2.3077266968644623]
 		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 		
+		sss.move("head", "back", False)
+		sss.move("torso", "home", False)
+		
 		# 6. arm: move up, turn aroundintermediate3_carry2clear_position
 		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
 		# up to here: 1,40m distance, then 1,05m
@@ -1188,8 +1271,18 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		raw_input("Press key.")
 		
 		# clear trash bin
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear"],
-					ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear"], ARM_JOINT_CONFIGURATIONS["clear"]])
+		#sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
+		#			ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["clear_small"]])
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
+		raw_input("4 ok?")
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"]])
+		raw_input("5 ok?")
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"]])
+		raw_input("6 ok?")
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"]])
+		raw_input("7 ok?")
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["clear_small"]])
+		raw_input("clear ok?")
 		#lwaintermediate4_carry2clear_position
 		#handle_arm = sss.move("arm",[[2.7794463634490967, -0.5230057239532471, 2.12442684173584, 0.8296095132827759, -0.4476940631866455, 1.7776577472686768, -2.813380002975464]])
 		#handle_arm = sss.move("arm",[[2.9369261264801025, -0.11826770752668381, -0.3997747302055359, 0.5886469483375549, -0.48628100752830505, 1.5983763933181763, -3.4693655967712402]])
@@ -1199,8 +1292,8 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		#handle_arm = sss.move("arm",[[1.7032876014709473, -0.5807051062583923, 2.3603627681732178, 1.1806684732437134, -2.2949676513671875, 1.7723535299301147, -2.81252121925354]]) # small trash bin
 
 		# move arm back to the side
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear"],
-					ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear"]])
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"],
+					ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
 		
 		# drive forward slightly
 		handle_base = sss.move_base_rel("base", (0.1, 0.0, 0.0), blocking=True)
