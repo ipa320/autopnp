@@ -86,6 +86,9 @@ sss = simple_script_server()
 
 
 #-------------------------------------------------------- Global Definitions ---------------------------------------------------------------------------------------
+global JOURNALIST_MODE
+JOURNALIST_MODE = False # set to true to have breaks within all movements for photography
+
 global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
 MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.0 # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
 
@@ -808,20 +811,34 @@ class GraspHandle(smach.State):
 		# deepathandle_position = [1.87750303624786, -1.153348476302893, -0.6841865200742971, -0.9696351192379697, 2.9091846103942283, -1.481435469092787, -1.263129686253336]
 		
 		# 1. move arm in position over wagon
-		handle_arm = sss.move("arm",[intermediate1_folded2overhandle_position, intermediate2_folded2overhandle_position, overhandle_position])
+		if JOURNALIST_MODE == False:
+			handle_arm = sss.move("arm",[intermediate1_folded2overhandle_position, intermediate2_folded2overhandle_position, overhandle_position])
+		else:
+			raw_input("Press <Enter>.")
+			handle_arm = sss.move("arm",[intermediate1_folded2overhandle_position])
+			raw_input("Press <Enter>.")
+			handle_arm = sss.move("arm",[intermediate2_folded2overhandle_position])
+			raw_input("Press <Enter>.")
+			handle_arm = sss.move("arm",[overhandle_position])
+			raw_input("Press <Enter>.")
+		
 		print "handle.get_state()=", handle_arm.get_state()  # 3 = ok
 		
 		# 2. open hand
 		sss.move("sdh", "cylopen")
-		
-		raw_input("Press <Enter>.")
+		if JOURNALIST_MODE == True:
+			raw_input("Press <Enter>.")
 		
 		# 3. lower arm into handle
 		handle_arm = sss.move("arm",[athandle_position])
 		print "handle.get_state()=", handle_arm.get_state()
+		if JOURNALIST_MODE == True:
+			raw_input("Press <Enter>.")
 		
 		# 4. close hand
 		sss.move("sdh", "cylclosed")
+		if JOURNALIST_MODE == True:
+			raw_input("Press <Enter>.")
 		
 		return 'grasped' 
 
@@ -868,7 +885,6 @@ class ReleaseGrasp(smach.State):
 		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
 		overhandle_position = [2.0912709630321253, -1.0194293627973678, -0.6451958645847439, -0.9112713090512793, 2.8221799471823106, -1.6184612686668618, -1.2679642482813605]   #[2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
-		
 		
 		raw_input("Press <Enter>.")
 		
@@ -1054,12 +1070,6 @@ class MoveToTrashBinLocation(smach.State):
 class GraspTrashBin(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['GTB_success','failed'])
-#		self.client = actionlib.SimpleActionClient('grasp_trash_bin', autopnp_scenario.msg.GraspTrashBinAction)
-#		result = self.client.wait_for_server()
-#		if result == True:
-#			rospy.loginfo("Grasp trash bin server connected ...")
-#		else:
-#			rospy.logerror("Grasp trash bin server not found ...")
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("GraspTrashBin")
@@ -1082,7 +1092,17 @@ class GraspTrashBin(smach.State):
 		# 1. arm: folded -> over trash bin
 		#lwa4d
 		#handle_arm = sss.move("arm",[intermediate_folded2overtrashbin_position, overtrashbin_position])
-		handle_arm = sss.move("arm",[carry_position, intermediate2_deep2carry, intermediate1_deep2carry, overtrashbin_position])
+		if JOURNALIST_MODE == False:
+			handle_arm = sss.move("arm",[carry_position, intermediate2_deep2carry, intermediate1_deep2carry, overtrashbin_position])
+		else:
+			handle_arm = sss.move("arm",[carry_position])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[intermediate2_deep2carry])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[intermediate1_deep2carry])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[overtrashbin_position])
+			raw_input("enter")
 		
 		# lwa
 		#handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]]) # large trash bin
@@ -1092,10 +1112,13 @@ class GraspTrashBin(smach.State):
 
 		# 2. open hand
 		sss.move("sdh", [[0.0, 0.0, 0.0, -1.4, 0.0, -1.4, 0.0]])
-
+		if JOURNALIST_MODE == True:
+			raw_input("enter")
 		# 3.a) arm: over trash bin -> into trash bin
 		#lwa4d
 		handle_arm = sss.move("arm",[intrashbin_position_small])
+		if JOURNALIST_MODE == True:
+			raw_input("enter")
 		#lwa
 		#handle_arm = sss.move("arm",[[0.5458570122718811, -1.0000877380371094, 2.07297420501709, 1.4942553043365479, 1.6078239679336548, 0.7354173064231873, -3.9213883876800537]]) # large trash bin
 		#handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]]) # small trash bin
@@ -1107,17 +1130,30 @@ class GraspTrashBin(smach.State):
 
 		# 4. get deeper into trash bin
 		handle_arm = sss.move("arm",[deepintrashbin_position_small])
+		if JOURNALIST_MODE == True:
+			raw_input("enter")
 		
 		# 5. close hand
 		# todo: optimize grasp
 		#handle_sdh = sss.move("sdh",[[0.20,0,0,0.6,-0.15,0.6,-0.15]])	# large trash bin
 		handle_sdh = sss.move("sdh",[[0.40,0,0,0.6,-0.15,0.6,-0.15]])	# small trash bin
 		#handle_sdh = sss.move("sdh",[[0.47,0,0,0.45,-0,0.45,-0]])	# small trash bin
-
+		if JOURNALIST_MODE == True:
+			raw_input("enter")
+		
 		# 6. arm: lift up
 		#lwa4d
 		# todo: trajectory very close to robot in between
-		handle_arm = sss.move("arm",[intermediate1_deep2carry, intermediate2_deep2carry, carry_position])
+		if JOURNALIST_MODE == False:
+			handle_arm = sss.move("arm",[intermediate1_deep2carry, intermediate2_deep2carry, carry_position])
+		else:
+			handle_arm = sss.move("arm",[intermediate1_deep2carry])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[intermediate2_deep2carry])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[carry_position])
+			raw_input("finished grasping")
+		
 		#lwa
 		#handle_arm = sss.move("arm",[[0.6609504818916321, -0.46957021951675415, 2.051220178604126, 1.7225379943847656, 1.0994664430618286, 0.6991068720817566, -3.7607481479644775]])
 		#handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]]) # small trash bin
@@ -1128,54 +1164,6 @@ class GraspTrashBin(smach.State):
 		##handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
 		
 
-# 		goal = autopnp_scenario.msg.GraspTrashBinGoal()
-# 		self.client.send_goal(goal)	
-# 		finished_before_timeout = self.client.wait_for_result()
-# 		if finished_before_timeout:
-# 			state = self.client.get_state()
-# 			if state is 3:
-# 				state = 'SUCCEEDED'
-# 				rospy.loginfo("action finished: %s " % state)
-# 				return 'GTB_success'
-# 			else:
-# 				rospy.loginfo("action finished: %s " % state)
-# 		else:
-# 			rospy.logwarn("action did not finish before the time out.")		
-
-		
-		
-		
-# 		rospy.loginfo('setting robot head and torso position')
-# 		handle_head = sss.move("head","back",False)
-# 		handle_head.wait()
-# 		handle_torso = sss.move("torso","back",False)
-# 		handle_torso.wait()        
-# 		rospy.wait_for_service('detect_trash_bin_again_service')
-# 		try:
-# 			while 1:
-# 				req = rospy.ServiceProxy('detect_trash_bin_again_service', DetectFiducials)
-# 				resp = req('tag_0')
-# #                 print'\nseq: ',resp.waste_bin_location.header.seq 
-# #                 print'frame id: ',resp.waste_bin_location.header.frame_id
-# #                 print'sec: ',resp.waste_bin_location.header.stamp.secs
-# #                 print'nsec: ',resp.waste_bin_location.header.stamp.nsecs
-# #                 print'position.x: ',resp.waste_bin_location.pose.position.x    
-# #                 print'position.y: ',resp.waste_bin_location.pose.position.y  
-# #                 print'position.z: ',resp.waste_bin_location.pose.position.z  
-# #                 print'orientation.x: ',resp.waste_bin_location.pose.orientation.x  
-# #                 print'orientation.y: ',resp.waste_bin_location.pose.orientation.y  
-# #                 print'orientation.z: ',resp.waste_bin_location.pose.orientation.z  
-# #                 print'orientation.w: ',resp.waste_bin_location.pose.orientation.x   
-# 				if resp.waste_bin_location.header.seq != 0:
-# 					break
-# 		except rospy.ServiceException, e:
-# 			print "Service call failed: %s"%e
-#
-# 		handle_torso = sss.move("torso","home",False)
-# 		handle_torso.wait()     
-
-		#return 'failed'
-		
 		return 'GTB_success'
 
 
@@ -1246,7 +1234,17 @@ class ClearTrashBinIntoToolWagonPart1(smach.State):
 		sss.move("torso", "home", False)
 		
 		# 6. arm: move up, turn aroundintermediate3_carry2clear_position
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
+		if JOURNALIST_MODE == False:
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
+		else:
+			raw_input("enter")
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"]])
+			raw_input("enter")
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"]])
+			raw_input("enter")
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
+			raw_input("enter")
+		
 		# up to here: 1,40m distance, then 1,05m
 		
 		return 'finished'
@@ -1263,8 +1261,20 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		raw_input("Press key.")
 		
 		# clear trash bin
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
+		if JOURNALIST_MODE == True:
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
 					ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["clear_small"]])
+		else:
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
+			raw_input("enter")
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"]])
+			raw_input("enter")
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"]])
+			raw_input("enter")
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"]])
+			raw_input("enter")
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["clear_small"]])
+			raw_input("finished trash bin clearing (next steps move back the arm)")
 
 		#lwaintermediate4_carry2clear_position
 		#handle_arm = sss.move("arm",[[2.7794463634490967, -0.5230057239532471, 2.12442684173584, 0.8296095132827759, -0.4476940631866455, 1.7776577472686768, -2.813380002975464]])
@@ -1367,7 +1377,7 @@ class ReleaseTrashBin(smach.State):
 		# 12. arm: over trash bin -> folded
 		handle_arm = sss.move("arm",[intermediate_folded2overtrashbin_position, "folded"])
 
-		return 'RTB_finished'  
+		return 'RTB_finished'
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1673,10 +1683,24 @@ class Clean(smach.State):
 		intermediate2_position = [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447] # intermediate 2
 		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
 		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
-		cleaning_position = [-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position
+		cleaning_position = [-0.09923942126839758, -0.909491073214245, 0.08154178265317508, -1.4209598105111834, 1.695622274897531, -0.24858724536155236, 1.066797598696494] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position
 
 		# move arm from storage position to cleaning position
-		handle_arm = sss.move("arm",[carrying_position, intermediate1_position, intermediate2_position, above_cleaning_20cm_position, above_cleaning_5cm_position, cleaning_position])
+		if JOURNALIST_MODE == False:
+			handle_arm = sss.move("arm",[carrying_position, intermediate1_position, intermediate2_position, above_cleaning_20cm_position, above_cleaning_5cm_position, cleaning_position])
+		else:
+			handle_arm = sss.move("arm",[carrying_position])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[intermediate1_position])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[intermediate2_position])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[above_cleaning_20cm_position])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[above_cleaning_5cm_position])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[cleaning_position])
+			raw_input("enter")
 		
 		# turn vacuum cleaner on
 		rospy.wait_for_service(vacuum_on_service_name) 
@@ -1691,9 +1715,9 @@ class Clean(smach.State):
 		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
 		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
 		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
- 		
- 		# turn vacuum cleaner off
- 		rospy.wait_for_service(vacuum_off_service_name) 
+		
+		# turn vacuum cleaner off
+		rospy.wait_for_service(vacuum_off_service_name) 
 		try:
 			req = rospy.ServiceProxy(vacuum_off_service_name, Trigger)
 			resp = req()
@@ -1703,16 +1727,16 @@ class Clean(smach.State):
 		# move arm back to storage position
 		handle_arm = sss.move("arm",[above_cleaning_5cm_position, above_cleaning_20cm_position, intermediate2_position, intermediate1_position, carrying_position])
 		
- 		raw_input("Quit program")
+		raw_input("Quit program")
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[1.4605438779464148, -0.548173011466379, 0.08925613794699001, -1.751909143274348, 2.1865310336059762, -1.3275846955294868, -1.9370711236184264]]) #intermediate 1.5?
 		
 		return 'cleaning_done'
-		
-		
-		
+
+
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -1788,13 +1812,13 @@ class VerifyCleaningProcess(smach.State):
 class ProcessCleaningVerificationResults(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes=['PCVR_finish'])
-             
+
     def execute(self, userdata ):
-    	sf = ScreenFormat("ProcessCleaningVerificationResults")  
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Process_Cleaning_Verification_Results')                                                
+    	sf = ScreenFormat("ProcessCleaningVerificationResults")
+#         rospy.sleep(2)
+        rospy.loginfo('Executing state Process_Cleaning_Verification_Results')
         return 'PCVR_finish'
-    
-    
-    
+
+
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------

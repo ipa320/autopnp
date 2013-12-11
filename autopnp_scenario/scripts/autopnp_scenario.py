@@ -69,10 +69,10 @@ def main():
 	
 	'''
 	# clean
-	sm_scenario = smach.StateMachine(outcomes=['clean_done'])
+	sm_scenario = smach.StateMachine(outcomes=['cleaning_done'])
 	with sm_scenario:
 		smach.StateMachine.add('CLEAN', Clean(),
-								transitions={'clean_done':'clean_done'})
+								transitions={'cleaning_done':'cleaning_done'})
 	'''
 	
 	'''
@@ -129,69 +129,14 @@ def main():
 							transitions={'RTB_finished':'CWB_done'})
 	'''
 	
-	'''
-	# todo: check the full trash bin state machine first before uncommenting the big part below and deleting this code
-	# sub state machine for trash bin clearing
-	sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
-	
-	with sm_scenario:
-		userdata.detection_pose = Pose2D() # todo: insert a pose with x and y of your trash bin here
-		userdata.detection_pose.x=0
-		userdata.detection_pose.y=0
-		userdata.detection_pose.theta=0
-#		smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
-#					transitions={'MTTBL_success':'APPROACH_PERIMETER'},
-#						remapping = {'trash_bin_pose_':'detection_pose'})
-		
-#		smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
-#					transitions={'reached':'GRASP_TRASH_BIN', 
-#								 'not_reached':'failed',
-#								 'failed':'failed'},
-#						remapping = {'trash_bin_pose_':'detection_pose'})
-		
-		smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
-					transitions={'GTB_success':'MOVE_TO_TOOL_WAGON',
-								 'failed':'failed'})
-		
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON', MoveToToolWagon(),
-					transitions={'MTTW_success':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON'})
-		
-		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON', ClearTrashBinIntoToolWagon(),
-					transitions={'CTBITW_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
-##experimenting with state machines :]
-		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-					transitions={'MTTBPL_done':'MOVE_TO_TRASH_BIN_PICKING_LOCATION_MOVE'},
-						remapping = {'trash_bin_pose_':'detection_pose'})
-		
-		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION_MOVE', ApproachPerimeter(),
-					transitions={'reached':'RELEASE_TRASH_BIN', 
-								 'not_reached':'failed',
-								 'failed':'failed'},
-						remapping = {'trash_bin_pose_':'detection_pose'})
-
-## old code:
-		#smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-		#			transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'})
-		
-		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
-					transitions={'RTB_finished':'CWB_done'})
-# end of trash bin clearing sub state machine, comment until here when you like to use the full scenario
-	'''
 	
 	
 	# full scenario
 	sm_scenario = smach.StateMachine(outcomes=['finish', 'failed'])
-	sm_scenario.userdata.sm_trash_bin_counter = 0  
+	sm_scenario.userdata.sm_trash_bin_counter = 0
 
 	with sm_scenario:
 		
-		# todo: comment these 3 lines to get the full scenario
-		# smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
-		#						transitions={'GTB_success':'finish',
-		#									 'failed':'failed'})
-		# end commenting
-		
-
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
 							transitions={'initialized':'ANALYZE_MAP',
 										'failed':'failed'})

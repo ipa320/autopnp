@@ -111,7 +111,7 @@ private:
 	 * 	  points.
 	 * 4. good selection of value will be 2*(robot_radius_/map_resolution_)
 	 * */
-	int step_size_to_find_accessible_points_of_the_room_;
+	double step_size_to_find_accessible_points_of_the_room_;
 
 	/* room_inspection_method_->
 	 * 1. It finds the available points from the unprocessed room.

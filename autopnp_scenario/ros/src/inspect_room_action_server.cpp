@@ -71,7 +71,7 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 	cv::Point pixel_point_next;
 	int pixel_value_of_the_room = original_map_from_goal_definiton.at<unsigned char>(center_of_room_[room_number_.back()]);
 	int even_odd_loop_checker = 0;
-	ros::param::param("/inspect_room_parameter/step_size_to_find_accessible_points_of_the_room_check_", step_size_to_find_accessible_points_of_the_room_, 1);
+	ros::param::param("/inspect_room_parameter/step_size_to_find_accessible_points_of_the_room_check_", step_size_to_find_accessible_points_of_the_room_, 1.0);
 	int step_size_to_find_accessible_points_of_the_room_in_pixel = (step_size_to_find_accessible_points_of_the_room_/map_resolution_);
 	move_base_client_identifier_ move_base_client_object("move_base", true);
 
@@ -97,9 +97,13 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 					// this calls the service server to process our request message and put the result into the response message
 					// this call is blocking, i.e. this program will not proceed until the service server sends the response
 //					bool accessible_point_flag = ros::service::call(points_service_name, req_points, res_points);
-					ros::service::call(points_service_name, req_points, res_points);
 
-					if (res_points.accessibility_flags[0] == true)
+					// hack: not used for Dussmann tests
+					//ros::service::call(points_service_name, req_points, res_points);
+
+					// hack: for Dussmann tests
+					//if (res_points.accessibility_flags[0] == true)
+					if (true)
 					{
 						std::cout << "Point " << accessible_point.x << ", " << accessible_point.y << " is accessible." << std::endl;
 						pixel_point_next.x = map_row_value;
