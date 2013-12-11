@@ -748,6 +748,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 class MoveToToolWaggonFrontTrashClearing(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
+		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		self.tool_wagon_pose = None
 		self.last_callback_time = rospy.Time.now()
 
@@ -765,6 +766,10 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
+		
+		# 1. adjust base footprint
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.40,0.36],[-0.40,-0.36],[0.45,-0.36]]"})
 		
 # 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
 # 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
@@ -791,6 +796,13 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
+		
+		# 4. reset footprint
+		if local_config["footprint"]!=None:
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 		
 		return 'arrived'
 
@@ -1028,9 +1040,10 @@ class GoToNextUnprocessedWasteBin(smach.State):
 			return 'All_the_trash_bin_is_cleared'
 		else:
 			rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
-			rospy.loginfo('Current Trash Bin Number: %d',userdata.number_of_unprocessed_trash_bin_in_)
+			rospy.loginfo('Current Trash Bin Number: %d',userdata.number_of_unprocessed_trash_bin_in_+1)
 			userdata.go_to_next_unprocessed_waste_bin_out_ = userdata.go_to_next_unprocessed_waste_bin_in_[userdata.number_of_unprocessed_trash_bin_in_]
-			userdata.number_of_unprocessed_trash_bin_out_ = userdata.number_of_unprocessed_trash_bin_in_ + 1
+			print "Pose of next trash bin to clear: ", userdata.go_to_next_unprocessed_waste_bin_in_[userdata.number_of_unprocessed_trash_bin_in_]
+			userdata.number_of_unprocessed_trash_bin_out_ = userdata.number_of_unprocessed_trash_bin_in_+1
 			return 'go_to_trash_location'
 
 
@@ -1054,11 +1067,11 @@ class MoveToTrashBinLocation(smach.State):
 		#try:
 			#sm = ApproachPerimeter()
 		center = Pose2D()
-		center.x = userdata.trash_bin_pose_.pose.pose.position.x 
+		center.x = userdata.trash_bin_pose_.pose.pose.position.x
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.75		# adjust this for right distance to trash bin
+		userdata.radius = 0.55		# adjust this for right distance to trash bin
 		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
@@ -1263,7 +1276,7 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		raw_input("Press key.")
 		
 		# clear trash bin
-		if JOURNALIST_MODE == True:
+		if JOURNALIST_MODE == False:
 			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
 					ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["clear_small"]])
 		else:
@@ -1320,13 +1333,12 @@ class MoveToTrashBinPickingLocation(smach.State):
 		center = Pose2D(x=userdata.trash_bin_pose_.pose.pose.position.x, y=userdata.trash_bin_pose_.pose.pose.position.y, theta=0)
 		print "center: ", center
 		userdata.center = center
-		userdata.radius = 0.75		# adjust this for right distance to trash bin
+		userdata.radius = 0.55		# adjust this for right distance to trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
-		rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location')
 
 		 # todo: move back to location where trash bin was grabbed
 		 #sss.move('base',[userdata.trash_bin_pose_.x, userdata.trash_bin_pose_.y, userdata.trash_bin_pose_.theta])
@@ -1341,7 +1353,6 @@ class ReleaseTrashBin(smach.State):
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("ReleaseTrashBin")
-#         rospy.sleep(2)                              
 		rospy.loginfo('Executing state Release_Trash_Bin')
 
 		#lwa4d:
@@ -1636,7 +1647,7 @@ class MoveLocationPerimeterCleaning(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.75		# adjust this for right distance to dirt spot
+		userdata.radius = 0.50		# adjust this for right distance to dirt spot
 		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
