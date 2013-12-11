@@ -166,15 +166,15 @@ bool TrashBinDetectionNode::deactivate_trash_bin_detection_callback_(autopnp_sce
 	}
 
 	// hack for demo in holland
-	if (trash_bin_location_storage_.trash_bin_locations.size() == 0)
-	{
-		temp_detection_obj.pose.header.frame_id = "/map";
-		temp_detection_obj.pose.pose.position.x = 0.0;
-		temp_detection_obj.pose.pose.position.y = 0.0;
-		temp_detection_obj.pose.pose.position.z = 0.0;
-		temp_detection_obj.header.frame_id = "/map";
-		res.detected_trash_bin_poses.detections.push_back(temp_detection_obj);
-	}
+//	if (trash_bin_location_storage_.trash_bin_locations.size() == 0)
+//	{
+//		temp_detection_obj.pose.header.frame_id = "/map";
+//		temp_detection_obj.pose.pose.position.x = 0.0;
+//		temp_detection_obj.pose.pose.position.y = 0.0;
+//		temp_detection_obj.pose.pose.position.z = 0.0;
+//		temp_detection_obj.header.frame_id = "/map";
+//		res.detected_trash_bin_poses.detections.push_back(temp_detection_obj);
+//	}
 
 	return true;
 }

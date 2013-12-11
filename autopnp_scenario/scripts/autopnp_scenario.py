@@ -254,7 +254,7 @@ def main():
 			
 			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
 								transitions={'reached':'GRASP_TRASH_BIN', 
-											 'not_reached':'failed',
+											 'not_reached':'CWB_done',
 											 'failed':'failed'},
 									remapping = {'trash_bin_pose_':'detection_pose'})
 			
