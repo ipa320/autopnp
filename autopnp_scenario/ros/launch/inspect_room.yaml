@@ -13,4 +13,4 @@
 # Here we choose the value 1 meter
 
 # double [m]
-step_size_to_find_accessible_points_of_the_room_check_: 1.0
+step_size_to_find_accessible_points_of_the_room_check_: 0.75

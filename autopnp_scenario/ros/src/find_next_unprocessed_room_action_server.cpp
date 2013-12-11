@@ -19,7 +19,7 @@ void unprocessed_room_finder::find_next_room_(const cv::Mat &map_from_goal_defin
 
 	//Get the current position of the robot
 	listener_.lookupTransform("/map", "/base_link", ros::Time(0), transform_);
-	Pose robot_location_in_meter(transform_.getOrigin().x(), transform_.getOrigin().y(), transform_.getRotation().z());
+	Pose robot_location_in_meter(transform_.getOrigin().x(), transform_.getOrigin().y(), transform_.getRotation().z()); // todo: angle is wrong -> z is from quaternion
 	robot_location_in_pixel = convert_from_meter_to_pixel_coordinates_<cv::Point>(robot_location_in_meter);
 	int Pixel_Value = (int)map_from_goal_definition.at<unsigned char>(robot_location_in_pixel);
 
@@ -53,7 +53,7 @@ void unprocessed_room_finder::find_next_room_(const cv::Mat &map_from_goal_defin
 		}
 	}
 
-	ROS_INFO("Robot Distance from Nearest Room Location: %f",min_robot_distance_from_center);
+	ROS_INFO("Robot Distance from Nearest Room Location (room %i): %f",min_robot_distance_from_center_index, min_robot_distance_from_center);
 
 	//get the nearest room center point from current robot location
 	x_coordinate_of_room_center_position_ = x_coordinate_of_room_center_[min_robot_distance_from_center_index];

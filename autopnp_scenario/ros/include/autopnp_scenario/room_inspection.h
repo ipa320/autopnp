@@ -120,6 +120,9 @@ private:
 	 * */
 	cv::Mat room_inspection_method_(cv::Mat &original_map_from_goal_definiton);
 
+	// local energy minimization implementation
+	void room_inspection_local_energy_implementation(cv::Mat &original_map_from_goal_definiton);
+
 	//Move Base Action Server Methods
 	move_base_msgs::MoveBaseGoal move_in_pixel_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter);
 	move_base_msgs::MoveBaseGoal stay_forward_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter);

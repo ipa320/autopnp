@@ -5,8 +5,8 @@
 //constructor Initialization
 TrashBinDetectionNode::TrashBinDetectionNode(ros::NodeHandle& nh)
 : grasp_trash_bin_server_(nh, "grasp_trash_bin", boost::bind(&TrashBinDetectionNode::graspTrashBin, this, _1), false),	// this initializes the action server; important: always set the last parameter to false
-  sdh_follow_joint_client_("/sdh_controller/follow_joint_trajectory", true),
   listener_(nh, ros::Duration(40.0)), nh_(nh)
+ // sdh_follow_joint_client_("/sdh_controller/follow_joint_trajectory", true)
 {
 }
 
@@ -19,8 +19,8 @@ void TrashBinDetectionNode::init(ros::NodeHandle& nh)
 	//trash_bin_poses-> So you have to take the data from this topic
 	trash_bin_location_publisher_ = nh.advertise<autopnp_scenario::TrashBinDetection>("trash_bin_poses", 1, this);
 
-	grasp_trash_bin_server_.start();
-	sdh_follow_joint_client_.waitForServer();
+	//grasp_trash_bin_server_.start();
+	//sdh_follow_joint_client_.waitForServer();
 
 	ROS_INFO("TrashBinDetectionNode: initialized.");
 }
@@ -40,7 +40,7 @@ void TrashBinDetectionNode::fiducials_data_callback_(const cob_object_detection_
 			tag_label_name_ = fiducials_msg_data->detections[i].label;
 			fiducials_pose_ = fiducials_msg_data->detections[i].pose;
 
-			if (fiducials_msg_data->detections[i].label.compare("tag_0")==0)
+			if (fiducials_msg_data->detections[i].label.compare("tag_25")==0)
 			{
 				std::string frame_id = fiducials_msg_data->detections[i].header.frame_id;
 				trash_bin_pose_estimator_(fiducials_msg_data->detections[i].pose, frame_id);
@@ -105,13 +105,15 @@ void TrashBinDetectionNode::trash_bin_pose_estimator_(const geometry_msgs::PoseS
 			{
 				trash_bin_location_storage_.trash_bin_locations.push_back(pose_with_respect_to_map);
 				trash_bin_location_average_count_.push_back(1);
-				ROS_INFO("Added a new trash bin location.");
+				ROS_INFO("Added a new trash bin location at xyz=(%f,%f,%f)m.", pose_with_respect_to_map.pose.position.x, pose_with_respect_to_map.pose.position.y, pose_with_respect_to_map.pose.position.z);
 			}
 		}
 	}
 	else
 	{
 		trash_bin_location_storage_.trash_bin_locations.push_back(pose_with_respect_to_map);
+		trash_bin_location_average_count_.push_back(1);
+		ROS_INFO("Added a new trash bin location at xyz=(%f,%f,%f)m.", pose_with_respect_to_map.pose.position.x, pose_with_respect_to_map.pose.position.y, pose_with_respect_to_map.pose.position.z);
 	}
 
 	trash_bin_location_publisher_.publish(trash_bin_location_storage_);

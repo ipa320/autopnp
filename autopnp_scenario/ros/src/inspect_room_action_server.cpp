@@ -76,13 +76,14 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 	move_base_client_identifier_ move_base_client_object("move_base", true);
 
 	for (int map_column_value = room_min_x_[room_number_.back()]; map_column_value < room_max_x_[room_number_.back()];
-			map_column_value = map_column_value + step_size_to_find_accessible_points_of_the_room_in_pixel)
+			map_column_value += step_size_to_find_accessible_points_of_the_room_in_pixel)
 	{
 		if (even_odd_loop_checker % 2 == 0)
 		{
 			for (int map_row_value = room_min_y_[room_number_.back()]; map_row_value < room_max_y_[room_number_.back()];
-					map_row_value = map_row_value + step_size_to_find_accessible_points_of_the_room_in_pixel)
+					map_row_value += step_size_to_find_accessible_points_of_the_room_in_pixel)
 			{
+				std::cout << "original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value): " << int(original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value)) << ",  pixel_value_of_the_room: " << pixel_value_of_the_room << std::endl;
 				if (original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value) == pixel_value_of_the_room)
 				{
 					cob_map_accessibility_analysis::CheckPointAccessibility::Request req_points;
@@ -96,14 +97,14 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 
 					// this calls the service server to process our request message and put the result into the response message
 					// this call is blocking, i.e. this program will not proceed until the service server sends the response
-//					bool accessible_point_flag = ros::service::call(points_service_name, req_points, res_points);
+					bool accessible_point_flag = ros::service::call(points_service_name, req_points, res_points);
 
 					// hack: not used for Dussmann tests
 					//ros::service::call(points_service_name, req_points, res_points);
 
 					// hack: for Dussmann tests
-					//if (res_points.accessibility_flags[0] == true)
-					if (true)
+					if (res_points.accessibility_flags[0] == true)
+					//if (true)
 					{
 						std::cout << "Point " << accessible_point.x << ", " << accessible_point.y << " is accessible." << std::endl;
 						pixel_point_next.x = map_row_value;
@@ -142,7 +143,6 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 			}
 
 		}
-
 		else
 		{
 			for (int map_row_value = room_max_y_[room_number_.back()]; map_row_value > room_min_y_[room_number_.back()];
@@ -219,9 +219,18 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 	return original_map_from_goal_definiton;
 }
 
+void room_inspection::room_inspection_local_energy_implementation(cv::Mat &original_map_from_goal_definiton)
+{
+	ROS_INFO("555555555555 inspect room action server 555555555555");
+
+	cv::circle(original_map_from_goal_definiton, center_of_room_[room_number_.back()], 3, cv::Scalar(255), -1);
+
+	ROS_INFO("555555555555 inspect room action server 555555555555\n");
+}
+
 void room_inspection::execute_inspect_room_action_server_(const autopnp_scenario::InspectRoomGoalConstPtr &goal)
 {
-	ros::Rate loop_counter(1);
+	//ros::Rate loop_counter(1);
 
 	//get the necessary room information from goal definition from client
 	map_resolution_ = goal->map_resolution;
@@ -248,12 +257,12 @@ void room_inspection::execute_inspect_room_action_server_(const autopnp_scenario
 	room_max_y_ = goal->room_max_y;
 
 	cv::Point centroid;
-	for( unsigned int i = 0 ; i < room_center_x_.size() ; i++ )
-		{
-			centroid.x = room_center_x_[i];
-			centroid.y = room_center_y_[i];
-			center_of_room_.push_back(centroid);
-		}
+	for(unsigned int i = 0 ; i < room_center_x_.size() ; ++i)
+	{
+		centroid.x = room_center_x_[i];
+		centroid.y = room_center_y_[i];
+		center_of_room_.push_back(centroid);
+	}
 
 	//converting the map msg in cv format
 	cv_bridge::CvImagePtr cv_ptr;
@@ -265,7 +274,7 @@ void room_inspection::execute_inspect_room_action_server_(const autopnp_scenario
 
 	InspectRoomMap = room_inspection_method_(original_img);
 
-	loop_counter.sleep();
+	//loop_counter.sleep();
 
 	//converting the cv format in map msg format
 	cv_bridge::CvImage cv_image;

@@ -169,6 +169,8 @@ class InitAutoPnPScenario(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat("InitAutoPnPScenario")
 		
+		#todo: set acceleration
+		
 		tool_wagon_pose = Pose2D()
 		try:
 			listener = get_transform_listener()
@@ -261,9 +263,9 @@ class NextUnprocessedRoom(smach.State):
 																							userdata.analyze_map_data_map_origin_x_,
 																							userdata.analyze_map_data_map_origin_y_ )
 			#rospy.sleep(10)
-			userdata.find_next_unprocessed_room_number_out_ = find_next_unprocessed_room_action_server_result_.room_number
-			rospy.loginfo('Current room No: %d'%userdata.find_next_unprocessed_room_loop_counter_in_)  
-			userdata.find_next_unprocessed_room_loop_counter_out_ = userdata.find_next_unprocessed_room_loop_counter_in_ + 1  
+			userdata.find_next_unprocessed_room_number_out_ = find_next_unprocessed_room_action_server_result_.room_number   # list of already processed rooms and next room at the back
+			rospy.loginfo('Current room No: %d'%userdata.find_next_unprocessed_room_loop_counter_in_)
+			userdata.find_next_unprocessed_room_loop_counter_out_ = userdata.find_next_unprocessed_room_loop_counter_in_ + 1
 			userdata.find_next_unprocessed_room_center_x_ = find_next_unprocessed_room_action_server_result_.center_position_x
 			userdata.find_next_unprocessed_room_center_y_ = find_next_unprocessed_room_action_server_result_.center_position_y
 			return 'location'
@@ -366,7 +368,7 @@ class FindRandomLocation(smach.State):
 class InspectRoom(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['finished'],input_keys=['inspect_room_data_img_in_',
-																	'inspect_room_room_number_',
+																	'inspect_room_room_number_',   # vector of already visited rooms and current room at back
 																	'analyze_map_data_room_center_x_',
 																	'analyze_map_data_room_center_y_',
 																	'analyze_map_data_room_min_x_',

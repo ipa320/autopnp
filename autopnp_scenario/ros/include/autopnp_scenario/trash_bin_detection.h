@@ -106,7 +106,7 @@ private:
 	ros::ServiceServer deactivate_trash_bin_detection_server_;
 	GraspTrashBinActionServer grasp_trash_bin_server_;
 	void graspTrashBin(const autopnp_scenario::GraspTrashBinGoalConstPtr& goal);
-	FollowJointTrajectoryActionClient sdh_follow_joint_client_;
+	//FollowJointTrajectoryActionClient sdh_follow_joint_client_;
 
 	tf::TransformListener listener_;
 
