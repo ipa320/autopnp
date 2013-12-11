@@ -278,7 +278,13 @@ def main():
 								transitions={'finished':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
 			
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-								transitions={'MTTBPL_done':'RELEASE_TRASH_BIN'},
+								transitions={'MTTBPL_done':'APPROACH_PERIMETER'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
+			
+			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
+								transitions={'reached':'RELEASE_TRASH_BIN', 
+											'not_reached':'CWB_done',
+											'failed':'failed'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
@@ -319,7 +325,7 @@ def main():
 		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['CTM_done'],
 														input_keys=['tool_wagon_pose'])
 		with sm_sub_change_tool_manual:
-			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonRear(),
+			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonFrontFar(),
 								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION'})
 			
 			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),

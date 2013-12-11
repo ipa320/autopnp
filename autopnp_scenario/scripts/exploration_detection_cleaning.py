@@ -109,7 +109,7 @@ global TOOL_WAGON_ROBOT_OFFSETS
 TOOL_WAGON_ROBOT_OFFSETS={
 						"front":	Pose2D(x=-1.1, y=0.0, theta=0.0),
 						"front_far":	Pose2D(x=-1.4, y=0.0, theta=0.0),
-						"rear":		Pose2D(x=-1.0, y=0.0, theta=math.pi),
+						"rear":		Pose2D(x=-1.45, y=0.0, theta=math.pi),
 						"front_frontal_far":	Pose2D(x=1.4, y=0.0, theta=math.pi),
 						"front_trash_clearing":	Pose2D(x=-1.05, y=0.0, theta=0.0)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
@@ -1317,10 +1317,8 @@ class MoveToTrashBinPickingLocation(smach.State):
 		rospy.loginfo('Executing state Move_To_Trash_Bin_Picking_Location') 
 		#try:
 		#sm = ApproachPerimeter()
-		center = Pose2D()
-		center.x = userdata.trash_bin_pose_.pose.pose.position.x 
-		center.y = userdata.trash_bin_pose_.pose.pose.position.y
-		center.theta = 0
+		center = Pose2D(x=userdata.trash_bin_pose_.pose.pose.position.x, y=userdata.trash_bin_pose_.pose.pose.position.y, theta=0)
+		print "center: ", center
 		userdata.center = center
 		userdata.radius = 0.75		# adjust this for right distance to trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
