@@ -122,10 +122,10 @@ def main():
 							transitions={'finished':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
 		
 		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-							transitions={'MTTBPL_done':'APPROACH_PERIMETER'},
+							transitions={'MTTBPL_done':'APPROACH_PERIMETER_2'},
 							remapping = {'trash_bin_pose_':'detection_pose'})
 		
-# 		smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
+# 		smach.StateMachine.add('APPROACH_PERIMETER_2', ApproachPerimeter(),
 # 							transitions={'reached':'RELEASE_TRASH_BIN', 
 # 										 'not_reached':'failed',
 # 										 'failed':'failed'},
@@ -284,10 +284,10 @@ def main():
 								transitions={'finished':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
 			
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-								transitions={'MTTBPL_done':'APPROACH_PERIMETER'},
+								transitions={'MTTBPL_done':'APPROACH_PERIMETER_2'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
-			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
+			smach.StateMachine.add('APPROACH_PERIMETER_2', ApproachPerimeter(),
 								transitions={'reached':'RELEASE_TRASH_BIN', 
 											'not_reached':'CWB_done',
 											'failed':'failed'},
