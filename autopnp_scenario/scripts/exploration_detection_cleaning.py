@@ -165,11 +165,16 @@ class InitAutoPnPScenario(smach.State):
 			outcomes=['initialized', 'failed'],
 			input_keys=[],
 			output_keys=['tool_wagon_pose'])
+		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("InitAutoPnPScenario")
 		
 		#todo: set acceleration
+		# adjust base footprint
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.25],[0.45,-0.25],[0.35,-0.37],[-0.35,-0.37],[-0.45,-0.25],[-0.45,0.25],[-0.35,0.37],[0.35,0.37]]"})
+
 		
 		tool_wagon_pose = Pose2D()
 		try:
