@@ -80,6 +80,7 @@ from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 
 from ApproachPerimeter import *
+from ApproachPerimeterLinear import *
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
@@ -166,14 +167,15 @@ class InitAutoPnPScenario(smach.State):
 			input_keys=[],
 			output_keys=['tool_wagon_pose'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+		self.dwa_planner_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("InitAutoPnPScenario")
 		
 		#todo: set acceleration
 		# adjust base footprint
-		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.25],[0.45,-0.25],[0.35,-0.37],[-0.35,-0.37],[-0.45,-0.25],[-0.45,0.25],[-0.35,0.37],[0.35,0.37]]"})
+#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.25],[0.45,-0.25],[0.25,-0.45],[-0.25,-0.45],[-0.45,-0.25],[-0.45,0.25],[-0.25,0.45],[0.25,0.45]]"})
+		self.dwa_planner_dynamic_reconfigure_client.update_configuration({"acc_lim_x": 1.0, "acc_lim_y": 1.0, "acc_lim_theta": 1.0, "xy_goal_tolerance": 0.05, "yaw_goal_tolerance": 0.06})
 
 		
 		tool_wagon_pose = Pose2D()
@@ -773,8 +775,8 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. adjust base footprint
-		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.40,0.36],[-0.40,-0.36],[0.45,-0.36]]"})
+#		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
 		
 # 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
 # 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
@@ -803,11 +805,11 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		fiducials_sub.unregister()
 		
 		# 4. reset footprint
-		if local_config["footprint"]!=None:
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
-		else:
-			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+#		if local_config["footprint"]!=None:
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+#		else:
+#			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 		
 		return 'arrived'
 
@@ -1076,7 +1078,7 @@ class MoveToTrashBinLocation(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.55		# adjust this for right distance to trash bin
+		userdata.radius = 0.70		# adjust this for right distance to trash bin
 		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
@@ -1085,7 +1087,30 @@ class MoveToTrashBinLocation(smach.State):
 
 		return 'MTTBL_success'
 
+class MoveToTrashBinLocationLinear(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'],
+							output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
 
+	def execute(self, userdata ):
+		sf = ScreenFormat("MoveToTrashBinLocationLinear")
+		rospy.loginfo('Executing state MoveToTrashBinLocationLinear') 
+		#try:
+			#sm = ApproachPerimeter()
+		center = Pose2D()
+		center.x = userdata.trash_bin_pose_.pose.pose.position.x
+		center.y = userdata.trash_bin_pose_.pose.pose.position.y
+		center.theta = 0
+		userdata.center = center
+		userdata.radius = 0.45		# adjust this for right distance to trash bin
+		userdata.goal_pose_theta_offset = 1.2*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.rotational_sampling_step = 10.0/180.0*math.pi
+		userdata.new_computation_flag = True
+		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
+		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'
+
+		return 'MTTBL_success'
+	
 
 class GraspTrashBin(smach.State):
 	def __init__(self):
@@ -1095,14 +1120,16 @@ class GraspTrashBin(smach.State):
 		sf = ScreenFormat("GraspTrashBin")
 		rospy.loginfo('Executing state Grasp_Trash_Bin')
 
+		raw_input("positioned correctly?")
+
 		#lwa4d:
 		intermediate_folded2overtrashbin_position = [0.8592779506343683, -0.2794097599517722, -0.6911329304972346, -1.6704895336688126, 2.7189611752193663, -0.6486690697962125, -0.00013962634015954637]
 		overtrashbin_position = [-0.7597243701006117, -0.29044024082437636, 0.35585518118912385, -1.8774681296628202, 3.024934846386492, -0.23268729587588402, 2.3328594380931804]
 		
 		intrashbin_position_large = [-0.7597069168080918, -0.7994306105834827, 0.35585518118912385, -1.6194910129255382, 3.024934846386492, -0.02567379329683659, 2.3328594380931804]
 		deepintrashbin_position_large = [-0.7846651251116107, -0.9414131452332214, 0.35585518118912385, -1.456459807496748, 3.021932880073062, -0.02567379329683659, 2.475854263709076]
-		intrashbin_position_small = [-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
-		deepintrashbin_position_small = [-0.49663432530867424, -1.1209673134469444, 0.14990452214815173, -1.428260011571481, 3.0249716446102015, 0.13848445107830495, 2.3748987545970754] #[-0.4967207051175862, -1.223720151743304, 0.1498365162837132, -0.9534384637794623, 3.024987206264052, -0.22654373690886398, 2.374852059896164]
+		intrashbin_position_small = [-0.49670325182506625, -0.9567894959432915, 0.15018558213411204, -1.3131333693229736, 3.025004659556572, -0.1595230936322817, 2.374852059896164] #[-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
+		deepintrashbin_position_small = [-0.4967381584101061, -1.0639701653082632, 0.1500459557939525, -1.474611231717489, 3.024917393093972, 0.13828243663551074, 2.374886966481204] #[-0.49663432530867424, -1.1209673134469444, 0.14990452214815173, -1.428260011571481, 3.0249716446102015, 0.13848445107830495, 2.3748987545970754] #[-0.4967207051175862, -1.223720151743304, 0.1498365162837132, -0.9534384637794623, 3.024987206264052, -0.22654373690886398, 2.374852059896164]
 		
 		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
 		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
@@ -1203,19 +1230,19 @@ class Turn180(smach.State):
 		while robot_pose_translation==None:
 			(robot_pose_translation, robot_pose_rotation, robot_pose_rotation_euler) = currentRobotPose()
 		
-		# 1. adjust base footprint
-		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.40,0.36],[-0.40,0.36],[-0.40,-0.36],[0.40,-0.36]]"})
+#		# 1. adjust base footprint
+#		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.40,0.36],[-0.40,0.36],[-0.40,-0.36],[0.40,-0.36]]"})
 
 		# 2. turn around
 		sss.move('base', [robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0]+math.pi], mode='linear')
 
 		# 3. reset footprint
-		if local_config["footprint"]!=None:
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
-		else:
-			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+#		if local_config["footprint"]!=None:
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+#		else:
+#			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 
 		return 'arrived'
 
@@ -1338,7 +1365,7 @@ class MoveToTrashBinPickingLocation(smach.State):
 		center = Pose2D(x=userdata.trash_bin_pose_.pose.pose.position.x, y=userdata.trash_bin_pose_.pose.pose.position.y, theta=0)
 		print "center: ", center
 		userdata.center = center
-		userdata.radius = 0.55		# adjust this for right distance to trash bin
+		userdata.radius = 0.70		# adjust this for right distance to trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.new_computation_flag = True
@@ -1359,6 +1386,8 @@ class ReleaseTrashBin(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat("ReleaseTrashBin")
 		rospy.loginfo('Executing state Release_Trash_Bin')
+
+		raw_input("trash bin location ok?")
 
 		#lwa4d:
 		intermediate_folded2overtrashbin_position = [0.8592779506343683, -0.2794097599517722, -0.6911329304972346, -1.6704895336688126, 2.7189611752193663, -0.6486690697962125, -0.00013962634015954637]
@@ -1423,9 +1452,24 @@ class ChangeToolManual(smach.State):
 			rospy.wait_for_service(service_name) 
 			try:
 				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
+				resp = req(uri='tool_changer_pin4', state=0)
+				print 'Resetting tool changer pin4: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
+				resp = req(uri='tool_changer_pin2', state=0)
+				print 'Resetting tool changer pin2: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
 				resp = req(uri='tool_changer_pin4', state=1)
 				print 'Opening tool changer response: uri=', resp.uri, '  state=', resp.state
 				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
 				resp = req(uri='tool_changer_pin4', state=0)
 				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
 			except rospy.ServiceException, e:
@@ -1451,6 +1495,9 @@ class ChangeToolManual(smach.State):
 			except rospy.ServiceException, e:
 				print "Service call failed: %s"%e
 			tool_change_successful = raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
+		
+		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		handle_arm = sss.move("arm",[carrying_position])
 		
 		print 'Manual tool change successfully completed.'
 		
@@ -1573,18 +1620,18 @@ class MoveArmToStandardLocation(smach.State):
 
 
 
-class GetDirtMap(smach.State):
+class ReceiveDirtMap(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['list_of_dirt_location'],
 							output_keys=['list_of_dirt_locations', 'last_visited_dirt_location'])
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("GetDirtMap")
+		sf = ScreenFormat("ReceiveDirtMap")
 #		rospy.sleep(2)
-		rospy.loginfo('Executing state Get_Dirt_Map')
+		rospy.loginfo('Executing state ReceiveDirtMap')
 		rospy.wait_for_service('/dirt_detection/get_dirt_map')
 		try:
-			req = rospy.ServiceProxy('/dirt_detection/get_dirt_map',GetDirtMap)
+			req = rospy.ServiceProxy('/dirt_detection/get_dirt_map', GetDirtMap)
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
@@ -1598,8 +1645,9 @@ class GetDirtMap(smach.State):
 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
 					x = u*map_resolution+map_offset.position.x
 					y = v*map_resolution+map_offset.position.y
-					list_of_dirt_locations.append([x,y])
-					print "adding dirt location at (%i,%i)pix = (%f,%f)m" %u %v %x %y
+					if x>0.0 and y>0.0 and x<5.0 and y<2.5:
+						list_of_dirt_locations.append([x,y])
+						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
 		userdata.list_of_dirt_locations = list_of_dirt_locations
 		userdata.last_visited_dirt_location = -1
@@ -1618,7 +1666,7 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['selected_next_dirt_location','no_dirt_spots_left'],
 							input_keys=['list_of_dirt_locations', 'last_visited_dirt_location'],
-							output_keys=['next_dirt_location'])
+							output_keys=['next_dirt_location', 'last_visited_dirt_location'])
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("SelectNextUnprocssedDirtSpot")
@@ -1630,6 +1678,7 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 			current_dirt_location = userdata.last_visited_dirt_location + 1
 			userdata.last_visited_dirt_location = current_dirt_location
 			userdata.next_dirt_location = userdata.list_of_dirt_locations[current_dirt_location]
+			print "Next dirt location to clean: ", userdata.list_of_dirt_locations[current_dirt_location]
 			return 'selected_next_dirt_location'
 
 		print "Error: the script should newer visit this point."
@@ -1652,7 +1701,7 @@ class MoveLocationPerimeterCleaning(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.50		# adjust this for right distance to dirt spot
+		userdata.radius = 0.45		# adjust this for right distance to dirt spot
 		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
@@ -1727,10 +1776,14 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 		
 		# move base (if necessary)
-		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
-		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
-		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
-		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		for i in range(0,1):
+			for j in range(0,2):
+				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+			for j in range(0,5):
+				handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+			for j in range(0,2):
+				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+			
 		
 		# turn vacuum cleaner off
 		rospy.wait_for_service(vacuum_off_service_name) 
@@ -1743,7 +1796,7 @@ class Clean(smach.State):
 		# move arm back to storage position
 		handle_arm = sss.move("arm",[above_cleaning_5cm_position, above_cleaning_20cm_position, intermediate2_position, intermediate1_position, carrying_position])
 		
-		raw_input("Quit program")
+		#raw_input("Quit program")
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
@@ -1775,7 +1828,7 @@ class MoveLocationPerimeterValidation(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 1.20		# adjust this for right distance to dirt spot
+		userdata.radius = 1.60		# adjust this for right distance to dirt spot
 		userdata.goal_pose_theta_offset = 0.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
@@ -1795,7 +1848,7 @@ class MoveLocationPerimeterValidation(smach.State):
 
 class VerifyCleaningProcess(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['VCP_done'])
+		smach.State.__init__(self, outcomes=['VCP_done'], input_keys=['next_dirt_location'])
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("verifyCleaningProcess")
@@ -1804,11 +1857,13 @@ class VerifyCleaningProcess(smach.State):
 		sss.move("head", "front")
 		sss.move("torso", "front_extreme")
 		
+		point = Point(x=userdata.next_dirt_location[0], y=userdata.next_dirt_location[1], z=0.0)
+		
 		rospy.loginfo('Executing state verify_Cleaning_Process')
 		rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
 		try:
 			req = rospy.ServiceProxy('/dirt_detection/validate_cleaning_result', ValidateCleaningResult)
-			resp = req(validationPositions=Point(), numberValidationImages=-1)
+			resp = req(validationPositions=[point], numberValidationImages=-1)
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
 		

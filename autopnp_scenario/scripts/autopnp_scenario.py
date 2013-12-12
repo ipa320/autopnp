@@ -119,11 +119,11 @@ def main():
 							transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2'})
 		
 		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2', ClearTrashBinIntoToolWagonPart2(),
-							transitions={'finished':'MOVE_TO_TRASH_BIN_PICKING_LOCATION'})
+							transitions={'finished':'RELEASE_TRASH_BIN'})
 		
-		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-							transitions={'MTTBPL_done':'APPROACH_PERIMETER_2'},
-							remapping = {'trash_bin_pose_':'detection_pose'})
+# 		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
+# 							transitions={'MTTBPL_done':'APPROACH_PERIMETER_2'},
+# 							remapping = {'trash_bin_pose_':'detection_pose'})
 		
 # 		smach.StateMachine.add('APPROACH_PERIMETER_2', ApproachPerimeter(),
 # 							transitions={'reached':'RELEASE_TRASH_BIN', 
@@ -256,13 +256,23 @@ def main():
 		with sm_sub_clear_waste_bin:
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
 								transitions={'MTTBL_success':'APPROACH_PERIMETER'},
-									remapping = {'trash_bin_pose_':'detection_pose'})
+								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
-								transitions={'reached':'GRASP_TRASH_BIN', 
-											 'not_reached':'CWB_done',
+								transitions={'reached':'MOVE_TO_TRASH_BIN_LOCATION_LINEAR', 
+											 'not_reached':'MOVE_TO_TRASH_BIN_LOCATION_LINEAR',
 											 'failed':'failed'},
-									remapping = {'trash_bin_pose_':'detection_pose'})
+								remapping = {'trash_bin_pose_':'detection_pose'})
+			
+			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION_LINEAR', MoveToTrashBinLocationLinear(),
+								transitions={'MTTBL_success':'APPROACH_PERIMETER_LINEAR'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
+			
+			smach.StateMachine.add('APPROACH_PERIMETER_LINEAR', ApproachPerimeterLinear(),
+								transitions={'reached':'GRASP_TRASH_BIN', 
+											 'not_reached':'GRASP_TRASH_BIN',
+											 'failed':'failed'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
 								transitions={'GTB_success':'MOVE_TO_TOOL_WAGON_FRONTAL',
@@ -289,7 +299,7 @@ def main():
 			
 			smach.StateMachine.add('APPROACH_PERIMETER_2', ApproachPerimeter(),
 								transitions={'reached':'RELEASE_TRASH_BIN', 
-											'not_reached':'CWB_done',
+											'not_reached':'RELEASE_TRASH_BIN',
 											'failed':'failed'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
@@ -341,12 +351,12 @@ def main():
 							transitions={'CTM_done':'GET_DIRT_MAP'})
 		
 		
-		smach.StateMachine.add('GET_DIRT_MAP', GetDirtMap(),
+		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(),
 							transitions={'list_of_dirt_location':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
 		
 		
 		
-		sm_sub_go_to_next_unprocessed_dirt_location = smach.StateMachine(outcomes=['no_dirt_spots_left','arrived_dirt_location'],
+		sm_sub_go_to_next_unprocessed_dirt_location = smach.StateMachine(outcomes=['no_dirt_spots_left','arrived_dirt_location', 'failed'],
 																		input_keys=['list_of_dirt_locations', 'last_visited_dirt_location'],
 																		output_keys=['next_dirt_location'])
 
@@ -373,7 +383,8 @@ def main():
 		
 		
 		
-		sm_sub_go_to_inspect_location = smach.StateMachine(outcomes=['arrived_cleaning_inspection_location'])
+		sm_sub_go_to_inspect_location = smach.StateMachine(outcomes=['arrived_cleaning_inspection_location', 'not_reached', 'failed'],
+														input_keys=['next_dirt_location'])
 
 		with sm_sub_go_to_inspect_location:
 			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_VALIDATION', MoveLocationPerimeterValidation(),
@@ -381,11 +392,13 @@ def main():
 			
 			smach.StateMachine.add('APPROACH_PERIMETER_VALIDATION', ApproachPerimeter(),
 								transitions={'reached':'arrived_cleaning_inspection_location', 
-											 'not_reached':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION',
+											 'not_reached':'not_reached',
 											 'failed':'failed'})
 
 		smach.StateMachine.add('GO_TO_INSPECT_LOCATION', sm_sub_go_to_inspect_location,
-							transitions={'arrived_cleaning_inspection_location':'VERIFY_CLEANING_SUCCESS'})
+							transitions={'arrived_cleaning_inspection_location':'VERIFY_CLEANING_SUCCESS',
+										'not_reached':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION',
+										'failed':'failed'})
 		
 		
 		

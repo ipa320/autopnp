@@ -12,7 +12,17 @@ room_inspection::room_inspection(std::string name_of_the_action) :
 //execute move_base action and receives the goal in pixel
 move_base_msgs::MoveBaseGoal room_inspection::move_in_pixel_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter)
 {
-	listener_.lookupTransform("/map", "/base_link", ros::Time(0), transform_);
+	try
+	{
+		ros::Time latest_time = ros::Time(0);
+		listener_.waitForTransform("/map", "/base_link", latest_time, ros::Duration(10));
+		listener_.lookupTransform("/map", "/base_link", latest_time, transform_);
+	}
+	catch (tf::TransformException ex)
+	{
+		ROS_ERROR("room_inspection::move_in_pixel: transform not available: %s",ex.what());
+	}
+	//listener_.lookupTransform("/map", "/base_link", ros::Time(0), transform_);
 
 	move_base_msgs::MoveBaseGoal move_base_msgs_obj;
 	geometry_msgs::PoseStamped goal_to_move_base_action_server;
@@ -40,7 +50,17 @@ move_base_msgs::MoveBaseGoal room_inspection::move_in_pixel_(int x_coordinate_va
 //always keep the robot in front in moving direction and receives the goal in pixel
 move_base_msgs::MoveBaseGoal room_inspection::stay_forward_(int x_coordinate_value_in_meter, int y_coordinate_value_in_meter)
 {
-	listener_.lookupTransform("/map", "/base_link", ros::Time(0), transform_);
+	try
+	{
+		ros::Time latest_time = ros::Time(0);
+		listener_.waitForTransform("/map", "/base_link", latest_time, ros::Duration(10));
+		listener_.lookupTransform("/map", "/base_link", latest_time, transform_);
+	}
+	catch (tf::TransformException ex)
+	{
+		ROS_ERROR("room_inspection::stay_forward: transform not available: %s",ex.what());
+	}
+	//listener_.lookupTransform("/map", "/base_link", ros::Time(0), transform_);
 
 	move_base_msgs::MoveBaseGoal move_base_msgs_obj;
 	geometry_msgs::PoseStamped goal_to_move_base_action_server;
@@ -97,10 +117,10 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 
 					// this calls the service server to process our request message and put the result into the response message
 					// this call is blocking, i.e. this program will not proceed until the service server sends the response
-					bool accessible_point_flag = ros::service::call(points_service_name, req_points, res_points);
+					//bool accessible_point_flag = ros::service::call(points_service_name, req_points, res_points);
 
 					// hack: not used for Dussmann tests
-					//ros::service::call(points_service_name, req_points, res_points);
+					ros::service::call(points_service_name, req_points, res_points);
 
 					// hack: for Dussmann tests
 					if (res_points.accessibility_flags[0] == true)
@@ -148,6 +168,7 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 			for (int map_row_value = room_max_y_[room_number_.back()]; map_row_value > room_min_y_[room_number_.back()];
 					map_row_value = map_row_value - step_size_to_find_accessible_points_of_the_room_in_pixel)
 			{
+				std::cout << "original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value): " << int(original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value)) << ",  pixel_value_of_the_room: " << pixel_value_of_the_room << std::endl;
 				if (original_map_from_goal_definiton.at<unsigned char>(map_column_value, map_row_value) == pixel_value_of_the_room)
 				{
 					cob_map_accessibility_analysis::CheckPointAccessibility::Request req_points;
@@ -166,6 +187,7 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 					ros::service::call(points_service_name, req_points, res_points);
 					if (res_points.accessibility_flags[0] == true)
 					{
+						std::cout << "Point " << accessible_point.x << ", " << accessible_point.y << " is accessible." << std::endl;
 						pixel_point_next.x = map_row_value;
 						pixel_point_next.y = map_column_value;
 
@@ -197,6 +219,8 @@ cv::Mat room_inspection::room_inspection_method_(cv::Mat &original_map_from_goal
 						}
 #endif
 					}
+					else
+						std::cout << "Point not accessible." << std::endl;
 				}
 			}
 		}

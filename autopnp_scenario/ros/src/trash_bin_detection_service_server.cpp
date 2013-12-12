@@ -65,7 +65,7 @@ void TrashBinDetectionNode::trash_bin_pose_estimator_(const geometry_msgs::PoseS
 			tf::Vector3(
 					pose_from_fiducials_frame_id.pose.position.x,
 					pose_from_fiducials_frame_id.pose.position.y,
-					pose_from_fiducials_frame_id.pose.position.z-trash_bin_radius)),
+					pose_from_fiducials_frame_id.pose.position.z+trash_bin_radius)), //-
 			ros::Time(0), frame_id);
 	tf::Stamped<tf::Pose> transformed_pose;
 	try
