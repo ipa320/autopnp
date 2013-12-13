@@ -391,19 +391,26 @@ class InspectRoom(smach.State):
 		sf = ScreenFormat("InspectRoom")
 		#rospy.sleep(10)
 		rospy.loginfo('Executing state inspect_room')
-		inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
-														userdata.inspect_room_room_number_,
-														userdata.analyze_map_data_room_center_x_,
-														userdata.analyze_map_data_room_center_y_,
-														userdata.analyze_map_data_room_min_x_,
-														userdata.analyze_map_data_room_max_x_,
-														userdata.analyze_map_data_room_min_y_,
-														userdata.analyze_map_data_room_max_y_,
-														userdata.analyze_map_data_map_resolution_,
-														userdata.analyze_map_data_map_origin_x_,
-														userdata.analyze_map_data_map_origin_y_)
+		
+# 		inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
+# 														userdata.inspect_room_room_number_,
+# 														userdata.analyze_map_data_room_center_x_,
+# 														userdata.analyze_map_data_room_center_y_,
+# 														userdata.analyze_map_data_room_min_x_,
+# 														userdata.analyze_map_data_room_max_x_,
+# 														userdata.analyze_map_data_room_min_y_,
+# 														userdata.analyze_map_data_room_max_y_,
+# 														userdata.analyze_map_data_map_resolution_,
+# 														userdata.analyze_map_data_map_origin_x_,
+# 														userdata.analyze_map_data_map_origin_y_)
 		#rospy.sleep(10)
-		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
+#		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
+
+		#hack:
+		userdata.inspect_room_img_out_ = userdata.inspect_room_data_img_in_
+		
+		raw_input("finished inspection?")
+		
 		return 'finished'
 
 
