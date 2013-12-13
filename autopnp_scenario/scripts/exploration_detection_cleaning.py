@@ -1103,7 +1103,7 @@ class MoveToTrashBinLocationLinear(smach.State):
 		center.theta = 0
 		userdata.center = center
 		userdata.radius = 0.45		# adjust this for right distance to trash bin
-		userdata.goal_pose_theta_offset = 1.2*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.goal_pose_theta_offset = 1.1*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
