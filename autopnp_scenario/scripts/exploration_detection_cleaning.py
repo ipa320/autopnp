@@ -1109,7 +1109,7 @@ class MoveToTrashBinLocationLinear(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.45		# adjust this for right distance to trash bin
+		userdata.radius = 0.55		# adjust this for right distance to trash bin
 		userdata.goal_pose_theta_offset = 1.1*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
@@ -1738,6 +1738,8 @@ class Clean(smach.State):
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
 		
+		raw_input("cleaning position ok?")
+		
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
 		vacuum_on_service_name = '/vacuum_cleaner_controller/vacuum_on'
 		vacuum_off_service_name = '/vacuum_cleaner_controller/vacuum_off'
@@ -1802,6 +1804,8 @@ class Clean(smach.State):
 		
 		# move arm back to storage position
 		handle_arm = sss.move("arm",[above_cleaning_5cm_position, above_cleaning_20cm_position, intermediate2_position, intermediate1_position, carrying_position])
+		
+		rospy.sleep(2)
 		
 		#raw_input("Quit program")
 		#handle_arm = sss.move("arm",[[]]) #
