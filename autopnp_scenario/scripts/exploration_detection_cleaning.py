@@ -391,19 +391,26 @@ class InspectRoom(smach.State):
 		sf = ScreenFormat("InspectRoom")
 		#rospy.sleep(10)
 		rospy.loginfo('Executing state inspect_room')
-		inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
-														userdata.inspect_room_room_number_,
-														userdata.analyze_map_data_room_center_x_,
-														userdata.analyze_map_data_room_center_y_,
-														userdata.analyze_map_data_room_min_x_,
-														userdata.analyze_map_data_room_max_x_,
-														userdata.analyze_map_data_room_min_y_,
-														userdata.analyze_map_data_room_max_y_,
-														userdata.analyze_map_data_map_resolution_,
-														userdata.analyze_map_data_map_origin_x_,
-														userdata.analyze_map_data_map_origin_y_)
+		
+# 		inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
+# 														userdata.inspect_room_room_number_,
+# 														userdata.analyze_map_data_room_center_x_,
+# 														userdata.analyze_map_data_room_center_y_,
+# 														userdata.analyze_map_data_room_min_x_,
+# 														userdata.analyze_map_data_room_max_x_,
+# 														userdata.analyze_map_data_room_min_y_,
+# 														userdata.analyze_map_data_room_max_y_,
+# 														userdata.analyze_map_data_map_resolution_,
+# 														userdata.analyze_map_data_map_origin_x_,
+# 														userdata.analyze_map_data_map_origin_y_)
 		#rospy.sleep(10)
-		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
+#		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
+
+		#hack:
+		userdata.inspect_room_img_out_ = userdata.inspect_room_data_img_in_
+		
+		raw_input("finished inspection?")
+		
 		return 'finished'
 
 
@@ -1365,9 +1372,9 @@ class MoveToTrashBinPickingLocation(smach.State):
 		center = Pose2D(x=userdata.trash_bin_pose_.pose.pose.position.x, y=userdata.trash_bin_pose_.pose.pose.position.y, theta=0)
 		print "center: ", center
 		userdata.center = center
-		userdata.radius = 0.70		# adjust this for right distance to trash bin
+		userdata.radius = 0.45		# adjust this for right distance to trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
-		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.goal_pose_theta_offset = 1.1*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
