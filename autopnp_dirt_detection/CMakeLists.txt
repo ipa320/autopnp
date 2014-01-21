@@ -38,6 +38,8 @@ rosbuild_link_boost(dirt_detection filesystem system)
 
 rosbuild_add_executable(dirt_detection_client  ros/src/dirt_detection_client_main.cpp)
 
+rosbuild_add_executable(appearance_check  ros/src/appearance_check.cpp)
+
 #rosbuild_add_compile_flags(dirt_detection -D__LINUX__)
 
 #common commands for building c++ executables and libraries
