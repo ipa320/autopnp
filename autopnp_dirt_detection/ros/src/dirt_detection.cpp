@@ -1795,8 +1795,8 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 
 	//compute the phase of the spectrum
 	cv::cartToPolar(realInput, imaginaryInput, image_Mag, image_Phase,0);
-	std::vector<DirtDetection::CarpetFeatures> test_feat_vec;
-	std::vector<DirtDetection::CarpetClass> test_class_vec;
+//	std::vector<DirtDetection::CarpetFeatures> test_feat_vec;
+//	std::vector<DirtDetection::CarpetClass> test_class_vec;
 
 
 	std::string name;
@@ -1835,9 +1835,9 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 //	cv::imshow("log_mag_sub", log_mag_sub_);
 //	log_mag_Filt = log_mag.clone();
 //	cv::GaussianBlur(log_mag_Filt, log_mag, cv::Size2i(21,21), 0);
-	void GBTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
-						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
-						CvGBTrees &carpet_GBTree);
+//	void GBTreeEvaluation(	std::vector<CarpetFeatures>& train_feat_vec, std::vector<CarpetClass>& train_class_vec,
+//						std::vector<CarpetFeatures>& test_feat_vec, std::vector<CarpetClass>& test_class_vec,
+//						CvGBTrees &carpet_GBTree);
 	cv::exp(log_mag, image_Mag);
 
 	cv::polarToCart(image_Mag, image_Phase, realInput, imaginaryInput,0);
@@ -1855,7 +1855,9 @@ void DirtDetection::SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_sa
 	cv::split(dft_A, vec);
 
 	C1_saliency_image = vec[0];
-}	std::vector<DirtDetection::CarpetFeatures> test_feat_vec;
+}
+
+std::vector<DirtDetection::CarpetFeatures> test_feat_vec;
 
 
 void DirtDetection::SaliencyDetection_C3(const cv::Mat& C3_color_image, cv::Mat& C1_saliency_image, const cv::Mat* mask, int gaussianBlurCycles)
@@ -2233,7 +2235,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
 	cv::Scalar mean, stdDev;
 	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
-	double newMaxVal = min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
+	double newMaxVal = std::min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
 //	std::cout << "dirtThreshold=" << dirtThreshold_ << "\tmin=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal (r)=" << newMaxVal << std::endl;
 
 
@@ -2329,29 +2331,29 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 //	Mat dst = Mat::zeros(img.rows, img.cols, CV_8UC3);
 //	dst = C3_color_image;
 
-    vector<vector<Point> > contours;
-    vector<Vec4i> hierarchy;
+	std::vector<std::vector<cv::Point> > contours;
+	std::vector<cv::Vec4i> hierarchy;
 
-    cv::findContours(CV_8UC_image, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+	cv::findContours(CV_8UC_image, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
-    cv::Scalar green(0, 255, 0);
-    cv::Scalar red(0, 0, 255);
-    for (int i = 0; i < (int)contours.size(); i++)
-    {
-    	cv::RotatedRect rec = minAreaRect(contours[i]);
-    	double meanIntensity = 0;
-    	for (int t=0; t<(int)contours[i].size(); t++)
-    		meanIntensity += scaled_C1_saliency_image.at<float>(contours[i][t].y, contours[i][t].x);
-    	meanIntensity /= (double)contours[i].size();
-    	if (meanIntensity > newMean + dirtCheckStdDevFactor_ * newStdDev)
-    	{
-    		// todo: hack: for autonomik only detect green ellipses
-    		//dirtDetections.push_back(rec);
+	cv::Scalar green(0, 255, 0);
+	cv::Scalar red(0, 0, 255);
+	for (int i = 0; i < (int)contours.size(); i++)
+	{
+		cv::RotatedRect rec = minAreaRect(contours[i]);
+		double meanIntensity = 0;
+		for (int t=0; t<(int)contours[i].size(); t++)
+			meanIntensity += scaled_C1_saliency_image.at<float>(contours[i][t].y, contours[i][t].x);
+		meanIntensity /= (double)contours[i].size();
+		if (meanIntensity > newMean + dirtCheckStdDevFactor_ * newStdDev)
+		{
+			// todo: hack: for autonomik only detect green ellipses
+			//dirtDetections.push_back(rec);
 			cv::ellipse(C3_color_image, rec, green, 2);
-    	}
-    	else
-    		cv::ellipse(C3_color_image, rec, green, 2);	// todo: use red
-    	dirtDetections.push_back(rec);
+		}
+		else
+			cv::ellipse(C3_color_image, rec, green, 2);	// todo: use red
+		dirtDetections.push_back(rec);
 	}
 }
 
