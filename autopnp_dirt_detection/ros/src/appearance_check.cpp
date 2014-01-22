@@ -70,6 +70,7 @@
 
 // ROS
 #include <ros/ros.h>
+#include <ros/package.h>
 
 // false alarm reduction by image comparison:
 // 1. during exploration, always save most central image snippet of each dirt location, and perspective
@@ -84,6 +85,35 @@ class AppearanceCheck
 private:
 
 public:
+
+	void databaseTest()
+	{
+		std::string filename = ros::package::getPath("autopnp_dirt_detection") + "/common/files/ac_database/images.txt";
+		std::ifstream f(filename.c_str(), std::fstream::in);
+		if(!f.is_open())
+		{
+			std::cout << "databaseTest: Could not load '" << filename << "'" << std::endl;
+			return;
+		}
+
+		while (f.eof() == false)
+		{
+			std::string patchFile, referenceFile;
+			f >> patchFile;
+			f >> referenceFile;
+
+			std::stringstream patchFileS, referenceFileS;
+			patchFileS << ros::package::getPath("autopnp_dirt_detection") << "/common/files/ac_database/" << patchFile;
+			referenceFileS << ros::package::getPath("autopnp_dirt_detection") << "/common/files/ac_database/" << referenceFile;
+			cv::Mat patch = cv::imread(patchFileS.str());
+			cv::Mat referencePatch = cv::imread(referenceFileS.str());
+
+			compareAppearance(patch, referencePatch);
+		}
+
+		f.close();
+	}
+
 	// compares a roughly localized image patch (+/- 10 deg rotation, +/- 30 px translation) against a reference image patch
 	void compareAppearance(const cv::Mat& patch, const cv::Mat& referencePatch)
 	{
@@ -131,6 +161,7 @@ public:
 
 		// judge similarity measure value
 		std::cout << "Gradient SSD is " << minGradientSSD << " at offsets (u,v,rot) = (" << offsetU << ", " << offsetV << ", " << rotationalOffset << ")\n";
+		double distance = minGradientSSD / ((double)referencePatch.cols*referencePatch.rows);
 	}
 
 	// computes a gradient angle histogram over the given image
@@ -237,6 +268,9 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "appearance check");
 
 	ros::NodeHandle n;
+
+	AppearanceCheck ac;
+	ac.databaseTest();
 
 	ros::spin();
 
