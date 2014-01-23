@@ -147,6 +147,8 @@ public:
 		cv::Sobel(grayImage, patchRotatedDx, CV_32F, 1, 0, 7);
 		cv::Sobel(grayImage, patchRotatedDy, CV_32F, 0, 1, 7);
 		cv::magnitude(patchRotatedDx, patchRotatedDy, patchRotatedMagnitude);
+		cv::GaussianBlur(referenceMagnitude, referenceMagnitude, cv::Size(5,5), 0);
+		cv::GaussianBlur(patchRotatedMagnitude, patchRotatedMagnitude, cv::Size(5,5), 0);
 		int minV = std::max(0, patch.rows/2-referencePatch.rows);
 		int maxV = std::min(patch.rows, patch.rows/2+referencePatch.rows)-referencePatch.rows;
 		int minU = std::max(0, patch.cols/2-referencePatch.cols);
@@ -166,39 +168,42 @@ public:
 				}
 			}
 		}
-
 		cv::Rect roi(offsetU,offsetV,referencePatch.cols, referencePatch.rows);
 
-		// dirt image
-		cv::Mat patchRotatedSaliency, referenceSaliency;
-		cv::Mat patchRotatedMask = cv::Mat::ones(referencePatch.rows, referencePatch.cols, CV_8UC1);
-		cv::Mat referenceMask = cv::Mat::ones(referencePatch.rows, referencePatch.cols, CV_8UC1);
-		cv::Mat C1_saliency_image;
-		SaliencyDetection_C3(referencePatch, C1_saliency_image, &referenceMask, 3);
-		// post processing, dirt/stain selection
-		cv::Mat C1_BlackWhite_image;
-		cv::Mat new_plane_color_image = referencePatch.clone();
-		std::vector<cv::RotatedRect> dirtDetections;
-		Image_Postprocessing_C1_rmb(C1_saliency_image, referenceSaliency, C1_BlackWhite_image, new_plane_color_image, dirtDetections, referenceMask);
-		// dirt image
-		SaliencyDetection_C3(patchRotated(roi), C1_saliency_image, &patchRotatedMask, 3);
-		// post processing, dirt/stain selection
-		new_plane_color_image = patchRotated(roi).clone();
-		Image_Postprocessing_C1_rmb(C1_saliency_image, patchRotatedSaliency, C1_BlackWhite_image, new_plane_color_image, dirtDetections, patchRotatedMask);
-		double dirtSsd = sqrt(computeSSD<float>(referenceSaliency, patchRotatedSaliency));
+//		// dirt image
+//		cv::Mat patchRotatedSaliency, referenceSaliency;
+//		cv::Mat patchRotatedMask = cv::Mat::ones(referencePatch.rows, referencePatch.cols, CV_8UC1);
+//		cv::Mat referenceMask = cv::Mat::ones(referencePatch.rows, referencePatch.cols, CV_8UC1);
+//		cv::Mat C1_saliency_image;
+//		SaliencyDetection_C3(referencePatch, C1_saliency_image, &referenceMask, 3);
+//		// post processing, dirt/stain selection
+//		cv::Mat C1_BlackWhite_image;
+//		cv::Mat new_plane_color_image = referencePatch.clone();
+//		std::vector<cv::RotatedRect> dirtDetections;
+//		Image_Postprocessing_C1_rmb(C1_saliency_image, referenceSaliency, C1_BlackWhite_image, new_plane_color_image, dirtDetections, referenceMask);
+//		// dirt image
+//		SaliencyDetection_C3(patchRotated(roi), C1_saliency_image, &patchRotatedMask, 3);
+//		// post processing, dirt/stain selection
+//		new_plane_color_image = patchRotated(roi).clone();
+//		Image_Postprocessing_C1_rmb(C1_saliency_image, patchRotatedSaliency, C1_BlackWhite_image, new_plane_color_image, dirtDetections, patchRotatedMask);
+//		double dirtSsd = sqrt(computeSSD<float>(referenceSaliency, patchRotatedSaliency));
 
 
 		// judge similarity measure value
 		double gradientDistance = minGradientSSD / ((double)referencePatch.cols*referencePatch.rows);
-		double dirtDistance = dirtSsd / ((double)referencePatch.cols*referencePatch.rows);
-		std::cout << "Gradient SSD is " << minGradientSSD << " (" << gradientDistance << "), saliency SSD is " << dirtSsd << " (" << dirtDistance << ") at offsets (u,v,rot) = (" << offsetU << ", " << offsetV << ", " << rotationalOffset << ")\n";
+//		double dirtDistance = dirtSsd / ((double)referencePatch.cols*referencePatch.rows);
+
+		cv::normalize(referenceMagnitude, referenceMagnitude, 0., 1., cv::NORM_MINMAX);
+		cv::Mat dispPatchRotatedMagnitude;
+		cv::normalize(patchRotatedMagnitude(roi), dispPatchRotatedMagnitude, 0., 1., cv::NORM_MINMAX);
+		double signatureDistance = computeLocalIntensityHistogramPyramidDistance(referenceMagnitude, dispPatchRotatedMagnitude);
+
+//		std::cout << "Gradient SSD is " << minGradientSSD << " (" << gradientDistance << "), saliency SSD is " << dirtSsd << " (" << dirtDistance << "), signatureDistance is " << signatureDistance << " (" << signatureDistance/((double)referencePatch.cols*referencePatch.rows) << ") at offsets (u,v,rot) = (" << offsetU << ", " << offsetV << ", " << rotationalOffset << ")\n";
+		std::cout << "Gradient SSD is " << minGradientSSD << " (" << gradientDistance << "), signatureDistance is " << signatureDistance << " (" << signatureDistance/((double)referencePatch.cols*referencePatch.rows) << ") at offsets (u,v,rot) = (" << offsetU << ", " << offsetV << ", " << rotationalOffset << ")\n";
 		cv::imshow("referencePatch", referencePatch);
 		cvMoveWindow("referencePatch", 650, 0);
 		cv::imshow("best matching patch", patchRotated(roi));
 		cvMoveWindow("best matching patch", 760, 0);
-		cv::normalize(referenceMagnitude, referenceMagnitude, 0., 1., cv::NORM_MINMAX);
-		cv::Mat dispPatchRotatedMagnitude;
-		cv::normalize(patchRotatedMagnitude(roi), dispPatchRotatedMagnitude, 0., 1., cv::NORM_MINMAX);
 		cv::imshow("reference magnitude", referenceMagnitude);
 		cvMoveWindow("reference magnitude", 650, 150);
 		cv::imshow("patch rotated magnitude", dispPatchRotatedMagnitude);
@@ -329,6 +334,83 @@ public:
 		return ssd;
 	}
 
+	// computes intensity histograms in local square neighborhoods at different scales as image signature, computes difference of signatures
+	// assumes to receive normalized float (CV_32FC1) images (values in [0,..,1])
+	double computeLocalIntensityHistogramPyramidDistance(const cv::Mat& img1, const cv::Mat& img2)
+	{
+		int intersections = 10;
+		int histogramWidth = 4;
+		cv::Mat signature1, signature2;
+		computeIntensityHistogramSignature(img1, intersections, histogramWidth, signature1);
+		computeIntensityHistogramSignature(img2, intersections, histogramWidth, signature2);
+
+		double signatureDistance = 0.;
+		for (int i=0; i<signature1.cols; i+=histogramWidth)
+		{
+			double score=0., count=0.;
+			for (int j=i; j<i+histogramWidth; ++j)
+			{
+				double hik = std::min<float>(signature1.at<float>(j), signature2.at<float>(j));
+				score += hik;
+				count += signature1.at<float>(j);
+				std::cout << "j: " << j << "   hik: " << hik << "   val: " << signature1.at<float>(j) << std::endl;
+			}
+			std::cout << "score=" << score << "   count=" << count << std::endl;
+			if (score < 0.7*count) // = bad fit
+				signatureDistance += 1.;
+		}
+
+		cv::Mat dispHist1(400, signature1.cols, CV_8UC1);
+		dispHist1.setTo(255);
+		for (int i=0; i<signature1.cols; ++i)
+			cv::line(dispHist1, cv::Point(i, 0), cv::Point(i, (int)(1.f*signature1.at<float>(i))), CV_RGB(0,0,0));
+		cv::imshow("signature1", dispHist1);
+		cvMoveWindow("signature1", 0, 750);
+		cv::Mat dispHist2(400, signature2.cols, CV_8UC1);
+		dispHist2.setTo(255);
+		for (int i=0; i<signature2.cols; ++i)
+			cv::line(dispHist2, cv::Point(i, 0), cv::Point(i, (int)(1.f*signature2.at<float>(i))), CV_RGB(0,0,0));
+		cv::imshow("signature2", dispHist2);
+		cvMoveWindow("signature2", 760, 750);
+		cv::waitKey(10);
+
+		return signatureDistance;
+	}
+
+	// assumes to receive normalized float (CV_32FC1) images (values in [0,..,1])
+	void computeIntensityHistogramSignature(const cv::Mat& img, const int intersections, const int histogramWidth, cv::Mat& signature)
+	{
+		int signatureLength = (intersections*intersections + (intersections-1)*(intersections-1)) * histogramWidth;
+		signature = cv::Mat::zeros(1, signatureLength, CV_32FC1);
+
+		// loop through all image pixels and put them into the right cell's histogram bin
+		double cellWidthFactor = (double)intersections/(double)img.cols;
+		double cellHeightFactor = (double)intersections/(double)img.rows;
+		int signatureLineWidth = intersections*histogramWidth;
+		for (int v=0; v<img.rows; ++v)
+		{
+			for (int u=0; u<img.cols; ++u)
+			{
+				int histogramValue = std::min((int)(img.at<float>(v,u)*histogramWidth), histogramWidth-1);
+				signature.at<float>((int)(v*cellHeightFactor)*signatureLineWidth + (int)(u*cellWidthFactor)*histogramWidth + histogramValue) += 1.f;
+			}
+		}
+
+		// half offset to previous grid: loop through all image pixels and put them into the right cell's histogram bin
+		cv::Mat roi = img(cv::Rect(img.cols/(2*intersections), img.rows/(2*intersections), img.cols-img.cols/intersections, img.rows-img.rows/intersections));
+		cellWidthFactor = (double)(intersections-1)/(double)roi.cols;
+		cellHeightFactor = (double)(intersections-1)/(double)roi.rows;
+		signatureLineWidth = (intersections-1)*histogramWidth;
+		int signatureWriteOffset = intersections*intersections*histogramWidth;
+		for (int v=0; v<roi.rows; ++v)
+		{
+			for (int u=0; u<roi.cols; ++u)
+			{
+				int histogramValue = std::min((int)(roi.at<float>(v,u)*histogramWidth), histogramWidth-1);
+				signature.at<float>(signatureWriteOffset + (int)(v*cellHeightFactor)*signatureLineWidth + (int)(u*cellWidthFactor)*histogramWidth + histogramValue) += 1.f;
+			}
+		}
+	}
 
 	// just a copy from dirt_detection.cpp
 	void SaliencyDetection_C1(const cv::Mat& C1_image, cv::Mat& C1_saliency_image)
