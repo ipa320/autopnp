@@ -111,7 +111,7 @@ public:
 			cv::Mat patch = cv::imread(patchFileS.str());
 			cv::Mat referencePatch = cv::imread(referenceFileS.str());
 
-			std::cout << "Image pair: " << patchFile << " - " << referenceFile << std::endl;
+			std::cout << "-------------------------------------------------------------\nImage pair: " << patchFile << " - " << referenceFile << std::endl;
 			compareAppearance(patch, referencePatch);
 		}
 
@@ -126,12 +126,12 @@ public:
 		cv::Mat patchDx, patchDy, referenceDx, referenceDy;
 		int ksize = 2*(referencePatch.rows/2)+1;
 		double sigma = /*0.3*/0.4*((ksize-1)*0.5 - 1) + 0.8;
-		computeAngleHistogram(patch, sigma, patchDx, patchDy, patchAngleHistogram, true, true);
-		computeAngleHistogram(referencePatch, sigma, referenceDx, referenceDy, referenceAngleHistogram, true, true);
+		computeAngleHistogram(patch, sigma, patchDx, patchDy, patchAngleHistogram, true, false);
+		computeAngleHistogram(referencePatch, sigma, referenceDx, referenceDy, referenceAngleHistogram, true, false);
 		int rotationalOffset=0;
 		double matchScore = 0.0;
 		matchAngleHistogram(referenceAngleHistogram, patchAngleHistogram, 0, rotationalOffset, matchScore);
-		std::cout << "Best match at rotational offset " << rotationalOffset << " deg.\n";
+		//std::cout << "Best match at rotational offset " << rotationalOffset << " deg.\n";
 
 		// turn image patch in correct rotational alignment to reference patch
 		cv::Mat patchRotated;
@@ -144,8 +144,8 @@ public:
 		cv::Mat patchRotatedDx, patchRotatedDy, patchRotatedMagnitude;
 		cv::Mat grayImage;
 		cv::cvtColor(patchRotated, grayImage, CV_BGR2GRAY);
-		cv::Sobel(grayImage, patchRotatedDx, CV_32F, 1, 0, 3);
-		cv::Sobel(grayImage, patchRotatedDy, CV_32F, 0, 1, 3);
+		cv::Sobel(grayImage, patchRotatedDx, CV_32F, 1, 0, 7);
+		cv::Sobel(grayImage, patchRotatedDy, CV_32F, 0, 1, 7);
 		cv::magnitude(patchRotatedDx, patchRotatedDy, patchRotatedMagnitude);
 		int minV = std::max(0, patch.rows/2-referencePatch.rows);
 		int maxV = std::min(patch.rows, patch.rows/2+referencePatch.rows)-referencePatch.rows;
@@ -220,9 +220,9 @@ public:
 		if (dx.empty() || dy.empty())
 			cv::cvtColor(image, grayImage, CV_BGR2GRAY);
 		if (dx.empty() == true)
-			cv::Sobel(grayImage, dx, CV_32F, 1, 0, 3);
+			cv::Sobel(grayImage, dx, CV_32F, 1, 0, 7);
 		if (dy.empty() == true)
-			cv::Sobel(grayImage, dy, CV_32F, 0, 1, 3);
+			cv::Sobel(grayImage, dy, CV_32F, 0, 1, 7);
 		histogram = cv::Mat::zeros(1, 360, CV_32FC1);
 		cv::Mat weightKernel1D = cv::getGaussianKernel(2*(image.rows/2)+1, sigma, CV_32F);
 		cv::Mat weightKernel = weightKernel1D*weightKernel1D.t();
@@ -539,7 +539,7 @@ public:
 		cv::Mat color_image_with_artifical_dirt = C3_color_image.clone();
 		cv::Mat mask_with_artificial_dirt = mask.clone();
 		// add dirt
-		int dirtSize = cvRound(3.0/640.0 * C3_color_image.cols);
+		int dirtSize = std::max(2, cvRound(3.0/640.0 * C3_color_image.cols));
 		cv::Point2f ul(0.4375*C3_color_image.cols, 0.416666667*C3_color_image.rows);
 		cv::Point2f ur(0.5625*C3_color_image.cols, 0.416666667*C3_color_image.rows);
 		cv::Point2f ll(0.4375*C3_color_image.cols, 0.583333333*C3_color_image.rows);
