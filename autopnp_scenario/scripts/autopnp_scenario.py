@@ -77,10 +77,10 @@ def main():
 	
 	'''
 	# manual tool change
-	sm_scenario = smach.StateMachine(outcomes=['CTM_done'])
+	sm_scenario = smach.StateMachine(outcomes=['tool_change_done'])
 	with sm_scenario:
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
-								transitions={'CTM_done':'CTM_done'})
+								transitions={'CTM_done':'tool_change_done'})
 	'''
 	
 	
@@ -138,7 +138,7 @@ def main():
 	
 	
 	# full scenario
-	sm_scenario = smach.StateMachine(outcomes=['finish', 'failed'])
+	sm_scenario = smach.StateMachine(outcomes=['finished', 'failed'])
 	sm_scenario.userdata.sm_trash_bin_counter = 0
 
 	with sm_scenario:
@@ -148,7 +148,7 @@ def main():
 										'failed':'failed'})
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
-							transitions={'list_of_rooms':'UNPROCESSED_ROOM'},
+							transitions={'list_of_rooms':'GO_TO_NEXT_UNPROCESSED_ROOM'},
 							remapping={'analyze_map_data_img_':'sm_img'})
 
 		sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],
@@ -218,15 +218,15 @@ def main():
 										'random_location_finder_counter_out_':'sm_location_counter',
 										'random_location_finder_room_number_':'sm_RoomNo'}) 
 
-		smach.StateMachine.add('UNPROCESSED_ROOM', sm_sub_go_to_next_unproccessed_room,
+		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_ROOM', sm_sub_go_to_next_unproccessed_room,
 							transitions={'arrived':'DIRT_DETECTION_ON',
 										'no_more_rooms_left':'CHANGE_TOOL_MANUAL'}) #'CHANGE_TOOL_HAND'})
 		
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
-							transitions={'dd_On':'TRASH_BIN_DETECTION_ON'})
+							transitions={'dirt_detection_on':'TRASH_BIN_DETECTION_ON'})
 		
 		smach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
-							transitions={'TBD_On':'INSPECT_ROOM'})
+							transitions={'trash_bin_detection_on':'INSPECT_ROOM'})
 		
 		smach.StateMachine.add('INSPECT_ROOM', InspectRoom(),
 							transitions={'finished':'DIRT_DETECTION_OFF'},
@@ -235,23 +235,23 @@ def main():
 										'inspect_room_room_number_':'sm_RoomNo'})
 
 		smach.StateMachine.add('DIRT_DETECTION_OFF', DirtDetectionOff(),
-							transitions={'dd_Off':'TRASH_BIN_DETECTION_OFF'})
+							transitions={'dirt_detection_off':'TRASH_BIN_DETECTION_OFF'})
 		
 		smach.StateMachine.add('TRASH_BIN_DETECTION_OFF', TrashBinDetectionOff(),
 							transitions={'trash_can_found':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN',
-										'trash_can_not_found':'UNPROCESSED_ROOM'},
+										'trash_can_not_found':'GO_TO_NEXT_UNPROCESSED_ROOM'},
 							remapping={'detected_waste_bin_poses_':'trash_detection_poses'})
 
 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_WASTE_BIN', GoToNextUnprocessedWasteBin(),
-							transitions={'go_to_trash_location':'CLEAR_WASTE_BIN',
-										'All_the_trash_bin_is_cleared':'UNPROCESSED_ROOM'},
+							transitions={'go_to_trash_location':'CLEAR_TRASH_BIN',
+										'all_trash_bins_cleared':'GO_TO_NEXT_UNPROCESSED_ROOM'},
 							remapping={'go_to_next_unprocessed_waste_bin_in_':'trash_detection_poses',
 										'go_to_next_unprocessed_waste_bin_out_':'detection_pose',
 										'number_of_unprocessed_trash_bin_in_':'sm_trash_bin_counter',
 										'number_of_unprocessed_trash_bin_out_':'sm_trash_bin_counter'})
 
 
-		sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose', 'tool_wagon_pose'])
+		sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['clear_trash_bin_done', 'failed'],input_keys=['detection_pose', 'tool_wagon_pose'])
 
 		with sm_sub_clear_waste_bin:
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
@@ -304,10 +304,10 @@ def main():
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
-								transitions={'RTB_finished':'CWB_done'})
+								transitions={'RTB_finished':'clear_trash_bin_done'})
 
-		smach.StateMachine.add('CLEAR_WASTE_BIN', sm_sub_clear_waste_bin,
-							transitions={'CWB_done':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN'})
+		smach.StateMachine.add('CLEAR_TRASH_BIN', sm_sub_clear_waste_bin,
+							transitions={'clear_trash_bin_done':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN'})
 		
 		
 		
@@ -338,17 +338,17 @@ def main():
 							transitions={'CTH_done':'GET_DIRT_MAP'})
 
 
-		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['CTM_done'],
+		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['tool_change_done'],
 														input_keys=['tool_wagon_pose'])
 		with sm_sub_change_tool_manual:
 			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonFrontFar(),
 								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION'})
 			
 			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
-								transitions={'CTM_done':'CTM_done'})
+								transitions={'CTM_done':'tool_change_done'})
 		
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL', sm_sub_change_tool_manual,
-							transitions={'CTM_done':'GET_DIRT_MAP'})
+							transitions={'tool_change_done':'GET_DIRT_MAP'})
 		
 		
 		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(),
@@ -403,16 +403,16 @@ def main():
 		
 		
 		smach.StateMachine.add('VERIFY_CLEANING_SUCCESS', VerifyCleaningProcess(),
-							transitions={'VCP_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
+							transitions={'verify_cleaning_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
 		
 		
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
-							transitions={'PCVR_finish':'finish'})
+							transitions={'finished':'finished'})
 	
 	
 	# Create and start the introspection server
-	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/SM_ROOT')
+	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')
 	sis.start()
 	
 	# Execute SMACH plan

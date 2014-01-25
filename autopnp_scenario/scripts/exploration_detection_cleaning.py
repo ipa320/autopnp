@@ -80,7 +80,7 @@ from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 
 from ApproachPerimeter import *
-from ApproachPerimeterLinear import *
+ from ApproachPerimeterLinear import *
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
@@ -171,7 +171,7 @@ class InitAutoPnPScenario(smach.State):
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("InitAutoPnPScenario")
-		
+
 		#todo: set acceleration
 		# adjust base footprint
 #		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.25],[0.45,-0.25],[0.25,-0.45],[-0.25,-0.45],[-0.45,-0.25],[-0.45,0.25],[-0.25,0.45],[0.25,0.45]]"})
@@ -945,7 +945,7 @@ class ReleaseGrasp(smach.State):
 
 class DirtDetectionOn(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['dd_On'])
+		smach.State.__init__(self, outcomes=['dirt_detection_on'])
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("DirtDetectionOn")
@@ -962,14 +962,14 @@ class DirtDetectionOn(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
-		return 'dd_On'
+		return 'dirt_detection_on'
 
 
 # The TrashBinDetectionOn class defines a state machine of smach which basically 
 # use the ActivateTrashBinDetection service to activate Trash Bin Detection
 class TrashBinDetectionOn(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['TBD_On'])
+		smach.State.__init__(self, outcomes=['trash_bin_detection_on'])
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("TrashBinDetectionOn")
@@ -981,13 +981,13 @@ class TrashBinDetectionOn(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
-		return 'TBD_On'
+		return 'trash_bin_detection_on'
 
 
 
 class DirtDetectionOff(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['dd_Off'])
+		smach.State.__init__(self, outcomes=['dirt_detection_off'])
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("DirtDetectionOff")
@@ -1003,7 +1003,7 @@ class DirtDetectionOff(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
-		return 'dd_Off'
+		return 'dirt_detection_off'
 
 
 # The TrashBinDetectionOff class defines a state machine of smach which basically 
@@ -1038,7 +1038,7 @@ class TrashBinDetectionOff(smach.State):
 # give the goal position to go to the next unprocessed trash bin location   
 class GoToNextUnprocessedWasteBin(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['go_to_trash_location','All_the_trash_bin_is_cleared'],
+		smach.State.__init__(self, outcomes=['go_to_trash_location','all_trash_bins_cleared'],
 							input_keys=['go_to_next_unprocessed_waste_bin_in_',
 										'number_of_unprocessed_trash_bin_in_'],
 							output_keys= ['go_to_next_unprocessed_waste_bin_out_',
@@ -1051,7 +1051,7 @@ class GoToNextUnprocessedWasteBin(smach.State):
 		if (len(userdata.go_to_next_unprocessed_waste_bin_in_)==0 or
 			userdata.number_of_unprocessed_trash_bin_in_ == len(userdata.go_to_next_unprocessed_waste_bin_in_)):
 			rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
-			return 'All_the_trash_bin_is_cleared'
+			return 'all_trash_bins_cleared'
 		else:
 			rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
 			rospy.loginfo('Current Trash Bin Number: %d',userdata.number_of_unprocessed_trash_bin_in_+1)
@@ -1859,7 +1859,7 @@ class MoveLocationPerimeterValidation(smach.State):
 
 class VerifyCleaningProcess(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['VCP_done'], input_keys=['next_dirt_location'])
+		smach.State.__init__(self, outcomes=['verify_cleaning_done'], input_keys=['next_dirt_location'])
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("verifyCleaningProcess")
@@ -1880,7 +1880,7 @@ class VerifyCleaningProcess(smach.State):
 		
 		sss.move("torso", "home", False)
 		
-		return 'VCP_done'
+		return 'verify_cleaning_done'
 
 
 
@@ -1893,13 +1893,13 @@ class VerifyCleaningProcess(smach.State):
 
 class ProcessCleaningVerificationResults(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['PCVR_finish'])
+        smach.State.__init__(self, outcomes=['finished'])
 
     def execute(self, userdata ):
     	sf = ScreenFormat("ProcessCleaningVerificationResults")
 #         rospy.sleep(2)
         rospy.loginfo('Executing state Process_Cleaning_Verification_Results')
-        return 'PCVR_finish'
+        return 'finished'
 
 
 
