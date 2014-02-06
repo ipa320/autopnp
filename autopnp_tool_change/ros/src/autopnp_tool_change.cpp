@@ -31,12 +31,12 @@ ToolChange::ToolChange(ros::NodeHandle nh): change_tool_server_
 	input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
 	input_marker_detection_sub_.registerCallback(boost::bind(&ToolChange::markerInputCallback, this, _1));
 
-
 	//sleep till the transformation found
 	while(slot_position_detected_ == false)
 	{
 		ros::spinOnce();
 	}
+
 }
 
 /*
@@ -229,18 +229,28 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
 	tf::Quaternion rotate_Y_45_right;
 	tf::Quaternion rotate_Y_45_left;
 	tf::Quaternion rotate_X_pi_4_left;
+	tf::Quaternion rotate_X_pi_4_right;
+	tf::Quaternion rotate_X_45_right;
+	tf::Quaternion rotate_X_45_left;
+	tf::Quaternion rotate_all;
 
 	//set rotations
 	rotate_X_pi_4_left.setRPY( M_PI/4, 0.0, 0.0);
-	rotate_Y_45_left.setRPY(0.0, -M_PI/2, 0.0);
-	rotate_Y_45_left.setRPY(0.0, -M_PI/2, 0.0);
+	rotate_Y_45_right.setRPY(0.0, -M_PI/2, 0.0);
+	rotate_Y_45_left.setRPY(0.0, M_PI/2, 0.0);
+	rotate_X_pi_4_right.setRPY(-M_PI/2, 0.0, 0.0);
+	rotate_X_45_right.setRPY(-M_PI/2,0.0,  0.0);
+	rotate_X_45_left.setRPY(M_PI/2, 0.0, 0.0);
 
 	//set tf poses according to there real
 	//orientation and position to the arm and board
-	board_pose_simulated.setRotation(board_pose.getRotation() * rotate_Y_45_left);
-	board_pose_simulated.setOrigin(board_pose.getOrigin());
+	tf::Vector3 substraction = tf::Vector3(0.0, 0.0, 0.3);
+		board_pose_simulated.setOrigin(board_pose.getOrigin() - substraction);
+	board_pose_simulated.setRotation(board_pose.getRotation() * rotate_Y_45_right );
 
-	arm_pose_simulated.setRotation(((arm_pose.getRotation()) * rotate_X_pi_4_left) * rotate_Y_45_left);
+	tf::Quaternion rotateX = arm_pose.getRotation() * rotate_X_pi_4_right;
+	arm_pose_simulated.setRotation( rotateX * rotate_Y_45_right );
+	//arm_pose_simulated.setRotation(arm_pose.getRotation() * rotate_Y_45_right);
 	arm_pose_simulated.setOrigin(arm_pose.getOrigin());
 
 	//calculate the transformation between arm and board
@@ -260,8 +270,7 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
 	tf::poseTFToMsg(b_tf, pose.pose);
 	tf::poseTFToMsg(result, result_stamped.pose);
 
-	drawLine(0.85, 0.55, 0.0, 1.0, a, pose);
-	drawLine(0.85, 0.55, 0.0, 1.0, base, result_stamped);
+	drawLine(0.85, 0.55, 0.30, 1.0, base, result_stamped);
 	///END DRAWING
 
 	return result;
@@ -279,15 +288,19 @@ void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& 
 
 	geometry_msgs::PoseStamped fake_goal;
 	tf::Quaternion q;
-	q.setRPY(0.0, 0.0, M_PI/4);
+	//q.setRPY(0.0, 0.0, -2.09);
 	//q.setRPY(0.0, 0.0, 0.0);
 	//q.setRPY(0.0,M_PI, 0.0);
+	q.setValue(-0.029, -0.049, 0.928, 0.3662);
 	tf::quaternionTFToMsg(q, fake_goal.pose.orientation);
 
-	fake_goal.pose.position.x = - 0.4;
+	/*fake_goal.pose.position.x =  0.4;
 	fake_goal.pose.position.y =  0.0;
-	fake_goal.pose.position.z =  0.85;
-
+	fake_goal.pose.position.z =  1.00;
+*/
+	    fake_goal.pose.position.x =  -0.4537;
+		fake_goal.pose.position.y =  -0.247;
+		fake_goal.pose.position.z =  0.8354;
 
 	/*
 	ROS_INFO(" Received a goal request ");
@@ -324,7 +337,6 @@ void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& 
 bool ToolChange::processGoal(const geometry_msgs::PoseStamped& start_pose)
 {
 	int fake_command = 1;
-
 	return coupleOrDecouple(fake_command, start_pose);
 }
 
@@ -339,17 +351,16 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	// move arm to a start position
 	//--------------------------------------------------------------------------------------
 	tf::Vector3 direction;
-
-	ROS_INFO("Moving arm to a pre-grasp position.");
-
 	double offset = 0.0;
+
+/*	ROS_INFO("Moving arm to a pre-grasp position.");
 	if(!executeMoveCommand(pose, offset))
 	{
 		ROS_WARN("Error occurred executing move to start position.");
 		return false;
 	}
 	waitForMoveit();
-	//--------------------------------------------------------------------------------------
+*/	 //--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
 	ROS_INFO("Moving arm to wagon fiducial position.");
@@ -362,7 +373,7 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	}
 	//   COUPLE / DECOUPLE
 
-	//--------------------------------------------------------------------------------------
+/*	//--------------------------------------------------------------------------------------
 	// move arm straight forward
 	//--------------------------------------------------------------------------------------
 	direction = FORWARD;
@@ -375,14 +386,15 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	//--------------------------------------------------------------------------------------
 	// move arm down to coupler
 	//--------------------------------------------------------------------------------------
-	direction = DOWN;
+	direction = BACK;
 
-	if(!executeStraightMoveCommand(direction, MAX_STEP_MIL))
+	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
 	{
 		ROS_WARN("Error occurred executing move arm down to coupler .");
 		return false;
 	}
-	//--------------------------------------------------------------------------------------
+	*/
+/*	//--------------------------------------------------------------------------------------
 	// couple / decouple (different services !!!)
 	//--------------------------------------------------------------------------------------
 	if(command == COUPLE)
@@ -414,42 +426,65 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move arm straight back.");
 		return false;
 	}
-
+*/
 	return true;
 }
 
 
 bool ToolChange::moveToWagonFiducial(const double offset)
 {
+	move_action_ = false;
 	geometry_msgs::PoseStamped ee_pose;
 	geometry_msgs::PoseStamped goal_pose;
 	tf::Transform ee_pose_tf;
 	tf::Transform goal_pose_tf;
 
-	//wait for all moveit commands to be comleted
-	while(!move_action_)
-	{
-		ros::spinOnce();
-	}
+	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
+	goal_pose.header.frame_id = BASE_LINK;
+	goal_pose.header.stamp = ros::Time::now();
+	group.setPoseReferenceFrame(BASE_LINK);
+
 
 	if(! arm_board_transform_.getOrigin().isZero())
 	{
 		//get the position of the end effector (= arm_7_joint)
-		ee_pose = current_ee_pose_;
+		ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
 		//msg -> tf
 		tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
 		//calculate transformation tf pose from arm to board
 		goal_pose_tf = ee_pose_tf * arm_board_transform_;
+
 		//tf -> msg
 		tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
-	}
-	else
-	{
-		ROS_WARN("Arm to board transformation fails.");
-		return false;
+		drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, goal_pose);
+		drawSystem(goal_pose);
+		drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
+
+
+		group.setPoseTarget(goal_pose, EE_NAME);
+
+			// plan the motion
+			bool have_plan = false;
+			moveit::planning_interface::MoveGroup::Plan plan;
+			have_plan = group.plan(plan);
+
+			//EXECUTE THE PLAN !!!!!! BE CAREFUL
+			if (have_plan==true) {
+				group.execute(plan);
+				group.move();
+			}
+			else
+			{
+				ROS_WARN("No valid plan found for the arm movement.");
+				move_action_ = false;
+				return false;
+			}
 	}
 
-	return executeMoveCommand(goal_pose, offset);
+			current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+			move_action_ = true;
+
+			return true;
 }
 /*
  * Move arm to the wagon using fiducials.
@@ -479,7 +514,8 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose,
 
 	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
 	drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, pose);
-
+    drawSystem(pose);
+    drawArrowX(0.55, 0.0, 0.0, 1.0, pose);
 	group.setPoseTarget(pose, EE_NAME);
 
 	// plan the motion
@@ -657,7 +693,7 @@ void ToolChange::printVector(const std::vector<double> v)
 /*
  * A helper function to draw a simple arrow in rviz.
  */
-void ToolChange::drawArrow (const double r, const double g, const double b, const double a,
+void ToolChange::drawArrowX (const double r, const double g, const double b, const double a,
 		const geometry_msgs::PoseStamped& pose)
 {
 	visualization_msgs::Marker marker;
@@ -667,7 +703,7 @@ void ToolChange::drawArrow (const double r, const double g, const double b, cons
 	marker.action = visualization_msgs::Marker::ADD;
 	marker.type = visualization_msgs::Marker::ARROW;
 
-	marker.pose.position.x = pose.pose.position.x;
+	marker.pose.position.x = pose.pose.position.x ;
 	marker.pose.position.y = pose.pose.position.y;
 	marker.pose.position.z = pose.pose.position.z;
 
@@ -689,6 +725,7 @@ void ToolChange::drawArrow (const double r, const double g, const double b, cons
 
 	marker_id_++;
 }
+
 /**
  * A helper function to draw a simple line in rviz.
  */
@@ -712,7 +749,7 @@ void ToolChange::drawLine (const double r, const double g, const double b, const
 
 	marker.points.push_back(p);
 
-	marker.scale.x = 0.005;
+	marker.scale.x = 0.009;
 	marker.scale.y = 0.0;
 	marker.scale.z = 0.0;
 
@@ -723,6 +760,21 @@ void ToolChange::drawLine (const double r, const double g, const double b, const
 
 	vis_pub_.publish(marker);
 	marker_id_++;
+}
+
+void ToolChange::drawSystem(const geometry_msgs::PoseStamped& pose)
+{
+
+	geometry_msgs::PoseStamped goal_pose;
+	goal_pose.pose = pose.pose;
+	goal_pose.pose.position.x = pose.pose.position.x + 0.1;
+	drawLine(0.55, 0.0, 0.0, 1.0, pose, goal_pose);
+	goal_pose.pose = pose.pose;
+	goal_pose.pose.position.y = pose.pose.position.y + 0.1;
+	drawLine(0.3, 0.3, 0.0, 1.0, pose, goal_pose);
+	goal_pose.pose = pose.pose;
+	goal_pose.pose.position.z = pose.pose.position.z + 0.1;
+	drawLine(0.0, 0.0, 1.0, 1.0, pose, goal_pose);
 }
 
 int main (int argc, char** argv)

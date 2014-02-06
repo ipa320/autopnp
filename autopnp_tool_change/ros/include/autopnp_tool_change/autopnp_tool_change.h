@@ -65,11 +65,12 @@ static const double MAX_STEP_CM = 0.01;
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
 static const std::string EE_NAME = "arm_7_link";
+//static const std::string EE_NAME = "arm_ee";
 
-static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, 0.02);
-static const tf::Vector3 FORWARD = tf::Vector3(-0.3, 0.0, 0.0);
-static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.02);
-static const tf::Vector3 BACK = tf::Vector3(0.3, 0.0, 0.0);
+static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, 0.07);
+static const tf::Vector3 FORWARD = tf::Vector3(0.03, 0.0, 0.0);
+static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
+static const tf::Vector3 BACK = tf::Vector3(-0.03, 0.0, 0.0);
 
 
 
@@ -163,9 +164,10 @@ protected:
 	void printPose(tf::Transform& trans_msg);
 	void printMsg(const geometry_msgs::PoseStamped pose);
 	void printVector(const std::vector<double> v);
-	void drawArrow( double r,  double g, double b, double a, const geometry_msgs::PoseStamped& pose);
+	void drawArrowX( double r,  double g, double b, double a, const geometry_msgs::PoseStamped& pose);
 	void drawLine( double r,  double g, double b, double a, const geometry_msgs::PoseStamped& pose_start,
 			const geometry_msgs::PoseStamped& pose_end);
+	void drawSystem(const geometry_msgs::PoseStamped& pose);
 };
 
 
