@@ -68,9 +68,9 @@ static const std::string EE_NAME = "arm_7_link";
 //static const std::string EE_NAME = "arm_ee";
 
 static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, 0.07);
-static const tf::Vector3 FORWARD = tf::Vector3(0.03, 0.0, 0.0);
+static const tf::Vector3 FORWARD = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
-static const tf::Vector3 BACK = tf::Vector3(-0.03, 0.0, 0.0);
+static const tf::Vector3 BACK = tf::Vector3(-0.05, 0.0, 0.0);
 
 
 
@@ -132,6 +132,8 @@ protected:
 
 	///transformation data between the arm and the wagon slot
 	tf::Transform arm_board_transform_;
+	tf::Transform arm_transform_;
+	tf::Transform cam_transform_;
 	geometry_msgs::PoseStamped current_ee_pose_;
 
 	//CALLBACKS
