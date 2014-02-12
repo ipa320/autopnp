@@ -3,6 +3,26 @@
 #include <tf/transform_broadcaster.h>
 #include <moveit/move_group_interface/move_group.h>
 
+/** Transformation Tree
+____________________________________________________________
+______FA_____--------------->________FB_____________________
+______________/\____________/\______________________________
+______|________\____________/________|______________________
+______|_________\__________/_________|______________________
+______|______________CAM_____________|______________________
+______|_________/__________\_________|______________________
+_____\|/_______/____/|\_____\_______\|/_____________________
+______________\/_____|_______\/______________________________
+______EE_____------------ --->_______GOAL___________________
+_____________________|_______________________________________
+__________/\_________|______________________________________
+___________\_________|_______________________________________
+____________\________|_______________________________________
+_____________\_______________________________________________
+____________________BASE_____________________________________
+_____________________________________________________________
+ **/
+
 /*
  * Initializing the server before start and waiting for data :
  * Starts all needed subscriptions and publications.
@@ -20,7 +40,6 @@ ToolChange::ToolChange(ros::NodeHandle nh): change_tool_server_
 	input_marker_detection_sub_.unsubscribe();
 	joint_states_sub_.unsubscribe();
 	slot_position_detected_ = false;
-	reached_pregrasp_pose_ = false;
 	move_action_ = false;
 	marker_id_ = 0;
 
@@ -36,7 +55,6 @@ ToolChange::ToolChange(ros::NodeHandle nh): change_tool_server_
 	{
 		ros::spinOnce();
 	}
-
 }
 
 /*
@@ -116,21 +134,24 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		//else the components are empty
 		if(detected_both_fiducials_ == true)
 		{
-			fiducial_pose_board = result_components.board.translation;
-			fiducial_pose_arm = result_components.arm.translation;
 
-			arm_board = calculateArmBoardTransformation(fiducial_pose_board, fiducial_pose_arm);
+
+
+			arm_board = calculateArmBoardTransformation(result_components.board.translation, result_components.arm.translation);
 
 			if(!arm_board.getOrigin().isZero())
 			{
 				//ROS_INFO("Slot position has been detected. ");
-				arm_transform_ = fiducial_pose_arm;
-				arm_board_transform_ = arm_board;
+				transform_CA_FA_ = result_components.arm.translation;
+				transform_CA_FB_ = result_components.board.translation;
+				transform_FA_FB_ = arm_board;
 				slot_position_detected_ = true;
+
 			}
 		}
 	}
 }
+
 
 /*
  * Computes mean coordinate system if multiple markers detected
@@ -205,58 +226,54 @@ struct ToolChange::components ToolChange::computeMarkerPose(
  * Calculates translation and orientation distance between arm marker and wagon board.
  * Vector orientation points from arm to board.
  *
- * Arm fiducial and wagon-board fiducial, in particular, their quaternions must be inverted
- * to justify the real positions of the arm and wagon. Thats why they must undergo
- * simulated transformations. After those it will be possible
- * to calculate the real transformation between arm and board positions.
- *
  *
  * Here :
- * - arm fiducial position (x-up, y-left, z-to observer) is shifted to its
- * corresponding arm position : rotation around x-axes in 45 (left) and after it
- * around y-axes in 45 degrees(left).
- * - board fiducial position (x-down, y-right, z-to observer) is shifted
- * to its original position : rotation around y-axes in 45 degrees(left).
+ * - arm fiducial pregrasp position (x-down, y-right, z-to observer)
+ * - board fiducial position (x-down, y-right, z-to observer)
  *
  */
 tf::Transform ToolChange::calculateArmBoardTransformation(
 		const tf::Transform& board_pose, const tf::Transform& arm_pose)
 {
+
 	//define tf poses
-	tf::Transform board_pose_simulated;
-	tf::Transform arm_pose_simulated;
 	tf::Transform result;
+	tf::Transform arm;
+	tf::Transform board;
+	arm = arm_pose;
+	board = board_pose;
 
 	//define rotations
 	tf::Quaternion rotate_Y_45_right;
 	tf::Quaternion rotate_Y_45_left;
-	tf::Quaternion rotate_X_pi_4_left;
+	tf::Quaternion rotate_3X_pi_4_left;
 	tf::Quaternion rotate_X_pi_4_right;
 	tf::Quaternion rotate_X_45_right;
-	tf::Quaternion rotate_X_45_left;
+	tf::Quaternion rotate_X_90_left;
 	tf::Quaternion rotate_all;
 
+	const tf::Vector3 arm_fidu_offset = tf::Vector3(0.0, 0.025, -0.08);
+	const tf::Vector3 board_fidu_offset = tf::Vector3(0.0, 0.0, 0.30);
+
 	//set rotations
-	rotate_X_pi_4_left.setRPY( M_PI/4, 0.0, 0.0);
+	rotate_3X_pi_4_left.setRPY( 3*M_PI/4, 0.0, 0.0);
 	rotate_Y_45_right.setRPY(0.0, -M_PI/2, 0.0);
 	rotate_Y_45_left.setRPY(0.0, M_PI/2, 0.0);
 	rotate_X_pi_4_right.setRPY(-M_PI/4, 0.0, 0.0);
 	rotate_X_45_right.setRPY(-M_PI/2,0.0,  0.0);
-	rotate_X_45_left.setRPY(M_PI/2, 0.0, 0.0);
+	rotate_X_90_left.setRPY(M_PI, 0.0, 0.0);
 
-	//set tf poses according to there real
-	//orientation and position to the arm and board
-	//tf::Vector3 substraction = tf::Vector3(0.0, 0.0, 0.3);
-	board_pose_simulated.setOrigin(board_pose.getOrigin());
-	board_pose_simulated.setRotation(board_pose.getRotation() * rotate_Y_45_right );
+	transform_FA_EE_.setOrigin(arm_fidu_offset);
+	transform_FA_EE_.setRotation(rotate_3X_pi_4_left * rotate_Y_45_left);
 
-	tf::Quaternion rotateX = arm_pose.getRotation() * rotate_X_pi_4_right;
-	arm_pose_simulated.setRotation( rotateX * rotate_Y_45_right );
-	//arm_pose_simulated.setRotation(arm_pose.getRotation() * rotate_Y_45_right);
-	arm_pose_simulated.setOrigin(arm_pose.getOrigin());
+	transform_FB_GO_.setOrigin(board_fidu_offset);
+	transform_FB_GO_.setRotation( rotate_X_90_left * rotate_Y_45_left);
+
+	transform_CA_EE_.mult(arm ,transform_FA_EE_);
+	transform_CA_GO_.mult(board, transform_FB_GO_);
 
 	//calculate the transformation between arm and board
-	result.mult(arm_pose_simulated.inverse() , board_pose_simulated);
+	result.mult(transform_CA_EE_.inverse() ,transform_CA_GO_);
 
 	/// JUST DRAWING IN RVIZ FOR TEST PURPOSES
 	tf::Transform a_tf;
@@ -290,35 +307,14 @@ void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& 
 
 	geometry_msgs::PoseStamped fake_goal;
 	tf::Quaternion q;
-	//q.setRPY(0.0, 0.0, -2.09);
-	//q.setRPY(0.0, 0.0, 0.0);
 
-	q.setValue(0.005416, 0.0449621, -0.53018, 0.846673);
-	q.setRPY(0.0, 0.0, M_PI);
+	q.setValue(0.49077, 0.8522, -0.1060, 0.1468);
+	//q.setRPY(0.0, 0.0, M_PI);
 	tf::quaternionTFToMsg(q, fake_goal.pose.orientation);
 
-	/*fake_goal.pose.position.x =  0.4;
-	fake_goal.pose.position.y =  0.0;
-	fake_goal.pose.position.z =  1.00;
-*/
-	    fake_goal.pose.position.x =  0.21968;
-		fake_goal.pose.position.y =  0.310715;
-		fake_goal.pose.position.z =  1.05734;
-
-	/*
-	ROS_INFO(" Received a goal request ");
-	tf::Transform tfGoal;
-	tf::Vector3 goal_translation = tf::Vector3(
-			goal->transform.translation.x,
-			goal->transform.translation.y,
-			goal->transform.translation.z);
-	tf::Quaternion goal_orientation = tf::Quaternion(
-			goal->transform.rotation.w,
-			goal->transform.rotation.x,
-			goal->transform.rotation.y,
-			goal->transform.rotation.z);
-	 */
-	//TO DO: set initial arm position as goal
+	fake_goal.pose.position.x =  0.38035;
+	fake_goal.pose.position.y =  0.171713;
+	fake_goal.pose.position.z =  0.922438;
 
 	// this command sends a feedback message to the caller
 	autopnp_tool_change::MoveToWagonFeedback feedback;
@@ -356,14 +352,14 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	tf::Vector3 direction;
 	double offset = 0.0;
 
-	ROS_INFO("Moving arm to a pre-grasp position.");
+	/*	ROS_INFO("Moving arm to a pre-grasp position.");
 	if(!executeMoveCommand(pose, offset))
 	{
 		ROS_WARN("Error occurred executing move to start position.");
 		return false;
 	}
 	waitForMoveit();
-	 //--------------------------------------------------------------------------------------
+	 */ //--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
 	ROS_INFO("Moving arm to wagon fiducial position.");
@@ -379,7 +375,7 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	//--------------------------------------------------------------------------------------
 	// move arm straight forward
 	//--------------------------------------------------------------------------------------
-/*	direction = FORWARD;
+	/*	direction = FORWARD;
 
 	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
 	{
@@ -396,8 +392,8 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move arm down to coupler .");
 		return false;
 	}
-*/
-/*	//--------------------------------------------------------------------------------------
+	 */
+	/*	//--------------------------------------------------------------------------------------
 	// couple / decouple (different services !!!)
 	//--------------------------------------------------------------------------------------
 	if(command == COUPLE)
@@ -429,7 +425,7 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move arm straight back.");
 		return false;
 	}
-*/
+	 */
 	return true;
 }
 
@@ -442,13 +438,25 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 	tf::Transform ee_pose_tf;
 	tf::Transform goal_pose_tf;
 
+	tf::Transform transform_FA_FB_NEW;
+	tf::Transform transform_CA_EE;
+	tf::Transform transform_BA_CA;
+	tf::Transform transform_CA_GO;
+	tf::Transform transform_EE_GO;
+	tf::Transform transform_CA_FA;
+	tf::Transform transform_CA_FB;
+	tf::Transform transform_BA_FA;
+	tf::Transform transform_BA_FB;
+	tf::Transform transform_FB_GO;
+	tf::Transform transform_FA_EE ;
+
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
 	goal_pose.header.frame_id = BASE_LINK;
 	goal_pose.header.stamp = ros::Time::now();
 	group.setPoseReferenceFrame(BASE_LINK);
 
 
-	if(! arm_board_transform_.getOrigin().isZero())
+	if(! transform_FA_FB_.getOrigin().isZero())
 	{
 		//get the position of the end effector (= arm_7_joint)
 		ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
@@ -456,42 +464,54 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 		tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
 		//calculate transformation tf pose from arm to board
 		//cam to base pose
-		cam_transform_ = ee_pose_tf * arm_transform_.inverse();
-		goal_pose_tf = cam_transform_ * arm_transform_ * arm_board_transform_;
-		//goal_pose_tf = ee_pose_tf * arm_board_transform_;
+		//transform_BA_CA_ = ee_pose_tf * transform_CA_EE_.inverse();
+		//goal_pose_tf = transform_BA_CA_ * transform_CA_EE_ * transform_FA_FB_;
+
+		transform_BA_CA.mult(ee_pose_tf, transform_CA_EE_.inverse());
+		transform_BA_FA.mult(transform_BA_CA,transform_CA_FA_);
+		transform_BA_FB.mult(transform_BA_CA ,transform_CA_FB_);
+
+		transform_FA_FB_NEW.mult(transform_BA_FA.inverse(), transform_BA_FB);
+		//transform_FB_GO_.mult(transform_CA_FB_.inverse(), transform_CA_GO_);
+		tf::Transform transform_EE_FB;
+		transform_EE_FB.mult(transform_FA_EE_.inverse() ,transform_FA_FB_NEW);
+		transform_EE_GO.mult( transform_EE_FB, transform_FB_GO_);
+		goal_pose_tf.mult(ee_pose_tf, transform_EE_GO);
 
 		//tf -> msg
 		tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
+
 		drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, goal_pose);
 		drawSystem(goal_pose);
 		drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
 
-
 		group.setPoseTarget(goal_pose, EE_NAME);
 
-			// plan the motion
-			bool have_plan = false;
-			moveit::planning_interface::MoveGroup::Plan plan;
-			have_plan = group.plan(plan);
+		// plan the motion
+		bool have_plan = false;
+		moveit::planning_interface::MoveGroup::Plan plan;
+		have_plan = group.plan(plan);
 
-			//EXECUTE THE PLAN !!!!!! BE CAREFUL
-			if (have_plan==true) {
-				group.execute(plan);
-				group.move();
-			}
-			else
-			{
-				ROS_WARN("No valid plan found for the arm movement.");
-				move_action_ = false;
-				return false;
-			}
+		//EXECUTE THE PLAN !!!!!! BE CAREFUL
+		if (have_plan==true) {
+			group.execute(plan);
+			group.move();
+		}
+		else
+		{
+			ROS_WARN("No valid plan found for the arm movement.");
+			move_action_ = false;
+			return false;
+		}
 	}
 
-			current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
-			move_action_ = true;
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	move_action_ = true;
 
-			return true;
+	return true;
 }
+
+
 /*
  * Move arm to the wagon using fiducials.
  */
@@ -520,8 +540,8 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose,
 
 	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
 	drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, pose);
-    drawSystem(pose);
-    drawArrowX(0.55, 0.0, 0.0, 1.0, pose);
+	drawSystem(pose);
+	drawArrowX(0.55, 0.0, 0.0, 1.0, pose);
 	group.setPoseTarget(pose, EE_NAME);
 
 	// plan the motion

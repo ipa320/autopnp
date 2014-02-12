@@ -122,7 +122,6 @@ protected:
 	autopnp_tool_change::MoveToWagonResult result_;
 
 	bool slot_position_detected_;
-	bool reached_pregrasp_pose_;
 	bool move_action_;
 	bool detected_both_fiducials_;
 
@@ -131,9 +130,13 @@ protected:
 	std::vector<double> jointPositions_;
 
 	///transformation data between the arm and the wagon slot
-	tf::Transform arm_board_transform_;
-	tf::Transform arm_transform_;
-	tf::Transform cam_transform_;
+	tf::Transform transform_FA_FB_;
+	tf::Transform transform_CA_EE_;
+	tf::Transform transform_CA_GO_;
+	tf::Transform transform_CA_FA_;
+	tf::Transform transform_CA_FB_;
+	tf::Transform transform_FB_GO_;
+	tf::Transform transform_FA_EE_;
 	geometry_msgs::PoseStamped current_ee_pose_;
 
 	//CALLBACKS
