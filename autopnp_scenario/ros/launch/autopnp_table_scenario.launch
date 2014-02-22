@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- start map server -->
+	<arg name="map" value="$(find autopnp_scenario)/config/map-ipa-apartment.yaml" />
+	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map)"/>
+
+	<!-- start dynamic camera to table/arm calibration -->
+	<include file="$(find hermes_camera_calibration)/ros/launch/camera_calibration.launch" />
+
+	<!-- link camera to map coordinate system -->
+	<node pkg="tf" type="static_transform_publisher" name="link_world2pillar_broadcaster" args="0 0 0 0 0 0 map marker_robot 100" />
+
+	<!-- connect map with robot base coordinate system -->
+	<node pkg="tf" type="static_transform_publisher" name="link_world2pillar_broadcaster" args="0 0 0 0 0 0 map base_link 100" />
+
+	<!-- start cob_phidgets for commanding the tool changer -->
+	<!--include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/-->
+
+	<!-- start vacuum cleaner on/off control driver -->
+	<!--include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner.launch"/-->
+
+	<!-- start trash bin detection -->
+	<!--include file="$(find autopnp_scenario)/ros/launch/trash_bin_detection_service_server.launch"/-->
+
+	<!-- start dirt detection -->
+	<include file="$(find autopnp_scenario)/ros/launch/dirt_detection/dirt_detection.launch" />
+
+</launch>

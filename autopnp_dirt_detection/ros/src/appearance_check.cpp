@@ -205,9 +205,11 @@ public:
 		cv::imshow("best matching patch", patchRotated(roi));
 		cvMoveWindow("best matching patch", 760, 0);
 		cv::imshow("reference magnitude", referenceMagnitude);
-		cvMoveWindow("reference magnitude", 650, 150);
+		cvMoveWindow("reference magnitude", 650, 170);
 		cv::imshow("patch rotated magnitude", dispPatchRotatedMagnitude);
-		cvMoveWindow("patch rotated magnitude", 760, 150);
+		cvMoveWindow("patch rotated magnitude", 760, 170);
+		cv::imshow("original patch", patch);
+		cvMoveWindow("original patch", 870, 0);
 		cv::waitKey();
 	}
 
@@ -371,7 +373,7 @@ public:
 		for (int i=0; i<signature2.cols; ++i)
 			cv::line(dispHist2, cv::Point(i, 0), cv::Point(i, (int)(1.f*signature2.at<float>(i))), CV_RGB(0,0,0));
 		cv::imshow("signature2", dispHist2);
-		cvMoveWindow("signature2", 760, 750);
+		cvMoveWindow("signature2", 840, 750);
 		cv::waitKey(10);
 
 		return signatureDistance;
