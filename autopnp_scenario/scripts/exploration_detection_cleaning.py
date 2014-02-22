@@ -80,7 +80,7 @@ from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 
 from ApproachPerimeter import *
- from ApproachPerimeterLinear import *
+from ApproachPerimeterLinear import *
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()

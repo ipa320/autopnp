@@ -60,15 +60,20 @@ import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
 import smach
 import smach_ros
-import sys
+import sys, os
+import math
 
 from ScreenFormatting import *
 from autopnp_dirt_detection.srv import *
 from cob_phidgets.srv import SetDigitalSensor
+from cob_srvs.srv import Trigger
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
 
+
+BASE_LINK_MAP = [0.2, 0.0]	# coordinates of base_link in measured in /map [in m]
+CLEANING_REACH_MIN_MAX = [0.5, 0.7]		# distance from base_link in (x,y)-plane where vacuum cleaner can reach dirty locations [in m] 
 
 class DirtDetectionOn(smach.State):
 	def __init__(self):
@@ -129,7 +134,9 @@ class ReceiveDirtMap(smach.State):
 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
 					x = (u+0.5)*map_resolution+map_offset.position.x
 					y = (v+0.5)*map_resolution+map_offset.position.y
-					if x>0.0 and y>0.0 and x<5.0 and y<2.5:		# todo: tune allowed area
+					dist = math.sqrt((x-BASE_LINK_MAP[0])*(x-BASE_LINK_MAP[0]) + (y-BASE_LINK_MAP[1])*(y-BASE_LINK_MAP[1]))
+					#if x>0.0 and y>0.0 and x<5.0 and y<2.5:		# todo: tune allowed area
+					if dist>CLEANING_REACH_MIN_MAX[0] and dist<CLEANING_REACH_MIN_MAX[1]:
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
@@ -174,8 +181,6 @@ class Clean(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat("Clean")
 		#rospy.loginfo('Executing state Clean')
-
-		return 'cleaning_done'
 
 		#handle_arm = sss.move("arm",[[0.9865473596897948, -1.0831862403727208, 0.8702560716294125, -0.5028991706696462, 1.4975099515036547, -1.6986067879184412, -8.726646259971648e-05]]) # intermediate position with vacuum cleaner in air
 		#handle_arm = sss.move("arm",[[]]) #
@@ -466,4 +471,4 @@ if __name__ == '__main__':
 	except:
 		print('EXCEPTION THROWN')
 		print('Aborting cleanly')
-		sys.exit(1)
+		os._exit(1)
