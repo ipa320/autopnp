@@ -60,6 +60,14 @@ import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
 import smach
 import smach_ros
+import sys
+
+from ScreenFormatting import *
+from autopnp_dirt_detection.srv import *
+from cob_phidgets.srv import SetDigitalSensor
+
+from simple_script_server import simple_script_server
+sss = simple_script_server()
 
 
 class DirtDetectionOn(smach.State):
@@ -98,7 +106,7 @@ class DirtDetectionOff(smach.State):
 
 class ReceiveDirtMap(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['dirt_found, no_dirt_found'],
+		smach.State.__init__(self, outcomes=['dirt_found', 'no_dirt_found'],
 							output_keys=['list_of_dirt_locations', 'last_visited_dirt_location'])
 
 	def execute(self, userdata ):
@@ -119,8 +127,8 @@ class ReceiveDirtMap(smach.State):
 		for v in range(0, resp.dirtMap.info.height):
 			for u in range(0, resp.dirtMap.info.width):
 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
-					x = u*map_resolution+map_offset.position.x
-					y = v*map_resolution+map_offset.position.y
+					x = (u+0.5)*map_resolution+map_offset.position.x
+					y = (v+0.5)*map_resolution+map_offset.position.y
 					if x>0.0 and y>0.0 and x<5.0 and y<2.5:		# todo: tune allowed area
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
@@ -166,6 +174,8 @@ class Clean(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat("Clean")
 		#rospy.loginfo('Executing state Clean')
+
+		return 'cleaning_done'
 
 		#handle_arm = sss.move("arm",[[0.9865473596897948, -1.0831862403727208, 0.8702560716294125, -0.5028991706696462, 1.4975099515036547, -1.6986067879184412, -8.726646259971648e-05]]) # intermediate position with vacuum cleaner in air
 		#handle_arm = sss.move("arm",[[]]) #
@@ -450,9 +460,10 @@ if __name__ == '__main__':
 			main_cleaning()
 		elif flag=="tool":
 			print "Starting tool change..."
+			main_toolchange()
 		else:
 			start_prompt()
 	except:
 		print('EXCEPTION THROWN')
 		print('Aborting cleanly')
-		os._exit(1)
+		sys.exit(1)

@@ -429,4 +429,4 @@ if __name__ == '__main__':
 	except:
 		print('EXCEPTION THROWN')
 		print('Aborting cleanly')
-		os._exit(1)
+		os.exit(1)
