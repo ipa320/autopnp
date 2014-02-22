@@ -186,6 +186,9 @@ class Clean(smach.State):
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
 		
+		angle = math.atan2(userdata.next_dirt_location[1]-BASE_LINK_MAP[1], userdata.next_dirt_location[0]-BASE_LINK_MAP[0])
+		print "angle=%f" %angle, "  (", (angle/math.pi*180.0), "deg )"
+		
 		raw_input("cleaning position ok?")
 		
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
