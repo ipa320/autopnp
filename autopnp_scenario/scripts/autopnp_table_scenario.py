@@ -67,6 +67,7 @@ from ScreenFormatting import *
 from autopnp_dirt_detection.srv import *
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
+from std_srvs import Empty
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
@@ -75,13 +76,32 @@ sss = simple_script_server()
 BASE_LINK_MAP = [0.2, 0.0]	# coordinates of base_link in measured in /map [in m]
 CLEANING_REACH_MIN_MAX = [0.5, 0.7]		# distance from base_link in (x,y)-plane where vacuum cleaner can reach dirty locations [in m] 
 
+# arm position when dirt detection is running
+ARM_IDLE_POSITION = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+# arm position for cleaning (touching the ground)
+ARM_CLEANING_POSITION = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+
+CLEANING_ANGLE_OFFSET = 5.0/180.0*math.pi	# angular offset around dirty location used for cleaning
+
+class InitCleaningDemo(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['initialized'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("InitCleaningDemo")
+
+		# move arm to idle position
+		handle_arm = sss.move("arm",[ARM_IDLE_POSITION])
+		return 'initialized'
+
+
 class DirtDetectionOn(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['dirt_detection_on'])
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("DirtDetectionOn")
-		rospy.loginfo('Executing state Dirt_Detection_On')
+		#rospy.loginfo('Executing state Dirt_Detection_On')
 
 		rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
 		try:
@@ -98,7 +118,7 @@ class DirtDetectionOff(smach.State):
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("DirtDetectionOff")
-		rospy.loginfo('Executing state Dirt_Detection_Off')
+		#rospy.loginfo('Executing state Dirt_Detection_Off')
 
 		rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
 		try:
@@ -116,7 +136,7 @@ class ReceiveDirtMap(smach.State):
 
 	def execute(self, userdata ):
 		sf = ScreenFormat("ReceiveDirtMap")
-		rospy.loginfo('Executing state ReceiveDirtMap')
+		#rospy.loginfo('Executing state ReceiveDirtMap')
 		
 		rospy.wait_for_service('/dirt_detection/get_dirt_map')
 		try:
@@ -135,7 +155,6 @@ class ReceiveDirtMap(smach.State):
 					x = (u+0.5)*map_resolution+map_offset.position.x
 					y = (v+0.5)*map_resolution+map_offset.position.y
 					dist = math.sqrt((x-BASE_LINK_MAP[0])*(x-BASE_LINK_MAP[0]) + (y-BASE_LINK_MAP[1])*(y-BASE_LINK_MAP[1]))
-					#if x>0.0 and y>0.0 and x<5.0 and y<2.5:		# todo: tune allowed area
 					if dist>CLEANING_REACH_MIN_MAX[0] and dist<CLEANING_REACH_MIN_MAX[1]:
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
@@ -158,9 +177,16 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("SelectNextUnprocssedDirtSpot")
-		rospy.loginfo('Executing state Select_Next_Unprocssed_Dirt_Spot')
+		#rospy.loginfo('Executing state Select_Next_Unprocssed_Dirt_Spot')
 		
 		if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location+1==len(userdata.list_of_dirt_locations):
+			# clear dirt maps
+			rospy.wait_for_service('/dirt_detection/reset_dirt_maps')
+			try:
+				req = rospy.ServiceProxy('/dirt_detection/reset_dirt_maps', Empty)
+				resp = req()
+			except rospy.ServiceException, e:
+				print "Service call for resetting dirt maps failed: %s"%e
 			return 'no_dirt_spots_left'
 		else:
 			current_dirt_location = userdata.last_visited_dirt_location + 1
@@ -180,14 +206,6 @@ class Clean(smach.State):
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("Clean")
-		#rospy.loginfo('Executing state Clean')
-
-		#handle_arm = sss.move("arm",[[0.9865473596897948, -1.0831862403727208, 0.8702560716294125, -0.5028991706696462, 1.4975099515036547, -1.6986067879184412, -8.726646259971648e-05]]) # intermediate position with vacuum cleaner in air
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[]]) #
-		
-		angle = math.atan2(userdata.next_dirt_location[1]-BASE_LINK_MAP[1], userdata.next_dirt_location[0]-BASE_LINK_MAP[0])
-		print "angle=%f" %angle, "  (", (angle/math.pi*180.0), "deg )"
 		
 		raw_input("cleaning position ok?")
 		
@@ -203,29 +221,20 @@ class Clean(smach.State):
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
 
-		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
-		intermediate1_position = [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447] # intermediate 1
-		intermediate2_position = [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447] # intermediate 2
-		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
-		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
-		cleaning_position = [-0.09923942126839758, -0.909491073214245, 0.08154178265317508, -1.4209598105111834, 1.695622274897531, -0.24858724536155236, 1.066797598696494] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position
-
+		# compute arm joint configurations
+		angle = math.atan2(userdata.next_dirt_location[1]-BASE_LINK_MAP[1], userdata.next_dirt_location[0]-BASE_LINK_MAP[0])
+		print "angle=%f" %angle, "  (", (angle/math.pi*180.0), "deg )"
+		upper_position_begin = ARM_IDLE_POSITION
+		upper_position_begin[0] = angle - CLEANING_ANGLE_OFFSET
+		upper_position_end = ARM_IDLE_POSITION
+		upper_position_end[0] = angle + CLEANING_ANGLE_OFFSET
+		cleaning_position_begin = ARM_CLEANING_POSITION
+		cleaning_position_begin[0] = angle - CLEANING_ANGLE_OFFSET
+		cleaning_position_end = ARM_CLEANING_POSITION
+		cleaning_position_end[0] = angle + CLEANING_ANGLE_OFFSET
+		
 		# move arm from storage position to cleaning position
-		if JOURNALIST_MODE == False:
-			handle_arm = sss.move("arm",[carrying_position, intermediate1_position, intermediate2_position, above_cleaning_20cm_position, above_cleaning_5cm_position, cleaning_position])
-		else:
-			handle_arm = sss.move("arm",[carrying_position])
-			raw_input("enter")
-			handle_arm = sss.move("arm",[intermediate1_position])
-			raw_input("enter")
-			handle_arm = sss.move("arm",[intermediate2_position])
-			raw_input("enter")
-			handle_arm = sss.move("arm",[above_cleaning_20cm_position])
-			raw_input("enter")
-			handle_arm = sss.move("arm",[above_cleaning_5cm_position])
-			raw_input("enter")
-			handle_arm = sss.move("arm",[cleaning_position])
-			raw_input("enter")
+		handle_arm = sss.move("arm",[upper_position_begin, cleaning_position_begin])
 		
 		# turn vacuum cleaner on
 		rospy.wait_for_service(vacuum_on_service_name) 
@@ -235,15 +244,8 @@ class Clean(smach.State):
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
 		
-		# move base (if necessary)
-		for i in range(0,1):
-			for j in range(0,2):
-				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
-			for j in range(0,5):
-				handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
-			for j in range(0,2):
-				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
-			
+		# move arm for cleaning
+		handle_arm = sss.move("arm",[cleaning_position_end])
 		
 		# turn vacuum cleaner off
 		rospy.wait_for_service(vacuum_off_service_name) 
@@ -253,16 +255,8 @@ class Clean(smach.State):
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
 		
-		# move arm back to storage position
-		handle_arm = sss.move("arm",[above_cleaning_5cm_position, above_cleaning_20cm_position, intermediate2_position, intermediate1_position, carrying_position])
-		
-		rospy.sleep(2)
-		
-		#raw_input("Quit program")
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[1.4605438779464148, -0.548173011466379, 0.08925613794699001, -1.751909143274348, 2.1865310336059762, -1.3275846955294868, -1.9370711236184264]]) #intermediate 1.5?
+		# move arm up
+		handle_arm = sss.move("arm",[upper_position_end])
 		
 		return 'cleaning_done'
 
@@ -347,15 +341,18 @@ def main_cleaning():
 	# clean
 	sm_scenario = smach.StateMachine(outcomes=['finished'])
 	with sm_scenario:
+		smach.StateMachine.add('INIT_CLEANING_DEMO', InitCleaningDemo(),
+								transitions={'initialized':'DIRT_DETECTION_ON'})
+		
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
-					transitions={'dirt_detection_on':'GET_DIRT_MAP'})
+								transitions={'dirt_detection_on':'GET_DIRT_MAP'})
 		
 		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(),
-					transitions={'dirt_found':'DIRT_DETECTION_OFF',
+								transitions={'dirt_found':'DIRT_DETECTION_OFF',
 								'no_dirt_found':'GET_DIRT_MAP'})
 		
 		smach.StateMachine.add('DIRT_DETECTION_OFF', DirtDetectionOff(),
-					transitions={'dirt_detection_off':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT'})
+								transitions={'dirt_detection_off':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT'})
 		
 		smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
 								transitions={'selected_next_dirt_location':'CLEAN',

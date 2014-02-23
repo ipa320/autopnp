@@ -249,6 +249,7 @@ void DirtDetection::init()
 	deactivate_dirt_detection_service_server_ = node_handle_.advertiseService("deactivate_dirt_detection", &DirtDetection::deactivateDirtDetection, this);
 	get_map_service_server_ = node_handle_.advertiseService("get_dirt_map", &DirtDetection::getDirtMap, this);
 	validate_cleaning_result_service_server_ = node_handle_.advertiseService("validate_cleaning_result", &DirtDetection::validateCleaningResult, this);
+	reset_maps_service_server_ = node_handle_.advertiseService("reset_dirt_maps", &DirtDetection::resetDirtMaps, this);
 
 //	floor_plane_pub_ = node_handle_.advertise<sensor_msgs::PointCloud2>("floor_plane", 1);
 }
@@ -440,6 +441,13 @@ void DirtDetection::resetMapsAndHistory()
 	listOfLastDetections_.clear();
 	listOfLastDetections_.resize(gridPositiveVotes_.cols, std::vector<std::vector<unsigned char> >(gridPositiveVotes_.rows, std::vector<unsigned char>(detectionHistoryDepth_, 0)));
 	historyLastEntryIndex_ = cv::Mat::zeros(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_32SC1);
+}
+
+
+bool DirtDetection::resetDirtMaps(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res)
+{
+	// clear maps
+	resetMapsAndHistory();
 }
 
 

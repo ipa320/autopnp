@@ -10,7 +10,8 @@
   <url>http://ros.org/wiki/autopnp_dirt_detection</url>
   <depend package="pcl"/>
   <depend package="pcl_ros"/>
-  <depend package="std_msgs"/> 
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
   <depend package="roscpp"/>
   <depend package="roslib"/>
   <depend package="rosbag"/>

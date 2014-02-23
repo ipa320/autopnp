@@ -92,6 +92,7 @@
 #include <nav_msgs/OccupancyGrid.h>
 
 // services
+#include <std_srvs/Empty.h>
 #include <autopnp_dirt_detection/ActivateDirtDetection.h>
 #include <autopnp_dirt_detection/DeactivateDirtDetection.h>
 #include <autopnp_dirt_detection/GetDirtMap.h>
@@ -160,6 +161,7 @@ protected:
 	ros::ServiceServer deactivate_dirt_detection_service_server_;	/// server for deactivating dirt detection
 	ros::ServiceServer get_map_service_server_;						/// server for dirt map requests
 	ros::ServiceServer validate_cleaning_result_service_server_;	/// server for validating cleaning results
+	ros::ServiceServer reset_maps_service_server_;					/// server for resetting dirt maps
 
 	bool activateDirtDetection(autopnp_dirt_detection::ActivateDirtDetection::Request &req, autopnp_dirt_detection::ActivateDirtDetection::Response &res);
 
@@ -169,6 +171,8 @@ protected:
 
 	// this function assumes that all positions to check are visible at the moment the function is called
 	bool validateCleaningResult(autopnp_dirt_detection::ValidateCleaningResult::Request &req, autopnp_dirt_detection::ValidateCleaningResult::Response &res);
+
+	bool resetDirtMaps(std_srvs::Empty::Request &req, std_srvs::Empty::Response &res);
 
 	int sumOfUCharArray(const std::vector<unsigned char>& vec);
 
