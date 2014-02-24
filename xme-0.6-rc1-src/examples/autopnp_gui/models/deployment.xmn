@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment:Deployment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:deployment="http://chromosome.fortiss.org/metamodel/deployment/1.0" xmi:id="_1JNzgO7pEeKiS_6QWf1FoA" projectName="chromosomeGui">
+  <network xmi:id="_RKNjoO7rEeKiS_6QWf1FoA" name="sub0"/>
+  <devices xmi:id="_tcVVcO7rEeKiS_6QWf1FoA" name="device" nodes="_xtm9YO7rEeKiS_6QWf1FoA">
+    <type href="deviceLibrary.xmh#_6yqvUO7pEeKiS_6QWf1FoA"/>
+    <interfaces xmi:id="_tcV8gO7rEeKiS_6QWf1FoA" address="127.0.0.1:33222">
+      <relatedInterface href="deviceLibrary.xmh#_9lvT4O7pEeKiS_6QWf1FoA"/>
+    </interfaces>
+  </devices>
+  <devices xmi:id="_UcBqwDC3EeOvlo2yXRn7fA" name="guiDevice" nodes="_TgaXETC3EeOvlo2yXRn7fA">
+    <type href="deviceLibrary.xmh#_6yqvUO7pEeKiS_6QWf1FoA"/>
+    <interfaces xmi:id="_UcC44DC3EeOvlo2yXRn7fA" address="127.0.0.1:33221">
+      <relatedInterface href="deviceLibrary.xmh#_9lvT4O7pEeKiS_6QWf1FoA"/>
+    </interfaces>
+  </devices>
+  <nodes xmi:id="_xtm9YO7rEeKiS_6QWf1FoA" name="emptyNode" device="_tcVVcO7rEeKiS_6QWf1FoA" nodeId="2">
+    <componentInstances xmi:id="_VSeusDAUEeOwV6UeeE-tRA" name="componentOne">
+      <type href="manifest.xmm#_C_RkYO7qEeKiS_6QWf1FoA"/>
+      <functions xmi:id="_VSfVwDAUEeOwV6UeeE-tRA">
+        <type href="manifest.xmm#_C_SLcO7qEeKiS_6QWf1FoA"/>
+      </functions>
+      <functions xmi:id="_VSfVwTAUEeOwV6UeeE-tRA">
+        <type href="manifest.xmm#_FIQfoDAQEeOwV6UeeE-tRA"/>
+      </functions>
+    </componentInstances>
+    <components href="manifest.xmm#_C_RkYO7qEeKiS_6QWf1FoA"/>
+  </nodes>
+  <nodes xmi:id="_TgaXETC3EeOvlo2yXRn7fA" name="guiNode" device="_UcBqwDC3EeOvlo2yXRn7fA" nodeId="3">
+    <componentInstances xmi:id="_gQBdQDC3EeOvlo2yXRn7fA" name="guiComponent">
+      <type href="manifest.xmm#_3gohYO7qEeKiS_6QWf1FoA"/>
+      <functions xmi:id="_gQCEUDC3EeOvlo2yXRn7fA">
+        <type href="manifest.xmm#_3gohYe7qEeKiS_6QWf1FoA"/>
+      </functions>
+      <functions xmi:id="_gQCEUTC3EeOvlo2yXRn7fA">
+        <type href="manifest.xmm#_6qF3oDAPEeOwV6UeeE-tRA"/>
+      </functions>
+    </componentInstances>
+  </nodes>
+</deployment:Deployment>

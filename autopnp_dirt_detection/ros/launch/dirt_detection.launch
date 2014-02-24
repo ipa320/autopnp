@@ -11,7 +11,8 @@
 	<!--remap from="image_color" to="/camera/rgb/image"/-->
 	<!--remap from="colored_point_cloud" to="/camera/depth/points_xyzrgb"/-->
 	<remap from="image_color" to="/cam3d/rgb/image_color"/>
-	<remap from="colored_point_cloud" to="/cam3d/rgb/points"/>
+	<remap from="colored_point_cloud" to="/cam3d/depth_registered/points"/>
+	<!--remap from="colored_point_cloud" to="/cam3d/rgb/points"/-->
 	<!--remap from="colored_point_cloud" to="/camera/rgb/points"/-->
 	<!--remap from="colored_point_cloud" to="/cam3d/rgb/points"/-->
 	
