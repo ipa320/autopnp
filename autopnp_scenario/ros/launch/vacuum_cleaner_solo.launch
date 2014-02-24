@@ -11,7 +11,7 @@
 
 
 	<!-- start ur_conector_canopen controller -->
-	<include file="$(find cob_bringup)/components/vacuum_cleaner.launch" >
+	<include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner.launch" >
 		<arg name="robot" value="$(arg robot)" />
 	</include>
 

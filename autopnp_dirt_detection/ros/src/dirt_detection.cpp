@@ -1200,7 +1200,7 @@ void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::Occupancy
 	detectionMap.info.height = gridPositiveVotes_.rows;
 	detectionMap.info.origin.position.x = gridOrigin_.x;	//-gridPositiveVotes_.cols/2 / (-gridResolution_) + gridOrigin_.x;	//done: offset
 	detectionMap.info.origin.position.y = gridOrigin_.y;	//-gridPositiveVotes_.rows/2 / gridResolution_ + gridOrigin_.y;
-	detectionMap.info.origin.position.z = -0.05;
+	detectionMap.info.origin.position.z = -0.001;	//-0.05;
 	tf::Quaternion rot(0,0,0);	//(0,3.14159265359,0);
 	detectionMap.info.origin.orientation.x = rot.getX();
 	detectionMap.info.origin.orientation.y = rot.getY();
@@ -1208,10 +1208,20 @@ void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::Occupancy
 	detectionMap.info.origin.orientation.w = rot.getW();
 	detectionMap.data.resize(gridPositiveVotes_.cols*gridPositiveVotes_.rows);
 	//int limit_square = 34;  // hack: autonomik-scenario
+
+//	gridOrigin_.x*gridResolution
+//	gridResolution_  //cells/m
+//	std::cout << "gridOrigin_.y*gridResolution_=" << gridOrigin_.y*gridResolution_ << "   gridOrigin_.x*gridResolution_=" << gridOrigin_.x*gridResolution_ << "   gridOrigin_.x=" <<  gridOrigin_.x << "   gridOrigin_.y=" <<  gridOrigin_.y <<  "  gridResolution_=" << gridResolution_ <<  std::endl;
+//	detectionMap.data[(-gridOrigin_.y*gridResolution_+2)*gridPositiveVotes_.cols-gridOrigin_.x*gridResolution_-7] = (int8_t)100;
+//	detectionMap.data[(-gridOrigin_.y*gridResolution_+2)*gridPositiveVotes_.cols-gridOrigin_.x*gridResolution_+8] = (int8_t)100;
+//	detectionMap.data[(-gridOrigin_.y*gridResolution_+6)*gridPositiveVotes_.cols-gridOrigin_.x*gridResolution_-7] = (int8_t)100;
+//	detectionMap.data[(-gridOrigin_.y*gridResolution_+6)*gridPositiveVotes_.cols-gridOrigin_.x*gridResolution_+8] = (int8_t)100;
+
 	for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
 		for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
 			// hack: autonomik-scenario: only map dirt within a certain area
 			//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
+			if (u>-gridOrigin_.x*gridResolution_-7 && u<-gridOrigin_.x*gridResolution_+8 && v>-gridOrigin_.y*gridResolution_+2 && v<-gridOrigin_.y*gridResolution_+6)
 				//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 				// todo: new mode
 				detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
