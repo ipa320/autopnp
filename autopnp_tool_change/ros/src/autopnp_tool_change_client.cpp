@@ -28,7 +28,7 @@ void MoveToWagonClient::run()
 
 
 	//translation
-	geometry_msgs::Vector3 vec;
+	/*geometry_msgs::Vector3 vec;
 	vec.x = 2.;
 	vec.y = 3.;
 	vec.z = 4.;
@@ -42,7 +42,7 @@ void MoveToWagonClient::run()
 	trans.rotation = quat;
 
 	goal.transform = trans;
-
+*/
 	move_to_wagon_client.sendGoal(goal,
 			boost::bind(&MoveToWagonClient::doneCb, this, _1, _2),
 			boost::bind(&MoveToWagonClient::activeCb, this),
