@@ -67,21 +67,21 @@ from ScreenFormatting import *
 from autopnp_dirt_detection.srv import *
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
-from std_srvs import Empty
+from std_srvs.srv import Empty
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
 
 
-BASE_LINK_MAP = [0.2, 0.0]	# coordinates of base_link in measured in /map [in m]
-CLEANING_REACH_MIN_MAX = [0.5, 0.7]		# distance from base_link in (x,y)-plane where vacuum cleaner can reach dirty locations [in m] 
+BASE_LINK_MAP = [0.0, 0.0]	# coordinates of base_link in measured in /map [in m]
+CLEANING_REACH_MIN_MAX = [0.15, 0.45]		# distance from base_link in (x,y)-plane where vacuum cleaner can reach dirty locations [in m] 
 
 # arm position when dirt detection is running
-ARM_IDLE_POSITION = [6.981317007977319e-05, 0.1650034274835439, 0.0, 1.4337705272208217, -0.06400122367063206, -1.54198094084447, 1.2029507336445715]
+ARM_IDLE_POSITION = [0.8, 0.09934414102351724, -3.490658503988659e-05, 1.5473565549406127, -0.06394886379307224, -1.4880677202503654, 1.2026365743792127]
 # arm position for cleaning (touching the ground)
-ARM_CLEANING_POSITION = [8.726646259971648e-05, 0.10599384547361562, 0.0, 1.620765103279494, -0.06398377037811212, -1.3759652223947696, 1.2029681869370916]
+ARM_CLEANING_POSITION = [0.8, 0.09936159431603717, -3.490658503988659e-05, 1.6203287709664957, -0.06394886379307224, -1.4070669896653085, 1.2026365743792127]
 
-CLEANING_ANGLE_OFFSET = 5.0/180.0*math.pi	# angular offset around dirty location used for cleaning
+CLEANING_ANGLE_OFFSET = 12.0/180.0*math.pi	# angular offset around dirty location used for cleaning
 
 class InitCleaningDemo(smach.State):
 	def __init__(self):
@@ -187,6 +187,7 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 				resp = req()
 			except rospy.ServiceException, e:
 				print "Service call for resetting dirt maps failed: %s"%e
+			handle_arm = sss.move("arm",[ARM_IDLE_POSITION])
 			return 'no_dirt_spots_left'
 		else:
 			current_dirt_location = userdata.last_visited_dirt_location + 1
@@ -207,7 +208,7 @@ class Clean(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat("Clean")
 		
-		raw_input("cleaning position ok?")
+		#raw_input("cleaning position ok?")
 		
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
 		vacuum_on_service_name = '/vacuum_cleaner_controller/vacuum_on'
@@ -222,18 +223,19 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 
 		# compute arm joint configurations
-		angle = math.atan2(userdata.next_dirt_location[1]-BASE_LINK_MAP[1], userdata.next_dirt_location[0]-BASE_LINK_MAP[0])
-		print "angle=%f" %angle, "  (", (angle/math.pi*180.0), "deg )"
-		upper_position_begin = ARM_IDLE_POSITION
-		upper_position_begin[0] = angle - CLEANING_ANGLE_OFFSET
-		upper_position_end = ARM_IDLE_POSITION
-		upper_position_end[0] = angle + CLEANING_ANGLE_OFFSET
-		cleaning_position_begin = ARM_CLEANING_POSITION
-		cleaning_position_begin[0] = angle - CLEANING_ANGLE_OFFSET
-		cleaning_position_end = ARM_CLEANING_POSITION
-		cleaning_position_end[0] = angle + CLEANING_ANGLE_OFFSET
+		angle = -math.atan2(userdata.next_dirt_location[1]-BASE_LINK_MAP[1], userdata.next_dirt_location[0]-BASE_LINK_MAP[0])
+		print "angle=%f" %angle, "  (", (angle/math.pi*180.0), "deg )", "   CLEANING_ANGLE_OFFSET =", CLEANING_ANGLE_OFFSET
+		upper_position_begin = list(ARM_IDLE_POSITION)
+		upper_position_begin[0] = angle + CLEANING_ANGLE_OFFSET
+		upper_position_end = list(ARM_IDLE_POSITION)
+		upper_position_end[0] = angle - CLEANING_ANGLE_OFFSET
+		cleaning_position_begin = list(ARM_CLEANING_POSITION)
+		cleaning_position_begin[0] = angle + CLEANING_ANGLE_OFFSET
+		cleaning_position_end = list(ARM_CLEANING_POSITION)
+		cleaning_position_end[0] = angle - CLEANING_ANGLE_OFFSET
 		
 		# move arm from storage position to cleaning position
+		#handle_arm = sss.move("arm",[upper_position_begin])
 		handle_arm = sss.move("arm",[upper_position_begin, cleaning_position_begin])
 		
 		# turn vacuum cleaner on
@@ -246,6 +248,7 @@ class Clean(smach.State):
 		
 		# move arm for cleaning
 		handle_arm = sss.move("arm",[cleaning_position_end])
+		#handle_arm = sss.move("arm",[upper_position_end])
 		
 		# turn vacuum cleaner off
 		rospy.wait_for_service(vacuum_off_service_name) 
