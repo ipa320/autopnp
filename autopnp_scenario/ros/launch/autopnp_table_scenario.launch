@@ -31,6 +31,12 @@
 	<!-- start vacuum cleaner on/off control driver -->
 	<include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner_solo.launch"/>
 	
+	<!-- start SDH driver -->
+	<include file="$(find schunk_bringup)/components/sdh.launch"/>
+	
+	<!-- start toolchanger pnp detection -->
+	<node name="toolchanger_pnp_manager" pkg="autopnp_scenario" type="toolchange_pnp_manager"  output="screen"/>
+
 	<!-- start arm driver -->
 	<include file="$(find schunk_bringup)/components/lwa4d_solo.launch"/>
 

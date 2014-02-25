@@ -13,6 +13,7 @@
   <depend package="rospy"/>
   <depend package="roslib"/>
   <depend package="std_srvs"/>
+  <depend package="visualization_msgs"/>
   <depend package="opencv2"/>
   <rosdep name="boost"/>
   <depend package="message_filters"/>
