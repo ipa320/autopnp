@@ -74,7 +74,7 @@ void ToolChange::init()
 }
 
 /**
- * Callback for the incoming  data stream.
+ * Callback for the incoming data stream.
  * Retrieves coming data from the joint_states message
  * and saves them as an instance of a
  * JointState msgs {@value jm}.
@@ -107,7 +107,7 @@ void ToolChange::jointInputCallback(const sensor_msgs::JointState::ConstPtr& inp
 
 
 /**
- * Callback for the incoming  data stream.
+ * Callback for the incoming data stream.
  * Retrieves coming data from the input_marker_detections message
  * and calculates the distance and orientation between the position
  * of the arm and board setting the {@value arm_board_transform}.
@@ -134,9 +134,6 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		//else the components are empty
 		if(detected_both_fiducials_ == true)
 		{
-
-
-
 			arm_board = calculateArmBoardTransformation(result_components.board.translation, result_components.arm.translation);
 
 			if(!arm_board.getOrigin().isZero())
@@ -146,7 +143,6 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 				transform_CA_FB_ = result_components.board.translation;
 				transform_FA_FB_ = arm_board;
 				slot_position_detected_ = true;
-
 			}
 		}
 	}
@@ -164,7 +160,6 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 {
 	ToolChange::components result;
 	unsigned int count = 0;
-	const unsigned int arm_marker_number = 19;
 	detected_both_fiducials_ = false;
 	bool detected_arm_fiducial = false;
 	bool detected_board_fiducial = false;
@@ -176,7 +171,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 		//retrieve the number of label and format the string message to an int number
 		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
-		unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
+		int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
 		//ROS_INFO("number %u , ", (unsigned int) fiducial_label_num) ;
 
 		//convert translation and orientation Points msgs to Points respectively
@@ -184,7 +179,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
 
 		// average only the 4 markers from the board (label values 0,1,2,3 set in common/files)
-		if(fiducial_label_num < 4)
+		if(fiducial_label_num == ARM_STATION || fiducial_label_num == EXTRA_FIDUCIAL || fiducial_label_num == VAC_CLEANER)
 		{
 			detected_board_fiducial = true;
 			count++;
@@ -201,7 +196,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		}
 
 		// set the arm marker (label value 4 set in common/files)
-		if(fiducial_label_num == arm_marker_number)
+		if(fiducial_label_num == ARM)
 		{
 			detected_arm_fiducial = true;
 			result.arm.translation.setOrigin(translation);
@@ -216,6 +211,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		result.board.translation.getRotation() /= (double)count;
 		result.board.translation.getRotation().normalize();
 	}
+
 
 	detected_both_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
@@ -260,7 +256,7 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
 	rotate_Y_45_right.setRPY(0.0, -M_PI/2, 0.0);
 	rotate_Y_45_left.setRPY(0.0, M_PI/2, 0.0);
 	rotate_X_pi_4_right.setRPY(-M_PI/4, 0.0, 0.0);
-	rotate_X_45_right.setRPY(-M_PI/2,0.0,  0.0);
+	rotate_X_45_right.setRPY(-M_PI/2,0.0, 0.0);
 	rotate_X_90_left.setRPY(M_PI, 0.0, 0.0);
 
 	transform_FA_EE_.setOrigin(arm_fidu_offset);
@@ -312,9 +308,9 @@ void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& 
 	//q.setRPY(0.0, 0.0, M_PI);
 	tf::quaternionTFToMsg(q, fake_goal.pose.orientation);
 
-	fake_goal.pose.position.x =  0.38035;
-	fake_goal.pose.position.y =  0.171713;
-	fake_goal.pose.position.z =  0.922438;
+	fake_goal.pose.position.x = 0.38035;
+	fake_goal.pose.position.y = 0.171713;
+	fake_goal.pose.position.z = 0.922438;
 
 	// this command sends a feedback message to the caller
 	autopnp_tool_change::MoveToWagonFeedback feedback;
@@ -352,13 +348,13 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	tf::Vector3 direction;
 	double offset = 0.0;
 
-	/*	ROS_INFO("Moving arm to a pre-grasp position.");
-	if(!executeMoveCommand(pose, offset))
-	{
-		ROS_WARN("Error occurred executing move to start position.");
-		return false;
-	}
-	waitForMoveit();
+	/* ROS_INFO("Moving arm to a pre-grasp position.");
+if(!executeMoveCommand(pose, offset))
+{
+ROS_WARN("Error occurred executing move to start position.");
+return false;
+}
+waitForMoveit();
 	 */ //--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
@@ -370,61 +366,61 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move to wagon fiducial position.");
 		return false;
 	}
-	//   COUPLE / DECOUPLE
+	// COUPLE / DECOUPLE
 
 	//--------------------------------------------------------------------------------------
 	// move arm straight forward
 	//--------------------------------------------------------------------------------------
-	/*	direction = FORWARD;
+	/* direction = FORWARD;
 
-	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
-	{
-		ROS_WARN("Error occurred executing move to wagon fiducial.");
-		return false;
-	}
-	//--------------------------------------------------------------------------------------
-	// move arm down to coupler
-	//--------------------------------------------------------------------------------------
-	direction = BACK;
+if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
+{
+ROS_WARN("Error occurred executing move to wagon fiducial.");
+return false;
+}
+//--------------------------------------------------------------------------------------
+// move arm down to coupler
+//--------------------------------------------------------------------------------------
+direction = BACK;
 
-	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
-	{
-		ROS_WARN("Error occurred executing move arm down to coupler .");
-		return false;
-	}
+if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
+{
+ROS_WARN("Error occurred executing move arm down to coupler .");
+return false;
+}
 	 */
-	/*	//--------------------------------------------------------------------------------------
-	// couple / decouple (different services !!!)
-	//--------------------------------------------------------------------------------------
-	if(command == COUPLE)
-	{
-		ROS_INFO("Start to couple.");
-	}
-	if(command == DECOUPLE)
-	{
-		ROS_INFO("Start to decouple.");
-	}
-	//--------------------------------------------------------------------------------------
-	// move arm straight up
-	//--------------------------------------------------------------------------------------
-	direction = UP;
+	/* //--------------------------------------------------------------------------------------
+// couple / decouple (different services !!!)
+//--------------------------------------------------------------------------------------
+if(command == COUPLE)
+{
+ROS_INFO("Start to couple.");
+}
+if(command == DECOUPLE)
+{
+ROS_INFO("Start to decouple.");
+}
+//--------------------------------------------------------------------------------------
+// move arm straight up
+//--------------------------------------------------------------------------------------
+direction = UP;
 
-	if(!executeStraightMoveCommand(direction, MAX_STEP_MIL))
-	{
-		ROS_WARN("Error occurred executing move arm straight up.");
-		return false;
-	}
-	waitForMoveit();
-	//--------------------------------------------------------------------------------------
-	// move arm straight back
-	//--------------------------------------------------------------------------------------
-	direction = BACK;
+if(!executeStraightMoveCommand(direction, MAX_STEP_MIL))
+{
+ROS_WARN("Error occurred executing move arm straight up.");
+return false;
+}
+waitForMoveit();
+//--------------------------------------------------------------------------------------
+// move arm straight back
+//--------------------------------------------------------------------------------------
+direction = BACK;
 
-	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
-	{
-		ROS_WARN("Error occurred executing move arm straight back.");
-		return false;
-	}
+if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
+{
+ROS_WARN("Error occurred executing move arm straight back.");
+return false;
+}
 	 */
 	return true;
 }
@@ -578,12 +574,12 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose,
 bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, const double ee_max_step)
 {
 	/** \brief Compute a Cartesian path that follows specified waypoints with a step size of at most \e eef_step meters
-	      between end effector configurations of consecutive points in the result \e trajectory. The reference frame for the
-	      waypoints is that specified by setPoseReferenceFrame(). No more than \e jump_threshold
-	      is allowed as change in distance in the configuration space of the robot (this is to prevent 'jumps' in IK solutions).
-	      Collisions are avoided if \e avoid_collisions is set to true. If collisions cannot be avoided, the function fails.
-	      Return a value that is between 0.0 and 1.0 indicating the fraction of the path achieved as described by the waypoints.
-	      Return -1.0 in case of error. */
+between end effector configurations of consecutive points in the result \e trajectory. The reference frame for the
+waypoints is that specified by setPoseReferenceFrame(). No more than \e jump_threshold
+is allowed as change in distance in the configuration space of the robot (this is to prevent 'jumps' in IK solutions).
+Collisions are avoided if \e avoid_collisions is set to true. If collisions cannot be avoided, the function fails.
+Return a value that is between 0.0 and 1.0 indicating the fraction of the path achieved as described by the waypoints.
+Return -1.0 in case of error. */
 
 	move_action_ = false;
 	double jump_threshold = 0.0;
