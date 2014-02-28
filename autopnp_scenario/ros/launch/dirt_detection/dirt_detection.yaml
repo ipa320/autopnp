@@ -36,7 +36,7 @@ warpImage: true
 
 # resolution for bird eye's perspective [pixel/m]
 # double
-birdEyeResolution: 600.0  # 300.0
+birdEyeResolution: 500.0  # 300.0
 
 # only those points which are close enough to the camera are displayed in the bird's eye view [max distance in m]
 # double

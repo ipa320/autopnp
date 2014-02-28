@@ -118,7 +118,6 @@ void ToolChange::jointInputCallback(const sensor_msgs::JointState::ConstPtr& inp
 void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg)
 {
 
-	//ROS_INFO("InputCallback for input_marker_detections_msg received.");
 	struct ToolChange::components result_components;
 	tf::Transform fiducial_pose_board;
 	tf::Transform fiducial_pose_arm;
@@ -134,9 +133,6 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		//else the components are empty
 		if(detected_both_fiducials_ == true)
 		{
-
-
-
 			arm_board = calculateArmBoardTransformation(result_components.board.translation, result_components.arm.translation);
 
 			if(!arm_board.getOrigin().isZero())
@@ -164,7 +160,8 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 {
 	ToolChange::components result;
 	unsigned int count = 0;
-	const unsigned int arm_marker_number = 19;
+	//const unsigned int arm_marker_number = 19;
+	const std::string arm_marker_name = "tag_19";
 	detected_both_fiducials_ = false;
 	bool detected_arm_fiducial = false;
 	bool detected_board_fiducial = false;
@@ -176,7 +173,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 		//retrieve the number of label and format the string message to an int number
 		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
-		unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
+		//unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
 		//ROS_INFO("number %u , ", (unsigned int) fiducial_label_num) ;
 
 		//convert translation and orientation Points msgs to Points respectively
@@ -184,7 +181,8 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
 
 		// average only the 4 markers from the board (label values 0,1,2,3 set in common/files)
-		if(fiducial_label_num < 4)
+		//if(fiducial_label_num < 4)
+		if (fiducial_label.compare("tag_0")==0 || fiducial_label.compare("tag_1")==0 || fiducial_label.compare("tag_2")==0 || fiducial_label.compare("tag_3")==0)
 		{
 			detected_board_fiducial = true;
 			count++;
@@ -201,7 +199,8 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		}
 
 		// set the arm marker (label value 4 set in common/files)
-		if(fiducial_label_num == arm_marker_number)
+		//if(fiducial_label_num == arm_marker_number)
+		if (fiducial_label.compare(arm_marker_name)==0)
 		{
 			detected_arm_fiducial = true;
 			result.arm.translation.setOrigin(translation);

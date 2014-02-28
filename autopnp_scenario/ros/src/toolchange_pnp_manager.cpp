@@ -21,7 +21,7 @@ public:
 		vis_pub_first_ = true;
 		hand_status_ = -1;
 		vacuum_status_ = -1;
-		diagnostics_sdh_sub_ = node_handle_.subscribe("/diagnostics", 1, &ToolchangePnPManager::diagnosticsSDHCallback, this);
+		//diagnostics_sdh_sub_ = node_handle_.subscribe("/diagnostics", 1, &ToolchangePnPManager::diagnosticsSDHCallback, this);
 		diagnostics_vacuum_sub_ = node_handle_.subscribe("/diagnostics_vacuum_cleaner", 1, &ToolchangePnPManager::diagnosticsVacuumCallback, this);
 		vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>( "/pnp_manager", 0 );
 	}
@@ -192,7 +192,7 @@ int main(int argc, char** argv)
 	// here we wait until the service is available; please use the same service name as the one in the server; you may define a timeout if the service does not show up
 	std::cout << "Waiting for service servers to become available..." << std::endl;
 	bool serviceAvailable = true;
-	serviceAvailable &= ros::service::waitForService(sdh_init_service_name, 5000);
+	//serviceAvailable &= ros::service::waitForService(sdh_init_service_name, 5000);
 	serviceAvailable &= ros::service::waitForService(vacuum_init_service_name, 5000);
 	if (serviceAvailable == false)
 	{
@@ -215,20 +215,20 @@ int main(int argc, char** argv)
 			if (success == false)
 				std::cout << "Vacuum cleaner init service call failed.\n" << std::endl;
 			tPnP.setVacuumStatus(1);
-			lastCheckedDevice = 1;
+			//lastCheckedDevice = 1;
 		}
 
 		// check for SDH
-		if (tPnP.getHandStatus()== -1 && tPnP.getVacuumStatus()== -1 && lastCheckedDevice==1)
-		{
-			cob_srvs::Trigger::Request req;
-			cob_srvs::Trigger::Response res;
-			bool success = ros::service::call(sdh_init_service_name, req, res);
-			if (success == false)
-				std::cout << "SDH init service call failed.\n" << std::endl;
-			tPnP.setHandStatus(1);
-			lastCheckedDevice = 0;
-		}
+//		if (tPnP.getHandStatus()== -1 && tPnP.getVacuumStatus()== -1 && lastCheckedDevice==1)
+//		{
+//			cob_srvs::Trigger::Request req;
+//			cob_srvs::Trigger::Response res;
+//			bool success = ros::service::call(sdh_init_service_name, req, res);
+//			if (success == false)
+//				std::cout << "SDH init service call failed.\n" << std::endl;
+//			tPnP.setHandStatus(1);
+//			lastCheckedDevice = 0;
+//		}
 
 		ros::spinOnce();
 		rate.sleep();
