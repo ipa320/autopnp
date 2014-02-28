@@ -58,6 +58,10 @@
 ///Static constant variables
 static const int COUPLE = 1;
 static const int DECOUPLE = 2;
+static const int ARM = 19;
+static const int VAC_CLEANER = 79;
+static const int ARM_STATION = 38;
+static const int EXTRA_FIDUCIAL = 73;
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
@@ -65,14 +69,15 @@ static const double MAX_STEP_CM = 0.01;
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
 static const std::string EE_NAME = "arm_7_link";
-//static const std::string EE_NAME = "arm_ee";
 
 static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, 0.07);
-static const tf::Vector3 FORWARD = tf::Vector3(0.05, 0.0, 0.0);
+static const tf::Vector3 FORWARD = tf::Vector3(-0.05, 0.0, 0.0);
 static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
-static const tf::Vector3 BACK = tf::Vector3(-0.05, 0.0, 0.0);
+static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
+static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
-
+static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.025, -0.08);
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.30);
 
 class ToolChange
 {
@@ -164,7 +169,7 @@ protected:
 	bool moveToWagonFiducial(const double offset);
 
 	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ
-	geometry_msgs::PoseStamped origin ;
+	geometry_msgs::PoseStamped origin;
 	int marker_id_;
 	void printPose(tf::Transform& trans_msg);
 	void printMsg(const geometry_msgs::PoseStamped pose);

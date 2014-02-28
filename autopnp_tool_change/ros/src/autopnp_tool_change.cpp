@@ -182,7 +182,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 		// average only the 4 markers from the board (label values 0,1,2,3 set in common/files)
 		//if(fiducial_label_num < 4)
-		if (fiducial_label.compare("tag_0")==0 || fiducial_label.compare("tag_1")==0 || fiducial_label.compare("tag_2")==0 || fiducial_label.compare("tag_3")==0)
+		if (fiducial_label.compare("tag_38")==0 || fiducial_label.compare("tag_1")==0 || fiducial_label.compare("tag_2")==0 || fiducial_label.compare("tag_3")==0)
 		{
 			detected_board_fiducial = true;
 			count++;
