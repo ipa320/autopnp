@@ -2,26 +2,54 @@
 <launch>
 
 	<!-- args -->
-	<arg name="robot" value="cob3-6"/>
-	<arg name="pc1" default="$(arg robot)-pc1"/>
-	<arg name="pc2" default="$(arg robot)-pc2"/>
-	<arg name="pc3" default="$(arg robot)-pc3"/>
+	<arg name="robot" default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/>
+	<arg name="pc1" default="cob3-5-pc1"/> <!-- "$(arg robot)-pc1" -->
+	<arg name="pc2" default="192.168.5.102"/>
+	<arg name="pc3" default="192.168.5.103"/>
+	<arg name="simulation" default="false"/>
 
 	<group>
-		<machine name="pc1" address="$(arg pc1)" default="true"/>
+		<machine name="pc1" address="$(arg pc1)" env-loader="/u/robot/git/care-o-bot/env.sh" default="true" unless="$(arg simulation)"/>
 
 		<!-- start navigation -->
-		<include file="$(find cob_navigation_global)/launch/2dnav_ros_dwa.launch" >
-			<arg name="map" value="$(find autopnp_scenario)/config/map.yaml" />
-		</include>
+		<!--include file="$(find cob_navigation_global)/launch/2dnav_ros_dwa.launch" >
+			<arg name="map" value="$(find autopnp_scenario)/config/map-ipa-apartment.yaml" />
+		</include-->
 
+		<!-- start map_segmentation_action_server -->
+		<include file="$(find autopnp_scenario)/ros/launch/map_segmentation_action_server.launch"/>
+
+		<!-- start cob_phidgets for commanding the tool changer -->
+		<include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/>
+
+		<!-- start vacuum cleaner on/off control driver -->
+		<include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner.launch"/>
+
+		<!-- start find_next_unprocessed_room_action_server -->
+		<node name="find_next_unprocessed_room" pkg="autopnp_scenario" type="find_next_unprocessed_room_action_server" output="screen" />
+
+		<!-- start go_to_room_location_action_server -->
+		<node name="go_to_room_location" pkg="autopnp_scenario" type="go_to_room_location_action_server" output="screen" />
+
+		<!-- start random_location_finder_action_server -->
+		<include file="$(find autopnp_scenario)/ros/launch/random_location_finder_action_server.launch"/>
+
+		<!-- start inspect_room_action_server -->
+		<include file="$(find autopnp_scenario)/ros/launch/inspect_room_action_server.launch"/>
+
+		<!-- start map_accessibility_analysis -->
+		<include file="$(find cob_map_accessibility_analysis)/ros/launch/map_accessibility_analysis.launch"/>
+		
 	</group>
 
 	<group>
-		<machine name="pc2" address="$(arg pc2)" default="true"/>
+		<machine name="pc2" address="$(arg pc2)" env-loader="/u/robot/git/care-o-bot/env.sh" default="true" unless="$(arg simulation)"/>
+		
+		<!-- start trash bin detection -->
+		<include file="$(find autopnp_scenario)/ros/launch/trash_bin_detection_service_server.launch"/>
 
 		<!-- start dirt detection -->
-		<!--include file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.launch" /-->
+		<include file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.launch" />
 
 	</group>
 

@@ -490,8 +490,8 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 
 		//EXECUTE THE PLAN !!!!!! BE CAREFUL
 		if (have_plan==true) {
-			group.execute(plan);
-			group.move();
+			//group.execute(plan);
+			//group.move();
 		}
 		else
 		{

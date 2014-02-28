@@ -1,0 +1,158 @@
+################## even newer - with Chromosome GUI ####################
+
+# short instructions for running the scenario with the real robot and the Chromosome GUI
+1. start roscore, bringup, (ROS) navigation
+2. roslaunch autopnp_scenario autopnp_scenario.launch    (starts all necessary software on pc 1 and 2 for the scenario)
+3. cd autopnp/xme-0.6-rc1-src/examples/autopnp_gui/build/guiNode   (important to go to exactly this path)
+3b. if you run the GUI on a remote computer do not forget to export the ROS_MASTER_URI
+4. target/guiNode   (starts GUI -> see below how to build the GUI)
+5. whenever the GUI shows some map of the environment, press the clean button   (starts the scenario state machine)
+
+### movie instructions ###
+1. trash bin cleaning with Chromosome GUI
+-> video tape in the same way as last week (overhead cameras)
+-> in addition, use a hand camera to film the operator screen when starting the GUI and when dirt detection transmits (please keep visible all the time (i) the command line where you start the GUI, (ii) the GUI and (iii) an image stream of the robots camera with fiducial detection [topic should be /fiducials/image], e.g. visualized with image_view [if WLAN bandwidth allows]) 
+a) film screen with hand camera: start the GUI (target/guiNode), keep command line and GUI in view, click on "Clean", the command line now runs through some states from the script
+b) change perspective to show screen and real robot, wait until dirt detection is turned on, the GUI should now display the dirt map
+c) keep camera on robot and screen until the robot has found some dirt which is indicated as blue (or red) dots within the map of the GUI
+-> please distribute some flat pieces of dirt on the floor, e.g. paper or anything else of the size 2-5 cm, they should have a significantly different color than the ground
+-> if you have trouble with finding dirt, open autopnp_dirt_detection/ros/launch/dirt_detection.yaml and change parameter "dirtThreshold: 0.2" - higher values find less dirt, lower values are more sensitive to dirt
+d) film the image_view when the marker detection is displayed
+e) after dirt detection has finished, move with hand camera to robot to film the trash bin clearing
+f) finish video taping after trash bin has been brought back (i.e. as in the videos from last week)  
+
+2. Plug & Play with Kinect
+-> you have to change the GUI code slightly for this: open autopnp/xme-0.6-rc1-src/examples/autopnp_gui/src/guiNode/ros_code.cpp,
+   in function RosInit::init comment line: 'topic_name = "/dirt_detection/map_with_dirt_detections";'
+   and uncomment the line above: 'topic_name = "/cam3d/rgb/image_color";' 
+   go to autopnp/xme-0.6-rc1-src/examples/autopnp_gui/build/guiNode
+   type make
+-> activate the udev rule for Kinect PnP:
+   see intructions in autopnp_scenario/scripts/kinect_pnp.sh
+-> before starting, make sure that all openni and rosmaster processes are killed as described in kinect_pnp.sh 
+-> video tape the screen and the plugging procedure with a hand camera
+a) have the kinect unplugged, the udev rule setup and only a roscore running (no other software)
+b) film the unplugged Kinect cable, then film the computer screen
+c) start the GUI (target/guiNode)
+d) film that nothing is displayed on GUI
+e) film that the Kinect cable is plugged, but also keep computer screen on video to prove that no software is started manually now
+f) film the GUI, which will display the robot's view after ca. 10s
+g) walk trough the camera image to show that the stream is live
+h) done :-)
+
+
+### to compile the GUI ###
+- pull the current version from ipa-rmb
+- cd autopnp/xme-0.6-rc1-src/examples/autopnp_gui
+- mkdir build
+- cd build
+- mkdir guiNode
+- cd guiNode       (now you are in autopnp/xme-0.6-rc1-src/examples/autopnp_gui/build/guiNode)
+- cmake -G "Unix Makefiles" ../../src/application/guiNode/
+- make
+
+- if something is missing, check CHROMOSOME guide for help (http://download.fortiss.org/public/xme/xme-0.6-rc1-tutorial.pdf)
+
+- also go to autopnp_scenario and rosmake again (to compile the other changes made to dirt_detection and scenario)
+
+
+################## new ####################
+
+# short instructions for running the scenario with the real robot
+1. start roscore, bringup, (ROS) navigation
+2. roslaunch autopnp_scenario autopnp_scenario.launch    (starts all necessary software on pc 1 and 2 for the scenario)
+3. rosrun autopnp_scenario exploration_detection_cleaning.py   (starts the scenario state machine)
+
+
+attention:
+- during DirtDetectionOn we use torso pose front_extreme, if this is not in your torso_joint_configurations.yaml, please add the line
+front_extreme: [[-0.2,0.0,-0.35]]
+(corresponding to the joint_names: ["torso_lower_neck_tilt_joint","torso_pan_joint","torso_upper_neck_tilt_joint"])
+and test this configuration carefully with the cob_console
+- the fiducial marker on your trash bin has a number (e.g. 0, 1, 2, or 3), make sure this number is the same as in ros/src/trash_bin_detection_service_server.cpp where "tag_0" needs to be replaced by "tag_x" (x stands for your tag number)
+- ensure that the Kinect topics in ros/launch/fiducials/fiducials.launch are adapted to your local names
+- not so important for the moment, but please check that autopnp_dirt_detection/ros/launch/dirt_detection.launch has the correct topics set up for the Kinect sensor
+(i.e. <remap from="image_color" to="/cam3d/rgb/image_color"/> and <remap from="colored_point_cloud" to="/cam3d/depth_registered/points"/> might be changed to the local names of these topics)
+- when a trash bin is detected by its marker, the trash bin center is computed from the marker by subtracting the trash bin radius from the z-coordinate in the marker coordinate system. The trash bin radius is set to 0.19m for the moment and may be adjusted in file ros/src/trash_bin_detection_service_server.cpp at line
+double trash_bin_radius = 0.15;
+- you need to get the latest cob_fiducials from the repository https://github.com/ipa320/cob_object_perception (branch groovy_dev)
+- you need the latest cob_generic_states_experimental from the rmb repository https://github.com/ipa-rmb/cob_scenario_states (branch master),
+this stack is already on the robot (so be careful with changes so that the accompany scenario is not harmed), maybe even in the accompany-cob3-6 account -> make a new branch for rmb version or make a temporary overlay somewhere else which is used instead of the standard version
+
+
+todos in scenario script exploration_detection_cleaning.py:
+- adjust userdata.radius = 0.8 and userdata.goal_pose_theta_offset = math.pi/2.0 in MoveToTrashBinLocation for the correct approach position relative to the trash bin
+- add the base movements at MoveToToolWagon and MoveToTrashBinPickingLocation
+- go to main function and insert your trash bin pose manually for the moment
+- if the whole trash bin approach and clearing sub-machine works well, comment this part in the main function and uncomment the big state machine for the full scenario
+- try to get the whole thing working 
+
+
+
+###########################################
+
+#Instruction about running autopnp_scenario software in simulation------------>
+
+*Launch the following launch files which is necessary to run autopnp_scenario software
+and other small software from autopnp_scenario package-->
+1. roscore
+2. roslaunch cob_bringup_sim robot.launch
+3. roslaunch cob_bringup dashboard.launch
+4. roslaunch cob_navigation_global 2dnav_ros_dwa.launch
+5. roslaunch cob_bringup rviz.launch
+6. To view the smach viewer->
+   rosrun smach_viewer smach_viewer
+7. To spawn dynamic objects->
+   rosrun cob_bringup_sim spawn_object.py OBJECT_NAME1 OBJECT_NAME2 OBJECT_NAME3 ...
+
+*To run autopnp_software launch the following-->
+1. roslaunch autopnp_scenario exploration.launch
+2. To run only the exploration Algorithm->
+   rosrun autopnp_scenario exploration_smach.py
+3. To run the whole autopnp project->
+   rosrun autopnp_scenario exploration_detection_cleaning.py
+   
+*To run map segmentation software->
+1. first launch server->
+   roslaunch autopnp_scenario map_segmentation_action_server.launch
+2. Then launch client->
+   rosrun autopnp_scenario map_segmentation_action_client
+   or 
+   rosrun autopnp_scenario map_segmentation_action_client.py
+   
+*To run Trash Bin Detection software->
+1. roslaunch openni2_launch openni2.launch camera:=cam3d
+2. roslaunch autopnp_scenario fiducials.launch
+3. roslaunch autopnp_scenario trash_bin_detection_service_server.launch
+4. rosrun autopnp_scenario activate_trash_bin_detection_client
+   or 
+   rosrun autopnp_scenario trash_bin_detection_on_client.py
+5. rosrun autopnp_scenario deactivate_trash_bin_detection_client
+   or 
+   rosrun autopnp_scenario trash_bin_detection_off_client.py
+6. To only get data from fiducials topic run->
+   rosrun autopnp_scenario detect_fiducials_client.py
+   
+   
+#Instruction about running autopnp_scenario software in real robot------------>
+
+*Launch the following launch files which is necessary to run autopnp_scenario software
+and other small software from autopnp_scenario package-->
+1. roscore
+2. roslaunch cob_bringup robot.launch
+3. roslaunch cob_bringup dashboard.launch
+4. roslaunch cob_bringup rviz.launch
+
+*To run autopnp_scenario software launch the following-->
+1. roslaunch autopnp_scenario autopnp_navigation.launch
+1. roslaunch autopnp_scenario autopnp_scenario.launch 
+2. To run only the exploration Algorithm->
+   rosrun autopnp_scenario exploration_smach.py
+3. To run the whole autopnp project->
+   rosrun autopnp_scenario exploration_detection_cleaning.py
+   
+   
+# Output of the autopnp_scenario software->
+is given here-----------https://github.com/muin028/Exploration_Algorithm_results
+
+related video is here----------https://www.youtube.com/playlist?list=PLgnw6U2fYFrY2HFu1vSsD9t6zyhP8Gt77&feature=mh_lolz

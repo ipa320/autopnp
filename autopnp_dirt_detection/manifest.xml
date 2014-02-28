@@ -10,14 +10,16 @@
   <url>http://ros.org/wiki/autopnp_dirt_detection</url>
   <depend package="pcl"/>
   <depend package="pcl_ros"/>
-  <depend package="std_msgs"/> 
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
   <depend package="roscpp"/>
   <depend package="roslib"/>
   <depend package="rosbag"/>
-  <depend package="sensor_msgs"/>
   <depend package="image_transport"/>
   <depend package="opencv2"/>
   <depend package="cv_bridge"/>
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
   <depend package="nav_msgs"/>
   <depend package="dynamic_reconfigure"/>
  <!-- <depend package="cv_bridge_redesign"/> -->
