@@ -66,7 +66,8 @@
 
 		<!-- Offset for native tag corrdinates -->
 		<!-- e.g. position of tag in object centric ccordinate system -->
-		<Offset x="-0.109" y="-0.090" />
+		<!--Offset x="-0.109" y="-0.090" /-->
+		<Offset x="-0.05" y="0.05" />
 
 		<!-- Rectangle describing the area for sharpness computation in 2d coordinates 
 			within the marker plane with respect to the marker origin -->
@@ -159,7 +160,7 @@
 
 		<!-- Offset for native tag corrdinates -->
 		<!-- e.g. position of tag in object centric ccordinate system -->
-		<!-- <Offset x="0.156" y="0.018" /> -->
+		<!--Offset x="0.156" y="0.018" / -->
 		<Offset x="-0.162" y="-0.018" />
 
 		<!-- Rectangle describing the area for sharpness computation in 2d coordinates 
@@ -286,7 +287,7 @@
 
 		<!-- Offset for native tag corrdinates -->
 		<!-- e.g. position of tag in object centric ccordinate system -->
-		<Offset x="0.156" y="-0.018" />
+		<Offset x="0.162" y="-0.018" />
 
 		<!-- Rectangle describing the area for sharpness computation in 2d coordinates 
 			within the marker plane with respect to the marker origin -->

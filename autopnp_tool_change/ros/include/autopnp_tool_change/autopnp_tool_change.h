@@ -58,10 +58,10 @@
 ///Static constant variables
 static const int COUPLE = 1;
 static const int DECOUPLE = 2;
-static const int ARM = 19;
-static const int VAC_CLEANER = 79;
-static const int ARM_STATION = 38;
-static const int EXTRA_FIDUCIAL = 73;
+static const std::string ARM = "tag_2";
+static const std::string VAC_CLEANER = "tag_79";
+static const std::string ARM_STATION = "tag_38";
+static const std::string EXTRA_FIDUCIAL = "tag_73";
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
@@ -76,8 +76,10 @@ static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
 static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
-static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.025, -0.08);
-static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.30);
+static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
+//static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
+//static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 
 class ToolChange
 {
@@ -135,14 +137,31 @@ protected:
 	std::vector<double> jointPositions_;
 
 	///transformation data between the arm and the wagon slot
-	tf::Transform transform_FA_FB_;
-	tf::Transform transform_CA_EE_;
-	tf::Transform transform_CA_GO_;
+	//tf::Transform transform_CA_EE_;
+	//tf::Transform transform_CA_GO_;
+	//tf::Transform transform_CA_FA_;
+	//tf::Transform transform_CA_FB_;
+
+	//tf::Transform transform_FB_GO_;
+	//tf::Transform transform_FA_EE_;
+	//tf::Transform transform_CA_FA_;
+	//tf::Transform transform_CA_FB_;
+	//tf::Transform transform_FA_FB_;
 	tf::Transform transform_CA_FA_;
 	tf::Transform transform_CA_FB_;
-	tf::Transform transform_FB_GO_;
-	tf::Transform transform_FA_EE_;
+	tf::Transform arm_transform_;
+	tf::Transform arm_board_transform_;
 	geometry_msgs::PoseStamped current_ee_pose_;
+
+	//define rotations
+		tf::Quaternion rotate_Y_90_right;
+		tf::Quaternion rotate_Y_90_left;
+		tf::Quaternion rotate_3Z_pi_4_left;
+		tf::Quaternion rotate_3Z_pi_4_right;
+		tf::Quaternion rotate_X_90_right;
+		tf::Quaternion rotate_X_90_left;
+		tf::Quaternion rotate_Z_90_left;
+		tf::Quaternion rotate_Z_90_right;
 
 	//CALLBACKS
 	/// Callback for the incoming data of joints' state.
