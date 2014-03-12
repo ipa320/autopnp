@@ -70,15 +70,15 @@ static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
 static const std::string EE_NAME = "arm_7_link";
 
-static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, 0.07);
-static const tf::Vector3 FORWARD = tf::Vector3(-0.05, 0.0, 0.0);
+static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, -0.07);
+static const tf::Vector3 FORWARD = tf::Vector3(-0.02, 0.0, 0.0);
 static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
 static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
 static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, -0.085);
 static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, -0.15, 0.30);
-static const tf::Vector3 TOOL_FIDUCIAL_OFFSET_0 = tf::Vector3(-0.30, 0.0, 0.0);
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET_0 = tf::Vector3(0.30, 0.0, 0.0);
 static const tf::Vector3 ARM_FIDUCIAL_OFFSET_0 = tf::Vector3(0.0, 0.0, 0.0);
 
 class ToolChange
@@ -176,6 +176,7 @@ protected:
 	void moveToStartPose(const geometry_msgs::PoseStamped& start_pose);
 	bool moveToStartPosition(const geometry_msgs::PoseStamped& start_pose);
 	bool moveToWagonFiducial(const double offset);
+	bool turnToWagonFiducial(const double offset);
 
 	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ
 	geometry_msgs::PoseStamped origin;
