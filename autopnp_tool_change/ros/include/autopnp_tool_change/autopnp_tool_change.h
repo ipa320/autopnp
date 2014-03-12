@@ -76,10 +76,10 @@ static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
 static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
-static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
-static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
-//static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
-//static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
+static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0, -0.085);
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, -0.15, 0.30);
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET_0 = tf::Vector3(-0.30, 0.0, 0.0);
+static const tf::Vector3 ARM_FIDUCIAL_OFFSET_0 = tf::Vector3(0.0, 0.0, 0.0);
 
 class ToolChange
 {
@@ -106,6 +106,7 @@ protected:
 	{
 		struct fiducials arm;
 		struct fiducials board;
+		struct fiducials cam;
 	};
 
 	/// instance of a subscriber for the camera calibration
@@ -130,27 +131,16 @@ protected:
 
 	bool slot_position_detected_;
 	bool move_action_;
-	bool detected_both_fiducials_;
+	bool detected_all_fiducials_;
 
 	///container for the joint msgs
 	std::vector<double> jointVelocities_;
 	std::vector<double> jointPositions_;
 
 	///transformation data between the arm and the wagon slot
-	//tf::Transform transform_CA_EE_;
-	//tf::Transform transform_CA_GO_;
-	//tf::Transform transform_CA_FA_;
-	//tf::Transform transform_CA_FB_;
-
-	//tf::Transform transform_FB_GO_;
-	//tf::Transform transform_FA_EE_;
-	//tf::Transform transform_CA_FA_;
-	//tf::Transform transform_CA_FB_;
-	//tf::Transform transform_FA_FB_;
 	tf::Transform transform_CA_FA_;
 	tf::Transform transform_CA_FB_;
-	tf::Transform arm_transform_;
-	tf::Transform arm_board_transform_;
+	tf::Transform transform_CA_BA_;
 	geometry_msgs::PoseStamped current_ee_pose_;
 
 	//define rotations
