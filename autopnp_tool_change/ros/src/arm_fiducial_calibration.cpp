@@ -119,7 +119,7 @@ public:
 		q.setRPY(0.0, 0.0, -M_PI);
 		tf::Transform transform_CA_FA;
 		transform_CA_FA.setOrigin(fiducial_.getOrigin());
-		transform_CA_FA.setRotation(fiducial_.getRotation());
+		transform_CA_FA.setRotation(fiducial_.getRotation() );
 		tf::Transform transform_CA_EE;
 		tf::Transform transform_EE_FA;
 		tf::Transform transform_BA_FA;
@@ -128,6 +128,7 @@ public:
 		tf::Transform transform_EE_FB;
 		tf::Transform transform_CA_BA;
 		tf::Transform transform_EE_GO;
+		geometry_msgs::PoseStamped result_msg;
 
 		transform_CA_BA.setOrigin(cam_.getOrigin());
 		transform_CA_BA.setRotation(cam_.getRotation() * q);
@@ -135,12 +136,18 @@ public:
 		//base-cam-fiducial A
 		transform_BA_FA.mult(transform_CA_BA.inverse(), transform_CA_FA);
 
-   tf::Transform result;
-   geometry_msgs::PoseStamped result_msg;
-   result.mult(ee_pose_tf.inverse(), transform_BA_FA);
-   tf::poseTFToMsg(result, result_msg.pose);
+		transform_EE_FA.mult(ee_pose_tf.inverse(), transform_BA_FA);
 
-   return result_msg;
+		ROS_INFO("*** EE_FA");
+		printPose(transform_EE_FA);
+		ROS_INFO(" BA_FA ");
+		printPose(transform_BA_FA);
+		ROS_INFO(" EE");
+		printPose(ee_pose_tf);
+
+		tf::poseTFToMsg(transform_EE_FA, result_msg.pose);
+
+		return result_msg;
 
 
 	}
