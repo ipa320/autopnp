@@ -71,15 +71,15 @@ static const std::string BASE_LINK = "base_link";
 static const std::string EE_NAME = "arm_7_link";
 
 static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, -0.07);
-static const tf::Vector3 FORWARD = tf::Vector3(-0.02, 0.0, 0.0);
+static const tf::Vector3 FORWARD = tf::Vector3(-0.13, 0.0, 0.0);
 static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
 static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
-static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.06, 0.02, 0.03);
+static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.05, 0.025, 0.03);
 static const tf::Quaternion ARM_FIDUCIAL_ORIENTATION_OFFSET = tf::Quaternion(0.653883, 0.225928, 0.668417, -0.273153);
 
-static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, -0.15, 0.30);
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0,- 0.30);
 static const tf::Vector3 TOOL_FIDUCIAL_OFFSET_0 = tf::Vector3(0.30, 0.0, 0.0);
 static const tf::Vector3 ARM_FIDUCIAL_OFFSET_0 = tf::Vector3(0.0, 0.0, 0.0);
 

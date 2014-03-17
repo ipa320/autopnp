@@ -240,7 +240,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		result.board.translation.getRotation().normalize();
 	}
 
-	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial && detected_cam_fiducial;
+	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
 	return result;
 }
@@ -357,20 +357,55 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	 */  //--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
-	/*ROS_INFO("Moving arm to wagon fiducial position.");
+	ROS_INFO("Moving arm to wagon fiducial position.");
 	if(!turnToWagonFiducial(offset))
 	{
 		ROS_WARN("Error occurred executing turn to wagon fiducial position.");
 		return false;
 	}
-	 */
+/*
 	//TO DO: compute current fiducial position.
 	if(!moveToWagonFiducial(offset))
 	{
 		ROS_WARN("Error occurred executing move to wagon fiducial position.");
 		return false;
 	}
-	/*
+
+
+	// move arm to the wagon (pre-start position) using fiducials
+		//--------------------------------------------------------------------------------------
+		ROS_INFO("Moving arm to wagon fiducial position.");
+		if(!turnToWagonFiducial(offset))
+		{
+			ROS_WARN("Error occurred executing turn to wagon fiducial position.");
+			return false;
+		}
+
+		//TO DO: compute current fiducial position.
+		if(!moveToWagonFiducial(offset))
+		{
+			ROS_WARN("Error occurred executing move to wagon fiducial position.");
+			return false;
+		}
+
+
+		// move arm to the wagon (pre-start position) using fiducials
+			//--------------------------------------------------------------------------------------
+			ROS_INFO("Moving arm to wagon fiducial position.");
+			if(!turnToWagonFiducial(offset))
+			{
+				ROS_WARN("Error occurred executing turn to wagon fiducial position.");
+				return false;
+			}
+
+			//TO DO: compute current fiducial position.
+			if(!moveToWagonFiducial(offset))
+			{
+				ROS_WARN("Error occurred executing move to wagon fiducial position.");
+				return false;
+			}
+
+
 	//   COUPLE / DECOUPLE
 
 	//--------------------------------------------------------------------------------------
@@ -382,6 +417,7 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 			ROS_WARN("Error occurred executing move arm straight up.");
 			return false;
 		}
+
 	//--------------------------------------------------------------------------------------
 	// move arm straight forward
 	//--------------------------------------------------------------------------------------
@@ -392,6 +428,17 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move to wagon fiducial.");
 		return false;
 	}
+
+	// move arm to the wagon (pre-start position) using fiducials
+			//--------------------------------------------------------------------------------------
+			ROS_INFO("Moving arm to wagon fiducial position.");
+			if(!turnToWagonFiducial(offset))
+			{
+				ROS_WARN("Error occurred executing turn to wagon fiducial position.");
+				return false;
+			}
+
+
 	/*
 	//--------------------------------------------------------------------------------------
 	// move arm down to coupler
@@ -452,7 +499,7 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 	transform_CA_FA.setOrigin(transform_CA_FA_.getOrigin());
 	transform_CA_FA.setRotation(transform_CA_FA_.getRotation());
 	tf::Transform transform_CA_FB;
-	transform_CA_FB.setOrigin(transform_CA_FB_.getOrigin());
+	transform_CA_FB.setOrigin(transform_CA_FB_.getOrigin() );
 	transform_CA_FB.setRotation(transform_CA_FB_.getRotation());
 	tf::Transform transform_EE_FA;
 	transform_EE_FA.setOrigin(ARM_FIDUCIAL_OFFSET);
@@ -486,6 +533,7 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 	geometry_msgs::PoseStamped test5_msg;
 	geometry_msgs::PoseStamped test6_msg;
 	geometry_msgs::PoseStamped test7_msg;
+	geometry_msgs::PoseStamped test8_msg;
 	geometry_msgs::PoseStamped base;
 
 	//base FA
@@ -494,44 +542,62 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 	tf::poseTFToMsg(transform_CA_FB, test1_msg.pose);
 
 	//BA FA
-    transform_BA_FA.mult(ee_pose_tf, transform_EE_FA);
+	transform_BA_FA.mult(ee_pose_tf, transform_EE_FA);
 	tf::poseTFToMsg(transform_BA_FA, test2_msg.pose);
-	drawLine(0.20, 0.0, 0.0, 1.0, base, test2_msg);
-    //CA BA
+	//drawLine(0.20, 0.0, 0.0, 1.0, base, test2_msg);
+	//CA BA
 	transform_CA_BA.mult(transform_CA_FA, transform_BA_FA.inverse());
 	tf::poseTFToMsg(transform_CA_BA.inverse(), cam_msg.pose);
 	//drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
-    //CA FA FB
+	//CA FA FB
 	transform_FA_FB.mult(transform_BA_FA.inverse(), transform_CA_FB);
-    //BA FB
-	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB );
+	//BA FB
+	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB);
 	tf::poseTFToMsg( transform_BA_FB, test6_msg.pose);
 
-	drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
-	drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
+	//drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
+	//drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
 
-	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
-	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
+	//drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
+	//drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
 
 
 	transform_EE_GO.mult(transform_BA_FB, transform_EE_FA);
 	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
-	//drawLine(0.50, 0.0, 0.0, 1.0, base, test5_msg);
+	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
 
-	tf::Quaternion s;
-	s.setRPY(4.0, 0.0, 0.0);
+	transform_EE_FB.mult(ee_pose_tf.inverse(), transform_EE_GO);
+	tf::poseTFToMsg( transform_EE_FB, test8_msg.pose);
+	//drawLine(0.0, 0.30, 0.0, 1.0, base, test8_msg);
+
+	tf::Transform transform_EE_GO_schort;
+	transform_EE_GO_schort.mult(ee_pose_tf.inverse(), transform_EE_FB);
+	transform_EE_GO_schort.setOrigin(transform_EE_FB.getOrigin() + TOOL_FIDUCIAL_OFFSET_0);
+	goal_pose_tf.mult( ee_pose_tf , transform_EE_GO_schort);
+
+	goal_pose_tf.setRotation(ee_pose_tf.getRotation());
+	goal_pose_tf.setOrigin(goal_pose_tf.getOrigin());
+
+	/*
 	goal_pose_tf.setOrigin(transform_EE_GO.getOrigin());
-    goal_pose_tf.setRotation(transform_EE_GO.getRotation() * s);
+	//goal_pose_tf.setOrigin(ee_pose_tf.getOrigin());
+    goal_pose_tf.setRotation(ee_pose_tf.getRotation());
+	 */
+
+
 	//tf -> msg
 	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
 	drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, goal_pose);
 	//drawSystem(goal_pose);
 	drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
 
+
+	double length = transform_EE_GO_schort.getOrigin().length();
+	ROS_WARN_STREAM(" distance in move :"<< length << ".");
+
 	group.setPoseTarget(goal_pose, EE_NAME);
-	double distance = 0.0;
-	//ROS_WARN_STREAM("distance " << distance << "!");
-	if(distance < 2.0)
+
+	if(length > 0.001)
 	{
 		ROS_WARN_STREAM("STARTE MOVE TO FIDUCIAL");
 		// plan the motion
@@ -541,8 +607,8 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 
 		//EXECUTE THE PLAN !!!!!! BE CAREFUL
 		if (have_plan==true) {
-			//group.execute(plan);
-			//group.move();
+			group.execute(plan);
+			group.move();
 		}
 		else
 		{
@@ -557,6 +623,9 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 
 	return true;
 }
+
+
+
 bool ToolChange::turnToWagonFiducial(const double offset)
 {
 	move_action_ = false;
@@ -564,39 +633,24 @@ bool ToolChange::turnToWagonFiducial(const double offset)
 	geometry_msgs::PoseStamped goal_pose;
 	tf::Transform ee_pose_tf;
 	tf::Transform goal_pose_tf;
-	tf::Quaternion q;
-	q.setRPY(0.0, 0.0, -M_PI);
+
 	tf::Transform transform_CA_FA;
 	transform_CA_FA.setOrigin(transform_CA_FA_.getOrigin());
 	transform_CA_FA.setRotation(transform_CA_FA_.getRotation());
 	tf::Transform transform_CA_FB;
 	transform_CA_FB.setOrigin(transform_CA_FB_.getOrigin());
 	transform_CA_FB.setRotation(transform_CA_FB_.getRotation());
-	tf::Transform transform_CA_EE;
 	tf::Transform transform_EE_FA;
+	transform_EE_FA.setOrigin(ARM_FIDUCIAL_OFFSET);
+	transform_EE_FA.setRotation(ARM_FIDUCIAL_ORIENTATION_OFFSET);
+
 	tf::Transform transform_BA_FA;
 	tf::Transform transform_BA_FB;
+	tf::Transform transform_CA_BA;
 	tf::Transform transform_FA_FB;
 	tf::Transform transform_EE_FB;
-	tf::Transform transform_CA_BA;
 	tf::Transform transform_EE_GO;
 
-	transform_CA_BA.setOrigin(transform_CA_BA_.getOrigin());
-	transform_CA_BA.setRotation(transform_CA_BA_.getRotation() * q);
-
-	/*
-	ROS_INFO("*************");
-	ROS_INFO("CA_BA :");
-	printPose(transform_CA_BA);
-	ROS_INFO("CA_BA inverse:");
-	tf::Transform t;
-	t = transform_CA_BA.inverse();
-	printPose(t);
-	ROS_INFO("CA_FA :");
-	printPose(transform_CA_FA);
-	ROS_INFO("CA_FB :");
-	printPose(transform_CA_FB);
-	 */
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
 	goal_pose.header.frame_id = BASE_LINK;
@@ -606,8 +660,30 @@ bool ToolChange::turnToWagonFiducial(const double offset)
 	//get the position of the end effector (= arm_7_joint)
 	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
 	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+
 	//msg -> tf
 	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
+
+
+	//+++++++++++++++++++++++
+	// ARM FIDUCIAL TRANSFORMATION
+	tf::Quaternion q;
+	q.setRPY(0.0, 0.0, -M_PI);
+	tf::Transform cam;
+	tf::Transform base_cam;
+	tf::Transform arm_fiducial;
+	cam.setOrigin(transform_CA_BA_.getOrigin());
+	cam.setRotation(transform_CA_BA_.getRotation() * q);
+	//base-cam-fiducial A
+	base_cam.mult(cam.inverse(), transform_CA_FA);
+	arm_fiducial.mult(ee_pose_tf.inverse(), base_cam);
+	ROS_INFO(" TRANSFORMATION :");
+	printPose(cam);
+	printPose(arm_fiducial);
+	//+++++++++++++++++++++++++++++++++++
+
+
+
 	geometry_msgs::PoseStamped cam_msg;
 	geometry_msgs::PoseStamped test_msg;
 	geometry_msgs::PoseStamped test1_msg;
@@ -616,49 +692,45 @@ bool ToolChange::turnToWagonFiducial(const double offset)
 	geometry_msgs::PoseStamped test4_msg;
 	geometry_msgs::PoseStamped test5_msg;
 	geometry_msgs::PoseStamped test6_msg;
+	geometry_msgs::PoseStamped test7_msg;
 	geometry_msgs::PoseStamped base;
 
-	//cam-base
+	//base FA
+	tf::poseTFToMsg(transform_CA_FA, test_msg.pose);
+	//base FB
+	tf::poseTFToMsg(transform_CA_FB, test1_msg.pose);
+
+	//BA FA
+	transform_BA_FA.mult(ee_pose_tf, transform_EE_FA);
+	tf::poseTFToMsg(transform_BA_FA, test2_msg.pose);
+	//drawLine(0.20, 0.0, 0.0, 1.0, base, test2_msg);
+	//CA BA
+	transform_CA_BA.mult(transform_CA_FA, transform_BA_FA.inverse());
 	tf::poseTFToMsg(transform_CA_BA.inverse(), cam_msg.pose);
-	//drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
+	drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
+	//CA FA FB
+	transform_FA_FB.mult(transform_BA_FA.inverse(), transform_CA_FB);
+	//BA FB
+	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB );
+	tf::poseTFToMsg( transform_BA_FB, test6_msg.pose);
 
-	//base-cam-fiducial A
-	transform_BA_FA.mult(transform_CA_BA.inverse(), transform_CA_FA);
-	tf::poseTFToMsg(transform_BA_FA, test_msg.pose);
-	//drawLine(0.9, 0.0, 0.0, 1.0, cam_msg, test_msg);
+	drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
+	drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
 
-	//base-cam-fiducial B
-	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB);
-	tf::poseTFToMsg(transform_BA_FB, test4_msg.pose);
-	//drawLine(0.55, 0.0, 0.0, 1.0, cam_msg, test4_msg);
+	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
+	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
 
-	//drawLine(0.5, 0.5, 0.0, 1.0, base, ee_pose);
-	//drawLine(0.0, 0.9, 0.0, 1.0, base, test_msg);
-	//drawLine(0.0, 0.9, 0.0, 1.0, base, test4_msg);
 
-	transform_FA_FB.mult(transform_BA_FA.inverse(), transform_BA_FB);
-	//drawLine(0.55, 0.0, 0.0, 1.0, test_msg, test4_msg);
+	transform_EE_GO.mult(transform_BA_FB, transform_EE_FA);
+	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
+	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
+	//drawLine(0.0, 0.30, 0.0, 1.0, ee_pose, test5_msg);
 
-	transform_EE_FA.mult(ee_pose_tf.inverse(), transform_BA_FA);
-	tf::poseTFToMsg(transform_EE_FA, test5_msg.pose);
-	//drawLine(0.0, 0.0, 0.3, 1.0, ee_pose, test5_msg);
-
-	transform_EE_FB.mult( ee_pose_tf * transform_EE_FA, transform_FA_FB );
-	tf::poseTFToMsg( transform_EE_FB, test6_msg.pose);
-	//drawLine(0.0, 0.0, 0.3, 1.0, ee_pose, test6_msg);
-	//drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test5_msg);
-
-	transform_EE_GO.mult(ee_pose_tf.inverse(), transform_EE_FB);
-	//ROS_INFO("EE_GO :");
-	//printPose(transform_EE_GO);
-	goal_pose_tf.mult( ee_pose_tf , transform_EE_GO);
-
-	goal_pose_tf.setRotation(goal_pose_tf.getRotation() * rotate_Y_90_right);
-	goal_pose_tf.setRotation(goal_pose_tf.getRotation() * rotate_X_90_left);
+	tf::Quaternion s;
+	s.setRPY(4.0, 0.0, 0.0);
+	//goal_pose_tf.setOrigin(transform_EE_GO.getOrigin());
 	goal_pose_tf.setOrigin(ee_pose_tf.getOrigin());
-
-	//ROS_INFO("goal :");
-	//printPose(goal_pose_tf);
+	goal_pose_tf.setRotation(transform_EE_GO.getRotation() * s);
 
 	//tf -> msg
 	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
@@ -666,28 +738,28 @@ bool ToolChange::turnToWagonFiducial(const double offset)
 	//drawSystem(goal_pose);
 	drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
 
-	group.setPoseTarget(goal_pose, EE_NAME);
-	double distance = 0.0;
-	//ROS_WARN_STREAM("distance " << distance << "!");
-	if(distance < 2.0)
-	{
-		ROS_WARN_STREAM("STARTE TURN");
-		// plan the motion
-		bool have_plan = false;
-		moveit::planning_interface::MoveGroup::Plan plan;
-		have_plan = group.plan(plan);
+	transform_EE_FB.mult(ee_pose_tf.inverse(), goal_pose_tf);
+	double length = transform_EE_FB.getOrigin().length();
+	ROS_WARN_STREAM(" distance :"<< length << ".");
 
-		//EXECUTE THE PLAN !!!!!! BE CAREFUL
-		if (have_plan==true) {
-			//group.execute(plan);
-			//group.move();
-		}
-		else
-		{
-			ROS_WARN("No valid plan found for the arm movement.");
-			move_action_ = false;
-			return false;
-		}
+	group.setPoseTarget(goal_pose, EE_NAME);
+
+	ROS_WARN_STREAM("STARTE TURN TO FIDUCIAL");
+	// plan the motion
+	bool have_plan = false;
+	moveit::planning_interface::MoveGroup::Plan plan;
+	have_plan = group.plan(plan);
+
+	//EXECUTE THE PLAN !!!!!! BE CAREFUL
+	if (have_plan==true) {
+		group.execute(plan);
+		group.move();
+	}
+	else
+	{
+		ROS_WARN("No valid plan found for the arm movement.");
+		move_action_ = false;
+		return false;
 	}
 
 	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
