@@ -3,6 +3,7 @@
 #include <tf/transform_broadcaster.h>
 #include <moveit/move_group_interface/move_group.h>
 
+
 /** Transformation Tree
 ____________________________________________________________
 ______FA_____--------------->________FB_____________________
@@ -42,6 +43,17 @@ ToolChange::ToolChange(ros::NodeHandle nh): change_tool_server_
 	slot_position_detected_ = false;
 	move_action_ = false;
 	marker_id_ = 0;
+	couple_offset_ = 0.1;
+
+	//set rotations
+	rotate_3Z_pi_4_left.setRPY( 0.0, 0.0, 3*M_PI/4);
+	rotate_3Z_pi_4_right.setRPY( 0.0, 0.0, -3*M_PI/4);
+	rotate_Y_90_right.setRPY(0.0, -M_PI/2, 0.0);
+	rotate_Y_90_left.setRPY(0.0, M_PI/2, 0.0);
+	rotate_X_90_right.setRPY(-M_PI/2, 0.0,  0.0);
+	rotate_X_90_left.setRPY(M_PI/2,0.0,  0.0);
+	rotate_Z_90_left.setRPY(0.0, 0.0, M_PI/2);
+	rotate_Z_90_right.setRPY(0.0, 0.0, -M_PI/2);
 
 	// subscribers
 	//joint_states_sub_.subscribe(node_handle_, "/joint_states",1);
@@ -118,11 +130,9 @@ void ToolChange::jointInputCallback(const sensor_msgs::JointState::ConstPtr& inp
 void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg)
 {
 
-	//ROS_INFO("InputCallback for input_marker_detections_msg received.");
 	struct ToolChange::components result_components;
-	tf::Transform fiducial_pose_board;
-	tf::Transform fiducial_pose_arm;
 	tf::Transform arm_board;
+	tf::Transform cam_base;
 
 	if (input_marker_detections_msg->detections.size() != 0 )
 	{
@@ -132,22 +142,28 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		//use marker components only if both,
 		//arm and board markers detected
 		//else the components are empty
-		if(detected_both_fiducials_ == true)
+		if(detected_all_fiducials_ == true)
 		{
-
-
-
 			arm_board = calculateArmBoardTransformation(result_components.board.translation, result_components.arm.translation);
 
 			if(!arm_board.getOrigin().isZero())
 			{
-				//ROS_INFO("Slot position has been detected. ");
+				transform_CA_BA_ = result_components.cam.translation;
 				transform_CA_FA_ = result_components.arm.translation;
 				transform_CA_FB_ = result_components.board.translation;
-				transform_FA_FB_ = arm_board;
-				slot_position_detected_ = true;
 
+				/*
+				 * ROS_INFO("*************");
+				ROS_INFO("CA_BA :");
+				printPose(transform_CA_BA_);
+				ROS_INFO("CA_FA :");
+				printPose(transform_CA_FA_);
+				ROS_INFO("CA_FB :");
+				printPose(transform_CA_FB_);
+				 */
+				slot_position_detected_ = true;
 			}
+
 		}
 	}
 }
@@ -164,10 +180,10 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 {
 	ToolChange::components result;
 	unsigned int count = 0;
-	const unsigned int arm_marker_number = 19;
-	detected_both_fiducials_ = false;
+	detected_all_fiducials_ = false;
 	bool detected_arm_fiducial = false;
 	bool detected_board_fiducial = false;
+	bool detected_cam_fiducial = false;
 	tf::Point translation;
 	tf::Quaternion orientation;
 
@@ -176,19 +192,20 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 		//retrieve the number of label and format the string message to an int number
 		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
-		unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
+		//unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
 		//ROS_INFO("number %u , ", (unsigned int) fiducial_label_num) ;
 
 		//convert translation and orientation Points msgs to Points respectively
 		tf::pointMsgToTF(input_marker_detections_msg->detections[i].pose.pose.position, translation);
 		tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
 
-		// average only the 4 markers from the board (label values 0,1,2,3 set in common/files)
-		if(fiducial_label_num < 4)
+		// average only the 3 markers from the board
+		if (fiducial_label.compare(VAC_CLEANER)==0 || fiducial_label.compare(ARM_STATION)==0 || fiducial_label.compare(EXTRA_FIDUCIAL)==0)
+			//if (fiducial_label.compare("tag_0")==0 || fiducial_label.compare("tag_1")==0 || fiducial_label.compare("tag_2")==0 || fiducial_label.compare("tag_3")==0)
 		{
 			detected_board_fiducial = true;
 			count++;
-			if (i==0)
+			if (count==1)
 			{
 				result.board.translation.setOrigin(translation);
 				result.board.translation.setRotation(orientation);
@@ -200,13 +217,20 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 			}
 		}
 
-		// set the arm marker (label value 4 set in common/files)
-		if(fiducial_label_num == arm_marker_number)
+		//if(fiducial_label_num == arm_marker_number)
+		if (fiducial_label.compare(ARM)==0)
 		{
 			detected_arm_fiducial = true;
 			result.arm.translation.setOrigin(translation);
 			result.arm.translation.setRotation(orientation);
 			result.arm.translation.getRotation().normalize();
+		}
+		if (fiducial_label.compare("tag_3")==0)
+		{
+			detected_cam_fiducial = true;
+			result.cam.translation.setOrigin(translation);
+			result.cam.translation.setRotation(orientation);
+			result.cam.translation.getRotation().normalize();
 		}
 	}
 
@@ -217,7 +241,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		result.board.translation.getRotation().normalize();
 	}
 
-	detected_both_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
+	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
 	return result;
 }
@@ -235,61 +259,33 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 tf::Transform ToolChange::calculateArmBoardTransformation(
 		const tf::Transform& board_pose, const tf::Transform& arm_pose)
 {
-
-	//define tf poses
 	tf::Transform result;
-	tf::Transform arm;
-	tf::Transform board;
-	arm = arm_pose;
-	board = board_pose;
+	tf::Transform transform_CA_FA, transform_CA_FB;
 
-	//define rotations
-	tf::Quaternion rotate_Y_45_right;
-	tf::Quaternion rotate_Y_45_left;
-	tf::Quaternion rotate_3X_pi_4_left;
-	tf::Quaternion rotate_X_pi_4_right;
-	tf::Quaternion rotate_X_45_right;
-	tf::Quaternion rotate_X_90_left;
-	tf::Quaternion rotate_all;
-
-	const tf::Vector3 arm_fidu_offset = tf::Vector3(0.0, 0.025, -0.08);
-	const tf::Vector3 board_fidu_offset = tf::Vector3(0.0, 0.0, 0.30);
-
-	//set rotations
-	rotate_3X_pi_4_left.setRPY( 3*M_PI/4, 0.0, 0.0);
-	rotate_Y_45_right.setRPY(0.0, -M_PI/2, 0.0);
-	rotate_Y_45_left.setRPY(0.0, M_PI/2, 0.0);
-	rotate_X_pi_4_right.setRPY(-M_PI/4, 0.0, 0.0);
-	rotate_X_45_right.setRPY(-M_PI/2,0.0,  0.0);
-	rotate_X_90_left.setRPY(M_PI, 0.0, 0.0);
-
-	transform_FA_EE_.setOrigin(arm_fidu_offset);
-	transform_FA_EE_.setRotation(rotate_3X_pi_4_left * rotate_Y_45_left);
-
-	transform_FB_GO_.setOrigin(board_fidu_offset);
-	transform_FB_GO_.setRotation( rotate_X_90_left * rotate_Y_45_left);
-
-	transform_CA_EE_.mult(arm ,transform_FA_EE_);
-	transform_CA_GO_.mult(board, transform_FB_GO_);
+	transform_CA_FA.setOrigin(arm_pose.getOrigin() );
+	transform_CA_FB.setOrigin(board_pose.getOrigin() );
+	transform_CA_FA.setRotation( arm_pose.getRotation() );
+	transform_CA_FB.setRotation( board_pose.getRotation());
 
 	//calculate the transformation between arm and board
-	result.mult(transform_CA_EE_.inverse() ,transform_CA_GO_);
+	result.mult(transform_CA_FA.inverse() ,transform_CA_FB);
 
 	/// JUST DRAWING IN RVIZ FOR TEST PURPOSES
 	tf::Transform a_tf;
 	tf::Transform b_tf;
-	geometry_msgs::PoseStamped a = origin;
+	geometry_msgs::PoseStamped a = current_ee_pose_;
 	geometry_msgs::PoseStamped pose;
 	geometry_msgs::PoseStamped base;
 	geometry_msgs::PoseStamped result_stamped;
+	//geometry_msgs::PoseStamped result_stamped_0;
 
 	tf::poseMsgToTF(a.pose, a_tf);
 	b_tf = a_tf * result;
 
 	tf::poseTFToMsg(b_tf, pose.pose);
 	tf::poseTFToMsg(result, result_stamped.pose);
-
-	drawLine(0.85, 0.55, 0.30, 1.0, base, result_stamped);
+	//drawLine(0.85, 0.55, 0.30, 1.0, base, result_stamped);
+	//drawLine(0.85, 0.55, 0.0, 1.0,current_ee_pose_, pose);
 	///END DRAWING
 
 	return result;
@@ -308,13 +304,13 @@ void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& 
 	geometry_msgs::PoseStamped fake_goal;
 	tf::Quaternion q;
 
-	q.setValue(0.49077, 0.8522, -0.1060, 0.1468);
+	q.setValue(-0.153, 0.9875, 0.017, -0.026);
 	//q.setRPY(0.0, 0.0, M_PI);
 	tf::quaternionTFToMsg(q, fake_goal.pose.orientation);
 
-	fake_goal.pose.position.x =  0.38035;
-	fake_goal.pose.position.y =  0.171713;
-	fake_goal.pose.position.z =  0.922438;
+	fake_goal.pose.position.x =  0.06714;
+	fake_goal.pose.position.y =  0.3877;
+	fake_goal.pose.position.z =  0.9613;
 
 	// this command sends a feedback message to the caller
 	autopnp_tool_change::MoveToWagonFeedback feedback;
@@ -359,10 +355,19 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		return false;
 	}
 	waitForMoveit();
-	 */ //--------------------------------------------------------------------------------------
+	 */  //--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
+
+	for(int i = 0; i < 2; i++)
+	{
 	ROS_INFO("Moving arm to wagon fiducial position.");
+	if(!turnToWagonFiducial(offset))
+	{
+		ROS_WARN("Error occurred executing turn to wagon fiducial position.");
+		return false;
+	}
+
 
 	//TO DO: compute current fiducial position.
 	if(!moveToWagonFiducial(offset))
@@ -370,22 +375,45 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move to wagon fiducial position.");
 		return false;
 	}
+
+	}
 	//   COUPLE / DECOUPLE
+
+	//--------------------------------------------------------------------------------------
+		// move arm straight up
+		//--------------------------------------------------------------------------------------
+
+	if(!executeStraightMoveCommand(UP, MAX_STEP_MIL))
+		{
+			ROS_WARN("Error occurred executing move arm straight up.");
+			return false;
+		}
 
 	//--------------------------------------------------------------------------------------
 	// move arm straight forward
 	//--------------------------------------------------------------------------------------
-	/*	direction = FORWARD;
+	direction = FORWARD;
 
-	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
+	if(!executeStraightMoveCommand(FORWARD, MAX_STEP_CM))
 	{
 		ROS_WARN("Error occurred executing move to wagon fiducial.");
 		return false;
 	}
+
+	// move arm to the wagon (pre-start position) using fiducials
+			//--------------------------------------------------------------------------------------
+			ROS_INFO("Moving arm to wagon fiducial position.");
+			if(!turnToWagonFiducial(offset))
+			{
+				ROS_WARN("Error occurred executing turn to wagon fiducial position.");
+				return false;
+			}
+
+
+	/*
 	//--------------------------------------------------------------------------------------
 	// move arm down to coupler
 	//--------------------------------------------------------------------------------------
-	direction = BACK;
 
 	if(!executeStraightMoveCommand(direction, MAX_STEP_CM))
 	{
@@ -407,14 +435,14 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	//--------------------------------------------------------------------------------------
 	// move arm straight up
 	//--------------------------------------------------------------------------------------
-	direction = UP;
 
-	if(!executeStraightMoveCommand(direction, MAX_STEP_MIL))
+
+	if(!executeStraightMoveCommand(UP, MAX_STEP_MIL))
 	{
 		ROS_WARN("Error occurred executing move arm straight up.");
 		return false;
 	}
-	waitForMoveit();
+	//waitForMoveit();
 	//--------------------------------------------------------------------------------------
 	// move arm straight back
 	//--------------------------------------------------------------------------------------
@@ -438,55 +466,111 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 	tf::Transform ee_pose_tf;
 	tf::Transform goal_pose_tf;
 
-	tf::Transform transform_FA_FB_NEW;
-	tf::Transform transform_CA_EE;
-	tf::Transform transform_BA_CA;
-	tf::Transform transform_CA_GO;
-	tf::Transform transform_EE_GO;
 	tf::Transform transform_CA_FA;
+	transform_CA_FA.setOrigin(transform_CA_FA_.getOrigin());
+	transform_CA_FA.setRotation(transform_CA_FA_.getRotation());
 	tf::Transform transform_CA_FB;
+	transform_CA_FB.setOrigin(transform_CA_FB_.getOrigin() );
+	transform_CA_FB.setRotation(transform_CA_FB_.getRotation());
+	tf::Transform transform_EE_FA;
+	transform_EE_FA.setOrigin(ARM_FIDUCIAL_OFFSET);
+	transform_EE_FA.setRotation(ARM_FIDUCIAL_ORIENTATION_OFFSET);
+
 	tf::Transform transform_BA_FA;
 	tf::Transform transform_BA_FB;
-	tf::Transform transform_FB_GO;
-	tf::Transform transform_FA_EE ;
+	tf::Transform transform_CA_BA;
+
+	tf::Transform transform_FA_FB;
+	tf::Transform transform_EE_FB;
+	tf::Transform transform_EE_GO;
+
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
 	goal_pose.header.frame_id = BASE_LINK;
 	goal_pose.header.stamp = ros::Time::now();
 	group.setPoseReferenceFrame(BASE_LINK);
 
+	//get the position of the end effector (= arm_7_joint)
+	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	//msg -> tf
+	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
+	geometry_msgs::PoseStamped cam_msg;
+	geometry_msgs::PoseStamped test_msg;
+	geometry_msgs::PoseStamped test1_msg;
+	geometry_msgs::PoseStamped test2_msg;
+	geometry_msgs::PoseStamped test3_msg;
+	geometry_msgs::PoseStamped test4_msg;
+	geometry_msgs::PoseStamped test5_msg;
+	geometry_msgs::PoseStamped test6_msg;
+	geometry_msgs::PoseStamped test7_msg;
+	geometry_msgs::PoseStamped test8_msg;
+	geometry_msgs::PoseStamped base;
 
-	if(! transform_FA_FB_.getOrigin().isZero())
+	//base FA
+	tf::poseTFToMsg(transform_CA_FA, test_msg.pose);
+	//base FB
+	tf::poseTFToMsg(transform_CA_FB, test1_msg.pose);
+
+	//BA FA
+	transform_BA_FA.mult(ee_pose_tf, transform_EE_FA);
+	tf::poseTFToMsg(transform_BA_FA, test2_msg.pose);
+	//drawLine(0.20, 0.0, 0.0, 1.0, base, test2_msg);
+	//CA BA
+	transform_CA_BA.mult(transform_CA_FA, transform_BA_FA.inverse());
+	tf::poseTFToMsg(transform_CA_BA.inverse(), cam_msg.pose);
+	//drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
+	//CA FA FB
+	transform_FA_FB.mult(transform_BA_FA.inverse(), transform_CA_FB);
+	//BA FB
+	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB);
+	tf::poseTFToMsg( transform_BA_FB, test6_msg.pose);
+
+	//drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
+	//drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
+
+	//drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
+	//drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
+
+
+	transform_EE_GO.mult(transform_BA_FB, transform_EE_FA);
+	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
+	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
+
+	transform_EE_FB.mult(ee_pose_tf.inverse(), transform_EE_GO);
+	tf::poseTFToMsg( transform_EE_FB, test8_msg.pose);
+	//drawLine(0.0, 0.30, 0.0, 1.0, base, test8_msg);
+
+	tf::Transform transform_EE_GO_schort;
+	transform_EE_GO_schort.mult(ee_pose_tf.inverse(), transform_EE_FB);
+	transform_EE_GO_schort.setOrigin(transform_EE_FB.getOrigin() + TOOL_FIDUCIAL_OFFSET_0);
+	goal_pose_tf.mult( ee_pose_tf , transform_EE_GO_schort);
+
+	goal_pose_tf.setRotation(ee_pose_tf.getRotation());
+	goal_pose_tf.setOrigin(goal_pose_tf.getOrigin());
+
+	/*
+	goal_pose_tf.setOrigin(transform_EE_GO.getOrigin());
+	//goal_pose_tf.setOrigin(ee_pose_tf.getOrigin());
+    goal_pose_tf.setRotation(ee_pose_tf.getRotation());
+	 */
+
+
+	//tf -> msg
+	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
+	drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, goal_pose);
+	//drawSystem(goal_pose);
+	drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
+
+
+	double length = transform_EE_GO_schort.getOrigin().length();
+	ROS_WARN_STREAM(" distance in move :"<< length << ".");
+
+	group.setPoseTarget(goal_pose, EE_NAME);
+
+	if(length > 0.001)
 	{
-		//get the position of the end effector (= arm_7_joint)
-		ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
-		//msg -> tf
-		tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
-		//calculate transformation tf pose from arm to board
-		//cam to base pose
-		//transform_BA_CA_ = ee_pose_tf * transform_CA_EE_.inverse();
-		//goal_pose_tf = transform_BA_CA_ * transform_CA_EE_ * transform_FA_FB_;
-
-		transform_BA_CA.mult(ee_pose_tf, transform_CA_EE_.inverse());
-		transform_BA_FA.mult(transform_BA_CA,transform_CA_FA_);
-		transform_BA_FB.mult(transform_BA_CA ,transform_CA_FB_);
-
-		transform_FA_FB_NEW.mult(transform_BA_FA.inverse(), transform_BA_FB);
-		//transform_FB_GO_.mult(transform_CA_FB_.inverse(), transform_CA_GO_);
-		tf::Transform transform_EE_FB;
-		transform_EE_FB.mult(transform_FA_EE_.inverse() ,transform_FA_FB_NEW);
-		transform_EE_GO.mult( transform_EE_FB, transform_FB_GO_);
-		goal_pose_tf.mult(ee_pose_tf, transform_EE_GO);
-
-		//tf -> msg
-		tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
-
-		drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, goal_pose);
-		drawSystem(goal_pose);
-		drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
-
-		group.setPoseTarget(goal_pose, EE_NAME);
-
+		ROS_WARN_STREAM("STARTE MOVE TO FIDUCIAL");
 		// plan the motion
 		bool have_plan = false;
 		moveit::planning_interface::MoveGroup::Plan plan;
@@ -494,8 +578,8 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 
 		//EXECUTE THE PLAN !!!!!! BE CAREFUL
 		if (have_plan==true) {
-			//group.execute(plan);
-			//group.move();
+			group.execute(plan);
+			group.move();
 		}
 		else
 		{
@@ -512,6 +596,148 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 }
 
 
+
+bool ToolChange::turnToWagonFiducial(const double offset)
+{
+	move_action_ = false;
+	geometry_msgs::PoseStamped ee_pose;
+	geometry_msgs::PoseStamped goal_pose;
+	tf::Transform ee_pose_tf;
+	tf::Transform goal_pose_tf;
+
+	tf::Transform transform_CA_FA;
+	transform_CA_FA.setOrigin(transform_CA_FA_.getOrigin());
+	transform_CA_FA.setRotation(transform_CA_FA_.getRotation());
+	tf::Transform transform_CA_FB;
+	transform_CA_FB.setOrigin(transform_CA_FB_.getOrigin());
+	transform_CA_FB.setRotation(transform_CA_FB_.getRotation());
+	tf::Transform transform_EE_FA;
+	transform_EE_FA.setOrigin(ARM_FIDUCIAL_OFFSET);
+	transform_EE_FA.setRotation(ARM_FIDUCIAL_ORIENTATION_OFFSET);
+
+	tf::Transform transform_BA_FA;
+	tf::Transform transform_BA_FB;
+	tf::Transform transform_CA_BA;
+	tf::Transform transform_FA_FB;
+	tf::Transform transform_EE_FB;
+	tf::Transform transform_EE_GO;
+
+
+	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
+	goal_pose.header.frame_id = BASE_LINK;
+	goal_pose.header.stamp = ros::Time::now();
+	group.setPoseReferenceFrame(BASE_LINK);
+
+	//get the position of the end effector (= arm_7_joint)
+	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+
+	//msg -> tf
+	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
+
+
+	//+++++++++++++++++++++++
+	// ARM FIDUCIAL TRANSFORMATION
+	tf::Quaternion q;
+	q.setRPY(0.0, 0.0, -M_PI);
+	tf::Transform cam;
+	tf::Transform base_cam;
+	tf::Transform arm_fiducial;
+	cam.setOrigin(transform_CA_BA_.getOrigin());
+	cam.setRotation(transform_CA_BA_.getRotation() * q);
+	//base-cam-fiducial A
+	base_cam.mult(cam.inverse(), transform_CA_FA);
+	arm_fiducial.mult(ee_pose_tf.inverse(), base_cam);
+	ROS_INFO(" TRANSFORMATION :");
+	printPose(cam);
+	printPose(arm_fiducial);
+	//+++++++++++++++++++++++++++++++++++
+
+
+
+	geometry_msgs::PoseStamped cam_msg;
+	geometry_msgs::PoseStamped test_msg;
+	geometry_msgs::PoseStamped test1_msg;
+	geometry_msgs::PoseStamped test2_msg;
+	geometry_msgs::PoseStamped test3_msg;
+	geometry_msgs::PoseStamped test4_msg;
+	geometry_msgs::PoseStamped test5_msg;
+	geometry_msgs::PoseStamped test6_msg;
+	geometry_msgs::PoseStamped test7_msg;
+	geometry_msgs::PoseStamped base;
+
+	//base FA
+	tf::poseTFToMsg(transform_CA_FA, test_msg.pose);
+	//base FB
+	tf::poseTFToMsg(transform_CA_FB, test1_msg.pose);
+
+	//BA FA
+	transform_BA_FA.mult(ee_pose_tf, transform_EE_FA);
+	tf::poseTFToMsg(transform_BA_FA, test2_msg.pose);
+	//drawLine(0.20, 0.0, 0.0, 1.0, base, test2_msg);
+	//CA BA
+	transform_CA_BA.mult(transform_CA_FA, transform_BA_FA.inverse());
+	tf::poseTFToMsg(transform_CA_BA.inverse(), cam_msg.pose);
+	drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
+	//CA FA FB
+	transform_FA_FB.mult(transform_BA_FA.inverse(), transform_CA_FB);
+	//BA FB
+	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB );
+	tf::poseTFToMsg( transform_BA_FB, test6_msg.pose);
+
+	drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
+	drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
+
+	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
+	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
+
+
+	transform_EE_GO.mult(transform_BA_FB, transform_EE_FA);
+	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
+	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
+	//drawLine(0.0, 0.30, 0.0, 1.0, ee_pose, test5_msg);
+
+	tf::Quaternion s;
+	s.setRPY(4.0, 0.0, 0.0);
+	//goal_pose_tf.setOrigin(transform_EE_GO.getOrigin());
+	goal_pose_tf.setOrigin(ee_pose_tf.getOrigin());
+	goal_pose_tf.setRotation(transform_EE_GO.getRotation() * s);
+
+	//tf -> msg
+	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
+	drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, goal_pose);
+	//drawSystem(goal_pose);
+	drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
+
+	transform_EE_FB.mult(ee_pose_tf.inverse(), goal_pose_tf);
+	double length = transform_EE_FB.getOrigin().length();
+	ROS_WARN_STREAM(" distance :"<< length << ".");
+
+	group.setPoseTarget(goal_pose, EE_NAME);
+
+	ROS_WARN_STREAM("STARTE TURN TO FIDUCIAL");
+	// plan the motion
+	bool have_plan = false;
+	moveit::planning_interface::MoveGroup::Plan plan;
+	have_plan = group.plan(plan);
+
+	//EXECUTE THE PLAN !!!!!! BE CAREFUL
+	if (have_plan==true) {
+		group.execute(plan);
+		group.move();
+	}
+	else
+	{
+		ROS_WARN("No valid plan found for the arm movement.");
+		move_action_ = false;
+		return false;
+	}
+
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	move_action_ = true;
+
+	return true;
+}
 /*
  * Move arm to the wagon using fiducials.
  */
@@ -549,6 +775,7 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose,
 	moveit::planning_interface::MoveGroup::Plan plan;
 	have_plan = group.plan(plan);
 
+	ROS_WARN("STARTE MOVE");
 	//EXECUTE THE PLAN !!!!!! BE CAREFUL
 	if (have_plan==true) {
 		group.execute(plan);
@@ -595,6 +822,7 @@ bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, c
 	tf::Transform pose_tf;
 	tf::Transform ee_pose_tf;
 	tf::Transform transf;
+	tf::Transform t;
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
 	pose.header.frame_id = BASE_LINK;
@@ -605,12 +833,13 @@ bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, c
 	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
 
 	transf.setOrigin(goal_direction);
-
-	pose_tf.setOrigin((ee_pose_tf * transf).getOrigin());
+	t.mult(ee_pose_tf, transf);
+	pose_tf.setOrigin(t.getOrigin());
 	pose_tf.setRotation(ee_pose_tf.getRotation());
 
 	//tf -> msg
 	tf::poseTFToMsg(pose_tf, pose.pose);
+	ROS_WARN("STARTE STRAIGT MOVE");
 	executeMoveCommand(pose, 0.0);
 
 	group.setPoseTarget(pose);
@@ -793,13 +1022,13 @@ void ToolChange::drawSystem(const geometry_msgs::PoseStamped& pose)
 
 	geometry_msgs::PoseStamped goal_pose;
 	goal_pose.pose = pose.pose;
-	goal_pose.pose.position.x = pose.pose.position.x + 0.1;
+	goal_pose.pose.position.x = pose.pose.position.x + 0.30;
 	drawLine(0.55, 0.0, 0.0, 1.0, pose, goal_pose);
 	goal_pose.pose = pose.pose;
-	goal_pose.pose.position.y = pose.pose.position.y + 0.1;
+	goal_pose.pose.position.y = pose.pose.position.y + 0.30;
 	drawLine(0.3, 0.3, 0.0, 1.0, pose, goal_pose);
 	goal_pose.pose = pose.pose;
-	goal_pose.pose.position.z = pose.pose.position.z + 0.1;
+	goal_pose.pose.position.z = pose.pose.position.z + 0.30;
 	drawLine(0.0, 0.0, 1.0, 1.0, pose, goal_pose);
 }
 

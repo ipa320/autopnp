@@ -58,6 +58,10 @@
 ///Static constant variables
 static const int COUPLE = 1;
 static const int DECOUPLE = 2;
+static const std::string ARM = "tag_2";
+static const std::string VAC_CLEANER = "tag_79";
+static const std::string ARM_STATION = "tag_38";
+static const std::string EXTRA_FIDUCIAL = "tag_73";
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
@@ -65,14 +69,19 @@ static const double MAX_STEP_CM = 0.01;
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
 static const std::string EE_NAME = "arm_7_link";
-//static const std::string EE_NAME = "arm_ee";
 
-static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, 0.07);
-static const tf::Vector3 FORWARD = tf::Vector3(0.05, 0.0, 0.0);
+static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, -0.07);
+static const tf::Vector3 FORWARD = tf::Vector3(-0.13, 0.0, 0.0);
 static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
-static const tf::Vector3 BACK = tf::Vector3(-0.05, 0.0, 0.0);
+static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
+static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
+static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.05, 0.025, 0.03);
+static const tf::Quaternion ARM_FIDUCIAL_ORIENTATION_OFFSET = tf::Quaternion(0.653883, 0.225928, 0.668417, -0.273153);
 
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0,- 0.30);
+static const tf::Vector3 TOOL_FIDUCIAL_OFFSET_0 = tf::Vector3(0.30, 0.0, 0.0);
+static const tf::Vector3 ARM_FIDUCIAL_OFFSET_0 = tf::Vector3(0.0, 0.0, 0.0);
 
 class ToolChange
 {
@@ -99,6 +108,7 @@ protected:
 	{
 		struct fiducials arm;
 		struct fiducials board;
+		struct fiducials cam;
 	};
 
 	/// instance of a subscriber for the camera calibration
@@ -123,21 +133,29 @@ protected:
 
 	bool slot_position_detected_;
 	bool move_action_;
-	bool detected_both_fiducials_;
+	bool detected_all_fiducials_;
+
+	double couple_offset_;
 
 	///container for the joint msgs
 	std::vector<double> jointVelocities_;
 	std::vector<double> jointPositions_;
 
 	///transformation data between the arm and the wagon slot
-	tf::Transform transform_FA_FB_;
-	tf::Transform transform_CA_EE_;
-	tf::Transform transform_CA_GO_;
 	tf::Transform transform_CA_FA_;
 	tf::Transform transform_CA_FB_;
-	tf::Transform transform_FB_GO_;
-	tf::Transform transform_FA_EE_;
+	tf::Transform transform_CA_BA_;
 	geometry_msgs::PoseStamped current_ee_pose_;
+
+	//define rotations
+		tf::Quaternion rotate_Y_90_right;
+		tf::Quaternion rotate_Y_90_left;
+		tf::Quaternion rotate_3Z_pi_4_left;
+		tf::Quaternion rotate_3Z_pi_4_right;
+		tf::Quaternion rotate_X_90_right;
+		tf::Quaternion rotate_X_90_left;
+		tf::Quaternion rotate_Z_90_left;
+		tf::Quaternion rotate_Z_90_right;
 
 	//CALLBACKS
 	/// Callback for the incoming data of joints' state.
@@ -162,9 +180,10 @@ protected:
 	void moveToStartPose(const geometry_msgs::PoseStamped& start_pose);
 	bool moveToStartPosition(const geometry_msgs::PoseStamped& start_pose);
 	bool moveToWagonFiducial(const double offset);
+	bool turnToWagonFiducial(const double offset);
 
 	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ
-	geometry_msgs::PoseStamped origin ;
+	geometry_msgs::PoseStamped origin;
 	int marker_id_;
 	void printPose(tf::Transform& trans_msg);
 	void printMsg(const geometry_msgs::PoseStamped pose);

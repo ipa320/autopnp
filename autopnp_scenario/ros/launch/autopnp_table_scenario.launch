@@ -26,11 +26,17 @@
 	<node pkg="tf" type="static_transform_publisher" name="link_map2base_link_broadcaster" args="0 0 0 0 0 0 map base_link 100" />
 
 	<!-- start cob_phidgets for commanding the tool changer -->
-	<!--include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/-->
+	<include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/>
 
 	<!-- start vacuum cleaner on/off control driver -->
 	<include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner_solo.launch"/>
 	
+	<!-- start SDH driver -->
+	<include file="$(find schunk_bringup)/components/sdh.launch"/>
+	
+	<!-- start toolchanger pnp detection -->
+	<!--node name="toolchanger_pnp_manager" pkg="autopnp_scenario" type="toolchange_pnp_manager"  output="screen"/-->
+
 	<!-- start arm driver -->
 	<include file="$(find schunk_bringup)/components/lwa4d_solo.launch"/>
 
