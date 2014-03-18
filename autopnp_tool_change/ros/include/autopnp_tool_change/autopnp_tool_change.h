@@ -50,7 +50,6 @@
  *  is found.
  *
  *  Arm motion procedure:
- *  - move arm to initial position (is given)
  *  - move arm to the position set with regard to
  *  detected fiducials
  */
@@ -71,8 +70,8 @@ static const std::string BASE_LINK = "base_link";
 static const std::string EE_NAME = "arm_7_link";
 
 static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, -0.07);
-static const tf::Vector3 FORWARD = tf::Vector3(-0.13, 0.0, 0.0);
-static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, -0.07);
+static const tf::Vector3 FORWARD = tf::Vector3(-0.12, 0.0, 0.0);
+static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, 0.04);
 static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
@@ -135,31 +134,14 @@ protected:
 	bool move_action_;
 	bool detected_all_fiducials_;
 
-	double couple_offset_;
-
-	///container for the joint msgs
-	std::vector<double> jointVelocities_;
-	std::vector<double> jointPositions_;
-
 	///transformation data between the arm and the wagon slot
 	tf::Transform transform_CA_FA_;
 	tf::Transform transform_CA_FB_;
-	tf::Transform transform_CA_BA_;
+	//tf::Transform transform_CA_BA_;
 	geometry_msgs::PoseStamped current_ee_pose_;
 
-	//define rotations
-		tf::Quaternion rotate_Y_90_right;
-		tf::Quaternion rotate_Y_90_left;
-		tf::Quaternion rotate_3Z_pi_4_left;
-		tf::Quaternion rotate_3Z_pi_4_right;
-		tf::Quaternion rotate_X_90_right;
-		tf::Quaternion rotate_X_90_left;
-		tf::Quaternion rotate_Z_90_left;
-		tf::Quaternion rotate_Z_90_right;
 
 	//CALLBACKS
-	/// Callback for the incoming data of joints' state.
-	void jointInputCallback(const sensor_msgs::JointState::ConstPtr& input_joint_msg);
 	/// Callback for the incoming point cloud data stream of fiducials.
 	void markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
 
@@ -168,9 +150,7 @@ protected:
 	/// Computes an average pose from multiple detected markers.
 	struct components computeMarkerPose(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
 
-	///processes the goal message
-	bool processGoal(const geometry_msgs::PoseStamped& pose);
-	///execution of the process in question
+	bool processGoal(const std::string& goal);
 	bool coupleOrDecouple(const int command, const geometry_msgs::PoseStamped& pose);
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose, const double offset);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);

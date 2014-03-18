@@ -33,10 +33,14 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
 
 rosbuild_add_executable(autopnp_tool_change ros/src/autopnp_tool_change.cpp)
 rosbuild_add_executable(autopnp_tool_change_client ros/src/autopnp_tool_change_client.cpp)
-rosbuild_add_executable(arm_fiducial_calibration ros/src/arm_fiducial_calibration.cpp)
-rosbuild_add_executable(arm_fiducial_calibration_client ros/src/arm_fiducial_calibration_client.cpp)
+#rosbuild_add_executable(arm_fiducial_calibration ros/src/arm_fiducial_calibration.cpp)
+#rosbuild_add_executable(arm_fiducial_calibration_client ros/src/arm_fiducial_calibration_client.cpp)
+rosbuild_add_executable(go_to_start_position ros/src/go_to_start_position.cpp)
+rosbuild_add_executable(go_to_start_position_client ros/src/go_to_start_position_client.cpp)
+
 target_link_libraries(autopnp_tool_change moveit_move_group_interface)
-target_link_libraries(arm_fiducial_calibration moveit_move_group_interface)
+target_link_libraries(go_to_start_position moveit_move_group_interface)
+#target_link_libraries(arm_fiducial_calibration moveit_move_group_interface)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)

@@ -39,34 +39,21 @@ ToolChange::ToolChange(ros::NodeHandle nh): change_tool_server_
 
 	node_handle_ = nh;
 	input_marker_detection_sub_.unsubscribe();
-	joint_states_sub_.unsubscribe();
 	slot_position_detected_ = false;
 	move_action_ = false;
 	marker_id_ = 0;
-	couple_offset_ = 0.1;
 
-	//set rotations
-	rotate_3Z_pi_4_left.setRPY( 0.0, 0.0, 3*M_PI/4);
-	rotate_3Z_pi_4_right.setRPY( 0.0, 0.0, -3*M_PI/4);
-	rotate_Y_90_right.setRPY(0.0, -M_PI/2, 0.0);
-	rotate_Y_90_left.setRPY(0.0, M_PI/2, 0.0);
-	rotate_X_90_right.setRPY(-M_PI/2, 0.0,  0.0);
-	rotate_X_90_left.setRPY(M_PI/2,0.0,  0.0);
-	rotate_Z_90_left.setRPY(0.0, 0.0, M_PI/2);
-	rotate_Z_90_right.setRPY(0.0, 0.0, -M_PI/2);
-
-	// subscribers
-	//joint_states_sub_.subscribe(node_handle_, "/joint_states",1);
-	//joint_states_sub_.registerCallback(boost::bind(&ToolChange::jointInputCallback, this, _1));
+	//SUBSCRIBERS
 	vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
 	input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
 	input_marker_detection_sub_.registerCallback(boost::bind(&ToolChange::markerInputCallback, this, _1));
 
-	//sleep till the transformation found
+	//sleep if the slot position not found
 	while(slot_position_detected_ == false)
 	{
 		ros::spinOnce();
 	}
+	//go to initialization
 }
 
 /*
@@ -87,45 +74,11 @@ void ToolChange::init()
 
 /**
  * Callback for the incoming  data stream.
- * Retrieves coming data from the joint_states message
- * and saves them as an instance of a
- * JointState msgs {@value jm}.
- */
-void ToolChange::jointInputCallback(const sensor_msgs::JointState::ConstPtr& input_joint_msg)
-{
-	sensor_msgs::JointState jm;
-
-	jointVelocities_.clear();
-	jointPositions_.clear();
-
-	jm.name = input_joint_msg->name;
-	jm.header.stamp = input_joint_msg->header.stamp;
-	jm.position = input_joint_msg->position;
-	jm.velocity = input_joint_msg->velocity;
-	jm.effort = input_joint_msg->effort;
-
-	for (auto s: input_joint_msg->velocity)
-	{
-		jointVelocities_.push_back(s);
-	}
-	for(auto s : input_joint_msg->position)
-	{
-		jointPositions_.push_back(s);
-	}
-
-	//ToolChange::printVector(jointPositions);
-	// ROS_INFO(" joint input callback %u", (unsigned int) input_joint_msg->position.size());
-}
-
-
-/**
- * Callback for the incoming  data stream.
  * Retrieves coming data from the input_marker_detections message
  * and calculates the distance and orientation between the position
- * of the arm and board setting the {@value arm_board_transform}.
+ * of the arm and board setting the {@value arm_board}.
  * Sets the variable {@value slot_position_detected} as true,
- * if the calculations took place. Quits the subscription to
- * the marker detection topic to save the last coordinates.
+ * if the calculations took place and saves the last transformations as globals.
  */
 void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg)
 {
@@ -139,8 +92,7 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		//set marker components if such detected
 		result_components = computeMarkerPose(input_marker_detections_msg);
 
-		//use marker components only if both,
-		//arm and board markers detected
+		//use marker components only if both (arm and board) markers detected
 		//else the components are empty
 		if(detected_all_fiducials_ == true)
 		{
@@ -148,22 +100,15 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 
 			if(!arm_board.getOrigin().isZero())
 			{
-				transform_CA_BA_ = result_components.cam.translation;
+				//transform_CA_BA_ = result_components.cam.translation;
 				transform_CA_FA_ = result_components.arm.translation;
 				transform_CA_FB_ = result_components.board.translation;
 
-				/*
-				 * ROS_INFO("*************");
-				ROS_INFO("CA_BA :");
-				printPose(transform_CA_BA_);
-				ROS_INFO("CA_FA :");
-				printPose(transform_CA_FA_);
-				ROS_INFO("CA_FB :");
-				printPose(transform_CA_FB_);
-				 */
 				slot_position_detected_ = true;
 			}
 
+		} else {
+			slot_position_detected_ = false;
 		}
 	}
 }
@@ -183,25 +128,20 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 	detected_all_fiducials_ = false;
 	bool detected_arm_fiducial = false;
 	bool detected_board_fiducial = false;
-	bool detected_cam_fiducial = false;
 	tf::Point translation;
 	tf::Quaternion orientation;
 
 	for (unsigned int i = 0; i < input_marker_detections_msg->detections.size(); ++i)
 	{
-
-		//retrieve the number of label and format the string message to an int number
+		//retrieve the number of label
 		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
-		//unsigned int fiducial_label_num = boost::lexical_cast<int>(fiducial_label);
-		//ROS_INFO("number %u , ", (unsigned int) fiducial_label_num) ;
 
-		//convert translation and orientation Points msgs to Points respectively
+		//convert translation and orientation Points msgs to tf Pose respectively
 		tf::pointMsgToTF(input_marker_detections_msg->detections[i].pose.pose.position, translation);
 		tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
 
-		// average only the 3 markers from the board
+		// average only the 3 markers from the board. Set the average on initial position of the {@value VAC_CLEANER)
 		if (fiducial_label.compare(VAC_CLEANER)==0 || fiducial_label.compare(ARM_STATION)==0 || fiducial_label.compare(EXTRA_FIDUCIAL)==0)
-			//if (fiducial_label.compare("tag_0")==0 || fiducial_label.compare("tag_1")==0 || fiducial_label.compare("tag_2")==0 || fiducial_label.compare("tag_3")==0)
 		{
 			detected_board_fiducial = true;
 			count++;
@@ -225,22 +165,22 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 			result.arm.translation.setRotation(orientation);
 			result.arm.translation.getRotation().normalize();
 		}
-		if (fiducial_label.compare("tag_3")==0)
+
+		/*if (fiducial_label.compare("tag_3")==0)
 		{
 			detected_cam_fiducial = true;
 			result.cam.translation.setOrigin(translation);
 			result.cam.translation.setRotation(orientation);
 			result.cam.translation.getRotation().normalize();
 		}
+		*/
 	}
-
 	if(count != 0)
 	{
 		result.board.translation.getOrigin() /=(double)count;
 		result.board.translation.getRotation() /= (double)count;
 		result.board.translation.getRotation().normalize();
 	}
-
 	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
 	return result;
@@ -249,12 +189,6 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 /*
  * Calculates translation and orientation distance between arm marker and wagon board.
  * Vector orientation points from arm to board.
- *
- *
- * Here :
- * - arm fiducial pregrasp position (x-down, y-right, z-to observer)
- * - board fiducial position (x-down, y-right, z-to observer)
- *
  */
 tf::Transform ToolChange::calculateArmBoardTransformation(
 		const tf::Transform& board_pose, const tf::Transform& arm_pose)
@@ -271,21 +205,21 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
 	result.mult(transform_CA_FA.inverse() ,transform_CA_FB);
 
 	/// JUST DRAWING IN RVIZ FOR TEST PURPOSES
+
 	tf::Transform a_tf;
 	tf::Transform b_tf;
 	geometry_msgs::PoseStamped a = current_ee_pose_;
 	geometry_msgs::PoseStamped pose;
 	geometry_msgs::PoseStamped base;
 	geometry_msgs::PoseStamped result_stamped;
-	//geometry_msgs::PoseStamped result_stamped_0;
 
 	tf::poseMsgToTF(a.pose, a_tf);
 	b_tf = a_tf * result;
-
 	tf::poseTFToMsg(b_tf, pose.pose);
 	tf::poseTFToMsg(result, result_stamped.pose);
 	//drawLine(0.85, 0.55, 0.30, 1.0, base, result_stamped);
 	//drawLine(0.85, 0.55, 0.0, 1.0,current_ee_pose_, pose);
+
 	///END DRAWING
 
 	return result;
@@ -301,38 +235,23 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
  */
 void ToolChange::changeTool(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal) {
 
-	geometry_msgs::PoseStamped fake_goal;
-	tf::Quaternion q;
-
-	q.setValue(-0.153, 0.9875, 0.017, -0.026);
-	//q.setRPY(0.0, 0.0, M_PI);
-	tf::quaternionTFToMsg(q, fake_goal.pose.orientation);
-
-	fake_goal.pose.position.x =  0.06714;
-	fake_goal.pose.position.y =  0.3877;
-	fake_goal.pose.position.z =  0.9613;
-
-	// this command sends a feedback message to the caller
-	autopnp_tool_change::MoveToWagonFeedback feedback;
-	ToolChange::change_tool_server_.publishFeedback(feedback);
-
+     std::string fake_goal= "test";
 	// this sends the response back to the caller
-	autopnp_tool_change::MoveToWagonResult res;
+	autopnp_tool_change::MoveToWagonResult result;
+	result.result = processGoal(fake_goal);
 
-	//res = processGoal(fake_goal);
-	processGoal(fake_goal);
-	change_tool_server_.setSucceeded(res);
-
+	change_tool_server_.setSucceeded(result);
 }
 
 /*
  * Goal processing. Returns true if the process succeeded, false if not.
  */
-//bool ToolChange::processGoal(const autopnp_tool_change::MoveToWagonGoalConstPtr& goal);
-bool ToolChange::processGoal(const geometry_msgs::PoseStamped& start_pose)
+bool ToolChange::processGoal(const std::string& goal)
 {
 	int fake_command = 1;
-	return coupleOrDecouple(fake_command, start_pose);
+	const geometry_msgs::PoseStamped  pose;
+
+	return coupleOrDecouple(fake_command, pose);
 }
 
 /*
@@ -358,10 +277,8 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	 */  //--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
-
-	for(int i = 0; i < 2; i++)
-	{
-	ROS_INFO("Moving arm to wagon fiducial position.");
+for(int i = 0; i< 5; i++)
+{
 	if(!turnToWagonFiducial(offset))
 	{
 		ROS_WARN("Error occurred executing turn to wagon fiducial position.");
@@ -375,20 +292,28 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		ROS_WARN("Error occurred executing move to wagon fiducial position.");
 		return false;
 	}
-
-	}
+}
+//*************************************
 	//   COUPLE / DECOUPLE
 
 	//--------------------------------------------------------------------------------------
-		// move arm straight up
-		//--------------------------------------------------------------------------------------
-
+	// move arm straight up
+	//--------------------------------------------------------------------------------------
+/*
 	if(!executeStraightMoveCommand(UP, MAX_STEP_MIL))
+	{
+		ROS_WARN("Error occurred executing move arm straight up.");
+		return false;
+	}
+*/
+//--------------------------------------------------------------------------------------
+	// move arm straight down
+	//--------------------------------------------------------------------------------------
+	if(!executeStraightMoveCommand(DOWN, MAX_STEP_CM))
 		{
-			ROS_WARN("Error occurred executing move arm straight up.");
+			ROS_WARN("Error occurred executing move to wagon fiducial.");
 			return false;
 		}
-
 	//--------------------------------------------------------------------------------------
 	// move arm straight forward
 	//--------------------------------------------------------------------------------------
@@ -400,16 +325,26 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		return false;
 	}
 
-	// move arm to the wagon (pre-start position) using fiducials
-			//--------------------------------------------------------------------------------------
-			ROS_INFO("Moving arm to wagon fiducial position.");
-			if(!turnToWagonFiducial(offset))
-			{
-				ROS_WARN("Error occurred executing turn to wagon fiducial position.");
-				return false;
-			}
+	tf::Transform transform_CA_FA;
+	transform_CA_FA.setOrigin(transform_CA_FA_.getOrigin());
+	transform_CA_FA.setRotation(transform_CA_FA_.getRotation());
+	tf::Transform transform_CA_FB;
+	transform_CA_FB.setOrigin(transform_CA_FB_.getOrigin() );
+	transform_CA_FB.setRotation(transform_CA_FB_.getRotation());
+	tf::Transform diff;
+	diff.mult(transform_CA_FA.inverse(), transform_CA_FB);
+	ROS_INFO(" diff : ");
+	printPose(diff);
 
-
+/*
+	//--------------------------------------------------------------------------------------
+	// move arm straight down
+	//--------------------------------------------------------------------------------------
+	if(!executeStraightMoveCommand(DOWN, MAX_STEP_CM))
+		{
+			ROS_WARN("Error occurred executing move to wagon fiducial.");
+			return false;
+		}
 	/*
 	//--------------------------------------------------------------------------------------
 	// move arm down to coupler
@@ -587,6 +522,8 @@ bool ToolChange::moveToWagonFiducial(const double offset)
 			move_action_ = false;
 			return false;
 		}
+	}else{
+		ROS_WARN_STREAM(" no movement occured with length "<< length <<".");
 	}
 
 	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
@@ -635,7 +572,7 @@ bool ToolChange::turnToWagonFiducial(const double offset)
 	//msg -> tf
 	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
 
-
+/*
 	//+++++++++++++++++++++++
 	// ARM FIDUCIAL TRANSFORMATION
 	tf::Quaternion q;
@@ -652,7 +589,7 @@ bool ToolChange::turnToWagonFiducial(const double offset)
 	printPose(cam);
 	printPose(arm_fiducial);
 	//+++++++++++++++++++++++++++++++++++
-
+*/
 
 
 	geometry_msgs::PoseStamped cam_msg;
