@@ -135,6 +135,8 @@ protected:
 	bool move_action_;
 	bool detected_all_fiducials_;
 
+	double couple_offset_;
+
 	///container for the joint msgs
 	std::vector<double> jointVelocities_;
 	std::vector<double> jointPositions_;

@@ -43,6 +43,7 @@ ToolChange::ToolChange(ros::NodeHandle nh): change_tool_server_
 	slot_position_detected_ = false;
 	move_action_ = false;
 	marker_id_ = 0;
+	couple_offset_ = 0.1;
 
 	//set rotations
 	rotate_3Z_pi_4_left.setRPY( 0.0, 0.0, 3*M_PI/4);
@@ -357,13 +358,17 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 	 */  //--------------------------------------------------------------------------------------
 	// move arm to the wagon (pre-start position) using fiducials
 	//--------------------------------------------------------------------------------------
+
+	for(int i = 0; i < 2; i++)
+	{
 	ROS_INFO("Moving arm to wagon fiducial position.");
 	if(!turnToWagonFiducial(offset))
 	{
 		ROS_WARN("Error occurred executing turn to wagon fiducial position.");
 		return false;
 	}
-/*
+
+
 	//TO DO: compute current fiducial position.
 	if(!moveToWagonFiducial(offset))
 	{
@@ -371,41 +376,7 @@ bool ToolChange::coupleOrDecouple(const int command, const geometry_msgs::PoseSt
 		return false;
 	}
 
-
-	// move arm to the wagon (pre-start position) using fiducials
-		//--------------------------------------------------------------------------------------
-		ROS_INFO("Moving arm to wagon fiducial position.");
-		if(!turnToWagonFiducial(offset))
-		{
-			ROS_WARN("Error occurred executing turn to wagon fiducial position.");
-			return false;
-		}
-
-		//TO DO: compute current fiducial position.
-		if(!moveToWagonFiducial(offset))
-		{
-			ROS_WARN("Error occurred executing move to wagon fiducial position.");
-			return false;
-		}
-
-
-		// move arm to the wagon (pre-start position) using fiducials
-			//--------------------------------------------------------------------------------------
-			ROS_INFO("Moving arm to wagon fiducial position.");
-			if(!turnToWagonFiducial(offset))
-			{
-				ROS_WARN("Error occurred executing turn to wagon fiducial position.");
-				return false;
-			}
-
-			//TO DO: compute current fiducial position.
-			if(!moveToWagonFiducial(offset))
-			{
-				ROS_WARN("Error occurred executing move to wagon fiducial position.");
-				return false;
-			}
-
-
+	}
 	//   COUPLE / DECOUPLE
 
 	//--------------------------------------------------------------------------------------
