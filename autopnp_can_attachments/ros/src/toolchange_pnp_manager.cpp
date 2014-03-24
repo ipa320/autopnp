@@ -24,11 +24,11 @@ public:
 		vis_pub_first_ = true;
 		hand_status_ = -1;
 		vacuum_status_ = -1;
-		diagnostics_sdh_sub_ = node_handle_.subscribe("/diagnostics", 10, &ToolchangePnPManager::diagnostics, this);
+		diagnostics_sdh_sub_ = node_handle_.subscribe("diagnostics", 10, &ToolchangePnPManager::diagnostics, this);
 		//diagnostics_sdh_sub_ = node_handle_.subscribe("/diagnostics", 1, &ToolchangePnPManager::diagnosticsSDHCallback, this);
 		//diagnostics_vacuum_sub_ = node_handle_.subscribe("/diagnostics_vacuum_cleaner", 1, &ToolchangePnPManager::diagnosticsVacuumCallback, this);
-		vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>("/pnp_manager", 0);
-		attachment_status_ = node_handle_.advertise<std_msgs::Bool>("/pnp_manager/attachment_status", 0);
+		vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>("attachment_visulization", 0);
+		attachment_status_ = node_handle_.advertise<std_msgs::Bool>("attachment_status", 0);
 	}
 
 	void diagnostics(const diagnostic_msgs::DiagnosticArray::ConstPtr& diagnostics_msg)
@@ -38,7 +38,7 @@ public:
 			const diagnostic_msgs::DiagnosticStatus& status = diagnostics_msg->status[i];
 
 			// check vacuum cleaner
-			if (status.name.compare("autopnp_can_attachments: status") == 0)
+			if (status.name.compare("vacuum_cleaner_controller/vacuum_cleaner: status") == 0)
 			{
 				if (status.message.compare("vacuum cleaner initialized and running")==0 || status.level==diagnostic_msgs::DiagnosticStatus::OK)
 				{
@@ -157,7 +157,7 @@ int main(int argc, char** argv)
 
 	// services
 	std::string sdh_init_service_name = "/sdh_controller/init";
-	std::string vacuum_init_service_name = "/init";
+	std::string vacuum_init_service_name = "/vacuum_cleaner_controller/init";
 
 	// here we wait until the service is available; please use the same service name as the one in the server; you may define a timeout if the service does not show up
 	std::cout << "Waiting for service servers to become available..." << std::endl;

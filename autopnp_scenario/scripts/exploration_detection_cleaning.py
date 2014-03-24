@@ -1741,8 +1741,8 @@ class Clean(smach.State):
 		raw_input("cleaning position ok?")
 		
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
-		vacuum_on_service_name = '/vacuum_cleaner_controller/vacuum_on'
-		vacuum_off_service_name = '/vacuum_cleaner_controller/vacuum_off'
+		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
+		vacuum_off_service_name = '/vacuum_cleaner_controller/power_off'
 		
 		# (re-)init vacuum cleaner
  		rospy.wait_for_service(vacuum_init_service_name) 

@@ -223,8 +223,8 @@ class Clean(smach.State):
 		#raw_input("cleaning position ok?")
 		
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
-		vacuum_on_service_name = '/vacuum_cleaner_controller/vacuum_on'
-		vacuum_off_service_name = '/vacuum_cleaner_controller/vacuum_off'
+		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
+		vacuum_off_service_name = '/vacuum_cleaner_controller/power_off'
 		
 		# (re-)init vacuum cleaner
  		#rospy.wait_for_service(vacuum_init_service_name) 
@@ -284,15 +284,11 @@ class ChangeToolManual(smach.State):
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
 		
 		#self.diagnostics_sub = rospy.Subscriber("/diagnostics_vacuum_cleaner", DiagnosticArray, self.diagnosticCallback)
-		self.diagnostics_sub = rospy.Subscriber("/pnp_manager/attachment_status", Bool, self.diagnosticCallback)
+		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
 		self.attached = False
 
-	def diagnosticCallback(self, msg):
+	def attachmentStatusCallback(self, msg):
 		self.attached = msg.data
-		#for status in msg.status:
-		#	if status.name=="vacuum_cleaner_controller":
-		#		if status.message=="canopen_staubsauger chain initialized and running":
-		#			self.attached = 1
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("ChangeToolManual")
@@ -302,7 +298,7 @@ class ChangeToolManual(smach.State):
 		#handle_arm = sss.move("arm",[[1.064633390424021, -1.1901051103498934, 0.6336766915215812, -1.7237046225621198, -1.554041165975751, -1.7535846593562627, -0.00010471975511965978]])
 		arm_position = list(ARM_IDLE_POSITION)
 		arm_position[0] = -0.8
-		handle_arm = sss.move("arm",[arm_position])
+		#handle_arm = sss.move("arm",[arm_position])
 		
 		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
 		tool_change_successful = ''
