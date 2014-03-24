@@ -19,11 +19,12 @@ public:
 	GoToStartPositionClient(ros::NodeHandle nh) :go_to_start_position_client("go_to_start_position", true)
 {
 		node_ = nh;
+		ROS_INFO("initialize go_to_start_position_client");
 }
 
 	bool init()
 	{
-		std::cout << "Waiting for action server to become available..." << std::endl;
+		std::cout << "Waiting for action server go_to_start_position to become available..." << std::endl;
 		return go_to_start_position_client.waitForServer();
 	}
 
@@ -31,7 +32,7 @@ public:
 	{
 		// prepare the goal message
 		autopnp_tool_change::GoToStartPositionGoal goal;
-		ROS_INFO("Sending goal");
+		ROS_INFO("Sending goal to go_to_start_position_server");
 
 
 		go_to_start_position_client.sendGoal(goal,

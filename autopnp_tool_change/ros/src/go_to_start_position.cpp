@@ -44,6 +44,8 @@ static const std::string VAC_CLEANER = "tag_79";
 static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
 
+
+
 static const double MAX_STEP_MIL = 0.001;
 
 static const std::string PLANNING_GROUP_NAME = "arm";
@@ -87,6 +89,7 @@ private:
 	/// CLIENTS
 	ros::ServiceClient execute_known_traj_client_ ;
 
+
 	bool slot_position_detected_;
 	bool move_action_;
 	bool detected_all_fiducials_;
@@ -103,6 +106,7 @@ public:
 	GoToStartPosition(ros::NodeHandle nh) :go_to_start_position_server
 	(nh, "go_to_start_position", boost::bind(&GoToStartPosition::goToStartPosition, this, _1), false)
 {
+		ROS_INFO("Starting go_to_start_position server.");
 		node_handle_ = nh;
 		input_marker_detection_sub_.unsubscribe();
 		slot_position_detected_ = false;
@@ -111,14 +115,15 @@ public:
 
 		//SUBSCRIBERS
 		vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
-		input_marker_detection_sub_.subscribe(node_handle_, "/fiducials/detect_fiducials", 1);
+		input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
 		input_marker_detection_sub_.registerCallback(boost::bind(&GoToStartPosition::markerInputCallback, this, _1));
 
-		//sleep if the slot position not found
+		/*//sleep if the slot position not found
 		while(slot_position_detected_ == false)
 		{
 			ros::spinOnce();
 		}
+		*/
 }
 
 	~GoToStartPosition()
@@ -128,12 +133,14 @@ public:
 	}
 
 	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal) {
+		ROS_INFO("start !!!!!!!!!!!!!!!!!");
 		autopnp_tool_change::GoToStartPositionResult res;
-		processGoal(goal->goal);
+		res.result = processGoal(goal->goal);
 		go_to_start_position_server.setSucceeded(res);
 	}
 
 	void init(){
+		ROS_INFO("Init go_to_start_position server");
 		go_to_start_position_server.start();
 	}
 

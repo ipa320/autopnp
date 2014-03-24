@@ -35,6 +35,7 @@
 
 #include <vector>
 #include <autopnp_tool_change/MoveToWagonAction.h>
+#include <autopnp_tool_change/GoToStartPositionAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <actionlib/client/simple_action_client.h>
 
@@ -62,6 +63,9 @@ static const std::string VAC_CLEANER = "tag_79";
 static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
 
+static const std::string GO_TO_START_POSITION_SERVICE_NAME = "go_to_start_position_server";
+static const std::string GO_TO_START_POSITION_CLIENT_NAME = "go_to_start_position_client";
+
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
 
@@ -82,6 +86,7 @@ static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0,- 0.30);
 static const tf::Vector3 TOOL_FIDUCIAL_OFFSET_0 = tf::Vector3(0.30, 0.0, 0.0);
 static const tf::Vector3 ARM_FIDUCIAL_OFFSET_0 = tf::Vector3(0.0, 0.0, 0.0);
 
+
 class ToolChange
 {
 
@@ -94,51 +99,19 @@ public:
 
 protected:
 
-
-	/// array of two transform msgs
-	struct fiducials;
-	struct fiducials
-	{
-		tf::Transform translation;
-	};
-	/// array of two fiducial objects
-	struct components;
-	struct components
-	{
-		struct fiducials arm;
-		struct fiducials board;
-		struct fiducials cam;
-	};
-
-	/// instance of a subscriber for the camera calibration
-	///action of incoming color image data
-	ros::Subscriber input_color_camera_info_sub_;
 	/// ROS node handle
 	ros::NodeHandle node_handle_;
 
-	/// SUBSCRIBERS
-	message_filters::Subscriber<cob_object_detection_msgs::DetectionArray> input_marker_detection_sub_;
-	message_filters::Subscriber<sensor_msgs::JointState> joint_states_sub_;
-	///PUBLISHERS
-	ros::Publisher vis_pub_;
 	/// SERVER
 	actionlib::SimpleActionServer<autopnp_tool_change::MoveToWagonAction> change_tool_server_;
 	/// CLIENTS
 	 ros::ServiceClient execute_known_traj_client_ ;
+	actionlib::SimpleActionClient<autopnp_tool_change::GoToStartPositionAction> go_client_;
+	ros::ServiceClient go_srv_;
 
 	/// messages that are used to published feedback/result
 	autopnp_tool_change::MoveToWagonFeedback feedback_;
 	autopnp_tool_change::MoveToWagonResult result_;
-
-	bool slot_position_detected_;
-	bool move_action_;
-	bool detected_all_fiducials_;
-
-	///transformation data between the arm and the wagon slot
-	tf::Transform transform_CA_FA_;
-	tf::Transform transform_CA_FB_;
-	//tf::Transform transform_CA_BA_;
-	geometry_msgs::PoseStamped current_ee_pose_;
 
 
 	//CALLBACKS
