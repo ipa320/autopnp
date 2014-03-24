@@ -1,0 +1,3 @@
+CanDevice: /dev/pcanusb1
+CanBaudrate: 500000
+ModId: 13	# module ID

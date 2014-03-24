@@ -38,9 +38,9 @@ public:
 			const diagnostic_msgs::DiagnosticStatus& status = diagnostics_msg->status[i];
 
 			// check vacuum cleaner
-			if (status.name.compare("cob_esd_mini_adi8: status") == 0)
+			if (status.name.compare("autopnp_can_attachments: status") == 0)
 			{
-				if (status.message.compare("Running")==0 || status.level==diagnostic_msgs::DiagnosticStatus::OK)
+				if (status.message.compare("vacuum cleaner initialized and running")==0 || status.level==diagnostic_msgs::DiagnosticStatus::OK)
 				{
 					std::cout << "Vacuum cleaner attached and ready." << std::endl;
 					message_stream_.str("");
@@ -48,7 +48,7 @@ public:
 					message_stream_ << "Vacuum cleaner attached and ready." << std::endl;
 					vacuum_status_ = 0;
 				}
-				else if (status.message.compare("Error")==0 || status.level==diagnostic_msgs::DiagnosticStatus::ERROR)
+				else if (status.message.compare("vacuum cleaner not initialized")==0 || status.level==diagnostic_msgs::DiagnosticStatus::ERROR)
 				{
 					std::cout << "Vacuum cleaner not attached or not initialized." << std::endl;
 					vacuum_status_ = -1;
@@ -186,10 +186,10 @@ int main(int argc, char** argv)
 			cob_srvs::Trigger::Response res;
 			bool success = ros::service::call(vacuum_init_service_name, req, res);
 			if (success == false || res.success.data == false)
-				std::cout << "Vacuum cleaner init service call failed.\n" << std::endl;
+				ROS_WARN("\nVacuum cleaner init service call failed.\n");
 			else
 			{
-				std::cout << "Vacuum cleaner init service call successful.\n" << std::endl;
+				ROS_INFO("\nVacuum cleaner init service call successful.\n");
 				tPnP.setVacuumStatus(1);
 				any_device_initialized = true;
 				ros::Duration(2.0).sleep();
@@ -204,10 +204,10 @@ int main(int argc, char** argv)
 			cob_srvs::Trigger::Response res;
 			bool success = ros::service::call(sdh_init_service_name, req, res);
 			if (success == false || res.success.data == false)
-				std::cout << "SDH init service call failed.\n" << std::endl;
+				ROS_WARN("\nSDH init service call failed.\n");
 			else
 			{
-				std::cout << "SDH init service call successful.\n" << std::endl;
+				ROS_INFO("\nSDH init service call successful.\n");
 				tPnP.setHandStatus(1);
 				any_device_initialized = true;
 				ros::Duration(2.0).sleep();
