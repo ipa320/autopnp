@@ -1,0 +1,65 @@
+#!/usr/bin/python
+
+
+import roslib; roslib.load_manifest('autopnp_tool_change')
+import rospy
+import actionlib
+import autopnp_tool_change.msg 
+
+def go_to_start_position_client(goal):
+	go_to_start_position_client = actionlib.SimpleActionClient('go_to_start_position_action', autopnp_tool_change.msg.GoToStartPositionAction)
+
+	go_to_start_position_client.wait_for_server()
+
+	# Creates a goal to send to the action server.
+	goal = autopnp_tool_change.msg.GoToStartPositionGoal()
+	goal.goal = "default"
+
+	# Sends the goal to the action server.
+	go_to_start_position_client.send_goal(goal)
+
+	# Waits for the server to finish performing the action.
+	finished_before_timeout = go_to_start_position_client.wait_for_result(rospy.Duration(300, 0))
+
+   	if finished_before_timeout:
+		state = go_to_start_position_client.get_state()
+	print "Action finished: %s"%state
+	# Prints out the result of executing the action
+   	return state # State after waiting for GoToStartPositionAction
+
+
+def move_to_chosen_tool_client(goal):
+	move_to_chosen_tool_client = actionlib.SimpleActionClient('move_to_chosen_tool_action', autopnp_tool_change.msg.MoveToChosenToolAction)
+
+	move_to_chosen_tool_client.wait_for_server()
+
+	# Creates a goal to send to the action server.
+	goal = autopnp_tool_change.msg.MoveToChosenToolGoal()
+	goal.goal = "tag_38"
+
+	# Sends the goal to the action server.
+	move_to_chosen_tool_client.send_goal(goal)
+
+	# Waits for the server to finish performing the action.
+	finished_before_timeout = move_to_chosen_tool_client.wait_for_result(rospy.Duration(300, 0))
+
+   	if finished_before_timeout:
+		state = move_to_chosen_tool_client.get_state()
+	print "Action finished: %s"%state
+	# Prints out the result of executing the action
+  	return state # State after waiting for MoveToChosenToolAction
+
+
+if __name__ == '__main__':
+	try:
+	# Initializes a rospy node so that the SimpleActionClient can
+	# publish and subscribe over ROS.
+		rospy.init_node('GoToStartPosition_client_py')
+
+		result = go_to_start_position_client("default")
+
+		//result = move_to_chosen_tool_client("tag_38")
+
+
+	except rospy.ROSInterruptException:
+ 		print "program interrupted before completion"
