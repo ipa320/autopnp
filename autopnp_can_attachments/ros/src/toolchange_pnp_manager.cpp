@@ -197,6 +197,9 @@ int main(int argc, char** argv)
 			//lastCheckedDevice = 1;
 		}
 
+		rate.sleep();
+		ros::spinOnce();
+
 		// check for SDH
 		if (any_device_initialized==false && tPnP.getHandStatus()==-1)// && tPnP.getVacuumStatus()== -1 && lastCheckedDevice==1)
 		{
@@ -217,8 +220,8 @@ int main(int argc, char** argv)
 
 		tPnP.publishAttachmentStatus(any_device_initialized);
 
-		ros::spinOnce();
 		rate.sleep();
+		ros::spinOnce();
 	}
 	return 0;
 }

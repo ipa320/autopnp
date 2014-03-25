@@ -54,6 +54,7 @@ bool receive_and_test(uint16_t id)
 			break;
 		}
 	}
+
 	return test;
 }
 
@@ -82,7 +83,9 @@ bool transmit(uint16_t id, int len, uint8_t b0 = 0, uint8_t b1 = 0, uint8_t b2 =
 		return false;
 	}
 
-	return true;
+	ros::Duration(0.1).sleep();
+
+	return (CAN_Status(device)==CAN_ERR_OK);
 }
 
 bool check_nmt()
@@ -150,7 +153,8 @@ bool init(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& resp
 		WORD btr0btr1 = LINUX_CAN_BTR0BTR1(device, baudrate);
 		if (CAN_Init(device, btr0btr1, CAN_INIT_TYPE_ST) == CAN_ERR_OK)
 		{
-			if (transmit(0, 2, 1, 0))
+			CAN_Status(device);	// clear/reset error
+			if (transmit(0, 2, 0x81, 0) && transmit(0, 2, 0x01, 0))
 			{
 				running = check_nmt();
 			}
@@ -187,7 +191,7 @@ bool recover(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& r
 
 	response.success.data = false;
 
-	if (running && !device)
+	if (running && device)
 	{
 		response.success.data = transmit(0, 2, 0x81, 0) && transmit(0, 2, 0x01, 0);
 	}
@@ -213,9 +217,13 @@ int main(int argc, char *argv[])
 	ros::MultiThreadedSpinner spinner;
 	ros::NodeHandle nh;
 
+	std::cout << "---------- Vacuum cleaner parameters ----------\n";
 	nh.param("CanDevice", devfile, std::string("/dev/pcanusb1"));
+	std::cout << "CanDevice=" << devfile << std::endl;
 	nh.param("CanBaudrate", baudrate, 500000);
+	std::cout << "CanBaudrate=" << baudrate << std::endl;
 	nh.param("ModId", modid, 13);
+	std::cout << "ModId=" << modid << std::endl;
 
 	ros::ServiceServer init_srv = nh.advertiseService("init", init);
 	ros::ServiceServer recover_srv = nh.advertiseService("recover", recover);
