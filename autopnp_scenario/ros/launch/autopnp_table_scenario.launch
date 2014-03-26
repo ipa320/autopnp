@@ -36,7 +36,8 @@
 	<include file="$(find schunk_bringup)/components/sdh.launch"/>
 	
 	<!-- start toolchanger pnp detection -->
-	<node ns="toolchanger_pnp_manager" name="toolchanger_pnp_manager" pkg="autopnp_can_attachments" type="toolchange_pnp_manager"  output="screen"/>
+	<!--node ns="toolchanger_pnp_manager" name="toolchanger_pnp_manager" pkg="autopnp_can_attachments" type="toolchange_pnp_manager"  output="screen"/-->
+	<include file="$(find autopnp_can_attachments)/ros/launch/toolchange_pnp_manager.launch"/>
 
 	<!-- start arm driver -->
 	<include file="$(find schunk_bringup)/components/lwa4d_solo.launch"/>
