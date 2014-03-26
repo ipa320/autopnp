@@ -26,11 +26,13 @@ _____________________________________________________________
 
 /*
  * Initializing the server before start and waiting for data :
- * Starts all needed subscriptions and publications.
+ * - starts all needed subscriptions and publications;
+ * - starts action server in false mode;
+ *
  * Makes the server sleep while the data in question
  * have not been received jet. The spinOnce operation
  * allows the calculation of the background processes
- * and sleeping functions to run simultaneously .
+ * and sleeping functions to run simultaneously.
  */
 ToolChange::ToolChange(ros::NodeHandle nh)
 {
@@ -47,30 +49,37 @@ ToolChange::ToolChange(ros::NodeHandle nh)
 	input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
 	input_marker_detection_sub_.registerCallback(boost::bind(&ToolChange::markerInputCallback, this, _1));
 
-	//sleep if the slot position not found
+	//waiting till all fiducials detected.
+	//Do not start servers before !!
 	while(slot_position_detected_ == false)
 	{
 		ros::spinOnce();
 	}
-	static const std::string GO_TO_START_POSITION_ACTION_NAME = "go_to_start_position_action";
-		as_go_to_start_position_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
-				node_handle_, GO_TO_START_POSITION_ACTION_NAME, boost::bind(&ToolChange::goToStartPosition, this, _1), false));
-		as_go_to_start_position_->start();
 
-		while(slot_position_detected_ == false)
-			{
-				ros::spinOnce();
-			}
+	//SERVERS
+	resetServers();
+}
+/*
+ * Reset the servers to false. Let them start and wait for a goal message.
+ */
+void ToolChange::resetServers()
+{
+   //RESET
 
-		static const std::string MOVE_TO_CHOSEN_TOOL_ACTION_NAME = "move_to_chosen_tool_action";
-		as_move_to_chosen_tool_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
-				node_handle_, MOVE_TO_CHOSEN_TOOL_ACTION_NAME, boost::bind(&ToolChange::moveToChosenTool, this, _1), false));
-		as_move_to_chosen_tool_->start();
-	//go to initialization
+	//moves the arm to a start position in front of the wagon
+	as_go_to_start_position_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
+			node_handle_, GO_TO_START_POSITION_ACTION_NAME, boost::bind(&ToolChange::goToStartPosition, this, _1), false));
+	as_go_to_start_position_->start();
+
+	//moves the arm to a chosen slot or tool on the wagon
+	as_move_to_chosen_tool_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
+			node_handle_, MOVE_TO_CHOSEN_TOOL_ACTION_NAME, boost::bind(&ToolChange::moveToChosenTool, this, _1), false));
+	as_move_to_chosen_tool_->start();
+
 }
 
 /*
- * TO DO: set the garbage container free !!!!!!
+ * Set the garbage container free  and shutdown running processes !!!!!!
  */
 ToolChange::~ToolChange()
 {
@@ -78,14 +87,9 @@ ToolChange::~ToolChange()
 }
 
 /*
- * Starting server after initialization process.
+ * Running server after initialization process.
+ * Make it spin around waiting for a goal messages.
  */
-void ToolChange::init()
-{
-
-	//ToolChange::change_tool_server_.start();
-}
-
 void ToolChange::run()
 {
 	ROS_INFO("tool_change spinning");
@@ -116,18 +120,26 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		//else the components are empty
 		if(detected_all_fiducials_ == true)
 		{
-			arm_board = calculateArmBoardTransformation(result_components.board.translation, result_components.arm.translation);
+			//calculate transformation FA_FB
+			arm_board = calculateArmBoardTransformation(result_components.board_.translation, result_components.arm_.translation);
 
+			//allow no empty messages. There is always some distance between FA and FB !!!!
 			if(!arm_board.getOrigin().isZero())
 			{
-				transform_CA_FA_ = result_components.arm.translation;
-				transform_CA_FB_ = result_components.board.translation;
+				transform_CA_FA_ = result_components.arm_.translation;
+				transform_CA_FB_ = result_components.board_.translation;
 
+				//everything is fine, the server can start
 				slot_position_detected_ = true;
 			}
 
-		} else {
+		}
+		else
+		{
+			//markers are not visible or error occurred.
 			slot_position_detected_ = false;
+			//make the
+			resetServers();
 		}
 	}
 }
@@ -166,13 +178,13 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 			count++;
 			if (count==1)
 			{
-				result.board.translation.setOrigin(translation);
-				result.board.translation.setRotation(orientation);
+				result.board_.translation.setOrigin(translation);
+				result.board_.translation.setRotation(orientation);
 			}
 			else
 			{
-				result.board.translation.getOrigin() += translation;
-				result.board.translation.getRotation() += orientation;
+				result.board_.translation.getOrigin() += translation;
+				result.board_.translation.getRotation() += orientation;
 			}
 		}
 
@@ -180,9 +192,9 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		if (fiducial_label.compare(ARM)==0)
 		{
 			detected_arm_fiducial = true;
-			result.arm.translation.setOrigin(translation);
-			result.arm.translation.setRotation(orientation);
-			result.arm.translation.getRotation().normalize();
+			result.arm_.translation.setOrigin(translation);
+			result.arm_.translation.setRotation(orientation);
+			result.arm_.translation.getRotation().normalize();
 		}
 
 		/*if (fiducial_label.compare("tag_3")==0)
@@ -196,9 +208,9 @@ result.cam.translation.getRotation().normalize();
 	}
 	if(count != 0)
 	{
-		result.board.translation.getOrigin() /=(double)count;
-		result.board.translation.getRotation() /= (double)count;
-		result.board.translation.getRotation().normalize();
+		result.board_.translation.getOrigin() /=(double)count;
+		result.board_.translation.getRotation() /= (double)count;
+		result.board_.translation.getRotation().normalize();
 	}
 	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
@@ -208,6 +220,14 @@ result.cam.translation.getRotation().normalize();
 /*
  * Calculates translation and orientation distance between arm marker and wagon board.
  * Vector orientation points from arm to board.
+ *
+ * ================================================
+ *          FA  --------------->  FB
+ *           ^                     ^
+ *           |                     |
+ *           |_____________________|
+ *                    CAM
+ * ================================================
  */
 tf::Transform ToolChange::calculateArmBoardTransformation(
 		const tf::Transform& board_pose, const tf::Transform& arm_pose)
@@ -245,15 +265,39 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
 
 }
 
+/*
+ * This callback function is executed each time a request (= goal message)
+ * comes to go_to_start_position server.
+ * ==============================================
+ *     ARM        ||  VAC_CLEANER    ||   X    ||
+ * ==============================================
+ *                     start
+ * ==============================================
+ *                     GOAL_FIDUCIAL
+ *                         |
+ *                         |
+ *                        move
+ *                         |
+ *                        turn
+ *                         |
+ *                    (ARM_FIDUCIAL)
+ *
+ *================================================
+ *             (result: succeeded/not succeeded)
+ *================================================
+ */
 void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal)
 {
 	ROS_INFO("GoToStartPosition received new goal:  %s", goal->goal.c_str());
 	bool success = false;
+
+	//move to a start position
 	success = processGoToStartPosition();
 
 	autopnp_tool_change::GoToStartPositionResult result;
 	std::string feedback;
 
+	//set response
 	if(success)
 	{
 		ROS_INFO("GoToStartPosition was successful !");
@@ -270,24 +314,49 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
 	}
 }
 
-
+/*
+ * Processes movement to the start position in front of
+ * the wagon:
+ *
+ * - first: end effector gets the goal orientation and executes the turn action;
+ * - second: end effector moves to the position using the transformation
+ *  between arm and wagon reference fiducials.
+ *
+ *===============================================
+ *     ARM        ||  VAC_CLEANER    ||   X    ||
+ * ==============================================
+ *                     start
+ * ==============================================
+ *                     GOAL_FIDUCIAL
+ *                         |
+ *                         |
+ *                        move
+ *                         |
+ *                        turn
+ *                         |
+ *                    (ARM_FIDUCIAL)
+ *
+ *================================================
+ *                 (return true/false)
+ *================================================
+ */
 bool ToolChange::processGoToStartPosition()
 {
+	//rotate
+	ROS_INFO("GoToStartPosition process TURN");
+	if(!moveToWagonFiducial(TURN))
+	{
+		ROS_WARN("Error occurred executing turn to wagon fiducial position.");
+		return false;
+	}
 
-		if(!turnToWagonFiducial())
-		{
-			ROS_WARN("Error occurred executing turn to wagon fiducial position.");
-			return false;
-		}
-
-         ros::spinOnce();
-
-		//TO DO: compute current fiducial position.
-		if(!moveToWagonFiducial())
-		{
-			ROS_WARN("Error occurred executing move to wagon fiducial position.");
-			return false;
-		}
+	//move to position
+	ROS_INFO("GoToStartPosition process MOVE");
+	if(!moveToWagonFiducial(MOVE))
+	{
+		ROS_WARN("Error occurred executing move to wagon fiducial position.");
+		return false;
+	}
 
 	return true;
 }
@@ -296,61 +365,115 @@ bool ToolChange::processGoToStartPosition()
 
 /*
  * This callback function is executed each time a request (= goal message)
- * comes to this server (eventually this will be an initial
- * position message for the arm or a number of the tool
- * to be taken from the wagon). Starting move commands for the arm from here.
+ * comes to move_to_chosen_tool server.
  *
+ * ==============================================
+ *     ARM        ||  VAC_CLEANER    ||   X    ||
+ * ==============================================
+ *                     start
+ * ==============================================
+ *            offset
+ *      <---------------->
+ *
+ *================================================
+ *           (result: succeeded/not succeeded)
+ *================================================
  */
 void ToolChange::moveToChosenTool(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal)
 {
 	ROS_INFO("MoveToChosenTool received new goal:  %s", goal->goal.c_str());
 	bool success = false;
 
-	    std::string tool_name = goal->goal;
+	std::string tool_name = goal->goal;
 
-	    if(tool_name.compare(VAC_CLEANER) == 0)
-	    {
-		success = processMoveToChosenTool(VAC_CLEANER_OFFSET);
-	    }
-	    else if(tool_name.compare(ARM_STATION) == 0)
-	    {
-	    success = processMoveToChosenTool(ARM_STATION_OFFSET);
-	    }
-		autopnp_tool_change::GoToStartPositionResult result;
-		std::string feedback;
-
-		if(success)
-		{
-			ROS_INFO("GoToStartPosition was successful!");
-			//result.result = true;
-			feedback ="ARM ON THE CHOSEN TOOL POSITION !!";
-			as_move_to_chosen_tool_->setSucceeded(result, feedback);
-		}
-		else
-		{
-			ROS_INFO("moveToChosenTool failed!");
-			//result.result = true;
-			feedback ="FAILD TO GET TO THE CHOSEN TOOL POSITION !!";
-			as_move_to_chosen_tool_->setAborted(result, feedback);
-		}
-	}
-
-
-	bool ToolChange::processMoveToChosenTool(const tf::Vector3& offset)
+	if(tool_name.compare(VAC_CLEANER) == 0)
 	{
-		tf::Vector3 movement;
-		movement = offset;
-
-		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
-			{
-				ROS_WARN("Error occurred executing move to wagon fiducial.");
-				return false;
-			}
-		return true;
+		//move to start position in front of the vacuum cleaner
+		success = processMoveToChosenTool(VAC_CLEANER_OFFSET);
 	}
+	else if(tool_name.compare(ARM_STATION) == 0)
+	{
+		// move to start position in front of the arm slot
+		success = processMoveToChosenTool(ARM_STATION_OFFSET);
+	}
+	autopnp_tool_change::GoToStartPositionResult result;
+	std::string feedback;
 
+	//set the response
+	if(success)
+	{
+		ROS_INFO("GoToStartPosition was successful!");
+		//result.result = true;
+		feedback ="ARM ON THE CHOSEN TOOL POSITION !!";
+		as_move_to_chosen_tool_->setSucceeded(result, feedback);
+	}
+	else
+	{
+		ROS_INFO("moveToChosenTool failed!");
+		//result.result = true;
+		feedback ="FAILD TO GET TO THE CHOSEN TOOL POSITION !!";
+		as_move_to_chosen_tool_->setAborted(result, feedback);
+	}
+}
 
-bool ToolChange::moveToWagonFiducial()
+/*
+ * Processes movement to a position of a chosen tool using an offset vector.
+ * It can be the position of a vacuum cleaner or of an arm
+ * on the wagon.
+ *
+ * ==============================================
+ *     ARM        ||  VAC_CLEANER    ||   X    ||
+ * ==============================================
+ *                     start
+ * ==============================================
+ *            offset
+ *      <---------------->
+ *================================================
+ *              (return true/false)
+ *================================================
+ */
+bool ToolChange::processMoveToChosenTool(const tf::Vector3& offset)
+{
+	tf::Vector3 movement;
+	movement = offset;
+
+	if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
+	{
+		ROS_WARN("Error occurred executing move to wagon fiducial.");
+		return false;
+	}
+	return true;
+}
+
+/*
+ * Sets the global values to identity.
+ */
+void ToolChange::clearFiducials()
+{
+	transform_CA_FA_.setIdentity();
+	transform_CA_FB_.setIdentity();
+}
+
+/*
+ * Executes a planning action with moveIt interface utilities.
+ * The reference frame, the "base_link" frame,
+ * initializes the starting point of the coordinate system.
+ * the goal frame describes the end effector ("arm_7_link")
+ * which will be moved to a new position.
+ *
+ * The goal position is known after some transformations
+ * between frames : camera, base, end effector, arm fiducial and wagon fiducial.
+ *
+ * The Transformation of EE_FA (end effector and fiducial arm) is a
+ * fixed transformation, depending on where and how far
+ * the fiducial is placed/sticked on the arm.
+ *
+ * The Transformation EE_GO is fixed and improved through
+ * distance offset (between wagon and start position, cm)
+ * and rotation (between end effector and board fiducial)
+ *
+ */
+bool ToolChange::moveToWagonFiducial(const std::string& action)
 {
 	move_action_ = false;
 	geometry_msgs::PoseStamped ee_pose;
@@ -375,6 +498,7 @@ bool ToolChange::moveToWagonFiducial()
 	tf::Transform transform_FA_FB;
 	tf::Transform transform_EE_FB;
 	tf::Transform transform_EE_GO;
+	tf::Transform transform_EE_GO_schort;
 
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
@@ -398,6 +522,26 @@ bool ToolChange::moveToWagonFiducial()
 	geometry_msgs::PoseStamped test7_msg;
 	geometry_msgs::PoseStamped test8_msg;
 	geometry_msgs::PoseStamped base;
+
+
+	/*
+//+++++++++++++++++++++++
+// ARM FIDUCIAL TRANSFORMATION
+tf::Quaternion q;
+q.setRPY(0.0, 0.0, -M_PI);
+tf::Transform cam;
+tf::Transform base_cam;
+tf::Transform arm_fiducial;
+cam.setOrigin(transform_CA_BA_.getOrigin());
+cam.setRotation(transform_CA_BA_.getRotation() * q);
+//base-cam-fiducial A
+base_cam.mult(cam.inverse(), transform_CA_FA);
+arm_fiducial.mult(ee_pose_tf.inverse(), base_cam);
+ROS_INFO(" TRANSFORMATION :");
+printPose(cam);
+printPose(arm_fiducial);
+//+++++++++++++++++++++++++++++++++++
+	 */
 
 	//base FA
 	tf::poseTFToMsg(transform_CA_FA, test_msg.pose);
@@ -429,17 +573,33 @@ bool ToolChange::moveToWagonFiducial()
 	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
 	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
 
-	transform_EE_FB.mult(ee_pose_tf.inverse(), transform_EE_GO);
-	tf::poseTFToMsg( transform_EE_FB, test8_msg.pose);
-	//drawLine(0.0, 0.30, 0.0, 1.0, base, test8_msg);
 
-	tf::Transform transform_EE_GO_schort;
-	transform_EE_GO_schort.mult(ee_pose_tf.inverse(), transform_EE_FB);
-	transform_EE_GO_schort.setOrigin(transform_EE_FB.getOrigin() + TOOL_FIDUCIAL_OFFSET_0);
-	goal_pose_tf.mult( ee_pose_tf , transform_EE_GO_schort);
+	// just move without rotation
+	if(action.compare(MOVE)== 0)
+	{
+		transform_EE_FB.mult(ee_pose_tf.inverse(), transform_EE_GO);
+		tf::poseTFToMsg( transform_EE_FB, test8_msg.pose);
+		//drawLine(0.0, 0.30, 0.0, 1.0, base, test8_msg);
 
-	goal_pose_tf.setRotation(ee_pose_tf.getRotation());
-	goal_pose_tf.setOrigin(goal_pose_tf.getOrigin());
+
+		transform_EE_GO_schort.mult(ee_pose_tf.inverse(), transform_EE_FB);
+		transform_EE_GO_schort.setOrigin(transform_EE_FB.getOrigin() + TOOL_FIDUCIAL_OFFSET_0);
+		goal_pose_tf.mult( ee_pose_tf , transform_EE_GO_schort);
+
+		goal_pose_tf.setRotation(ee_pose_tf.getRotation());
+		goal_pose_tf.setOrigin(goal_pose_tf.getOrigin());
+
+	}
+	//just rotate without movement
+	else if(action.compare(TURN)==0)
+	{
+		tf::Quaternion s;
+		s.setRPY(4.0, 0.0, 0.0);
+		//goal_pose_tf.setOrigin(transform_EE_GO.getOrigin());
+		goal_pose_tf.setOrigin(ee_pose_tf.getOrigin());
+		goal_pose_tf.setRotation(transform_EE_GO.getRotation() * s);
+
+	}
 
 	//tf -> msg
 	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
@@ -453,7 +613,7 @@ bool ToolChange::moveToWagonFiducial()
 
 	group.setPoseTarget(goal_pose, EE_NAME);
 
-	if(length > 0.001)
+	if(length > MAX_TOLERANCE)
 	{
 		ROS_WARN_STREAM("STARTE MOVE TO FIDUCIAL");
 		// plan the motion
@@ -478,156 +638,14 @@ bool ToolChange::moveToWagonFiducial()
 
 	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
 	move_action_ = true;
+	clearFiducials();
 
 	return true;
 }
 
 
 
-bool ToolChange::turnToWagonFiducial()
-{
-	move_action_ = false;
-	geometry_msgs::PoseStamped ee_pose;
-	geometry_msgs::PoseStamped goal_pose;
-	tf::Transform ee_pose_tf;
-	tf::Transform goal_pose_tf;
 
-	tf::Transform transform_CA_FA;
-	transform_CA_FA.setOrigin(transform_CA_FA_.getOrigin());
-	transform_CA_FA.setRotation(transform_CA_FA_.getRotation());
-	tf::Transform transform_CA_FB;
-	transform_CA_FB.setOrigin(transform_CA_FB_.getOrigin());
-	transform_CA_FB.setRotation(transform_CA_FB_.getRotation());
-	tf::Transform transform_EE_FA;
-	transform_EE_FA.setOrigin(ARM_FIDUCIAL_OFFSET);
-	transform_EE_FA.setRotation(ARM_FIDUCIAL_ORIENTATION_OFFSET);
-
-	tf::Transform transform_BA_FA;
-	tf::Transform transform_BA_FB;
-	tf::Transform transform_CA_BA;
-	tf::Transform transform_FA_FB;
-	tf::Transform transform_EE_FB;
-	tf::Transform transform_EE_GO;
-
-
-	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
-	goal_pose.header.frame_id = BASE_LINK;
-	goal_pose.header.stamp = ros::Time::now();
-	group.setPoseReferenceFrame(BASE_LINK);
-
-	//get the position of the end effector (= arm_7_joint)
-	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
-	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
-
-	//msg -> tf
-	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
-
-	/*
-//+++++++++++++++++++++++
-// ARM FIDUCIAL TRANSFORMATION
-tf::Quaternion q;
-q.setRPY(0.0, 0.0, -M_PI);
-tf::Transform cam;
-tf::Transform base_cam;
-tf::Transform arm_fiducial;
-cam.setOrigin(transform_CA_BA_.getOrigin());
-cam.setRotation(transform_CA_BA_.getRotation() * q);
-//base-cam-fiducial A
-base_cam.mult(cam.inverse(), transform_CA_FA);
-arm_fiducial.mult(ee_pose_tf.inverse(), base_cam);
-ROS_INFO(" TRANSFORMATION :");
-printPose(cam);
-printPose(arm_fiducial);
-//+++++++++++++++++++++++++++++++++++
-	 */
-
-
-	geometry_msgs::PoseStamped cam_msg;
-	geometry_msgs::PoseStamped test_msg;
-	geometry_msgs::PoseStamped test1_msg;
-	geometry_msgs::PoseStamped test2_msg;
-	geometry_msgs::PoseStamped test3_msg;
-	geometry_msgs::PoseStamped test4_msg;
-	geometry_msgs::PoseStamped test5_msg;
-	geometry_msgs::PoseStamped test6_msg;
-	geometry_msgs::PoseStamped test7_msg;
-	geometry_msgs::PoseStamped base;
-
-	//base FA
-	tf::poseTFToMsg(transform_CA_FA, test_msg.pose);
-	//base FB
-	tf::poseTFToMsg(transform_CA_FB, test1_msg.pose);
-
-	//BA FA
-	transform_BA_FA.mult(ee_pose_tf, transform_EE_FA);
-	tf::poseTFToMsg(transform_BA_FA, test2_msg.pose);
-	//drawLine(0.20, 0.0, 0.0, 1.0, base, test2_msg);
-	//CA BA
-	transform_CA_BA.mult(transform_CA_FA, transform_BA_FA.inverse());
-	tf::poseTFToMsg(transform_CA_BA.inverse(), cam_msg.pose);
-	drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
-	//CA FA FB
-	transform_FA_FB.mult(transform_BA_FA.inverse(), transform_CA_FB);
-	//BA FB
-	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB );
-	tf::poseTFToMsg( transform_BA_FB, test6_msg.pose);
-
-	drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
-	drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
-
-	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
-	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
-
-
-	transform_EE_GO.mult(transform_BA_FB, transform_EE_FA);
-	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
-	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
-	//drawLine(0.0, 0.30, 0.0, 1.0, ee_pose, test5_msg);
-
-	tf::Quaternion s;
-	s.setRPY(4.0, 0.0, 0.0);
-	//goal_pose_tf.setOrigin(transform_EE_GO.getOrigin());
-	goal_pose_tf.setOrigin(ee_pose_tf.getOrigin());
-	goal_pose_tf.setRotation(transform_EE_GO.getRotation() * s);
-
-	//tf -> msg
-	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
-	drawLine(0.55, 0.55, 0.0, 1.0, ee_pose, goal_pose);
-	//drawSystem(goal_pose);
-	drawArrowX(0.55, 0.0, 0.0, 1.0, goal_pose);
-
-	transform_EE_FB.mult(ee_pose_tf.inverse(), goal_pose_tf);
-	double length = transform_EE_FB.getOrigin().length();
-	ROS_WARN_STREAM(" distance :"<< length << ".");
-
-	group.setPoseTarget(goal_pose, EE_NAME);
-
-	ROS_WARN_STREAM("STARTE TURN TO FIDUCIAL");
-	// plan the motion
-	bool have_plan = false;
-	moveit::planning_interface::MoveGroup::Plan plan;
-	have_plan = group.plan(plan);
-
-	//EXECUTE THE PLAN !!!!!! BE CAREFUL
-	if (have_plan==true) {
-		group.execute(plan);
-		group.move();
-	}
-	else
-	{
-		ROS_WARN("No valid plan found for the arm movement.");
-		move_action_ = false;
-		return false;
-	}
-
-	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
-	move_action_ = true;
-
-	return true;
-}
-/*
- * Move arm to the wagon using fiducials.
- */
 /*
  * Execute a planning action with moveIt interface utilities.
  * The reference frame, the "base_link" frame,
@@ -691,11 +709,11 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose,
  */
 bool ToolChange::executeStraightMoveCommand(const tf::Vector3& goal_direction, const double ee_max_step)
 {
-	/** \brief Compute a Cartesian path that follows specified waypoints with a step size of at most \e eef_step meters
-between end effector configurations of consecutive points in the result \e trajectory. The reference frame for the
-waypoints is that specified by setPoseReferenceFrame(). No more than \e jump_threshold
+	/** \brief Compute a Cartesian path that follows specified waypoints with a step size of at most  eef_step meters
+between end effector configurations of consecutive points in the result  trajectory. The reference frame for the
+waypoints is that specified by setPoseReferenceFrame(). No more than jump_threshold
 is allowed as change in distance in the configuration space of the robot (this is to prevent 'jumps' in IK solutions).
-Collisions are avoided if \e avoid_collisions is set to true. If collisions cannot be avoided, the function fails.
+Collisions are avoided if avoid_collisions is set to true. If collisions cannot be avoided, the function fails.
 Return a value that is between 0.0 and 1.0 indicating the fraction of the path achieved as described by the waypoints.
 Return -1.0 in case of error. */
 
@@ -777,8 +795,6 @@ void ToolChange::waitForMoveit()
 	{
 		ros::spinOnce();
 	}
-
-
 }
 
 /**
@@ -929,8 +945,6 @@ int main (int argc, char** argv)
 
 	// Create and initialize an instance of Object
 	ToolChange toolChange(nh);
-
-	toolChange.init();
 	toolChange.run();
 	//ros::spin();
 

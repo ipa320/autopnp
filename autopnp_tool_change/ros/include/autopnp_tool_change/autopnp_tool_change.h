@@ -57,15 +57,21 @@
  */
 
 ///Static constant variables
-static const int COUPLE = 1;
-static const int DECOUPLE = 2;
 static const std::string ARM = "tag_2";
 static const std::string VAC_CLEANER = "tag_79";
 static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
 
+static const std::string MOVE = "move";
+static const std::string TURN = "turn";
+
+static const std::string GO_TO_START_POSITION_ACTION_NAME = "go_to_start_position_action";
+static const std::string MOVE_TO_CHOSEN_TOOL_ACTION_NAME = "move_to_chosen_tool_action";
+
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
+// 1 mm
+static const double MAX_TOLERANCE = 0.001;
 
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
@@ -109,9 +115,9 @@ protected:
 	struct components;
 	struct components
 	{
-		struct fiducials arm;
-		struct fiducials board;
-		struct fiducials cam;
+		struct fiducials arm_;
+		struct fiducials board_;
+		struct fiducials cam_;
 	};
 
 	/// instance of a subscriber for the camera calibration
@@ -164,14 +170,14 @@ protected:
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose, const double offset);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
 	bool moveToStartPosition(const geometry_msgs::PoseStamped& start_pose);
-	bool moveToWagonFiducial();
-	bool turnToWagonFiducial();
+	bool moveToWagonFiducial(const std::string& action);
 
 	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 	void moveToChosenTool(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 
-	void moveArm();
+	void resetServers();
 	void waitForMoveit();
+	void clearFiducials();
 	///executes the arm movement to the set initial position
 	void moveToStartPose(const geometry_msgs::PoseStamped& start_pose);
 
