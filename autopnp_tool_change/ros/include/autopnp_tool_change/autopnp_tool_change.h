@@ -99,19 +99,19 @@ public:
 
 	ToolChange(ros::NodeHandle nh);
 	~ToolChange();
-	void init();
 	void run();
 
 protected:
 
 
-	/// array of two transform msgs
+	/// An array of two transform msgs
 	struct fiducials;
 	struct fiducials
 	{
 		tf::Transform translation;
 	};
-	/// array of two fiducial objects
+
+	///An array of two fiducial objects
 	struct components;
 	struct components
 	{
@@ -120,32 +120,27 @@ protected:
 		struct fiducials cam_;
 	};
 
-	/// instance of a subscriber for the camera calibration
-	///action of incoming color image data
-	ros::Subscriber input_color_camera_info_sub_;
 	/// ROS node handle
 	ros::NodeHandle node_handle_;
 
 	/// SUBSCRIBERS
+	ros::Subscriber input_color_camera_info_sub_;
 	message_filters::Subscriber<cob_object_detection_msgs::DetectionArray> input_marker_detection_sub_;
 	message_filters::Subscriber<sensor_msgs::JointState> joint_states_sub_;
+
 	///PUBLISHERS
 	ros::Publisher vis_pub_;
-	/// SERVER
-	//actionlib::SimpleActionServer<autopnp_tool_change::MoveToWagonAction> change_tool_server_;
 
+	/// SERVER
 	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_to_start_position_;
 	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_move_to_chosen_tool_;
 	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_return_to_start_position_;
+
 	/// CLIENTS
 	ros::ServiceClient execute_known_traj_client_ ;
 
-	/// messages that are used to published feedback/result
-	autopnp_tool_change::MoveToWagonFeedback feedback_;
-	autopnp_tool_change::MoveToWagonResult result_;
-
 	bool slot_position_detected_;
-	bool move_action_;
+	bool move_action_state_;
 	bool detected_all_fiducials_;
 
 	///transformation data between the arm and the wagon slot
@@ -155,31 +150,33 @@ protected:
 	geometry_msgs::PoseStamped current_ee_pose_;
 
 
-	//CALLBACKS
-	/// Callback for the incoming point cloud data stream of fiducials.
+	///CALLBACKS
+	// Callback for the incoming point cloud data stream of fiducials.
 	void markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
+
+	///SERVER CALLBACK if goal received
+	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
+	void moveToChosenTool(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 
 	//calculates translation and orientation distance between arm marker and board marker
 	tf::Transform calculateArmBoardTransformation(const tf::Transform& board, const tf::Transform& arm);
 	/// Computes an average pose from multiple detected markers.
 	struct components computeMarkerPose(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
 
-	bool processMoveToChosenTool(const tf::Vector3& offset);
-	bool processGoToStartPosition();
-
-	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose, const double offset);
+    ///MOVEMENTS
+	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
 	bool moveToStartPosition(const geometry_msgs::PoseStamped& start_pose);
 	bool moveToWagonFiducial(const std::string& action);
 
-	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
-	void moveToChosenTool(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
+	///PROCESS MOVEMENTS
+	bool processMoveToChosenTool(const tf::Vector3& offset);
+	bool processGoToStartPosition();
 
+    //small functions to split the code
 	void resetServers();
 	void waitForMoveit();
 	void clearFiducials();
-	///executes the arm movement to the set initial position
-	void moveToStartPose(const geometry_msgs::PoseStamped& start_pose);
 
 
 	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ

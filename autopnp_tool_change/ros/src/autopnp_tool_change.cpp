@@ -41,7 +41,7 @@ ToolChange::ToolChange(ros::NodeHandle nh)
 	node_handle_ = nh;
 	input_marker_detection_sub_.unsubscribe();
 	slot_position_detected_ = false;
-	move_action_ = false;
+	move_action_state_ = false;
 	marker_id_ = 0;
 
 	//SUBSCRIBERS
@@ -64,6 +64,7 @@ ToolChange::ToolChange(ros::NodeHandle nh)
  */
 void ToolChange::resetServers()
 {
+	ROS_INFO("Reseting servers.");
    //RESET
 
 	//moves the arm to a start position in front of the wagon
@@ -136,10 +137,9 @@ void ToolChange::markerInputCallback(const cob_object_detection_msgs::DetectionA
 		}
 		else
 		{
+			ROS_WARN("Not all fiducials are detected.");
 			//markers are not visible or error occurred.
 			slot_position_detected_ = false;
-			//make the
-			resetServers();
 		}
 	}
 }
@@ -291,6 +291,11 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
 	ROS_INFO("GoToStartPosition received new goal:  %s", goal->goal.c_str());
 	bool success = false;
 
+	while(detected_all_fiducials_ == false)
+		{
+		    ROS_WARN("No fiducials detected. Spinning and waiting.");
+			ros::spinOnce();
+		}
 	//move to a start position
 	success = processGoToStartPosition();
 
@@ -386,6 +391,12 @@ void ToolChange::moveToChosenTool(const autopnp_tool_change::GoToStartPositionGo
 
 	std::string tool_name = goal->goal;
 
+	while(detected_all_fiducials_ == false)
+		{
+		    ROS_WARN("No fiducials detected. Spinning and waiting.");
+			ros::spinOnce();
+		}
+
 	if(tool_name.compare(VAC_CLEANER) == 0)
 	{
 		//move to start position in front of the vacuum cleaner
@@ -475,7 +486,7 @@ void ToolChange::clearFiducials()
  */
 bool ToolChange::moveToWagonFiducial(const std::string& action)
 {
-	move_action_ = false;
+	move_action_state_ = false;
 	geometry_msgs::PoseStamped ee_pose;
 	geometry_msgs::PoseStamped goal_pose;
 	tf::Transform ee_pose_tf;
@@ -555,23 +566,25 @@ printPose(arm_fiducial);
 	//CA BA
 	transform_CA_BA.mult(transform_CA_FA, transform_BA_FA.inverse());
 	tf::poseTFToMsg(transform_CA_BA.inverse(), cam_msg.pose);
-	//drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
+
 	//CA FA FB
 	transform_FA_FB.mult(transform_BA_FA.inverse(), transform_CA_FB);
 	//BA FB
 	transform_BA_FB.mult(transform_CA_BA.inverse(), transform_CA_FB);
 	tf::poseTFToMsg( transform_BA_FB, test6_msg.pose);
 
-	//drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
-	//drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
+	drawLine(0.55, 0.0, 0.0, 1.0, base, cam_msg);
 
-	//drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
-	//drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
+	drawLine(0.50, 0.0, 0.0, 1.0, base, test6_msg);
+	drawLine(0.0, 0.0, 0.3, 1.0, test6_msg, test2_msg);
+
+	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
+	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
 
 
 	transform_EE_GO.mult(transform_BA_FB, transform_EE_FA);
 	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
-	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
+	drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
 
 
 	// just move without rotation
@@ -579,7 +592,7 @@ printPose(arm_fiducial);
 	{
 		transform_EE_FB.mult(ee_pose_tf.inverse(), transform_EE_GO);
 		tf::poseTFToMsg( transform_EE_FB, test8_msg.pose);
-		//drawLine(0.0, 0.30, 0.0, 1.0, base, test8_msg);
+		drawLine(0.0, 0.30, 0.0, 1.0, base, test8_msg);
 
 
 		transform_EE_GO_schort.mult(ee_pose_tf.inverse(), transform_EE_FB);
@@ -629,7 +642,7 @@ printPose(arm_fiducial);
 		else
 		{
 			ROS_WARN("No valid plan found for the arm movement.");
-			move_action_ = false;
+			move_action_state_ = false;
 			return false;
 		}
 	}else{
@@ -637,7 +650,7 @@ printPose(arm_fiducial);
 	}
 
 	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
-	move_action_ = true;
+	move_action_state_ = true;
 	clearFiducials();
 
 	return true;
@@ -654,10 +667,11 @@ printPose(arm_fiducial);
  * which will be moved to a new position.
  * Returns true, if the planned action has been executed.
  */
-bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose, const double offset)
+bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose)
 {
-	ROS_INFO("************** move ***********");
-	move_action_ = false;
+	ROS_INFO("Start execute move command with the goal.");
+
+	move_action_state_ = false;
 
 	geometry_msgs::PoseStamped pose;
 	geometry_msgs::PoseStamped ee_pose;
@@ -689,12 +703,12 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose,
 	else
 	{
 		ROS_WARN("No valid plan found for the arm movement.");
-		move_action_ = false;
+		move_action_state_ = false;
 		return false;
 	}
 
 	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
-	move_action_ = true;
+	move_action_state_ = true;
 
 	return true;
 }
@@ -717,7 +731,7 @@ Collisions are avoided if avoid_collisions is set to true. If collisions cannot 
 Return a value that is between 0.0 and 1.0 indicating the fraction of the path achieved as described by the waypoints.
 Return -1.0 in case of error. */
 
-	move_action_ = false;
+	move_action_state_ = false;
 	double jump_threshold = 0.0;
 
 	execute_known_traj_client_ = node_handle_.serviceClient<moveit_msgs::ExecuteKnownTrajectory>("/execute_kinematic_path");
@@ -745,7 +759,7 @@ Return -1.0 in case of error. */
 	//tf -> msg
 	tf::poseTFToMsg(pose_tf, pose.pose);
 	ROS_WARN("STARTE STRAIGT MOVE");
-	executeMoveCommand(pose, 0.0);
+	executeMoveCommand(pose);
 
 	group.setPoseTarget(pose);
 
@@ -767,12 +781,12 @@ Return -1.0 in case of error. */
 	if(frac < 0){
 		// no path could be computed
 		ROS_ERROR("Unable to compute Cartesian path!");
-		move_action_ = true;
+		move_action_state_ = true;
 		return false;
 	} else if (frac < 1){
 		// path started to be computed, but did not finish
 		ROS_WARN_STREAM("Cartesian path computation finished " << frac * 100 << "% only!");
-		move_action_ = true;
+		move_action_state_ = true;
 		return false;
 	}
 
@@ -781,7 +795,7 @@ Return -1.0 in case of error. */
 	execute_known_traj_client_.call(srv);
 
 	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
-	move_action_ = true;
+	move_action_state_ = true;
 
 	return true;
 }
@@ -791,7 +805,7 @@ Return -1.0 in case of error. */
  */
 void ToolChange::waitForMoveit()
 {
-	while(!move_action_)
+	while(!move_action_state_)
 	{
 		ros::spinOnce();
 	}
