@@ -82,14 +82,14 @@
 #include <autopnp_scenario/DeactivateTrashBinDetection.h>
 
 // actions
-#include <actionlib/server/simple_action_server.h>
-#include <autopnp_scenario/GraspTrashBinAction.h> // here you have to include the header file with exactly the same name as your message in the /action folder (the Message.h is automatically generated from your Message.action file during compilation)
-#include <actionlib/client/simple_action_client.h>
-#include <control_msgs/FollowJointTrajectoryAction.h>
+//#include <actionlib/server/simple_action_server.h>
+//#include <autopnp_scenario/GraspTrashBinAction.h> // here you have to include the header file with exactly the same name as your message in the /action folder (the Message.h is automatically generated from your Message.action file during compilation)
+//#include <actionlib/client/simple_action_client.h>
+//#include <control_msgs/FollowJointTrajectoryAction.h>
 
 // this typedef just establishes the abbreviation SquareActionServer for the long data type
-typedef actionlib::SimpleActionServer<autopnp_scenario::GraspTrashBinAction> GraspTrashBinActionServer;
-typedef actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> FollowJointTrajectoryActionClient;
+//typedef actionlib::SimpleActionServer<autopnp_scenario::GraspTrashBinAction> GraspTrashBinActionServer;
+//typedef actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> FollowJointTrajectoryActionClient;
 
 class TrashBinDetectionNode
 {
@@ -104,8 +104,8 @@ private:
 	ros::ServiceServer detect_trash_bin_again_server_;
 	ros::ServiceServer activate_trash_bin_detection_server_;
 	ros::ServiceServer deactivate_trash_bin_detection_server_;
-	GraspTrashBinActionServer grasp_trash_bin_server_;
-	void graspTrashBin(const autopnp_scenario::GraspTrashBinGoalConstPtr& goal);
+	//GraspTrashBinActionServer grasp_trash_bin_server_;
+	//void graspTrashBin(const autopnp_scenario::GraspTrashBinGoalConstPtr& goal);
 	//FollowJointTrajectoryActionClient sdh_follow_joint_client_;
 
 	tf::TransformListener listener_;

@@ -300,6 +300,7 @@ class GoToRoomLocation(smach.State):
 		sf = ScreenFormat("GoToRoomLocation")
 		#rospy.sleep(10)
 		rospy.loginfo('Executing state go to room location')
+		#todo: replace movement command by some standard script
 		if userdata.go_to_room_location_loop_counter_in_ == 0 :
 			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
 																			userdata.find_next_unprocessed_room_center_x_ , 
@@ -346,6 +347,8 @@ class FindRandomLocation(smach.State):
 		sf = ScreenFormat("FindRandomLocation")
 		#rospy.sleep(10)
 		rospy.loginfo('Executing state find random location')
+
+		# todo: replace by something simple in the py script
 		
 		random_location_finder_action_server_result_ = random_location_finder_client(userdata.random_location_finder_data_img_in_,
 																					userdata.analyze_map_data_map_resolution_,
