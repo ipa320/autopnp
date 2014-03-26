@@ -4,5 +4,6 @@ string goal
 # Define the result
 bool result
 ---
-# Define a feedback message
+# Define feedback
 bool feedback
+

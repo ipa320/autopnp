@@ -151,8 +151,5 @@ rosbuild_add_executable(activate_trash_bin_detection_client ros/src/activate_tra
 			#Deactivate Trash Bin Detection Client 		
 rosbuild_add_executable(deactivate_trash_bin_detection_client ros/src/deactivate_trash_bin_detection_client.cpp)
 
-# toolchange pnp manager
-rosbuild_add_executable(toolchange_pnp_manager ros/src/toolchange_pnp_manager.cpp)
-
 
 

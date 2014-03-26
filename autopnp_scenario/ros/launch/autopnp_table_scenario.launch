@@ -29,13 +29,14 @@
 	<include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/>
 
 	<!-- start vacuum cleaner on/off control driver -->
-	<include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner_solo.launch"/>
+	<!--include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner_solo.launch"/-->
+	<include file="$(find autopnp_can_attachments)/ros/launch/vacuum_cleaner_solo.launch"/>
 	
 	<!-- start SDH driver -->
 	<include file="$(find schunk_bringup)/components/sdh.launch"/>
 	
 	<!-- start toolchanger pnp detection -->
-	<!--node name="toolchanger_pnp_manager" pkg="autopnp_scenario" type="toolchange_pnp_manager"  output="screen"/-->
+	<node ns="toolchanger_pnp_manager" name="toolchanger_pnp_manager" pkg="autopnp_can_attachments" type="toolchange_pnp_manager"  output="screen"/>
 
 	<!-- start arm driver -->
 	<include file="$(find schunk_bringup)/components/lwa4d_solo.launch"/>
