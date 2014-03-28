@@ -67,6 +67,12 @@ from exploration_detection_cleaning import *
 def main():
 	rospy.init_node('exploration_detection_cleaning')
 	
+	''' approach tool waggon '''
+	sm_scenario = smach.StateMachine(outcomes=['finished'])
+	with sm_scenario:
+		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
+								transitions={'arrived':'finished'})
+	
 	'''
 	# clean
 	sm_scenario = smach.StateMachine(outcomes=['cleaning_done'])
@@ -102,7 +108,8 @@ def main():
 # 										 'failed':'failed'},
 # 								remapping = {'trash_bin_pose_':'detection_pose'})
 		
-		smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
+		smach.StateMachine.add('GRASP_TRASH_BI	"front_trash_clearing":Pose2D(x=-1.05, y=0.0, theta=0.0)}
+N', GraspTrashBin(),
 							transitions={'GTB_success':'MOVE_TO_TOOL_WAGON_FRONTAL',
 										 'failed':'failed'})
 		
@@ -114,7 +121,8 @@ def main():
 		
 		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART1', ClearTrashBinIntoToolWagonPart1(),
 							transitions={'finished':'MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING'})
-		
+			"front_trash_clearing":Pose2D(x=-1.05, y=0.0, theta=0.0)}
+
 		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
 							transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2'})
 		
@@ -135,7 +143,7 @@ def main():
 							transitions={'RTB_finished':'CWB_done'})
 	'''
 	
-	
+	'''
 	
 	# full scenario
 	sm_scenario = smach.StateMachine(outcomes=['finished', 'failed'])
@@ -409,7 +417,7 @@ def main():
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
 							transitions={'finished':'finished'})
-	
+	'''
 	
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')

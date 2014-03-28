@@ -2,18 +2,21 @@
 <launch>
 
   <!-- args -->
-  <arg name="robot" default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/>
+  <!--arg name="robot" default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/-->
+  <arg name="robot_env" default="$(optenv ROBOT_ENV !!NO_ROBOT_ENV_SET!!)"/>
+  <arg name="robot" value="cob3-2"/>
   <arg name="pc1" default="$(arg robot)-pc1"/>
   <arg name="pc2" default="$(arg robot)-pc2"/>
   <arg name="pc3" default="$(arg robot)-pc3"/>
   <arg name="simulation" default="false"/>
   
   <group>
-    <machine name="pc1" address="$(arg pc1)" default="true" unless="$(arg simulation)"/>
+    <machine name="pc3" address="$(arg pc3)" default="true" unless="$(arg simulation)"/>
     
     <!-- start navigation -->
     <!--- Run map_server -->
-	<node name="map_server" pkg="map_server" type="map_server" args="$(find autopnp_scenario)/config/map-autopnp-conference-clean.yaml"/>
+    <arg name="map" default="$(find cob_default_env_config)/$(arg robot_env)/map.yaml" />
+	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map)"/>   <!--"$(find autopnp_scenario)/config/map-autopnp-conference-clean.yaml"/-->
 
 	<!--- Run AMCL -->
 	<include file="$(find cob_navigation_global)/launch/amcl_node.xml" />

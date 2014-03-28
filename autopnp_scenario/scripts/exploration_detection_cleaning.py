@@ -80,7 +80,7 @@ from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 
 from ApproachPerimeter import *
-from ApproachPerimeterLinear import *
+#from ApproachPerimeterLinear import *
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
@@ -508,6 +508,7 @@ def computeToolWagonPoseFromFiducials(fiducials):
 					averaged_tool_wagon_markers = averaged_tool_wagon_markers + 1.0
 			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
 				print "computeToolWagonPoseFromFiducials: Could not lookup robot pose: %s" %e
+				return averaged_tool_wagon_pose
 	# finalize averaging and normalizationroslib.load_manifest(PACKAGE)
 	if averaged_tool_wagon_markers > 0.0:
 		averaged_tool_wagon_pose.pose.position.x = averaged_tool_wagon_pose.pose.position.x/averaged_tool_wagon_markers
@@ -764,7 +765,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 
 class MoveToToolWaggonFrontTrashClearing(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
+		smach.State.__init__(self, outcomes=['arrived']) #, input_keys=['tool_wagon_pose'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		self.tool_wagon_pose = None
 		self.last_callback_time = rospy.Time.now()
@@ -785,8 +786,9 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. adjust base footprint
-#		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"})
+		#self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
 		
 # 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
 # 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
@@ -815,11 +817,11 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		fiducials_sub.unregister()
 		
 		# 4. reset footprint
-#		if local_config["footprint"]!=None:
-#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
-#		else:
-#			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
-#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+		if local_config["footprint"]!=None:
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 		
 		return 'arrived'
 

@@ -99,7 +99,7 @@
                                 
                 <!-- Offset for native tag corrdinates -->
                 <!-- e.g. position of tag in object centric ccordinate system -->
-                <Offset x="0.156" y="0.018" />
+                <Offset x="-0.162" y="-0.018" />
                 
                 <!-- Rectangle describing the area for sharpness computation in 2d coordinates within the marker plane with respect to the marker origin -->
                 <SharpnessArea x="-0.01" y="-0.01" width="0.12" height="0.12"/>
@@ -116,7 +116,7 @@
                                 
                 <!-- Offset for native tag corrdinates -->
                 <!-- e.g. position of tag in object centric ccordinate system -->
-                <Offset x="0.156" y="0.018" />
+                <Offset x="-0.162" y="-0.018" />
                 
                 <!-- Rectangle describing the area for sharpness computation in 2d coordinates within the marker plane with respect to the marker origin -->
                 <SharpnessArea x="-0.01" y="-0.01" width="0.12" height="0.12"/>
@@ -133,7 +133,7 @@
                                 
                 <!-- Offset for native tag corrdinates -->
                 <!-- e.g. position of tag in object centric ccordinate system -->
-                <Offset x="-0.156" y="0.018" />
+                <Offset x="0.162" y="-0.018" />
                 
                 <!-- Rectangle describing the area for sharpness computation in 2d coordinates within the marker plane with respect to the marker origin -->
                 <SharpnessArea x="-0.01" y="-0.01" width="0.12" height="0.12"/>
@@ -252,7 +252,7 @@
                                 
                 <!-- Offset for native tag corrdinates -->
                 <!-- e.g. position of tag in object centric ccordinate system -->
-                <Offset x="-0.156" y="0.018" />
+                <Offset x="0.162" y="-0.018" />
                 
                 <!-- Rectangle describing the area for sharpness computation in 2d coordinates within the marker plane with respect to the marker origin -->
                 <SharpnessArea x="-0.01" y="-0.01" width="0.12" height="0.12"/>
