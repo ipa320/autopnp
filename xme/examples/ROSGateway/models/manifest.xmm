@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_u1gr0Ee0EeOLTtvL1r-wEw" name="ROSGateway">
+  <components xmi:id="_wmMmUEe0EeOLTtvL1r-wEw" name="proxy" programmingLanuage="Cpp" id="4097">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_NODXkEe1EeOLTtvL1r-wEw" name="receivedMessage">
+      <topic href="dictionary.xmd#_5ykhMEeyEeOLTtvL1r-wEw"/>
+    </outgoingPorts>
+    <outgoingPorts xsi:type="port:DccRequestSender" xmi:id="_VB1c8Ee1EeOLTtvL1r-wEw" name="getSum" responseIn="_VB1c8Ue1EeOLTtvL1r-wEw">
+      <topic href="dictionary.xmd#_DJLEMEezEeOLTtvL1r-wEw"/>
+    </outgoingPorts>
+    <outgoingPorts xsi:type="port:DccResponseSender" xmi:id="_YmUIgVH2EeOJ46i446rVRA" name="sendDifference" requestIn="_YmUIglH2EeOJ46i446rVRA">
+      <topic href="dictionary.xmd#_o_ZPxVH2EeOJ46i446rVRA"/>
+    </outgoingPorts>
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_KeuqkEe1EeOLTtvL1r-wEw" name="message">
+      <topic href="dictionary.xmd#_nU4d4EeyEeOLTtvL1r-wEw"/>
+    </incomingPorts>
+    <incomingPorts xsi:type="port:DccResponseHandler" xmi:id="_VB1c8Ue1EeOLTtvL1r-wEw" name="receivedSum" requestOut="_VB1c8Ee1EeOLTtvL1r-wEw">
+      <topic href="dictionary.xmd#_RQGioEezEeOLTtvL1r-wEw"/>
+    </incomingPorts>
+    <incomingPorts xsi:type="port:DccRequestHandler" xmi:id="_YmUIglH2EeOJ46i446rVRA" name="getDifference" responseOut="_YmUIgVH2EeOJ46i446rVRA">
+      <topic href="dictionary.xmd#_o_ZPwFH2EeOJ46i446rVRA"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_wmNNYEe0EeOLTtvL1r-wEw" name="receiveMessage" requiredPorts="_KeuqkEe1EeOLTtvL1r-wEw" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_wmNNYUe0EeOLTtvL1r-wEw"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_d77NoEe2EeOLTtvL1r-wEw" name="askSum" requiredPorts="_VB1c8Ee1EeOLTtvL1r-wEw" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_d77NoUe2EeOLTtvL1r-wEw"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_I3i_cEe3EeOLTtvL1r-wEw" name="receiveSum" requiredPorts="_VB1c8Ue1EeOLTtvL1r-wEw" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_I3i_cUe3EeOLTtvL1r-wEw"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_14dz8FH2EeOJ46i446rVRA" name="getDifference" requiredPorts="_YmUIglH2EeOJ46i446rVRA" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_14dz8VH2EeOJ46i446rVRA"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#mem"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#ros"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#sched"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#sleep"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#time"/>
+  </components>
+  <components xmi:id="_uwelYEe1EeOLTtvL1r-wEw" name="system" id="4098">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_sk9TkEe2EeOLTtvL1r-wEw" name="message">
+      <topic href="dictionary.xmd#_nU4d4EeyEeOLTtvL1r-wEw"/>
+    </outgoingPorts>
+    <outgoingPorts xsi:type="port:DccResponseSender" xmi:id="_7_9pAUe2EeOLTtvL1r-wEw" name="sendSum" requestIn="_7_9pAEe2EeOLTtvL1r-wEw">
+      <topic href="dictionary.xmd#_RQGioEezEeOLTtvL1r-wEw"/>
+    </outgoingPorts>
+    <outgoingPorts xsi:type="port:DccRequestSender" xmi:id="_ZXOoEFH2EeOJ46i446rVRA" name="getDifference" responseIn="_ZXOoEVH2EeOJ46i446rVRA">
+      <topic href="dictionary.xmd#_o_ZPwFH2EeOJ46i446rVRA"/>
+    </outgoingPorts>
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_w4wrEEe2EeOLTtvL1r-wEw" name="messageStatus">
+      <topic href="dictionary.xmd#_5ykhMEeyEeOLTtvL1r-wEw"/>
+    </incomingPorts>
+    <incomingPorts xsi:type="port:DccRequestHandler" xmi:id="_7_9pAEe2EeOLTtvL1r-wEw" name="getSum" responseOut="_7_9pAUe2EeOLTtvL1r-wEw">
+      <topic href="dictionary.xmd#_DJLEMEezEeOLTtvL1r-wEw"/>
+    </incomingPorts>
+    <incomingPorts xsi:type="port:DccResponseHandler" xmi:id="_ZXOoEVH2EeOJ46i446rVRA" name="receivedDifference" requestOut="_ZXOoEFH2EeOJ46i446rVRA">
+      <topic href="dictionary.xmd#_o_ZPxVH2EeOJ46i446rVRA"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_uwfMcEe1EeOLTtvL1r-wEw" name="sendMessage" requiredPorts="_sk9TkEe2EeOLTtvL1r-wEw" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_uwfMcUe1EeOLTtvL1r-wEw"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_Qw2eAEe3EeOLTtvL1r-wEw" name="receiveMessageStatus" requiredPorts="_w4wrEEe2EeOLTtvL1r-wEw" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_Qw2eAUe3EeOLTtvL1r-wEw"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_UxLf4Ee3EeOLTtvL1r-wEw" name="getSum" requiredPorts="_7_9pAEe2EeOLTtvL1r-wEw _7_9pAUe2EeOLTtvL1r-wEw" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_UxLf4Ue3EeOLTtvL1r-wEw"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_2n_zcFH2EeOJ46i446rVRA" name="askDifference" requiredPorts="_ZXOoEFH2EeOJ46i446rVRA" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_2n_zcVH2EeOJ46i446rVRA"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_2n_zclH2EeOJ46i446rVRA" name="receiveDifference" requiredPorts="_ZXOoEVH2EeOJ46i446rVRA" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_2n_zc1H2EeOJ46i446rVRA"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#safeString"/>
+  </components>
+  <components xmi:id="_jIOd8Ee3EeOLTtvL1r-wEw" name="ROS" programmingLanuage="Cpp" id="4099">
+    <containedFunctions xmi:id="_jIPFAEe3EeOLTtvL1r-wEw" name="executeROS" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_jIPFAUe3EeOLTtvL1r-wEw"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#ros"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#sched"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#time"/>
+  </components>
+</manifest:Manifest>

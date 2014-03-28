@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_u1gr0Ee0EeOLTtvL1r-wEw" name="AutoPnP">
+  <components xmi:id="_Plph8IFZEeO_CJGMTFLVIA" name="capabilitiesView" programmingLanuage="Cpp" id="4097">
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_oCjqwIIfEeOOTZOi4wGB9w" name="addComponent" queueSize="10">
+      <topic href="dictionary.xmd#_gvY0kIIeEeOOTZOi4wGB9w"/>
+    </incomingPorts>
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_EB-jAIIgEeOOTZOi4wGB9w" name="removeComponent" queueSize="10">
+      <topic href="dictionary.xmd#_1OQQAIIfEeOOTZOi4wGB9w"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_b8j-wYIeEeOOTZOi4wGB9w" name="addComponent" requiredPorts="_oCjqwIIfEeOOTZOi4wGB9w" wcetInNs="1">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_b86kEIIeEeOOTZOi4wGB9w"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_Plph8YFZEeO_CJGMTFLVIA" name="removeComponent" requiredPorts="_EB-jAIIgEeOOTZOi4wGB9w" wcetInNs="1">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_Plph8oFZEeO_CJGMTFLVIA"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#qt"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#safeString"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#sched"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#table"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#time"/>
+  </components>
+</manifest:Manifest>

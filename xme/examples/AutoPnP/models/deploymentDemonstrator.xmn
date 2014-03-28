@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment:Deployment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:deployment="http://chromosome.fortiss.org/metamodel/deployment/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_oeKiMKg-EeOXfu0OG4bFQQ" projectName="AutoPnP">
+  <network xmi:id="_N72rsKg_EeOXfu0OG4bFQQ" name="subnet">
+    <segments xmi:id="_qR9loKg_EeOXfu0OG4bFQQ" connectedInterfaces="_TCOIkKg_EeOXfu0OG4bFQQ"/>
+  </network>
+  <devices xmi:id="_TCLsUKg_EeOXfu0OG4bFQQ" name="Demonstrator" nodes="_ene7gKg_EeOXfu0OG4bFQQ">
+    <type href="deviceLibrary.xmh#_F64e8MRuEeKXVovrYlzQ3g"/>
+    <interfaces xmi:id="_TCOIkKg_EeOXfu0OG4bFQQ" address=":65100">
+      <relatedInterface href="deviceLibrary.xmh#_KB3icMRuEeKXVovrYlzQ3g"/>
+    </interfaces>
+  </devices>
+  <nodes xmi:id="_ene7gKg_EeOXfu0OG4bFQQ" name="demonstrator" programmingLanuage="Cpp" device="_TCLsUKg_EeOXfu0OG4bFQQ" schedulePeriodLengthInNs="100000000" modelOfExecution="BEST_EFFORT">
+    <componentInstances xmi:id="_te1KQKg_EeOXfu0OG4bFQQ" name="loginClient">
+      <type href="basicXmeModel:xme_manifest#loginClient"/>
+      <ports xmi:id="_te1KQ6g_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.3/@outgoingPorts.0"/>
+      </ports>
+      <ports xmi:id="_te1KRKg_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.3/@outgoingPorts.1"/>
+      </ports>
+      <ports xmi:id="_te1KRag_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.3/@incomingPorts.0"/>
+      </ports>
+      <functions xmi:id="_te1KQag_EeOXfu0OG4bFQQ">
+        <type href="basicXmeModel:xme_manifest#//@components.3/@containedFunctions.0"/>
+      </functions>
+      <functions xmi:id="_te1KQqg_EeOXfu0OG4bFQQ">
+        <type href="basicXmeModel:xme_manifest#//@components.3/@containedFunctions.1"/>
+      </functions>
+    </componentInstances>
+    <componentInstances xmi:id="_te1KRqg_EeOXfu0OG4bFQQ" name="pnpClient">
+      <type href="basicXmeModel:xme_manifest#pnpClient"/>
+      <ports xmi:id="_te1KS6g_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.0"/>
+      </ports>
+      <ports xmi:id="_te1xUKg_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.1"/>
+      </ports>
+      <ports xmi:id="_te1xUag_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.2"/>
+      </ports>
+      <ports xmi:id="_te1xUqg_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.3"/>
+      </ports>
+      <ports xmi:id="_te1xU6g_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.1/@incomingPorts.0"/>
+      </ports>
+      <ports xmi:id="_te1xVKg_EeOXfu0OG4bFQQ" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.1/@incomingPorts.1"/>
+      </ports>
+      <functions xmi:id="_te1KR6g_EeOXfu0OG4bFQQ">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.0"/>
+      </functions>
+      <functions xmi:id="_te1KSKg_EeOXfu0OG4bFQQ">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.1"/>
+      </functions>
+      <functions xmi:id="_te1KSag_EeOXfu0OG4bFQQ">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.2"/>
+      </functions>
+      <functions xmi:id="_te1KSqg_EeOXfu0OG4bFQQ">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.3"/>
+      </functions>
+    </componentInstances>
+    <componentInstances xmi:id="_vAKaIKg_EeOXfu0OG4bFQQ" name="exampleGUI">
+      <type href="manifestDemonstrator.xmm#_qrTvMKg-EeOXfu0OG4bFQQ"/>
+      <ports xmi:id="_vAKaIqg_EeOXfu0OG4bFQQ" queueSize="10">
+        <type xsi:type="port:Publication" href="manifestDemonstrator.xmm#_7TYUsKg-EeOXfu0OG4bFQQ"/>
+      </ports>
+      <ports xmi:id="_iTFVwLWAEeOdCv0qTW62mg" queueSize="1">
+        <type xsi:type="port:Publication" href="manifestDemonstrator.xmm#_iS-oELWAEeOdCv0qTW62mg"/>
+      </ports>
+      <functions xmi:id="_vAKaIag_EeOXfu0OG4bFQQ">
+        <type href="manifestDemonstrator.xmm#_Dm6RIKg_EeOXfu0OG4bFQQ"/>
+      </functions>
+    </componentInstances>
+  </nodes>
+</deployment:Deployment>

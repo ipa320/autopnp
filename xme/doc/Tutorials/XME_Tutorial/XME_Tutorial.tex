@@ -1,0 +1,152 @@
+%
+% Copyright (c) 2011-2013, fortiss GmbH.
+% Licensed under the Apache License, Version 2.0.
+% 
+% Use, modification and distribution are subject to the terms specified
+% in the accompanying license file LICENSE.txt located at the root directory
+% of this software distribution. A copy is available at
+% http://chromosome.fortiss.org/.
+%
+% This file is part of CHROMOSOME.
+%
+% $Id: XME_Tutorial.tex 7852 2014-03-14 16:32:01Z geisinger $
+%
+
+\documentclass[11pt,twoside,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{color}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+\usepackage{units}
+\usepackage{MnSymbol}
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15.2pt}
+\fancyhead{}
+%\fancyhead[LE,RO]{\rightmark}
+\fancyhead[LE,RO]{\leftmark}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
+
+\newcommand{\TODO}[1]{{\color{red}{#1}}}
+\newcommand{\xme}{\textsf{CHROMOSOME}\xspace}
+\newcommand{\xmt}{\textsf{CHROMOSOME Modeling Tool}\xspace}
+%\renewcommand{\thesection}{\arabic{section}.}
+
+% XME version settings
+\newcommand{\xmeVersionNumber}{0.8} % full version number with dots and no spaces
+\newcommand{\xmeVersionSuffix}{-rc1} % version suffix as it appears in the package file name INCLUDING the dash (e.g., '-rc1' or '' if no suffix)
+\newcommand{\xmeVersionSuffixCaps}{RC1} % human-readable version suffix, basically the capitalized version of the above EXCLUDING the dash (e.g., 'RC1' or '' if no suffix)
+\newcommand{\xmeVersionDate}{March 14, 2014} % date of the respective release
+
+\lstset{basicstyle=\tt\footnotesize,language=c,tabsize=4,escapechar=\~,emph={Add,Change,Comment,Uncomment,remove,or,this,line,block,Leave,the,rest,of,function,as,is,all,following,lines,above},emphstyle={\color[rgb]{0,0,0.75}},keywordstyle={\color[rgb]{0,0.5,0}\bfseries},commentstyle={\color[rgb]{0.5,0.5,0.5}\bfseries},stringstyle={\color{red}}}
+\lstset{prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\rhookswarrow}}}
+\lstset{postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\rcurvearrowse\space}}}
+
+\let\origthelstnumber\thelstnumber
+\makeatletter
+\newcommand*\LstSuppressNumber{%
+	\lst@AddToHook{OnNewLine}{%
+		\let\thelstnumber\relax%
+		\advance\c@lstnumber-\@ne\relax%
+	}%
+}
+\lstdefinelanguage{cmake}{%
+	morekeywords={xme_link_components,xme_add_component},
+	sensitive=false,
+	morecomment=[l]\#,
+	morestring=[b]",
+}
+\newcommand*\LstReactivateNumber{%
+	\lst@AddToHook{OnNewLine}{%
+		\let\thelstnumber\origthelstnumber%
+	\advance\c@lstnumber\@ne\relax}%
+}
+
+\widowpenalty=1000
+\clubpenalty=1000
+
+\title{\textsf{CHROMOSOME Installation \& Tutorial} \\[12pt] \includegraphics[width=.7\textwidth]{figures/xme_xmt.png}}
+\author{%
+	fortiss GmbH\\[6pt]
+	An-Institut an der\\
+	Technischen Universit\"at M\"unchen\\[6pt]
+	Guerickestr. 25\\
+	80805 M\"unchen\\[6pt]
+	\url{chromosome@fortiss.org}
+}
+\date{Version \xmeVersionNumber{} \xmeVersionSuffixCaps{}\\\xmeVersionDate{}}
+
+\begin{document}
+\maketitle
+
+\vfill
+\begin{quote}
+Copyright (c) 2011-2014, fortiss GmbH.\\
+Licensed under the Apache License, Version 2.0.\\[6pt]
+
+Use, modification and distribution are subject to the terms specified
+in the accompanying license file LICENSE.txt located at the root directory
+of this software distribution. A copy is available at
+\url{http://chromosome.fortiss.org/}.\\[6pt]
+
+Trade names, trademarks and registered trademarks are used without special marking throughout the source code and/or documentation.
+All are the property of their respective owners.
+\end{quote}
+
+\newpage
+\tableofcontents
+\newpage
+
+\input{introduction}
+\clearpage
+\input{prerequisites}
+\clearpage
+\input{xme_overview}
+\clearpage
+\input{example_helloworld}
+\clearpage
+\input{example_xmt}
+\clearpage
+\input{example_pnp}
+\clearpage
+\input{example_lonelyNode}
+\clearpage
+\input{example_calculator}
+\clearpage
+\input{example_queues}
+\clearpage
+\input{example_configuratorExtension}
+%\clearpage
+%\input{example_chat}
+%\clearpage
+%\input{example_chatcalculator}
+
+%\section{Questions to Reviewers}
+%\begin{enumerate}
+%	\item Did you encounter any inconsistencies between this tutorial and the actual source code?
+%	\item Did you get enough/the right information from Sec. \ref{sec:architecture} (''XME in a Nutshell'')?
+%	\item Did you encounter any other \emph{noticeable} situations, while working through this tutorial?
+%\end{enumerate}
+
+\clearpage
+\appendix
+
+\input{known_issues}
+\clearpage
+\input{faq}
+\clearpage
+\input{roadmap}
+\clearpage
+\input{install_vs}
+\clearpage
+\input{install_cmake}
+\clearpage
+\input{install_xmt}
+\clearpage
+\input{license}
+
+\end{document}

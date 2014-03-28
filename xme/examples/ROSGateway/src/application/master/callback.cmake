@@ -1,0 +1,1 @@
+rOSGateway_adv_rOS_before_use_callback ( rOSGateway_adv_rOS)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_eztM4H6uEeOTYsuXGbEhJQ" name="detector">
+  <components xmi:id="_Y-Yi0H6vEeOTYsuXGbEhJQ" name="detector" id="4097">
+    <containedFunctions xmi:id="_Y-Yi0X6vEeOTYsuXGbEhJQ" name="detectDevices" wcetInNs="5000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_Y-epcH6vEeOTYsuXGbEhJQ"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_fT-L4H6vEeOTYsuXGbEhJQ" name="device" id="4098">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_mqH6EH6vEeOTYsuXGbEhJQ" name="info">
+      <topic href="dictionary.xmd#_05LPMH6uEeOTYsuXGbEhJQ"/>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_fT-L4X6vEeOTYsuXGbEhJQ" name="operate" requiredPorts="_mqH6EH6vEeOTYsuXGbEhJQ" wcetInNs="2000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_fT-L4n6vEeOTYsuXGbEhJQ"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#safeString"/>
+  </components>
+  <components xmi:id="_uCywwH6vEeOTYsuXGbEhJQ" name="logger" id="4099">
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_24HLoH6vEeOTYsuXGbEhJQ" name="info" queueSize="5">
+      <topic href="dictionary.xmd#_05LPMH6uEeOTYsuXGbEhJQ"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_uCywwX6vEeOTYsuXGbEhJQ" name="print" requiredPorts="_24HLoH6vEeOTYsuXGbEhJQ" wcetInNs="1000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_uCywwn6vEeOTYsuXGbEhJQ"/>
+    </containedFunctions>
+  </components>
+</manifest:Manifest>

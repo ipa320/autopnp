@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_W6ieAMRuEeKXVovrYlzQ3g" name="sensorMonitor">
+  <components xmi:id="_XpjgIMRuEeKXVovrYlzQ3g" name="sensorB" id="4354">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_dQeFUMRuEeKXVovrYlzQ3g" name="sensorValueOut">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <attributeValueDefinitions xmi:id="_7riS4B6-EeOyu_1oprnCYg">
+        <attributeValue xmi:id="_7riS4R6-EeOyu_1oprnCYg" value="bytes"/>
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_6a5KYB6-EeOyu_1oprnCYg"/>
+      </attributeValueDefinitions>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_XplVUMRuEeKXVovrYlzQ3g" name="readSensorValue" requiredPorts="_dQeFUMRuEeKXVovrYlzQ3g" wcetInNs="300000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_XplVUcRuEeKXVovrYlzQ3g"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#net"/>
+  </components>
+  <components xmi:id="_WEOroMRvEeKXVovrYlzQ3g" name="monitorB" id="4361">
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_YUDZMMRvEeKXVovrYlzQ3g" name="sensorValueIn">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <filterDefinitions xsi:type="port:PrimitiveAttributeFilter" xmi:id="_TCex4B7EEeOyu_1oprnCYg">
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_6a5KYB6-EeOyu_1oprnCYg"/>
+        <filterOperation xmi:id="_TCex4R7EEeOyu_1oprnCYg" value="bytes" operation="EQUAL"/>
+      </filterDefinitions>
+    </incomingPorts>
+    <containedFunctions xmi:id="_WERH4MRvEeKXVovrYlzQ3g" name="printSensorValue" requiredPorts="_YUDZMMRvEeKXVovrYlzQ3g" wcetInNs="100000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_WERH4cRvEeKXVovrYlzQ3g"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_-_5xMB6_EeOyu_1oprnCYg" name="sensorKB" id="4355">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_-_5xMR6_EeOyu_1oprnCYg" name="sensorValueOut">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <attributeValueDefinitions xmi:id="_-_5xMh6_EeOyu_1oprnCYg">
+        <attributeValue xmi:id="_-_5xMx6_EeOyu_1oprnCYg" value="kilobytes"/>
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_6a5KYB6-EeOyu_1oprnCYg"/>
+      </attributeValueDefinitions>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_-_5xNB6_EeOyu_1oprnCYg" name="readSensorValue" requiredPorts="_-_5xMR6_EeOyu_1oprnCYg" wcetInNs="300000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_-_5xNR6_EeOyu_1oprnCYg"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#net"/>
+  </components>
+  <components xmi:id="_bU1poB7EEeOyu_1oprnCYg" name="monitorKB" id="4362">
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_bU1poR7EEeOyu_1oprnCYg" name="sensorValueIn">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <filterDefinitions xsi:type="port:PrimitiveAttributeFilter" xmi:id="_bU1poh7EEeOyu_1oprnCYg">
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_6a5KYB6-EeOyu_1oprnCYg"/>
+        <filterOperation xmi:id="_bU1pox7EEeOyu_1oprnCYg" value="kilobytes" operation="EQUAL"/>
+      </filterDefinitions>
+    </incomingPorts>
+    <containedFunctions xmi:id="_bU1ppB7EEeOyu_1oprnCYg" name="printSensorValue" requiredPorts="_bU1poR7EEeOyu_1oprnCYg" wcetInNs="100000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_bU1ppR7EEeOyu_1oprnCYg"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_IiU9ACBdEeO0L4f2ycabGA" name="monitorMB" id="4363">
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_IiU9ASBdEeO0L4f2ycabGA" name="sensorValueIn">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <filterDefinitions xsi:type="port:PrimitiveAttributeFilter" xmi:id="_IiU9AiBdEeO0L4f2ycabGA">
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_6a5KYB6-EeOyu_1oprnCYg"/>
+        <filterOperation xmi:id="_IiU9AyBdEeO0L4f2ycabGA" value="megabytes" operation="EQUAL"/>
+      </filterDefinitions>
+    </incomingPorts>
+    <containedFunctions xmi:id="_IiU9BCBdEeO0L4f2ycabGA" name="printSensorValue" requiredPorts="_IiU9ASBdEeO0L4f2ycabGA" wcetInNs="100000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_IiU9BSBdEeO0L4f2ycabGA"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_Tq1tECBeEeO0L4f2ycabGA" name="sensorMB" id="4356">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_Tq1tESBeEeO0L4f2ycabGA" name="sensorValueOut">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <attributeValueDefinitions xmi:id="_Tq1tEiBeEeO0L4f2ycabGA">
+        <attributeValue xmi:id="_Tq1tEyBeEeO0L4f2ycabGA" value="megabytes"/>
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_6a5KYB6-EeOyu_1oprnCYg"/>
+      </attributeValueDefinitions>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_Tq1tFCBeEeO0L4f2ycabGA" name="readSensorValue" requiredPorts="_Tq1tESBeEeO0L4f2ycabGA" wcetInNs="300000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_Tq1tFSBeEeO0L4f2ycabGA"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#net"/>
+  </components>
+  <components xmi:id="_DujYkEFlEeOictpAa9Xw_w" name="pnpTrigger" id="4364">
+    <containedFunctions xmi:id="_D17L4EFlEeOictpAa9Xw_w" name="trigger" wcetInNs="5000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_D17y8EFlEeOictpAa9Xw_w"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_qRGYgFwYEeOcP8-B1v75JQ" name="logoutTrigger" id="4365">
+    <containedFunctions xmi:id="_qRWQIFwYEeOcP8-B1v75JQ" name="trigger" wcetInNs="5000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_qRWQIVwYEeOcP8-B1v75JQ"/>
+    </containedFunctions>
+  </components>
+</manifest:Manifest>

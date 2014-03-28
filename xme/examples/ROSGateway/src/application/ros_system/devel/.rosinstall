@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/josh/xme/examples/ROSGateway/src/application/ros_system/devel/setup.sh
