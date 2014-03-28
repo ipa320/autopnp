@@ -1,4 +1,0 @@
-ComponentA,0,1,1
-ComponentB,Container1.dll,1,1
-ComponentC,Container1.dll,0,0
-ComponentD,Container2.dll,0,0

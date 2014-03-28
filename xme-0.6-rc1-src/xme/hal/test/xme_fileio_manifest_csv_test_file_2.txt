@@ -1,4 +1,0 @@
-ComponentA,0,1,1
-ComponentB,Container1.so,1,1
-ComponentC,Container1.so,0,0
-ComponentX,Container2.so,0,0
