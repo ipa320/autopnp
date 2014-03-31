@@ -172,6 +172,10 @@ class InitAutoPnPScenario(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat("InitAutoPnPScenario")
 
+		# just fill history of global transform listener
+		dummylistener = get_transform_listener()
+		rospy.sleep(5.0)
+
 		#todo: set acceleration
 		# adjust base footprint
 #		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.25],[0.45,-0.25],[0.25,-0.45],[-0.25,-0.45],[-0.45,-0.25],[-0.45,0.25],[-0.25,0.45],[0.25,0.45]]"})
@@ -489,7 +493,7 @@ def computeToolWagonPoseFromFiducials(fiducials):
 			# transform to map system
 			try:
 				listener = get_transform_listener()
-				listener.waitForTransform('/map', tool_wagon_pose.header.frame_id, tool_wagon_pose.header.stamp, rospy.Duration(10))
+				listener.waitForTransform('/map', tool_wagon_pose.header.frame_id, tool_wagon_pose.header.stamp, rospy.Duration(2))
 				tool_wagon_pose_map = listener.transformPose('/map', tool_wagon_pose)
 				#print 'tool_wagon_pose = ', tool_wagon_pose_map
 				#print "tool_wagon_pose ypr: ", euler_from_quaternion([tool_wagon_pose_map.pose.orientation.x, tool_wagon_pose_map.pose.orientation.y, tool_wagon_pose_map.pose.orientation.z, tool_wagon_pose_map.pose.orientation.w], "rzyx")

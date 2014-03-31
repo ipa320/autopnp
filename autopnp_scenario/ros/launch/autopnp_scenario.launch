@@ -11,16 +11,8 @@
 	<group>
 		<machine name="pc1" address="$(arg pc1)" env-loader="/u/robot/git/care-o-bot/env.sh" default="true" unless="$(arg simulation)"/>
 
-		<!-- start navigation -->
-		<!--include file="$(find cob_navigation_global)/launch/2dnav_ros_dwa.launch" >
-			<arg name="map" value="$(find autopnp_scenario)/config/map-ipa-apartment.yaml" />
-		</include-->
-
 		<!-- start map_segmentation_action_server -->
 		<include file="$(find autopnp_scenario)/ros/launch/map_segmentation_action_server.launch"/>
-
-		<!-- start cob_phidgets for commanding the tool changer -->
-		<include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/>
 
 		<!-- start vacuum cleaner on/off control driver -->
 		<!--include file="$(find autopnp_scenario)/ros/launch/vacuum_cleaner.launch"/-->
@@ -54,6 +46,19 @@
 
 		<!-- start dirt detection -->
 		<include file="$(find autopnp_dirt_detection)/ros/launch/dirt_detection.launch" />
+
+	</group>
+	
+	<group>
+		<machine name="pc3" address="$(arg pc3)" env-loader="/u/robot/git/care-o-bot/env.sh" default="true" unless="$(arg simulation)"/>
+		
+		<!-- start navigation -->
+		<!--include file="$(find cob_navigation_global)/launch/2dnav_ros_dwa.launch" >
+			<arg name="map" value="$(find autopnp_scenario)/config/map-ipa-apartment.yaml" />
+		</include-->
+
+		<!-- start cob_phidgets for commanding the tool changer -->
+		<include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/>
 
 	</group>
 
