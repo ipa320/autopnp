@@ -35,12 +35,13 @@ bool receive_and_test(uint16_t id)
 	while (ros::ok())
 	{
 		int iRet = LINUX_CAN_Read_Timeout(device, &rd, timeout);
+		//CAN_Status(device);
 
-		ROS_INFO_STREAM("ret: "<< iRet);
+		//ROS_INFO_STREAM("ret: "<< iRet);
 
 		if (iRet == CAN_ERR_OK)
 		{
-			ROS_INFO_STREAM("id: "<< rd.Msg.ID << " vs. " << id);
+			//ROS_INFO_STREAM("id: "<< rd.Msg.ID << " vs. " << id);
 			if (rd.Msg.ID == id)
 				test = true;
 		}
@@ -85,7 +86,10 @@ bool transmit(uint16_t id, int len, uint8_t b0 = 0, uint8_t b1 = 0, uint8_t b2 =
 
 	ros::Duration(0.1).sleep();
 
-	return (CAN_Status(device)==CAN_ERR_OK);
+	int ret = CAN_Status(device);
+	//ROS_INFO_STREAM("ret " << ret);
+
+	return (ret==CAN_ERR_OK || ret==32);
 }
 
 bool check_nmt()

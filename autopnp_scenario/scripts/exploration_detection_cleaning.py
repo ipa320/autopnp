@@ -1520,6 +1520,106 @@ class ChangeToolManual(smach.State):
 		return 'CTM_done'
 
 
+class ChangeToolManualPnP(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['CTM_done'])
+		# command line usage:
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin2", state: 0}'
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
+		
+		#self.diagnostics_sub = rospy.Subscriber("/diagnostics_vacuum_cleaner", DiagnosticArray, self.diagnosticCallback)
+		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
+		self.attached = False
+
+	def attachmentStatusCallback(self, msg):
+		self.attached = msg.data
+		
+	def execute(self, userdata):
+		sf = ScreenFormat("ChangeToolManual")
+		
+		# move arm with tool facing up (so it cannot fall down on opening)
+		#handle_arm = sss.move("arm", "pregrasp")
+		#handle_arm = sss.move("arm",[[1.064633390424021, -1.1901051103498934, 0.6336766915215812, -1.7237046225621198, -1.554041165975751, -1.7535846593562627, -0.00010471975511965978]])
+		arm_position = list(ARM_IDLE_POSITION)
+		arm_position[0] = -0.8
+		#handle_arm = sss.move("arm",[arm_position])
+		
+		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
+		tool_change_successful = ''
+		while tool_change_successful!='yes':
+			# wait for confirmation to release tool
+			raw_input("Please hold the tool tightly with your hands and then press <Enter> and remove the tool quickly.")
+			rospy.wait_for_service(service_name) 
+			try:
+				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
+				resp = req(uri='tool_changer_pin4', state=0)
+				print 'Resetting tool changer pin4: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
+				resp = req(uri='tool_changer_pin2', state=0)
+				print 'Resetting tool changer pin2: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
+				resp = req(uri='tool_changer_pin4', state=1)
+				print 'Opening tool changer response: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
+				resp = req(uri='tool_changer_pin4', state=0)
+				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			
+			while self.attached == True:
+				rospy.sleep(0.1)
+			#self.attached = False
+			#rospy.sleep(3.0)
+			tool_change_successful = 'yes' #raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
+		
+		# move arm with end facing down
+		#handle_arm = sss.move("arm",[[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
+
+		print "Device successfully detached."
+
+		tool_change_successful = ''
+		while tool_change_successful!='yes':
+			# wait for confirmation to attach tool
+			#raw_input("Please attach the tool manually and then press <Enter>.")
+			while (self.attached==False):
+				rospy.sleep(0.2)
+			
+			rospy.wait_for_service(service_name) 
+			try:
+				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
+				resp = req(uri='tool_changer_pin2', state=1)
+				print 'Closing tool changer response: uri=', resp.uri, '  state=', resp.state
+				# keep power on closing the changer for safety 
+				#rospy.sleep(1.0)
+				#resp = req(uri='tool_changer_pin4', state=0)
+				#print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+				
+			try:
+				resp = req(uri='tool_changer_pin2', state=0)
+				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			
+			tool_change_successful = 'yes' # raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
+		
+		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		#handle_arm = sss.move("arm",[carrying_position])
+		
+		print 'Manual tool change successfully completed.'
+		
+		return 'CTM_done'
+
 
 class GoToToolWagonLocation(smach.State):
     def __init__(self):

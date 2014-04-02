@@ -24,7 +24,7 @@ public:
 		vis_pub_first_ = true;
 		hand_status_ = -1;
 		vacuum_status_ = -1;
-		diagnostics_sdh_sub_ = node_handle_.subscribe("diagnostics", 10, &ToolchangePnPManager::diagnostics, this);
+		diagnostics_sdh_sub_ = node_handle_.subscribe("diagnostics", 200, &ToolchangePnPManager::diagnostics, this);
 		//diagnostics_sdh_sub_ = node_handle_.subscribe("/diagnostics", 1, &ToolchangePnPManager::diagnosticsSDHCallback, this);
 		//diagnostics_vacuum_sub_ = node_handle_.subscribe("/diagnostics_vacuum_cleaner", 1, &ToolchangePnPManager::diagnosticsVacuumCallback, this);
 		vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>("attachment_visulization", 0);

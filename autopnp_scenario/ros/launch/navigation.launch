@@ -11,12 +11,13 @@
   <arg name="simulation" default="false"/>
   
   <group>
-    <machine name="pc3" address="$(arg pc3)" default="true" unless="$(arg simulation)"/>
+    <!--machine name="pc3" address="$(arg pc3)" default="true" unless="$(arg simulation)"/-->
+    <machine name="pc3" address="$(arg pc3)" env-loader="$(find autopnp_scenario)/ros/launch/env.sh" default="true" unless="$(arg simulation)"/>
     
     <!-- start navigation -->
     <!--- Run map_server -->
-    <arg name="map" default="$(find cob_default_env_config)/$(arg robot_env)/map.yaml" />
-	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map)"/>   <!--"$(find autopnp_scenario)/config/map-autopnp-conference-clean.yaml"/-->
+    <!--arg name="map" default="$(find cob_default_env_config)/$(arg robot_env)/map.yaml" /-->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find autopnp_scenario)/config/ipa_test.yaml"/>
 
 	<!--- Run AMCL -->
 	<include file="$(find cob_navigation_global)/launch/amcl_node.xml" />

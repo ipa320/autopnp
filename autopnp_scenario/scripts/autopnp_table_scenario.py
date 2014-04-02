@@ -332,7 +332,7 @@ class ChangeToolManual(smach.State):
 				print "Service call failed: %s"%e
 			
 			while self.attached == True:
-				rospy.sleep(0.5)
+				rospy.sleep(0.1)
 			#self.attached = False
 			#rospy.sleep(3.0)
 			tool_change_successful = 'yes' #raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
