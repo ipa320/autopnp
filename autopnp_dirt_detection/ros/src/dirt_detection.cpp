@@ -448,6 +448,7 @@ bool DirtDetection::resetDirtMaps(std_srvs::Empty::Request &req, std_srvs::Empty
 {
 	// clear maps
 	resetMapsAndHistory();
+	return true;
 }
 
 
@@ -805,7 +806,6 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 		return;
 	}
 #endif
-
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
 
@@ -992,59 +992,62 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 		}
 
 		// publish image
-		cv_bridge::CvImage cv_ptr;
-		cv_ptr.image = new_plane_color_image;
-		cv_ptr.encoding = "bgr8";
-		dirt_detection_image_pub_.publish(cv_ptr.toImageMsg());
-
-		if (debug_["showObservationsGrid"] == true)
-		{
-			cv::Mat gridObservationsDisplay;
-			cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
-			cv::imshow("observations grid", gridObservationsDisplay);
-			cvMoveWindow("observations grid", 340, 0);
-		}
+//		cv_bridge::CvImage cv_ptr;
+//		cv_ptr.image = new_plane_color_image;
+//		cv_ptr.encoding = "bgr8";
+//		dirt_detection_image_pub_.publish(cv_ptr.toImageMsg());
+//
+//		if (debug_["showObservationsGrid"] == true)
+//		{
+//			cv::Mat gridObservationsDisplay;
+//			cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
+//			cv::imshow("observations grid", gridObservationsDisplay);
+//			cvMoveWindow("observations grid", 340, 0);
+//		}
 
 		// publish image of map and dirt spots
-		cv::Mat map_with_dirt(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_8UC3);
-		map_with_dirt.setTo(cv::Scalar(255,255,255));
-		double scale = 1./(floor_plan_.info.resolution*gridResolution_);
-		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
-		{
-			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
-			{
-				int index = v*scale*gridPositiveVotes_.cols*scale + u*scale;
-				map_with_dirt.at<cv::Vec3b>(v,gridPositiveVotes_.cols-u) = cv::Vec3b((100-floor_plan_.data[index])*2.55,(100-floor_plan_.data[index])*2.55,(100-floor_plan_.data[index])*2.55);
-				if (detectionMap.data[i] == 100)
-					map_with_dirt.at<cv::Vec3b>(v,gridPositiveVotes_.cols-u) = cv::Vec3b(0,0,255);
-			}
-		}
-		cv_ptr.image = map_with_dirt;
-		cv_ptr.encoding = "bgr8";
-		dirt_detection_image_with_map_pub_.publish(cv_ptr.toImageMsg());
+//		cv::Mat map_with_dirt(gridPositiveVotes_.rows, gridPositiveVotes_.cols, CV_8UC3);
+//		map_with_dirt.setTo(cv::Scalar(255,255,255));
+//		double scale = 1./(floor_plan_.info.resolution*gridResolution_);
+//		for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
+//		{
+//			for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+//			{
+//				int index = v*scale*gridPositiveVotes_.cols*scale + u*scale;
+//				map_with_dirt.at<cv::Vec3b>(v,gridPositiveVotes_.cols-u) = cv::Vec3b((100-floor_plan_.data[index])*2.55,(100-floor_plan_.data[index])*2.55,(100-floor_plan_.data[index])*2.55);
+//				if (detectionMap.data[i] == 100)
+//					map_with_dirt.at<cv::Vec3b>(v,gridPositiveVotes_.cols-u) = cv::Vec3b(0,0,255);
+//			}
+//		}
+//		cv_ptr.image = map_with_dirt;
+//		cv_ptr.encoding = "bgr8";
+//		dirt_detection_image_with_map_pub_.publish(cv_ptr.toImageMsg());
 #endif
 
 		if (debug_["showWarpedOriginalImage"] == true)
 		{
 			cv::imshow("warped original image", plane_color_image_warped);
 			//cvMoveWindow("dirt grid", 0, 0);
+			cv::waitKey(10);
 		}
 
 		if (debug_["showDirtDetections"] == true)
 		{
 			cv::imshow("dirt detections", new_plane_color_image);
 			cvMoveWindow("dirt detections", 650, 530);
+			cv::waitKey(10);
 		}
 
 		if (debug_["showPlaneColorImage"] == true)
 		{
 			cv::imshow("segmented color image", plane_color_image);
 			cvMoveWindow("segmented color image", 650, 0);
+			cv::waitKey(10);
 		}
 	}
 	rosbagMessagesProcessed_++;
 
-	cv::waitKey(10);
+	//cv::waitKey(50);
 }
 
 void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg)
@@ -1221,7 +1224,7 @@ void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::Occupancy
 		for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
 			// hack: autonomik-scenario: only map dirt within a certain area
 			//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
-			if (u>-gridOrigin_.x*gridResolution_-7 && u<-gridOrigin_.x*gridResolution_+8 && v>-gridOrigin_.y*gridResolution_+2 && v<-gridOrigin_.y*gridResolution_+6)
+			//if (u>-gridOrigin_.x*gridResolution_-7 && u<-gridOrigin_.x*gridResolution_+8 && v>-gridOrigin_.y*gridResolution_+2 && v<-gridOrigin_.y*gridResolution_+6)
 				//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 				// todo: new mode
 				detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
@@ -1276,6 +1279,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 		//display original image
 		cv::imshow("original color image", color_image);
 		cvMoveWindow("original color image", 0, 0);
+		cv::waitKey(50);
 		//cvMoveWindow("color image", 0, 520);
 	}
 
