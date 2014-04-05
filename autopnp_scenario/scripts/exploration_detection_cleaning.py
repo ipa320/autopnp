@@ -1180,7 +1180,7 @@ class CheckPositionToTrashBinLocation(smach.State):
 			return 'failed'
 		robot_pose_rotation_euler = tf.transformations.euler_from_quaternion(robot_pose_rotation, 'rzyx') # yields yaw, pitch, roll
 		
-		dist = math.sqrt((robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)*(robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)+(robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y)*robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y)
+		dist = math.sqrt((robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)*(robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)+(robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y)*(robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y))
 		print 'xy-dist =', dist
 		print 'angle', robot_pose_rotation_euler[0]
 

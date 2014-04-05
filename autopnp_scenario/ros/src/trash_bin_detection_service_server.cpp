@@ -8,6 +8,13 @@ TrashBinDetectionNode::TrashBinDetectionNode(ros::NodeHandle& nh)
   nh_(nh), listener_(nh, ros::Duration(40.0))
  // sdh_follow_joint_client_("/sdh_controller/follow_joint_trajectory", true)
 {
+	std::cout << "\n--------------------------------------\nTrash Bin Detection Parameters:\n--------------------------------------\n";
+	nh_.param("trash_bin_detection_server/publish_marker_array", publish_marker_array_, false);
+	std::cout << "publish_marker_array = " << publish_marker_array_ << std::endl;
+	nh_.param("trash_bin_detection_server/trash_bin_radius", trash_bin_radius_, 0.15);
+	std::cout << "trash_bin_radius = " << trash_bin_radius_ << std::endl;
+
+	prev_marker_array_size_ = 0;
 }
 
 //Initialize Trash bin detection to receive necessary raw data
@@ -18,6 +25,9 @@ void TrashBinDetectionNode::init(ros::NodeHandle& nh)
 	deactivate_trash_bin_detection_server_ = nh.advertiseService("deactivate_trash_bin_detection_service", &TrashBinDetectionNode::deactivate_trash_bin_detection_callback_, this);
 	//trash_bin_poses-> So you have to take the data from this topic
 	trash_bin_location_publisher_ = nh.advertise<autopnp_scenario::TrashBinDetection>("trash_bin_poses", 1, this);
+
+	if (publish_marker_array_ == true)
+		fiducials_marker_array_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>( "trash_bin_locations", 0 );
 
 	//grasp_trash_bin_server_.start();
 	//sdh_follow_joint_client_.waitForServer();
@@ -52,9 +62,6 @@ void TrashBinDetectionNode::fiducials_data_callback_(const cob_object_detection_
 //This function process the data to calculate the trash bin location
 void TrashBinDetectionNode::trash_bin_pose_estimator_(const geometry_msgs::PoseStamped& pose_from_fiducials_frame_id, std::string& frame_id)
 {
-	// todo: make this a parameter
-	double trash_bin_radius = 0.15;
-
 	tf::Stamped<tf::Pose> original_pose(
 	tf::Pose(
 			tf::Quaternion(
@@ -65,13 +72,15 @@ void TrashBinDetectionNode::trash_bin_pose_estimator_(const geometry_msgs::PoseS
 			tf::Vector3(
 					pose_from_fiducials_frame_id.pose.position.x,
 					pose_from_fiducials_frame_id.pose.position.y,
-					pose_from_fiducials_frame_id.pose.position.z+trash_bin_radius)), //-
+					pose_from_fiducials_frame_id.pose.position.z+trash_bin_radius_)), //-
 			ros::Time(0), frame_id);
 	tf::Stamped<tf::Pose> transformed_pose;
 	try
 	{
 		listener_.waitForTransform("/map", original_pose.frame_id_, original_pose.stamp_, ros::Duration(5.0));
 		listener_.transformPose("/map", original_pose, transformed_pose);
+//		std::cout << "check: tranformed_pose.frameid: " << transformed_pose.frame_id_ << std::endl;
+//		transformed_pose.frame_id_ = "/map";
 	}
 	catch (tf::TransformException& ex)
 	{
@@ -157,13 +166,84 @@ bool TrashBinDetectionNode::deactivate_trash_bin_detection_callback_(autopnp_sce
 	ROS_INFO("Trash bin detection is turned off.");
 
 	cob_object_detection_msgs::Detection temp_detection_obj;
-	for(unsigned int i=0; i<trash_bin_location_storage_.trash_bin_locations.size() ; i++)
+	for(unsigned int i=0; i<trash_bin_location_storage_.trash_bin_locations.size(); i++)
 	{
 		//temp_detection_obj.pose.pose = trash_bin_location_storage_.trash_bin_locations[i].pose;
 		temp_detection_obj.pose = trash_bin_location_storage_.trash_bin_locations[i];
 		temp_detection_obj.header =  trash_bin_location_storage_.trash_bin_locations[i].header;
 		res.detected_trash_bin_poses.detections.push_back(temp_detection_obj);
 	}
+	res.detected_trash_bin_poses.header.stamp = ros::Time::now();
+	if (trash_bin_location_storage_.trash_bin_locations.size() > 0)
+		res.detected_trash_bin_poses.header.frame_id = trash_bin_location_storage_.trash_bin_locations[0].header.frame_id;
+
+    // Publish marker array
+    if (publish_marker_array_ == true)
+    {
+        // 3 arrows for each coordinate system of each detected fiducial
+    	unsigned int pose_array_size = res.detected_trash_bin_poses.detections.size();
+        unsigned int marker_array_size = 3*pose_array_size;
+        if (marker_array_size >= prev_marker_array_size_)
+        {
+            marker_array_msg_.markers.resize(marker_array_size);
+        }
+
+		// publish a coordinate system from arrow markers for each object
+		for (unsigned int i = 0; i < pose_array_size; i++) {
+			for (unsigned int j = 0; j < 3; j++) {
+				unsigned int idx = 3 * i + j;
+				marker_array_msg_.markers[idx].header = res.detected_trash_bin_poses.header;
+				marker_array_msg_.markers[idx].header.frame_id = res.detected_trash_bin_poses.detections[i].header.frame_id; // "/" + frame_id;//"tf_name.str()";
+				marker_array_msg_.markers[idx].header.stamp = res.detected_trash_bin_poses.detections[i].header.stamp;
+				marker_array_msg_.markers[idx].ns = "fiducials";
+				marker_array_msg_.markers[idx].id = idx;
+				marker_array_msg_.markers[idx].type = visualization_msgs::Marker::ARROW;
+				marker_array_msg_.markers[idx].action = visualization_msgs::Marker::ADD;
+				marker_array_msg_.markers[idx].color.a = 0.85;
+				marker_array_msg_.markers[idx].color.r = 0;
+				marker_array_msg_.markers[idx].color.g = 0;
+				marker_array_msg_.markers[idx].color.b = 0;
+
+				marker_array_msg_.markers[idx].points.resize(2);
+				marker_array_msg_.markers[idx].points[0].x = 0.0;
+				marker_array_msg_.markers[idx].points[0].y = 0.0;
+				marker_array_msg_.markers[idx].points[0].z = 0.0;
+				marker_array_msg_.markers[idx].points[1].x = 0.0;
+				marker_array_msg_.markers[idx].points[1].y = 0.0;
+				marker_array_msg_.markers[idx].points[1].z = 0.0;
+
+				if (j == 0) {
+					marker_array_msg_.markers[idx].points[1].x = 0.2;
+					marker_array_msg_.markers[idx].color.r = 255;
+				} else if (j == 1) {
+					marker_array_msg_.markers[idx].points[1].y = 0.2;
+					marker_array_msg_.markers[idx].color.g = 255;
+				} else if (j == 2) {
+					marker_array_msg_.markers[idx].points[1].z = 0.2;
+					marker_array_msg_.markers[idx].color.b = 255;
+				}
+
+				marker_array_msg_.markers[idx].pose = res.detected_trash_bin_poses.detections[i].pose.pose;
+
+				ros::Duration one_hour = ros::Duration(3600); // 1 second
+				marker_array_msg_.markers[idx].lifetime = one_hour;
+				marker_array_msg_.markers[idx].scale.x = 0.01; // shaft diameter
+				marker_array_msg_.markers[idx].scale.y = 0.015; // head diameter
+				marker_array_msg_.markers[idx].scale.z = 0; // head length 0=default
+			}
+
+			if (prev_marker_array_size_ > marker_array_size)
+			{
+				for (unsigned int i = marker_array_size; i < prev_marker_array_size_; ++i)
+				{
+					marker_array_msg_.markers[i].action = visualization_msgs::Marker::DELETE;
+				}
+			}
+			prev_marker_array_size_ = marker_array_size;
+
+			fiducials_marker_array_publisher_.publish(marker_array_msg_);
+		}
+	} // End: publish markers
 
 	// hack for demo in holland
 //	if (trash_bin_location_storage_.trash_bin_locations.size() == 0)
