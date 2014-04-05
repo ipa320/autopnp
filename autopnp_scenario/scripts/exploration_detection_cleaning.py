@@ -79,6 +79,7 @@ from geometry_msgs import *
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 from std_msgs.msg import Bool
+from std_srvs.srv import Empty
 
 from ApproachPerimeter import *
 #from ApproachPerimeterLinear import *
@@ -797,7 +798,7 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived']) #, input_keys=['tool_wagon_pose'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
-		self.move_base_local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/local_costmap")
+		#self.move_base_local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/local_costmap")
 		self.tool_wagon_pose = None
 		self.last_callback_time = rospy.Time.now()
 
@@ -818,11 +819,18 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		
 		# 1. adjust base footprint
 		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		move_base_local_config = self.move_base_local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
-		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.3"})
+	#	move_base_local_config = self.move_base_local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]#[[0.1,0.1],[0.1,-0.1],[-0.1,-0.1],[-0.1,0.1]]
+	#	self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.3"})
 		#self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
 		#[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
 		
 # 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
 # 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
@@ -856,12 +864,20 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		else:
 			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
 			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
-		if move_base_local_config["inflation_radius"]!=None:
-			self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": move_base_local_config["inflation_radius"]})
-		else:
-			rospy.logwarn("Could not read previous local inflation radius configuration of /move_base/local_costmap, resetting to standard value: 0.55.")
-			self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.55"})
-					
+	#	if move_base_local_config["inflation_radius"]!=None:
+	#		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": move_base_local_config["inflation_radius"]})
+	#	else:
+	#		rospy.logwarn("Could not read previous local inflation radius configuration of /move_base/local_costmap, resetting to standard value: 0.55.")
+	#		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.55"})
+
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
+
 		return 'arrived'
 
 
@@ -2034,7 +2050,7 @@ class MoveLocationPerimeterValidation(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 1.60		# adjust this for right distance to dirt spot
+		userdata.radius = 1.40		# adjust this for right distance to dirt spot
 		userdata.goal_pose_theta_offset = 0.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
@@ -2065,13 +2081,15 @@ class VerifyCleaningProcess(smach.State):
 		
 		point = Point(x=userdata.next_dirt_location[0], y=userdata.next_dirt_location[1], z=0.0)
 		
-		rospy.loginfo('Executing state verify_Cleaning_Process')
-		rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
-		try:
-			req = rospy.ServiceProxy('/dirt_detection/validate_cleaning_result', ValidateCleaningResult)
-			resp = req(validationPositions=[point], numberValidationImages=-1)
-		except rospy.ServiceException, e:
-			print "Service call failed: %s"%e
+		rospy.sleep(4.0)
+
+	#	rospy.loginfo('Executing state verify_Cleaning_Process')
+	#	rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
+	#	try:
+	#		req = rospy.ServiceProxy('/dirt_detection/validate_cleaning_result', ValidateCleaningResult)
+	#		resp = req(validationPositions=[point], numberValidationImages=-1)
+	#	except rospy.ServiceException, e:
+	#		print "Service call failed: %s"%e
 		
 		sss.move("torso", "home", False)
 		
