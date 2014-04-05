@@ -422,8 +422,13 @@ N', GraspTrashBin(),
 		
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
-							transitions={'finished':'finished'})
-	
+							transitions={'finished':'GO_TO_TOOL_WAGON_LOCATION_2'})
+
+		smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION_2', MoveToToolWaggonFrontFrontalFar(),
+								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION_2'})
+			
+		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION_2', ChangeToolManualPnP(current_tool='vacuum'),
+								transitions={'CTM_done':'finished'})
 	
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')

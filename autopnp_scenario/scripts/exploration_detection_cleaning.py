@@ -437,9 +437,9 @@ class InspectRoom(smach.State):
 		rospy.sleep(1.0)
 		handle_move = sss.move("base", [-0.58, 0.58, -0.79],mode='linear')
 		rospy.sleep(1.0)
-		handle_move = sss.move("base", [0.92, 0.0, 2.36],mode='omni')
+		handle_move = sss.move("base", [0.88, 0.0, 2.36],mode='omni')
 		rospy.sleep(2.0)
-		handle_move = sss.move("base", [0.92, 0.0, 3.14],mode='linear')
+		handle_move = sss.move("base", [0.88, 0.0, 3.14],mode='linear')
 		rospy.sleep(2.0)
 		
 		#raw_input("finished inspection?")
@@ -599,7 +599,7 @@ def positionControlLoopLinear(self_tool_wagon_pose, dx, dy, dtheta):
 	# verify distance to goal pose
 	dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
 	print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
-	if dist > 0.03 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
+	if dist > 0.03 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.03:		# in m      # rot: 0.02
 		return False
 	else:
 		return True
@@ -1589,7 +1589,7 @@ class ChangeToolManual(smach.State):
 
 
 class ChangeToolManualPnP(smach.State):
-	def __init__(self):
+	def __init__(self, current_tool='sdh'):
 		smach.State.__init__(self, outcomes=['CTM_done'])
 		# command line usage:
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin2", state: 0}'
@@ -1598,6 +1598,7 @@ class ChangeToolManualPnP(smach.State):
 		#self.diagnostics_sub = rospy.Subscriber("/diagnostics_vacuum_cleaner", DiagnosticArray, self.diagnosticCallback)
 		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
 		self.attached = False
+		self.current_tool = current_tool
 
 	def attachmentStatusCallback(self, msg):
 		self.attached = msg.data
@@ -1612,8 +1613,11 @@ class ChangeToolManualPnP(smach.State):
 		#arm_position[0] = -0.8
 		#handle_arm = sss.move("arm",[arm_position])
 		
-		handle_arm = sss.move("arm",[[1.404728248467636, -1.4622368473208494, 0.21975440611860603, -1.7372832841426358, 1.8869103609161093, -1.79756695650652, -0.00013962634015954637],
+		if self.current_tool=='sdh':
+			handle_arm = sss.move("arm",[[1.404728248467636, -1.4622368473208494, 0.21975440611860603, -1.7372832841426358, 1.8869103609161093, -1.79756695650652, -0.00013962634015954637],
 									[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
+		elif self.current_tool=='vacuum':
+			handle_arm = sss.move("arm",[[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
 
 		
 		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
@@ -1890,7 +1894,7 @@ class MoveLocationPerimeterCleaning(smach.State):
 		center.theta = 0
 		userdata.center = center
 		userdata.radius = 0.3		# adjust this for right distance to dirt spot
-		userdata.goal_pose_theta_offset = 90.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
+		userdata.goal_pose_theta_offset = 85.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
