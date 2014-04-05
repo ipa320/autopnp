@@ -113,7 +113,7 @@ TOOL_WAGON_ROBOT_OFFSETS={
 						"front_far":	Pose2D(x=-1.4, y=0.0, theta=0.0),
 						"rear":		Pose2D(x=-1.45, y=0.0, theta=math.pi),
 						"front_frontal_far":	Pose2D(x=1.4, y=0.0, theta=math.pi),
-						"front_trash_clearing":	Pose2D(x=-0.95, y=0.0, theta=0.0) #Pose2D(x=-1.05, y=0.0, theta=0.0)
+						"front_trash_clearing":	Pose2D(x=-0.90, y=0.0, theta=0.0) #Pose2D(x=-1.05, y=0.0, theta=0.0)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
 
 global FIDUCIALS_MARKER_DICTIONARY
@@ -129,8 +129,8 @@ FIDUCIALS_MARKER_DICTIONARY={
 						"trash_bin":					"tag_25"
 						}
 
-global ARM_JOINT_CONFIGURATIONS
-ARM_JOINT_CONFIGURATIONS={
+global ARM_JOINT_CONFIGURATIONS_TRASH
+ARM_JOINT_CONFIGURATIONS_TRASH={
 		"intermediate1_carry2clear": [1.6047953406237458, -0.9250419568495145, 0.5463578690443048, -1.2438961578963585, 2.005610203344244, -1.6329125948733747, -1.0737614624119514],
 		"intermediate2_carry2clear": [1.4538243603262366, -1.0659947472405766, 0.6813939932711062, -0.22266910596943656, 1.4894814369444809, -1.7758899671967503, -1.1778005391233333],
 		"intermediate3_carry2clear": [1.7098641615938048, -0.9947504071741682, 0.8471130057479679, 0.7007671479682432, 0.8387877852159548, -1.7758027007341504, 2.283187367581422], #[1.8488796365151532, -1.091738353707493, 0.8273733319079118, 0.7019365185670795, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404],   #[1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
@@ -146,6 +146,18 @@ ARM_JOINT_CONFIGURATIONS={
 		"clear_small": [1.4147813449591236, -1.8628597238236275, -0.16273449945595128, 0.07897614865274341, -0.21584486859413876, -1.8157881938973404, 2.3077441501569824],
 		"carry": [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 		}
+
+global ARM_JOINT_CONFIGURATIONS_VACUUM
+ARM_JOINT_CONFIGURATIONS_VACUUM={
+	"carrying_position": [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925], # carrying position
+	"intermediate1_position": [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447], # intermediate 1
+	"intermediate2_position": [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447], # intermediate 2
+	"above_cleaning_20cm_position": [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447], # ca. 20cm above cleaning position
+	"above_cleaning_5cm_position": [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447], # just 5cm above cleaning position
+	"cleaning_position": [-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position #[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
+	}
+#[-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] hmi cleaning - soft
+#[-0.09944886077863689, -0.9110269629560002, 0.0812276233878161, -1.401132870208528, 1.7055357450488586, -0.2665815899496139, 1.0595544823007175] hmi cleaning -hard
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
@@ -1350,14 +1362,14 @@ class ClearTrashBinIntoToolWagonPart1(smach.State):
 		
 		# 6. arm: move up, turn aroundintermediate3_carry2clear_position
 		if JOURNALIST_MODE == False:
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate2_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate3_carry2clear"]])
 		else:
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate1_carry2clear"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate2_carry2clear"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate3_carry2clear"]])
 			raw_input("enter")
 		
 		# up to here: 1,40m distance, then 1,05m
@@ -1377,18 +1389,18 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		
 		# clear trash bin
 		if JOURNALIST_MODE == False:
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
-					ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate5_carry2clear_small"],
+					ARM_JOINT_CONFIGURATIONS_TRASH["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["clear_small"]])
 		else:
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate4_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate5_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate6_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate7_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["clear_small"]])
 			raw_input("finished trash bin clearing (next steps move back the arm)")
 
 		#lwaintermediate4_carry2clear_position
@@ -1400,8 +1412,8 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		#handle_arm = sss.move("arm",[[1.7032876014709473, -0.5807051062583923, 2.3603627681732178, 1.1806684732437134, -2.2949676513671875, 1.7723535299301147, -2.81252121925354]]) # small trash bin
 
 		# move arm back to the side
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"],
-					ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate6_carry2clear_small"],
+					ARM_JOINT_CONFIGURATIONS_TRASH["intermediate5_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate4_carry2clear_small"]])
 		
 		# drive forward slightly
 		handle_base = sss.move_base_rel("base", (0.1, 0.0, 0.0), blocking=True)
@@ -1411,8 +1423,8 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		# todo: check for success!
 		
 		# move arm back to carry position
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"],
-					ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS["carry"]])
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate3_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate2_carry2clear"],
+					ARM_JOINT_CONFIGURATIONS_TRASH["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["carry"]])
 		#handle_arm = sss.move("arm",[[2.5890188217163086, -1.3564121723175049, 2.3780744075775146, 1.9312158823013306, 0.43163323402404785, 0.4533853530883789, -2.814291000366211]]) # small trash bin
 
 		return 'finished'
@@ -1462,15 +1474,19 @@ class ReleaseTrashBin(smach.State):
 		overtrashbin_position = [-0.7597243701006117, -0.29044024082437636, 0.35585518118912385, -1.8774681296628202, 3.024934846386492, -0.23268729587588402, 2.3328594380931804]
 		
 		intrashbin_position_large = [-0.7597069168080918, -0.7994306105834827, 0.35585518118912385, -1.6194910129255382, 3.024934846386492, -0.02567379329683659, 2.3328594380931804]
-		intrashbin_position_small = [-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
-
+		deepintrashbin_position_large = [-0.7846651251116107, -0.9414131452332214, 0.35585518118912385, -1.456459807496748, 3.021932880073062, -0.02567379329683659, 2.475854263709076]
+		intrashbin_position_small = [-0.49670325182506625, -0.9567894959432915, 0.15018558213411204, -1.3131333693229736, 3.025004659556572, -0.1595230936322817, 2.374852059896164] #[-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
+		intrashbin_position_smaller = [-0.49658107877742663, -1.2460603661688316, 0.15077899407979012, -0.8043000791965469, 3.0249697529715323, -0.4925493682053197, 2.374869513188684]
+		deepintrashbin_position_small = [-0.4967381584101061, -1.0639701653082632, 0.1500459557939525, -1.474611231717489, 3.024917393093972, 0.13828243663551074, 2.374886966481204] #[-0.49663432530867424, -1.1209673134469444, 0.14990452214815173, -1.428260011571481, 3.0249716446102015, 0.13848445107830495, 2.3748987545970754] #[-0.4967207051175862, -1.223720151743304, 0.1498365162837132, -0.9534384637794623, 3.024987206264052, -0.22654373690886398, 2.374852059896164]
+		deepintrashbin_position_smaller = [-0.4965461721923868, -1.2596215744568275, 0.15086626054238986, -0.9657255817135024, 3.025004659556572, -0.278851254591134, 2.374852059896164] #[-0.49658107877742663, -1.4291454047030367, 0.15676547341413066, -0.5847551125881802, 3.024952299679012, -0.3783524752473308, 2.374886966481204] # [-0.49658107877742663, -1.3030802728314863, 0.15077899407979012, -0.7132986119975625, 3.0249697529715323, -0.4995306852132971, 2.374869513188684]
+		
 		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
 		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
-		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
-
-
+		carry_position = [2.022749336598828, -0.9427919553422969, 0.09196139828758122, -1.5927002089074256, 2.4349786526273687, -1.275155004799577, -0.7997796764338816] #[2.02229555099331, -0.9424428894918981, 0.09210102462774077, -1.5928747418326248, 2.434961199334849, -1.426038718634487, -1.037510973848029] #[2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
+							# [1.9474732859603128, -0.9245881712439961, -0.31063370026995074, -1.9436335616059253, 2.4089034336025734, -0.8307069107792211, -0.8225038632948477]
+	
 		# 8. arm: put down
-		handle_arm = sss.move("arm",[intermediate2_deep2carry, intermediate1_deep2carry, intrashbin_position_small])
+		handle_arm = sss.move("arm",[intermediate2_deep2carry, intermediate1_deep2carry, intrashbin_position_smaller])
 		#lwa
 		#handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
 		#handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]])
@@ -1564,8 +1580,8 @@ class ChangeToolManual(smach.State):
 				print "Service call failed: %s"%e
 			tool_change_successful = raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
-		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
-		handle_arm = sss.move("arm",[carrying_position])
+		#carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
 		print 'Manual tool change successfully completed.'
 		
@@ -1669,8 +1685,8 @@ class ChangeToolManualPnP(smach.State):
 			
 			tool_change_successful = 'yes' # raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
-		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
-		#handle_arm = sss.move("arm",[carrying_position])
+		#carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
 		print 'Manual tool change successfully completed.'
 		
@@ -1917,29 +1933,29 @@ class Clean(smach.State):
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
 
-		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
-		intermediate1_position = [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447] # intermediate 1
-		intermediate2_position = [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447] # intermediate 2
-		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
-		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
-		cleaning_position = [-0.09923942126839758, -0.909491073214245, 0.08154178265317508, -1.4209598105111834, 1.695622274897531, -0.24858724536155236, 1.066797598696494] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position
-		#[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
+#		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+#		intermediate1_position = [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447] # intermediate 1
+#		intermediate2_position = [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447] # intermediate 2
+#		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
+#		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
+#		cleaning_position = [-0.09923942126839758, -0.909491073214245, 0.08154178265317508, -1.4209598105111834, 1.695622274897531, -0.24858724536155236, 1.066797598696494] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position 
+							#[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
 
 		# move arm from storage position to cleaning position
 		if JOURNALIST_MODE == False:
-			handle_arm = sss.move("arm",[carrying_position, intermediate1_position, intermediate2_position, above_cleaning_20cm_position, above_cleaning_5cm_position, cleaning_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
 		else:
-			handle_arm = sss.move("arm",[carrying_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[intermediate1_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[intermediate2_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[above_cleaning_20cm_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[above_cleaning_5cm_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[cleaning_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
 			raw_input("enter")
 		
 		# turn vacuum cleaner on
@@ -1969,16 +1985,12 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 		
 		# move arm back to storage position
-		handle_arm = sss.move("arm",[above_cleaning_5cm_position, above_cleaning_20cm_position, intermediate2_position, intermediate1_position, carrying_position])
+		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
-		rospy.sleep(2)
-		
-		#raw_input("Quit program")
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[1.4605438779464148, -0.548173011466379, 0.08925613794699001, -1.751909143274348, 2.1865310336059762, -1.3275846955294868, -1.9370711236184264]]) #intermediate 1.5?
-		
+		raw_input("cleaning finished?")
+
+		#rospy.sleep(2)
+	
 		return 'cleaning_done'
 
 
