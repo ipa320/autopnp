@@ -278,9 +278,14 @@ N', GraspTrashBin(),
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('APPROACH_PERIMETER_LINEAR', ApproachPerimeter(mode='linear'),
-								transitions={'reached':'GRASP_TRASH_BIN', 
-											 'not_reached':'GRASP_TRASH_BIN',
+								transitions={'reached':'CHECK_POSITION_TO_TRASH_BIN', 
+											 'not_reached':'CHECK_POSITION_TO_TRASH_BIN',
 											 'failed':'failed'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
+			
+			smach.StateMachine.add('CHECK_POSITION_TO_TRASH_BIN', CheckPositionToTrashBinLocation(),
+								transitions={'success':'GRASP_TRASH_BIN',
+											 'failed':'MOVE_TO_TRASH_BIN_LOCATION_LINEAR'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
@@ -353,7 +358,7 @@ N', GraspTrashBin(),
 			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonFrontFar(),
 								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION'})
 			
-			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
+			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManualPnP(),
 								transitions={'CTM_done':'tool_change_done'})
 		
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL', sm_sub_change_tool_manual,

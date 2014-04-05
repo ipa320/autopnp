@@ -78,6 +78,7 @@ from cob_object_detection_msgs.msg import DetectionArray, Detection
 from geometry_msgs import *
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
+from std_msgs.msg import Bool
 
 from ApproachPerimeter import *
 #from ApproachPerimeterLinear import *
@@ -112,7 +113,7 @@ TOOL_WAGON_ROBOT_OFFSETS={
 						"front_far":	Pose2D(x=-1.4, y=0.0, theta=0.0),
 						"rear":		Pose2D(x=-1.45, y=0.0, theta=math.pi),
 						"front_frontal_far":	Pose2D(x=1.4, y=0.0, theta=math.pi),
-						"front_trash_clearing":	Pose2D(x=-1.05, y=0.0, theta=0.0)
+						"front_trash_clearing":	Pose2D(x=-0.95, y=0.0, theta=0.0) #Pose2D(x=-1.05, y=0.0, theta=0.0)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
 
 global FIDUCIALS_MARKER_DICTIONARY
@@ -200,8 +201,13 @@ class InitAutoPnPScenario(smach.State):
 		print 'robot_pose: ', (robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0])
 		print 'tool_wagon_pose ', tool_wagon_pose
 		
-		userdata.tool_wagon_pose = tool_wagon_pose
+		# hack hmi
+		tool_wagon_pose.x = -1.46
+		tool_wagon_pose.y = -1.23
+		tool_wagon_pose.theta = 0.79
 		
+		userdata.tool_wagon_pose = tool_wagon_pose
+				
 		return 'initialized'
 			
 			
@@ -415,8 +421,16 @@ class InspectRoom(smach.State):
 
 		#hack:
 		userdata.inspect_room_img_out_ = userdata.inspect_room_data_img_in_
+		handle_move = sss.move("base", [-0.58, 0.58, 0.0],mode='omni')
+		rospy.sleep(1.0)
+		handle_move = sss.move("base", [-0.58, 0.58, -0.79],mode='linear')
+		rospy.sleep(1.0)
+		handle_move = sss.move("base", [0.92, -0.06, 2.36],mode='omni')
+		rospy.sleep(1.0)
+		handle_move = sss.move("base", [0.92, -0.06, 3.14],mode='linear')
+		rospy.sleep(1.0)
 		
-		raw_input("finished inspection?")
+		#raw_input("finished inspection?")
 		
 		return 'finished'
 
@@ -594,7 +608,7 @@ class MoveToToolWaggonFront(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonFront')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -606,7 +620,7 @@ class MoveToToolWaggonFront(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
@@ -642,7 +656,7 @@ class MoveToToolWaggonFrontFar(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonFrontFar')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -654,7 +668,7 @@ class MoveToToolWaggonFrontFar(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front_far"]
@@ -689,7 +703,7 @@ class MoveToToolWaggonRear(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonRear')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -701,7 +715,7 @@ class MoveToToolWaggonRear(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["rear"]
@@ -749,7 +763,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		# wait until wagon is detected
@@ -771,6 +785,7 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived']) #, input_keys=['tool_wagon_pose'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+		self.move_base_local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/local_costmap")
 		self.tool_wagon_pose = None
 		self.last_callback_time = rospy.Time.now()
 
@@ -784,15 +799,18 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonFrontTrashClearing')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. adjust base footprint
 		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"})
+		move_base_local_config = self.move_base_local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"}) #[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
+		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.3"})
 		#self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
+		#[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]
 		
 # 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
 # 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
@@ -826,7 +844,12 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		else:
 			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
 			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
-		
+		if move_base_local_config["inflation_radius"]!=None:
+			self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": move_base_local_config["inflation_radius"]})
+		else:
+			rospy.logwarn("Could not read previous local inflation radius configuration of /move_base/local_costmap, resetting to standard value: 0.55.")
+			self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.55"})
+					
 		return 'arrived'
 
 
@@ -900,7 +923,7 @@ class GoToNextToolWaggonLocation(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_goal_pose.x + dx*math.cos(userdata.tool_wagon_goal_pose.theta)-dy*math.sin(userdata.tool_wagon_goal_pose.theta),
 							y = userdata.tool_wagon_goal_pose.y + dx*math.sin(userdata.tool_wagon_goal_pose.theta)+dy*math.cos(userdata.tool_wagon_goal_pose.theta),
 							theta = userdata.tool_wagon_goal_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 3. reset base movement speeds
 		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2,"max_rot_vel":0.6})
@@ -1094,8 +1117,8 @@ class MoveToTrashBinLocation(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.85		# adjust this for right distance to trash bin
-		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.radius = 0.9		# adjust this for right distance to trash bin
+		userdata.goal_pose_theta_offset = 0.0 #math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
@@ -1118,15 +1141,41 @@ class MoveToTrashBinLocationLinear(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.4		# adjust this for right distance to trash bin
-		userdata.goal_pose_theta_offset = 1.1*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.radius = 0.45		# adjust this for right distance to trash bin [in m]
+		userdata.goal_pose_theta_offset = 90.0/180.0*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'
 
 		return 'MTTBL_success'
-	
+
+class CheckPositionToTrashBinLocation(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['success', 'failed'],input_keys=['trash_bin_pose_'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("CheckPositionToTrashBinLocation")
+		rospy.loginfo('Executing state CheckPositionToTrashBinLocation') 
+		
+		try:
+			listener = get_transform_listener()
+			t = rospy.Time(0)
+			listener.waitForTransform('/map', '/base_link', t, rospy.Duration(10))
+			(robot_pose_translation, robot_pose_rotation) = listener.lookupTransform('/map', '/base_link', t)
+		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
+			print "Could not lookup robot pose: %s" %e
+			return 'failed'
+		robot_pose_rotation_euler = tf.transformations.euler_from_quaternion(robot_pose_rotation, 'rzyx') # yields yaw, pitch, roll
+		
+		dist = math.sqrt((robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)*(robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)+(robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y)*robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y)
+		print 'xy-dist =', dist
+		print 'angle', robot_pose_rotation_euler[0]
+
+		#if dist>0.5 or dist<0.4:
+		#	return 'failed'
+		
+		return 'success'	
 
 class GraspTrashBin(smach.State):
 	def __init__(self):
@@ -1147,11 +1196,11 @@ class GraspTrashBin(smach.State):
 		intrashbin_position_small = [-0.49670325182506625, -0.9567894959432915, 0.15018558213411204, -1.3131333693229736, 3.025004659556572, -0.1595230936322817, 2.374852059896164] #[-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
 		intrashbin_position_smaller = [-0.49658107877742663, -1.2460603661688316, 0.15077899407979012, -0.8043000791965469, 3.0249697529715323, -0.4925493682053197, 2.374869513188684]
 		deepintrashbin_position_small = [-0.4967381584101061, -1.0639701653082632, 0.1500459557939525, -1.474611231717489, 3.024917393093972, 0.13828243663551074, 2.374886966481204] #[-0.49663432530867424, -1.1209673134469444, 0.14990452214815173, -1.428260011571481, 3.0249716446102015, 0.13848445107830495, 2.3748987545970754] #[-0.4967207051175862, -1.223720151743304, 0.1498365162837132, -0.9534384637794623, 3.024987206264052, -0.22654373690886398, 2.374852059896164]
-		deepintrashbin_position_smaller = [-0.49658107877742663, -1.4291454047030367, 0.15676547341413066, -0.5847551125881802, 3.024952299679012, -0.3783524752473308, 2.374886966481204] # [-0.49658107877742663, -1.3030802728314863, 0.15077899407979012, -0.7132986119975625, 3.0249697529715323, -0.4995306852132971, 2.374869513188684]
+		deepintrashbin_position_smaller = [-0.4965461721923868, -1.2596215744568275, 0.15086626054238986, -0.9657255817135024, 3.025004659556572, -0.278851254591134, 2.374852059896164] #[-0.49658107877742663, -1.4291454047030367, 0.15676547341413066, -0.5847551125881802, 3.024952299679012, -0.3783524752473308, 2.374886966481204] # [-0.49658107877742663, -1.3030802728314863, 0.15077899407979012, -0.7132986119975625, 3.0249697529715323, -0.4995306852132971, 2.374869513188684]
 		
 		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
 		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
-		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
+		carry_position = [2.022749336598828, -0.9427919553422969, 0.09196139828758122, -1.5927002089074256, 2.4349786526273687, -1.275155004799577, -0.7997796764338816] #[2.02229555099331, -0.9424428894918981, 0.09210102462774077, -1.5928747418326248, 2.434961199334849, -1.426038718634487, -1.037510973848029] #[2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 							# [1.9474732859603128, -0.9245881712439961, -0.31063370026995074, -1.9436335616059253, 2.4089034336025734, -0.8307069107792211, -0.8225038632948477]
 		
 		# 1. arm: folded -> over trash bin
@@ -1194,14 +1243,15 @@ class GraspTrashBin(smach.State):
 		#rospy.sleep(5)
 
 		# 4. get deeper into trash bin
-		handle_arm = sss.move("arm",[deepintrashbin_position_small])
+		handle_arm = sss.move("arm",[deepintrashbin_position_smaller])
 		if JOURNALIST_MODE == True:
 			raw_input("enter")
 		
 		# 5. close hand
 		# todo: optimize grasp
 		#handle_sdh = sss.move("sdh",[[0.20,0,0,0.6,-0.15,0.6,-0.15]])	# large trash bin
-		handle_sdh = sss.move("sdh",[[0.40,0,0,0.6,-0.15,0.6,-0.15]])	# small trash bin
+		#handle_sdh = sss.move("sdh",[[0.40,0,0,0.6,-0.15,0.6,-0.15]])	# small trash bin
+		handle_sdh = sss.move("sdh",[[0.3, -0.2, 0.0, 0.6, -0.3, 0.6, -0.3]])	# smaller trash bin
 		#handle_sdh = sss.move("sdh",[[0.47,0,0,0.45,-0,0.45,-0]])	# small trash bin
 		if JOURNALIST_MODE == True:
 			raw_input("enter")
@@ -1383,9 +1433,9 @@ class MoveToTrashBinPickingLocation(smach.State):
 		center = Pose2D(x=userdata.trash_bin_pose_.pose.pose.position.x, y=userdata.trash_bin_pose_.pose.pose.position.y, theta=0)
 		print "center: ", center
 		userdata.center = center
-		userdata.radius = 0.45		# adjust this for right distance to trash bin
+		userdata.radius = 0.6		# adjust this for right distance to trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
-		userdata.goal_pose_theta_offset = 1.1*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.goal_pose_theta_offset = 90.0/180.*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
@@ -1537,14 +1587,18 @@ class ChangeToolManualPnP(smach.State):
 		self.attached = msg.data
 		
 	def execute(self, userdata):
-		sf = ScreenFormat("ChangeToolManual")
+		sf = ScreenFormat("ChangeToolManualPnP")
 		
 		# move arm with tool facing up (so it cannot fall down on opening)
 		#handle_arm = sss.move("arm", "pregrasp")
 		#handle_arm = sss.move("arm",[[1.064633390424021, -1.1901051103498934, 0.6336766915215812, -1.7237046225621198, -1.554041165975751, -1.7535846593562627, -0.00010471975511965978]])
-		arm_position = list(ARM_IDLE_POSITION)
-		arm_position[0] = -0.8
+		#arm_position = list(ARM_IDLE_POSITION)
+		#arm_position[0] = -0.8
 		#handle_arm = sss.move("arm",[arm_position])
+		
+		handle_arm = sss.move("arm",[[1.404728248467636, -1.4622368473208494, 0.21975440611860603, -1.7372832841426358, 1.8869103609161093, -1.79756695650652, -0.00013962634015954637],
+									[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
+
 		
 		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
 		tool_change_successful = ''
@@ -1763,7 +1817,7 @@ class ReceiveDirtMap(smach.State):
 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
 					x = u*map_resolution+map_offset.position.x
 					y = v*map_resolution+map_offset.position.y
-					if x>0.0 and y>0.0 and x<5.0 and y<2.5:
+					if x>-1.2 and y>-1.2 and x<1.5 and y<1.5:
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
@@ -1869,6 +1923,7 @@ class Clean(smach.State):
 		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
 		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
 		cleaning_position = [-0.09923942126839758, -0.909491073214245, 0.08154178265317508, -1.4209598105111834, 1.695622274897531, -0.24858724536155236, 1.066797598696494] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position
+		#[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
 
 		# move arm from storage position to cleaning position
 		if JOURNALIST_MODE == False:
