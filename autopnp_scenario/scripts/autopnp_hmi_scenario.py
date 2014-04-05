@@ -393,7 +393,7 @@ N', GraspTrashBin(),
 		
 		
 		
-		smach.StateMachine.add('CLEAN', Clean(), transitions={'cleaning_done':'GO_TO_INSPECT_LOCATION'})
+		smach.StateMachine.add('CLEAN', Clean(), transitions={'cleaning_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
 		
 		
 		

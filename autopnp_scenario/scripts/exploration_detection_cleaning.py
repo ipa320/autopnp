@@ -89,7 +89,7 @@ sss = simple_script_server()
 
 #-------------------------------------------------------- Global Definitions ---------------------------------------------------------------------------------------
 global JOURNALIST_MODE
-JOURNALIST_MODE = True # set to true to have breaks within all movements for photography
+JOURNALIST_MODE = False # set to true to have breaks within all movements for photography
 
 global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
 MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.0 # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
@@ -214,8 +214,8 @@ class InitAutoPnPScenario(smach.State):
 		print 'tool_wagon_pose ', tool_wagon_pose
 		
 		# hack hmi
-		tool_wagon_pose.x = -1.46
-		tool_wagon_pose.y = -1.23
+		tool_wagon_pose.x = -1.3
+		tool_wagon_pose.y = -1.1
 		tool_wagon_pose.theta = 0.79
 		
 		userdata.tool_wagon_pose = tool_wagon_pose
@@ -437,10 +437,10 @@ class InspectRoom(smach.State):
 		rospy.sleep(1.0)
 		handle_move = sss.move("base", [-0.58, 0.58, -0.79],mode='linear')
 		rospy.sleep(1.0)
-		handle_move = sss.move("base", [0.92, -0.06, 2.36],mode='omni')
-		rospy.sleep(1.0)
-		handle_move = sss.move("base", [0.92, -0.06, 3.14],mode='linear')
-		rospy.sleep(1.0)
+		handle_move = sss.move("base", [0.92, 0.0, 2.36],mode='omni')
+		rospy.sleep(2.0)
+		handle_move = sss.move("base", [0.92, 0.0, 3.14],mode='linear')
+		rospy.sleep(2.0)
 		
 		#raw_input("finished inspection?")
 		
@@ -819,7 +819,7 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		# 1. adjust base footprint
 		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
 		move_base_local_config = self.move_base_local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"}) #[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
 		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.3"})
 		#self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
 		#[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]
@@ -1130,7 +1130,7 @@ class MoveToTrashBinLocation(smach.State):
 		center.theta = 0
 		userdata.center = center
 		userdata.radius = 0.9		# adjust this for right distance to trash bin
-		userdata.goal_pose_theta_offset = 0.0 #math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.goal_pose_theta_offset = 90.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
@@ -1153,8 +1153,8 @@ class MoveToTrashBinLocationLinear(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.45		# adjust this for right distance to trash bin [in m]
-		userdata.goal_pose_theta_offset = 90.0/180.0*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.radius = 0.6		# adjust this for right distance to trash bin [in m]
+		userdata.goal_pose_theta_offset = 95.0/180.0*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
@@ -1184,7 +1184,7 @@ class CheckPositionToTrashBinLocation(smach.State):
 		print 'xy-dist =', dist
 		print 'angle', robot_pose_rotation_euler[0]
 
-		#if dist>0.5 or dist<0.4:
+		#if dist>0.7 or dist<0.5:
 		#	return 'failed'
 		
 		return 'success'	
@@ -1833,7 +1833,7 @@ class ReceiveDirtMap(smach.State):
 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
 					x = u*map_resolution+map_offset.position.x
 					y = v*map_resolution+map_offset.position.y
-					if x>-1.2 and y>-1.2 and x<1.5 and y<1.5:
+					if x>-1.2 and y>-1.0 and x<1.4 and y<1.2:
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
@@ -1889,8 +1889,8 @@ class MoveLocationPerimeterCleaning(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.45		# adjust this for right distance to dirt spot
-		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
+		userdata.radius = 0.3		# adjust this for right distance to dirt spot
+		userdata.goal_pose_theta_offset = 90.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
@@ -1905,11 +1905,10 @@ class MoveLocationPerimeterCleaning(smach.State):
 
 #-------------------------------------------------------- Clean -------------------------------------------------------------------------------------------------
 
-
-
 class Clean(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['cleaning_done'])
+		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("Clean")
@@ -1920,18 +1919,23 @@ class Clean(smach.State):
 		#handle_arm = sss.move("arm",[[]]) #
 		
 		raw_input("cleaning position ok?")
+
+		# 1. adjust base footprint
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
 		
+		# 2. clean
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
 		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
 		vacuum_off_service_name = '/vacuum_cleaner_controller/power_off'
 		
 		# (re-)init vacuum cleaner
- 		rospy.wait_for_service(vacuum_init_service_name) 
-		try:
-			req = rospy.ServiceProxy(vacuum_init_service_name, Trigger)
-			resp = req()
-		except rospy.ServiceException, e:
-			print "Service call failed: %s"%e
+ 		#rospy.wait_for_service(vacuum_init_service_name) 
+		#try:
+		#	req = rospy.ServiceProxy(vacuum_init_service_name, Trigger)
+		#	resp = req()
+		#except rospy.ServiceException, e:
+		#	print "Service call failed: %s"%e
 
 #		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
 #		intermediate1_position = [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447] # intermediate 1
@@ -1967,13 +1971,15 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 		
 		# move base (if necessary)
-		for i in range(0,1):
-			for j in range(0,2):
-				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
-			for j in range(0,5):
-				handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
-			for j in range(0,2):
-				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+		#for i in range(0,1):
+		#	for j in range(0,2):
+		#		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+		#	for j in range(0,5):
+		#		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		#	for j in range(0,2):
+		#		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+		for j in range(0,5):
+			handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
 			
 		
 		# turn vacuum cleaner off
@@ -1987,6 +1993,13 @@ class Clean(smach.State):
 		# move arm back to storage position
 		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
+		# 4. reset footprint
+		if local_config["footprint"]!=None:
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+
 		raw_input("cleaning finished?")
 
 		#rospy.sleep(2)

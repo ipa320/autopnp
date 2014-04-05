@@ -27,7 +27,7 @@
 		<arg name="robot" value="$(arg robot)"/>
 	</include>
     
-    <!-- start linear navigation -->
+	<!-- start linear navigation -->
 	<include file="$(find cob_navigation_global)/launch/2dnav_linear.xml" >
       <arg name="robot" value="$(arg robot)"/>
     </include>
