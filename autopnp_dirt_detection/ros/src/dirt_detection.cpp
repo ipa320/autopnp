@@ -1225,6 +1225,7 @@ void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::Occupancy
 			// hack: autonomik-scenario: only map dirt within a certain area
 			//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
 			//if (u>-gridOrigin_.x*gridResolution_-7 && u<-gridOrigin_.x*gridResolution_+8 && v>-gridOrigin_.y*gridResolution_+2 && v<-gridOrigin_.y*gridResolution_+6)
+			if (u>-gridOrigin_.x*gridResolution_-7 && u<-gridOrigin_.x*gridResolution_+7 && v>-gridOrigin_.y*gridResolution_-6 && v<-gridOrigin_.y*gridResolution_+6)
 				//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 				// todo: new mode
 				detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15

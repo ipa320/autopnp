@@ -152,10 +152,10 @@ global ARM_JOINT_CONFIGURATIONS_VACUUM
 ARM_JOINT_CONFIGURATIONS_VACUUM={
 	"carrying_position": [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925], # carrying position
 	"intermediate1_position": [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447], # intermediate 1
-	"intermediate2_position": [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447], # intermediate 2
-	"above_cleaning_20cm_position": [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447], # ca. 20cm above cleaning position
-	"above_cleaning_5cm_position": [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447], # just 5cm above cleaning position
-	"cleaning_position": [-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position #[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
+	"intermediate2_position": [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 0.5], #7:1.000527447 # intermediate 2
+	"above_cleaning_20cm_position": [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, -0.500527447], #7:1.000527447 # ca. 20cm above cleaning position
+	"above_cleaning_5cm_position": [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, -1.3], #7:1.000527447 # just 5cm above cleaning position
+	"cleaning_position": [-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, -2.0844467256568278] #[-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position #[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
 	}
 #[-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] hmi cleaning - soft
 #[-0.09944886077863689, -0.9110269629560002, 0.0812276233878161, -1.401132870208528, 1.7055357450488586, -0.2665815899496139, 1.0595544823007175] hmi cleaning -hard
@@ -439,9 +439,9 @@ class InspectRoom(smach.State):
 		handle_move = sss.move("base", [-0.58, 0.58, -0.79],mode='linear')
 		rospy.sleep(1.0)
 		handle_move = sss.move("base", [0.88, 0.0, 2.36],mode='omni')
-		rospy.sleep(2.0)
+		rospy.sleep(3.0)
 		handle_move = sss.move("base", [0.88, 0.0, 3.14],mode='linear')
-		rospy.sleep(2.0)
+		rospy.sleep(3.0)
 		
 		#raw_input("finished inspection?")
 		
@@ -600,7 +600,7 @@ def positionControlLoopLinear(self_tool_wagon_pose, dx, dy, dtheta):
 	# verify distance to goal pose
 	dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
 	print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
-	if dist > 0.03 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.03:		# in m      # rot: 0.02
+	if dist > 0.04 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.03:		# in m      # rot: 0.02 #trans: 0.03
 		return False
 	else:
 		return True
@@ -1853,6 +1853,7 @@ class ReceiveDirtMap(smach.State):
 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
 					x = u*map_resolution+map_offset.position.x
 					y = v*map_resolution+map_offset.position.y
+					# hack: limit valid space for cleaning
 					if x>-1.2 and y>-1.0 and x<1.4 and y<1.2:
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
@@ -1879,6 +1880,9 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat("SelectNextUnprocssedDirtSpot")
 		rospy.loginfo('Executing state Select_Next_Unprocssed_Dirt_Spot')
+
+		print "last_visited_dirt_location =", userdata.last_visited_dirt_location
+		print "list_of_dirt_locations =", userdata.list_of_dirt_locations
 		
 		if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location+1==len(userdata.list_of_dirt_locations):
 			return 'no_dirt_spots_left'
@@ -1909,8 +1913,8 @@ class MoveLocationPerimeterCleaning(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.3		# adjust this for right distance to dirt spot
-		userdata.goal_pose_theta_offset = 85.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
+		userdata.radius = 0.35		# adjust this for right distance to dirt spot
+		userdata.goal_pose_theta_offset = 105.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
@@ -1944,6 +1948,14 @@ class Clean(smach.State):
 		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
 		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
 		
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
+
 		# 2. clean
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
 		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
@@ -2020,6 +2032,13 @@ class Clean(smach.State):
 			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
 			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
 		raw_input("cleaning finished?")
 
 		#rospy.sleep(2)
@@ -2082,7 +2101,8 @@ class VerifyCleaningProcess(smach.State):
 		point = Point(x=userdata.next_dirt_location[0], y=userdata.next_dirt_location[1], z=0.0)
 		
 		rospy.sleep(4.0)
-
+		
+		# hack:
 	#	rospy.loginfo('Executing state verify_Cleaning_Process')
 	#	rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
 	#	try:

@@ -151,10 +151,7 @@ N', GraspTrashBin(),
 	sm_scenario.userdata.sm_trash_bin_counter = 0
 
 	with sm_scenario:
-		
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
-								transitions={'arrived':'finished'})
-		'''
+
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
 							transitions={'initialized':'ANALYZE_MAP',
 										'failed':'failed'})
@@ -432,7 +429,7 @@ N', GraspTrashBin(),
 			
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION_2', ChangeToolManualPnP(current_tool='vacuum'),
 								transitions={'CTM_done':'finished'})
-		'''
+		
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')
 	sis.start()
