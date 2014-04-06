@@ -454,7 +454,8 @@ if __name__ == '__main__':
 			CONFIRM_MODE = True
 
 		if flag=="auto":
-			CONFIRM_MODE = False
+			CONFIRM_MODE = False  # in auto mode the connection to the control pc may interrupted, the scenario will stil work
+			# necessitates that all nodes are started with & and the end, e.g. bringup &
 		else:
 			CONFIRM_MODE = True
 
