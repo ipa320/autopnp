@@ -79,6 +79,7 @@ from geometry_msgs import *
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 from std_msgs.msg import Bool
+from std_msgs.msg import String
 from std_srvs.srv import Empty
 
 from ApproachPerimeter import *
@@ -1639,12 +1640,12 @@ class ChangeToolManualPnP(smach.State):
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
 		
 		#self.diagnostics_sub = rospy.Subscriber("/diagnostics_vacuum_cleaner", DiagnosticArray, self.diagnosticCallback)
-		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
-		self.attached = False
+		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", String, self.attachmentStatusCallback)
+		self.attachment = ""
 		self.current_tool = current_tool
 
 	def attachmentStatusCallback(self, msg):
-		self.attached = msg.data
+		self.attachment = msg.data
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("ChangeToolManualPnP")
@@ -1694,9 +1695,9 @@ class ChangeToolManualPnP(smach.State):
 			except rospy.ServiceException, e:
 				print "Service call failed: %s"%e
 			
-			while self.attached == True:
+			while self.attachment != "":
 				rospy.sleep(0.1)
-			#self.attached = False
+			#self.attachment = ""
 			#rospy.sleep(3.0)
 			tool_change_successful = 'yes' #raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
@@ -1709,7 +1710,7 @@ class ChangeToolManualPnP(smach.State):
 		while tool_change_successful!='yes':
 			# wait for confirmation to attach tool
 			#raw_input("Please attach the tool manually and then press <Enter>.")
-			while (self.attached==False):
+			while (self.attachment==""):
 				rospy.sleep(0.2)
 			
 			rospy.wait_for_service(service_name) 
@@ -1738,6 +1739,76 @@ class ChangeToolManualPnP(smach.State):
 		print 'Manual tool change successfully completed.'
 		
 		return 'CTM_done'
+
+
+class ChangeToolManualPnPAttachOnly(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['CTM_done_sdh', 'CTM_done_vacuum', 'failed'])
+		# command line usage:
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin2", state: 0}'
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
+		
+		#self.diagnostics_sub = rospy.Subscriber("/diagnostics_vacuum_cleaner", DiagnosticArray, self.diagnosticCallback)
+		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", String, self.attachmentStatusCallback)
+		self.attachment = ""
+
+	def attachmentStatusCallback(self, msg):
+		self.attachment = msg.data
+		
+	def execute(self, userdata):
+		sf = ScreenFormat("ChangeToolManualPnPAttachOnly")
+		
+		# move arm with tool facing up (so it cannot fall down on opening)
+		#handle_arm = sss.move("arm", "pregrasp")
+		#handle_arm = sss.move("arm",[[1.064633390424021, -1.1901051103498934, 0.6336766915215812, -1.7237046225621198, -1.554041165975751, -1.7535846593562627, -0.00010471975511965978]])
+		#arm_position = list(ARM_IDLE_POSITION)
+		#arm_position[0] = -0.8
+		#handle_arm = sss.move("arm",[arm_position])
+		
+		handle_arm = sss.move("arm",[[1.404728248467636, -1.4622368473208494, 0.21975440611860603, -1.7372832841426358, 1.8869103609161093, -1.79756695650652, -0.00013962634015954637],
+									[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
+		
+		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
+		tool_change_successful = ''
+		while tool_change_successful!='yes':
+			# wait for confirmation to attach tool
+			#raw_input("Please attach the tool manually and then press <Enter>.")
+			while (self.attachment==""):
+				rospy.sleep(0.2)
+			
+			rospy.wait_for_service(service_name) 
+			try:
+				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
+				resp = req(uri='tool_changer_pin2', state=1)
+				print 'Closing tool changer response: uri=', resp.uri, '  state=', resp.state
+				# keep power on closing the changer for safety 
+				#rospy.sleep(1.0)
+				#resp = req(uri='tool_changer_pin4', state=0)
+				#print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+				
+			try:
+				resp = req(uri='tool_changer_pin2', state=0)
+				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			
+			tool_change_successful = 'yes' # raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
+		
+		#carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		
+		if self.attachment=="sdh":
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], 'folded'])
+			print 'Manual tool change successfully completed with sdh attached.'
+			return 'CTM_done_sdh'
+		elif self.attachment=="vacuum":
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+			print 'Manual tool change successfully completed with vacuum cleaner attached.'
+			return 'CTM_done_vacuum'
+		
+		print 'Manual tool change failed.'
+		return 'failed'
 
 
 class GoToToolWagonLocation(smach.State):

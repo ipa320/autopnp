@@ -452,8 +452,8 @@ if __name__ == '__main__':
 			CONFIRM_MODE = True
 		else:
 			flag=sys.argv[1]
-		if len(flag)==0:
-			CONFIRM_MODE = True
+		#if len(flag)==0:
+		#	CONFIRM_MODE = True
 
 		if flag=="auto":
 			CONFIRM_MODE = False  # in auto mode the connection to the control pc may interrupted, the scenario will stil work
