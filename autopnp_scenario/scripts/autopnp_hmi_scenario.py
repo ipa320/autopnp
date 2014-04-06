@@ -60,11 +60,12 @@ import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
 import smach
 import smach_ros
+import sys, os
 
 from exploration_detection_cleaning import *
 
 
-def main():
+def main(confirm):
 	rospy.init_node('exploration_detection_cleaning')
 	
 	'''
@@ -152,7 +153,7 @@ N', GraspTrashBin(),
 
 	with sm_scenario:
 
-		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
+		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm),
 							transitions={'initialized':'ANALYZE_MAP',
 										'failed':'failed'})
 		
@@ -444,7 +445,21 @@ N', GraspTrashBin(),
 
 if __name__ == '__main__':
 	try:
-		main()
+		flag = ""
+		if len(sys.argv)<2:
+			CONFIRM_MODE = True
+		else:
+			flag=sys.argv[1]
+		if len(flag)==0:
+			CONFIRM_MODE = True
+
+		if flag=="auto":
+			CONFIRM_MODE = False
+		else:
+			CONFIRM_MODE = True
+
+		print "CONFIRM_MODE ", CONFIRM_MODE
+		main(CONFIRM_MODE)
 	except:
 		print('EXCEPTION THROWN')
 		print('Aborting cleanly')

@@ -92,6 +92,9 @@ sss = simple_script_server()
 global JOURNALIST_MODE
 JOURNALIST_MODE = False # set to true to have breaks within all movements for photography
 
+global CONFIRM_MODE # safety confirmation necessary during script?
+CONFIRM_MODE = 0
+
 global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
 MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.0 # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
 
@@ -175,16 +178,21 @@ def get_transform_listener():
 #################################################################################
 
 class InitAutoPnPScenario(smach.State):
-	def __init__(self):
+	def __init__(self, confirm_mode):
 		smach.State.__init__(self,
 			outcomes=['initialized', 'failed'],
 			input_keys=[],
 			output_keys=['tool_wagon_pose'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		self.dwa_planner_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
+		print "confirm_mode", confirm_mode
+		self.CONFIRM_MODE = confirm_mode
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("InitAutoPnPScenario")
+		
+		CONFIRM_MODE= self.CONFIRM_MODE
+		print "CONFIRM_MODE =", CONFIRM_MODE
 
 		# just fill history of global transform listener
 		dummylistener = get_transform_listener()
@@ -650,6 +658,7 @@ class MoveToToolWaggonFront(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
+		sss.move("torso", "home")
 		
 		return 'arrived'
 
@@ -698,7 +707,8 @@ class MoveToToolWaggonFrontFar(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
-		
+		sss.move("torso", "home")
+
 		return 'arrived'
 
 
@@ -745,7 +755,8 @@ class MoveToToolWaggonRear(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
-		
+		sss.move("torso", "home")
+
 		return 'arrived'
 
 class MoveToToolWaggonFrontFrontalFar(smach.State):
@@ -791,6 +802,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
+		sss.move("torso", "home")
 		
 		return 'arrived'
 
@@ -877,6 +889,8 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call to /update_footprint failed: %s"%e
+
+		sss.move("torso", "home")
 
 		return 'arrived'
 
@@ -974,7 +988,8 @@ class ReleaseGrasp(smach.State):
 		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
 		overhandle_position = [2.0912709630321253, -1.0194293627973678, -0.6451958645847439, -0.9112713090512793, 2.8221799471823106, -1.6184612686668618, -1.2679642482813605]   #[2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
 		
-		raw_input("Press <Enter>.")
+		if (CONFIRM_MODE==True):
+			raw_input("Press <Enter>.")
 		
 		# 1. open hand
 		sss.move("sdh", "cylopen")
@@ -1213,7 +1228,8 @@ class GraspTrashBin(smach.State):
 		sf = ScreenFormat("GraspTrashBin")
 		rospy.loginfo('Executing state Grasp_Trash_Bin')
 
-		raw_input("positioned correctly?")
+		if (CONFIRM_MODE==True):
+			raw_input("positioned correctly?")
 
 		#lwa4d:
 		intermediate_folded2overtrashbin_position = [0.8592779506343683, -0.2794097599517722, -0.6911329304972346, -1.6704895336688126, 2.7189611752193663, -0.6486690697962125, -0.00013962634015954637]
@@ -1401,7 +1417,8 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		sf = ScreenFormat("ClearTrashBinIntoToolWagonPart2")
 		rospy.loginfo('Executing state ClearTrashBinIntoToolWagonPart2')
 		
-		raw_input("Press key.")
+		if (CONFIRM_MODE==True):
+			raw_input("Press key.")
 		
 		# clear trash bin
 		if JOURNALIST_MODE == False:
@@ -1483,7 +1500,8 @@ class ReleaseTrashBin(smach.State):
 		sf = ScreenFormat("ReleaseTrashBin")
 		rospy.loginfo('Executing state Release_Trash_Bin')
 
-		raw_input("trash bin location ok?")
+		if (CONFIRM_MODE==True):
+			raw_input("trash bin location ok?")
 
 		#lwa4d:
 		intermediate_folded2overtrashbin_position = [0.8592779506343683, -0.2794097599517722, -0.6911329304972346, -1.6704895336688126, 2.7189611752193663, -0.6486690697962125, -0.00013962634015954637]
@@ -1942,7 +1960,8 @@ class Clean(smach.State):
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
 		
-		raw_input("cleaning position ok?")
+		if (CONFIRM_MODE==True):
+			raw_input("cleaning position ok?")
 
 		# 1. adjust base footprint
 		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
@@ -2039,7 +2058,8 @@ class Clean(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call to /update_footprint failed: %s"%e
-		raw_input("cleaning finished?")
+		if (CONFIRM_MODE==True):
+			raw_input("cleaning finished?")
 
 		#rospy.sleep(2)
 	
