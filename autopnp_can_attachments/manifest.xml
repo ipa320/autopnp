@@ -1,0 +1,18 @@
+<package>
+  <description brief="autopnp_can_attachments">
+
+     cob_esd_mini_adi8
+
+  </description>
+  <author>Mathias Lüdtke</author>
+  <license>LGPL</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/autopnp_can_attachments</url>
+  <depend package="roscpp"/>
+  <depend package="libpcan"/>
+  <depend package="cob_srvs"/>
+  <depend package="diagnostic_updater"/>
+
+</package>
+
+

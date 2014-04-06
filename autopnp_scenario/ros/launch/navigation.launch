@@ -3,17 +3,21 @@
 
   <!-- args -->
   <arg name="robot" default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/>
-  <arg name="pc1" default="cob3-5-pc1"/>
-  <arg name="pc2" default="cob3-5-pc2"/>
-  <arg name="pc3" default="cob3-5-pc3"/>
+  <arg name="robot_env" default="$(optenv ROBOT_ENV !!NO_ROBOT_ENV_SET!!)"/>
+  <!--arg name="robot" value="cob3-2"/-->
+  <arg name="pc1" default="cob3-2-pc1"/> <!--$(arg robot)-->
+  <arg name="pc2" default="cob3-2-pc2"/>
+  <arg name="pc3" default="cob3-2-pc3"/>
   <arg name="simulation" default="false"/>
   
   <group>
-    <machine name="pc1" address="$(arg pc1)" default="true" unless="$(arg simulation)"/>
+    <!--machine name="pc3" address="$(arg pc3)" default="true" unless="$(arg simulation)"/-->
+    <machine name="pc3" address="$(arg pc3)" env-loader="$(find autopnp_scenario)/ros/launch/env.sh" default="true" unless="$(arg simulation)"/>
     
     <!-- start navigation -->
     <!--- Run map_server -->
-	<node name="map_server" pkg="map_server" type="map_server" args="$(find autopnp_scenario)/config/map-autopnp-conference-clean.yaml"/>
+    <!--arg name="map" default="$(find cob_default_env_config)/$(arg robot_env)/map.yaml" /-->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find autopnp_scenario)/config/map-hmi.yaml"/>
 
 	<!--- Run AMCL -->
 	<include file="$(find cob_navigation_global)/launch/amcl_node.xml" />
@@ -23,7 +27,7 @@
 		<arg name="robot" value="$(arg robot)"/>
 	</include>
     
-    <!-- start linear navigation -->
+	<!-- start linear navigation -->
 	<include file="$(find cob_navigation_global)/launch/2dnav_linear.xml" >
       <arg name="robot" value="$(arg robot)"/>
     </include>

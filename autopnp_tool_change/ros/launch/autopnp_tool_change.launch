@@ -11,5 +11,5 @@
     <!--remap from="input_color_camera_info" to="/camera/rgb/camera_info"/--> 
  
   </node>
-
+  
 </launch>

@@ -78,9 +78,11 @@ from cob_object_detection_msgs.msg import DetectionArray, Detection
 from geometry_msgs import *
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
+from std_msgs.msg import Bool
+from std_srvs.srv import Empty
 
 from ApproachPerimeter import *
-from ApproachPerimeterLinear import *
+#from ApproachPerimeterLinear import *
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
@@ -89,6 +91,9 @@ sss = simple_script_server()
 #-------------------------------------------------------- Global Definitions ---------------------------------------------------------------------------------------
 global JOURNALIST_MODE
 JOURNALIST_MODE = False # set to true to have breaks within all movements for photography
+
+global CONFIRM_MODE # safety confirmation necessary during script?
+CONFIRM_MODE = 0
 
 global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
 MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.0 # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
@@ -112,7 +117,7 @@ TOOL_WAGON_ROBOT_OFFSETS={
 						"front_far":	Pose2D(x=-1.4, y=0.0, theta=0.0),
 						"rear":		Pose2D(x=-1.45, y=0.0, theta=math.pi),
 						"front_frontal_far":	Pose2D(x=1.4, y=0.0, theta=math.pi),
-						"front_trash_clearing":	Pose2D(x=-1.05, y=0.0, theta=0.0)
+						"front_trash_clearing":	Pose2D(x=-0.90, y=0.0, theta=0.0) #Pose2D(x=-1.05, y=0.0, theta=0.0)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
 
 global FIDUCIALS_MARKER_DICTIONARY
@@ -128,11 +133,11 @@ FIDUCIALS_MARKER_DICTIONARY={
 						"trash_bin":					"tag_25"
 						}
 
-global ARM_JOINT_CONFIGURATIONS
-ARM_JOINT_CONFIGURATIONS={
+global ARM_JOINT_CONFIGURATIONS_TRASH
+ARM_JOINT_CONFIGURATIONS_TRASH={
 		"intermediate1_carry2clear": [1.6047953406237458, -0.9250419568495145, 0.5463578690443048, -1.2438961578963585, 2.005610203344244, -1.6329125948733747, -1.0737614624119514],
 		"intermediate2_carry2clear": [1.4538243603262366, -1.0659947472405766, 0.6813939932711062, -0.22266910596943656, 1.4894814369444809, -1.7758899671967503, -1.1778005391233333],
-		"intermediate3_carry2clear": [1.8488796365151532, -1.091738353707493, 0.8273733319079118, 0.7019365185670795, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404],   #[1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
+		"intermediate3_carry2clear": [1.7098641615938048, -0.9947504071741682, 0.8471130057479679, 0.7007671479682432, 0.8387877852159548, -1.7758027007341504, 2.283187367581422], #[1.8488796365151532, -1.091738353707493, 0.8273733319079118, 0.7019365185670795, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404],   #[1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
 		"intermediate4_carry2clear_large": [1.7169851049419416, -1.6298582686823848, 0.3803596038871242, 0.7778408877363129, 0.9197187026309318, -1.754806389832659, 2.2837109663570203],   #[1.8468026947052798, -1.6619548736265604, 0.3801850709619248, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
 		"intermediate4_carry2clear_small": [1.760915042214639, -1.775104569033353, 0.3801850709619248, 0.7269645400406781, 0.919701249338412, -1.7547889365401388, 2.2837109663570203],
 		"intermediate5_carry2clear_large": [1.5208275503102988, -1.85292880037978, -0.10279989294246601, 0.6450562382445842, 0.8517032216807128, -1.793814498614732, 2.3077266968644623],
@@ -145,6 +150,18 @@ ARM_JOINT_CONFIGURATIONS={
 		"clear_small": [1.4147813449591236, -1.8628597238236275, -0.16273449945595128, 0.07897614865274341, -0.21584486859413876, -1.8157881938973404, 2.3077441501569824],
 		"carry": [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 		}
+
+global ARM_JOINT_CONFIGURATIONS_VACUUM
+ARM_JOINT_CONFIGURATIONS_VACUUM={
+	"carrying_position": [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925], # carrying position
+	"intermediate1_position": [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447], # intermediate 1
+	"intermediate2_position": [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 0.5], #7:1.000527447 # intermediate 2
+	"above_cleaning_20cm_position": [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, -0.500527447], #7:1.000527447 # ca. 20cm above cleaning position
+	"above_cleaning_5cm_position": [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, -1.3], #7:1.000527447 # just 5cm above cleaning position
+	"cleaning_position": [-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, -2.0844467256568278] #[-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position #[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
+	}
+#[-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] hmi cleaning - soft
+#[-0.09944886077863689, -0.9110269629560002, 0.0812276233878161, -1.401132870208528, 1.7055357450488586, -0.2665815899496139, 1.0595544823007175] hmi cleaning -hard
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
@@ -161,16 +178,25 @@ def get_transform_listener():
 #################################################################################
 
 class InitAutoPnPScenario(smach.State):
-	def __init__(self):
+	def __init__(self, confirm_mode):
 		smach.State.__init__(self,
 			outcomes=['initialized', 'failed'],
 			input_keys=[],
 			output_keys=['tool_wagon_pose'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		self.dwa_planner_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
+		print "confirm_mode", confirm_mode
+		self.CONFIRM_MODE = confirm_mode
 		
 	def execute(self, userdata):
 		sf = ScreenFormat("InitAutoPnPScenario")
+		
+		CONFIRM_MODE= self.CONFIRM_MODE
+		print "CONFIRM_MODE =", CONFIRM_MODE
+
+		# just fill history of global transform listener
+		dummylistener = get_transform_listener()
+		rospy.sleep(5.0)
 
 		#todo: set acceleration
 		# adjust base footprint
@@ -196,8 +222,13 @@ class InitAutoPnPScenario(smach.State):
 		print 'robot_pose: ', (robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0])
 		print 'tool_wagon_pose ', tool_wagon_pose
 		
-		userdata.tool_wagon_pose = tool_wagon_pose
+		# hack hmi
+		tool_wagon_pose.x = -1.3
+		tool_wagon_pose.y = -1.1
+		tool_wagon_pose.theta = 0.79
 		
+		userdata.tool_wagon_pose = tool_wagon_pose
+				
 		return 'initialized'
 			
 			
@@ -300,6 +331,7 @@ class GoToRoomLocation(smach.State):
 		sf = ScreenFormat("GoToRoomLocation")
 		#rospy.sleep(10)
 		rospy.loginfo('Executing state go to room location')
+		#todo: replace movement command by some standard script
 		if userdata.go_to_room_location_loop_counter_in_ == 0 :
 			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
 																			userdata.find_next_unprocessed_room_center_x_ , 
@@ -346,6 +378,8 @@ class FindRandomLocation(smach.State):
 		sf = ScreenFormat("FindRandomLocation")
 		#rospy.sleep(10)
 		rospy.loginfo('Executing state find random location')
+
+		# todo: replace by something simple in the py script
 		
 		random_location_finder_action_server_result_ = random_location_finder_client(userdata.random_location_finder_data_img_in_,
 																					userdata.analyze_map_data_map_resolution_,
@@ -408,8 +442,16 @@ class InspectRoom(smach.State):
 
 		#hack:
 		userdata.inspect_room_img_out_ = userdata.inspect_room_data_img_in_
+		handle_move = sss.move("base", [-0.58, 0.58, 0.0],mode='omni')
+		rospy.sleep(1.0)
+		handle_move = sss.move("base", [-0.58, 0.58, -0.79],mode='linear')
+		rospy.sleep(1.0)
+		handle_move = sss.move("base", [0.88, 0.0, 2.36],mode='omni')
+		rospy.sleep(3.0)
+		handle_move = sss.move("base", [0.88, 0.0, 3.14],mode='linear')
+		rospy.sleep(3.0)
 		
-		raw_input("finished inspection?")
+		#raw_input("finished inspection?")
 		
 		return 'finished'
 
@@ -486,7 +528,7 @@ def computeToolWagonPoseFromFiducials(fiducials):
 			# transform to map system
 			try:
 				listener = get_transform_listener()
-				listener.waitForTransform('/map', tool_wagon_pose.header.frame_id, tool_wagon_pose.header.stamp, rospy.Duration(10))
+				listener.waitForTransform('/map', tool_wagon_pose.header.frame_id, tool_wagon_pose.header.stamp, rospy.Duration(2))
 				tool_wagon_pose_map = listener.transformPose('/map', tool_wagon_pose)
 				#print 'tool_wagon_pose = ', tool_wagon_pose_map
 				#print "tool_wagon_pose ypr: ", euler_from_quaternion([tool_wagon_pose_map.pose.orientation.x, tool_wagon_pose_map.pose.orientation.y, tool_wagon_pose_map.pose.orientation.z, tool_wagon_pose_map.pose.orientation.w], "rzyx")
@@ -505,6 +547,7 @@ def computeToolWagonPoseFromFiducials(fiducials):
 					averaged_tool_wagon_markers = averaged_tool_wagon_markers + 1.0
 			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
 				print "computeToolWagonPoseFromFiducials: Could not lookup robot pose: %s" %e
+				return averaged_tool_wagon_pose
 	# finalize averaging and normalizationroslib.load_manifest(PACKAGE)
 	if averaged_tool_wagon_markers > 0.0:
 		averaged_tool_wagon_pose.pose.position.x = averaged_tool_wagon_pose.pose.position.x/averaged_tool_wagon_markers
@@ -565,7 +608,7 @@ def positionControlLoopLinear(self_tool_wagon_pose, dx, dy, dtheta):
 	# verify distance to goal pose
 	dist = math.sqrt((robot_pose_translation[0]-robot_goal_pose.x)*(robot_pose_translation[0]-robot_goal_pose.x) + (robot_pose_translation[1]-robot_goal_pose.y)*(robot_pose_translation[1]-robot_goal_pose.y))
 	print "(x,y)-dist: ", dist, "  yaw-dist: ", robot_pose_rotation_euler[0]-robot_goal_pose.theta
-	if dist > 0.03 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.02:		# in m
+	if dist > 0.04 or abs(robot_pose_rotation_euler[0]-robot_goal_pose.theta)>0.03:		# in m      # rot: 0.02 #trans: 0.03
 		return False
 	else:
 		return True
@@ -586,7 +629,7 @@ class MoveToToolWaggonFront(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonFront')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -598,7 +641,7 @@ class MoveToToolWaggonFront(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
@@ -615,6 +658,7 @@ class MoveToToolWaggonFront(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
+		sss.move("torso", "home")
 		
 		return 'arrived'
 
@@ -634,7 +678,7 @@ class MoveToToolWaggonFrontFar(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonFrontFar')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -646,7 +690,7 @@ class MoveToToolWaggonFrontFar(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front_far"]
@@ -663,7 +707,8 @@ class MoveToToolWaggonFrontFar(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
-		
+		sss.move("torso", "home")
+
 		return 'arrived'
 
 
@@ -681,7 +726,7 @@ class MoveToToolWaggonRear(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonRear')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -693,7 +738,7 @@ class MoveToToolWaggonRear(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["rear"]
@@ -710,7 +755,8 @@ class MoveToToolWaggonRear(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
-		
+		sss.move("torso", "home")
+
 		return 'arrived'
 
 class MoveToToolWaggonFrontFrontalFar(smach.State):
@@ -741,7 +787,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 2. detect fiducials and move to corrected pose
 		# wait until wagon is detected
@@ -756,13 +802,15 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		
 		# 3. unsubscribe to fiducials
 		fiducials_sub.unregister()
+		sss.move("torso", "home")
 		
 		return 'arrived'
 
 class MoveToToolWaggonFrontTrashClearing(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['arrived'], input_keys=['tool_wagon_pose'])
+		smach.State.__init__(self, outcomes=['arrived']) #, input_keys=['tool_wagon_pose'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+		#self.move_base_local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/local_costmap")
 		self.tool_wagon_pose = None
 		self.last_callback_time = rospy.Time.now()
 
@@ -776,14 +824,25 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		#rospy.loginfo('Executing state MoveToToolWaggonFrontTrashClearing')
 
 		sss.move("head", "back")
-		sss.move("torso", "home")
+		sss.move("torso", "back")
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. adjust base footprint
-#		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+	#	move_base_local_config = self.move_base_local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]#[[0.1,0.1],[0.1,-0.1],[-0.1,-0.1],[-0.1,0.1]]
+	#	self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.3"})
+		#self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
+		#[[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
 		
 # 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
 # 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].x-0.35, y=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front_trash_clearing"].theta)
@@ -812,12 +871,27 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		fiducials_sub.unregister()
 		
 		# 4. reset footprint
-#		if local_config["footprint"]!=None:
-#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
-#		else:
-#			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
-#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
-		
+		if local_config["footprint"]!=None:
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+	#	if move_base_local_config["inflation_radius"]!=None:
+	#		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": move_base_local_config["inflation_radius"]})
+	#	else:
+	#		rospy.logwarn("Could not read previous local inflation radius configuration of /move_base/local_costmap, resetting to standard value: 0.55.")
+	#		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.55"})
+
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
+
+		sss.move("torso", "home")
+
 		return 'arrived'
 
 
@@ -891,7 +965,7 @@ class GoToNextToolWaggonLocation(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_goal_pose.x + dx*math.cos(userdata.tool_wagon_goal_pose.theta)-dy*math.sin(userdata.tool_wagon_goal_pose.theta),
 							y = userdata.tool_wagon_goal_pose.y + dx*math.sin(userdata.tool_wagon_goal_pose.theta)+dy*math.cos(userdata.tool_wagon_goal_pose.theta),
 							theta = userdata.tool_wagon_goal_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta])
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
 		
 		# 3. reset base movement speeds
 		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2,"max_rot_vel":0.6})
@@ -914,7 +988,8 @@ class ReleaseGrasp(smach.State):
 		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
 		overhandle_position = [2.0912709630321253, -1.0194293627973678, -0.6451958645847439, -0.9112713090512793, 2.8221799471823106, -1.6184612686668618, -1.2679642482813605]   #[2.1104870380965832, -0.9793216965865382, -0.6941872566882247, -0.968622828271813, 2.8201902718350373, -1.6184438153743417, -1.288140254434415]
 		
-		raw_input("Press <Enter>.")
+		if (CONFIRM_MODE==True):
+			raw_input("Press <Enter>.")
 		
 		# 1. open hand
 		sss.move("sdh", "cylopen")
@@ -1085,8 +1160,8 @@ class MoveToTrashBinLocation(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.70		# adjust this for right distance to trash bin
-		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.radius = 0.9		# adjust this for right distance to trash bin
+		userdata.goal_pose_theta_offset = 90.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
@@ -1109,15 +1184,41 @@ class MoveToTrashBinLocationLinear(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.55		# adjust this for right distance to trash bin
-		userdata.goal_pose_theta_offset = 1.1*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.radius = 0.6		# adjust this for right distance to trash bin [in m]
+		userdata.goal_pose_theta_offset = 95.0/180.0*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'
 
 		return 'MTTBL_success'
-	
+
+class CheckPositionToTrashBinLocation(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['success', 'failed'],input_keys=['trash_bin_pose_'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat("CheckPositionToTrashBinLocation")
+		rospy.loginfo('Executing state CheckPositionToTrashBinLocation') 
+		
+		try:
+			listener = get_transform_listener()
+			t = rospy.Time(0)
+			listener.waitForTransform('/map', '/base_link', t, rospy.Duration(10))
+			(robot_pose_translation, robot_pose_rotation) = listener.lookupTransform('/map', '/base_link', t)
+		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
+			print "Could not lookup robot pose: %s" %e
+			return 'failed'
+		robot_pose_rotation_euler = tf.transformations.euler_from_quaternion(robot_pose_rotation, 'rzyx') # yields yaw, pitch, roll
+		
+		dist = math.sqrt((robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)*(robot_pose_translation[0]-userdata.trash_bin_pose_.pose.pose.position.x)+(robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y)*(robot_pose_translation[1]-userdata.trash_bin_pose_.pose.pose.position.y))
+		print 'xy-dist =', dist
+		print 'angle', robot_pose_rotation_euler[0]
+
+		#if dist>0.7 or dist<0.5:
+		#	return 'failed'
+		
+		return 'success'	
 
 class GraspTrashBin(smach.State):
 	def __init__(self):
@@ -1127,7 +1228,8 @@ class GraspTrashBin(smach.State):
 		sf = ScreenFormat("GraspTrashBin")
 		rospy.loginfo('Executing state Grasp_Trash_Bin')
 
-		raw_input("positioned correctly?")
+		if (CONFIRM_MODE==True):
+			raw_input("positioned correctly?")
 
 		#lwa4d:
 		intermediate_folded2overtrashbin_position = [0.8592779506343683, -0.2794097599517722, -0.6911329304972346, -1.6704895336688126, 2.7189611752193663, -0.6486690697962125, -0.00013962634015954637]
@@ -1136,11 +1238,13 @@ class GraspTrashBin(smach.State):
 		intrashbin_position_large = [-0.7597069168080918, -0.7994306105834827, 0.35585518118912385, -1.6194910129255382, 3.024934846386492, -0.02567379329683659, 2.3328594380931804]
 		deepintrashbin_position_large = [-0.7846651251116107, -0.9414131452332214, 0.35585518118912385, -1.456459807496748, 3.021932880073062, -0.02567379329683659, 2.475854263709076]
 		intrashbin_position_small = [-0.49670325182506625, -0.9567894959432915, 0.15018558213411204, -1.3131333693229736, 3.025004659556572, -0.1595230936322817, 2.374852059896164] #[-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
+		intrashbin_position_smaller = [-0.49658107877742663, -1.2460603661688316, 0.15077899407979012, -0.8043000791965469, 3.0249697529715323, -0.4925493682053197, 2.374869513188684]
 		deepintrashbin_position_small = [-0.4967381584101061, -1.0639701653082632, 0.1500459557939525, -1.474611231717489, 3.024917393093972, 0.13828243663551074, 2.374886966481204] #[-0.49663432530867424, -1.1209673134469444, 0.14990452214815173, -1.428260011571481, 3.0249716446102015, 0.13848445107830495, 2.3748987545970754] #[-0.4967207051175862, -1.223720151743304, 0.1498365162837132, -0.9534384637794623, 3.024987206264052, -0.22654373690886398, 2.374852059896164]
+		deepintrashbin_position_smaller = [-0.4965461721923868, -1.2596215744568275, 0.15086626054238986, -0.9657255817135024, 3.025004659556572, -0.278851254591134, 2.374852059896164] #[-0.49658107877742663, -1.4291454047030367, 0.15676547341413066, -0.5847551125881802, 3.024952299679012, -0.3783524752473308, 2.374886966481204] # [-0.49658107877742663, -1.3030802728314863, 0.15077899407979012, -0.7132986119975625, 3.0249697529715323, -0.4995306852132971, 2.374869513188684]
 		
 		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
 		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
-		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
+		carry_position = [2.022749336598828, -0.9427919553422969, 0.09196139828758122, -1.5927002089074256, 2.4349786526273687, -1.275155004799577, -0.7997796764338816] #[2.02229555099331, -0.9424428894918981, 0.09210102462774077, -1.5928747418326248, 2.434961199334849, -1.426038718634487, -1.037510973848029] #[2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 							# [1.9474732859603128, -0.9245881712439961, -0.31063370026995074, -1.9436335616059253, 2.4089034336025734, -0.8307069107792211, -0.8225038632948477]
 		
 		# 1. arm: folded -> over trash bin
@@ -1170,7 +1274,7 @@ class GraspTrashBin(smach.State):
 			raw_input("enter")
 		# 3.a) arm: over trash bin -> into trash bin
 		#lwa4d
-		handle_arm = sss.move("arm",[intrashbin_position_small])
+		handle_arm = sss.move("arm",[intrashbin_position_smaller])
 		if JOURNALIST_MODE == True:
 			raw_input("enter")
 		#lwa
@@ -1183,14 +1287,15 @@ class GraspTrashBin(smach.State):
 		#rospy.sleep(5)
 
 		# 4. get deeper into trash bin
-		handle_arm = sss.move("arm",[deepintrashbin_position_small])
+		handle_arm = sss.move("arm",[deepintrashbin_position_smaller])
 		if JOURNALIST_MODE == True:
 			raw_input("enter")
 		
 		# 5. close hand
 		# todo: optimize grasp
 		#handle_sdh = sss.move("sdh",[[0.20,0,0,0.6,-0.15,0.6,-0.15]])	# large trash bin
-		handle_sdh = sss.move("sdh",[[0.40,0,0,0.6,-0.15,0.6,-0.15]])	# small trash bin
+		#handle_sdh = sss.move("sdh",[[0.40,0,0,0.6,-0.15,0.6,-0.15]])	# small trash bin
+		handle_sdh = sss.move("sdh",[[0.3, -0.2, 0.0, 0.6, -0.3, 0.6, -0.3]])	# smaller trash bin
 		#handle_sdh = sss.move("sdh",[[0.47,0,0,0.45,-0,0.45,-0]])	# small trash bin
 		if JOURNALIST_MODE == True:
 			raw_input("enter")
@@ -1274,29 +1379,29 @@ class ClearTrashBinIntoToolWagonPart1(smach.State):
 		#lwa4d
 		# todo: trash bin might fall out when lifting -> better grasp
 		# try out with tool wagon, maybe better wagon avoidance or move base
-		intermediate1_carry2clear_position = [1.6047953406237458, -0.9250419568495145, 0.5463578690443048, -1.2438961578963585, 2.005610203344244, -1.6329125948733747, -1.0737614624119514]
-		intermediate2_carry2clear_position = [1.4538243603262366, -1.0659947472405766, 0.6813939932711062, -0.22266910596943656, 1.4894814369444809, -1.7758899671967503, -1.1778005391233333]
-		intermediate3_carry2clear_position = [1.8488796365151532, -1.091738353707493, 0.8273733319079118, 0.7019365185670795, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]   #[1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
-		intermediate4_carry2clear_position = [1.7169851049419416, -1.6298582686823848, 0.3803596038871242, 0.7778408877363129, 0.9197187026309318, -1.754806389832659, 2.2837109663570203]   #[1.8468026947052798, -1.6619548736265604, 0.3801850709619248, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
-		intermediate5_carry2clear_position = [1.5208275503102988, -1.85292880037978, -0.10279989294246601, 0.6450562382445842, 0.8517032216807128, -1.793814498614732, 2.3077266968644623]
-		intermediate6_carry2clear_position = [1.4417641351949557, -1.910803918375912, -0.15067427432467048, 0.6390523056177237, 0.8522093671637911, -1.7937795920296922, 2.3077266968644623]   #[1.327776681747206, -1.8629469902862275, -0.15077899407979012, 0.46406559481277226, 0.8517206749732329, -1.7937970453222118, 2.3077266968644623]
-		intermediate7_carry2clear_position = [1.3697693035501897, -1.9599872966971121, -0.16287412579611082, 0.3929957876715632, 0.5164603789576421, -1.8158056471898605, 2.3077266968644623]   #[1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.30407126228245207, 0.5157098873792845, -1.8158056471898605, 2.3077266968644623]
-		clear = [1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.2030865117620602, -0.21528636323350056, -1.8157881938973404, 2.3077266968644623]
-		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
+	#	intermediate1_carry2clear_position = [1.6047953406237458, -0.9250419568495145, 0.5463578690443048, -1.2438961578963585, 2.005610203344244, -1.6329125948733747, -1.0737614624119514]
+	#	intermediate2_carry2clear_position = [1.4538243603262366, -1.0659947472405766, 0.6813939932711062, -0.22266910596943656, 1.4894814369444809, -1.7758899671967503, -1.1778005391233333]
+	#	intermediate3_carry2clear_position = [1.8488796365151532, -1.091738353707493, 0.8273733319079118, 0.7019365185670795, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]   #[1.8468026947052798, -1.305960066097277, 0.684221426659337, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
+	#	intermediate4_carry2clear_position = [1.7169851049419416, -1.6298582686823848, 0.3803596038871242, 0.7778408877363129, 0.9197187026309318, -1.754806389832659, 2.2837109663570203]   #[1.8468026947052798, -1.6619548736265604, 0.3801850709619248, 0.702058691614719, 0.8387005187533552, -1.7758201540266705, 2.2837284196495404]
+	#	intermediate5_carry2clear_position = [1.5208275503102988, -1.85292880037978, -0.10279989294246601, 0.6450562382445842, 0.8517032216807128, -1.793814498614732, 2.3077266968644623]
+	#	intermediate6_carry2clear_position = [1.4417641351949557, -1.910803918375912, -0.15067427432467048, 0.6390523056177237, 0.8522093671637911, -1.7937795920296922, 2.3077266968644623]   #[1.327776681747206, -1.8629469902862275, -0.15077899407979012, 0.46406559481277226, 0.8517206749732329, -1.7937970453222118, 2.3077266968644623]
+	#	intermediate7_carry2clear_position = [1.3697693035501897, -1.9599872966971121, -0.16287412579611082, 0.3929957876715632, 0.5164603789576421, -1.8158056471898605, 2.3077266968644623]   #[1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.30407126228245207, 0.5157098873792845, -1.8158056471898605, 2.3077266968644623]
+	#	clear = [1.327811588332246, -1.8629295369937076, -0.16280431262603104, 0.2030865117620602, -0.21528636323350056, -1.8157881938973404, 2.3077266968644623]
+	#	carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
 		
 		sss.move("head", "back", False)
 		sss.move("torso", "home", False)
 		
 		# 6. arm: move up, turn aroundintermediate3_carry2clear_position
 		if JOURNALIST_MODE == False:
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate2_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate3_carry2clear"]])
 		else:
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate1_carry2clear"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate2_carry2clear"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate3_carry2clear"]])
 			raw_input("enter")
 		
 		# up to here: 1,40m distance, then 1,05m
@@ -1312,22 +1417,23 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		sf = ScreenFormat("ClearTrashBinIntoToolWagonPart2")
 		rospy.loginfo('Executing state ClearTrashBinIntoToolWagonPart2')
 		
-		raw_input("Press key.")
+		if (CONFIRM_MODE==True):
+			raw_input("Press key.")
 		
 		# clear trash bin
 		if JOURNALIST_MODE == False:
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"],
-					ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate4_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate5_carry2clear_small"],
+					ARM_JOINT_CONFIGURATIONS_TRASH["intermediate6_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["clear_small"]])
 		else:
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate4_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate5_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate6_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate7_carry2clear_small"]])
 			raw_input("enter")
-			sss.move("arm",[ARM_JOINT_CONFIGURATIONS["clear_small"]])
+			sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["clear_small"]])
 			raw_input("finished trash bin clearing (next steps move back the arm)")
 
 		#lwaintermediate4_carry2clear_position
@@ -1339,8 +1445,8 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		#handle_arm = sss.move("arm",[[1.7032876014709473, -0.5807051062583923, 2.3603627681732178, 1.1806684732437134, -2.2949676513671875, 1.7723535299301147, -2.81252121925354]]) # small trash bin
 
 		# move arm back to the side
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate6_carry2clear_small"],
-					ARM_JOINT_CONFIGURATIONS["intermediate5_carry2clear_small"], ARM_JOINT_CONFIGURATIONS["intermediate4_carry2clear_small"]])
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate7_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate6_carry2clear_small"],
+					ARM_JOINT_CONFIGURATIONS_TRASH["intermediate5_carry2clear_small"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate4_carry2clear_small"]])
 		
 		# drive forward slightly
 		handle_base = sss.move_base_rel("base", (0.1, 0.0, 0.0), blocking=True)
@@ -1350,8 +1456,8 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 		# todo: check for success!
 		
 		# move arm back to carry position
-		sss.move("arm",[ARM_JOINT_CONFIGURATIONS["intermediate3_carry2clear"], ARM_JOINT_CONFIGURATIONS["intermediate2_carry2clear"],
-					ARM_JOINT_CONFIGURATIONS["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS["carry"]])
+		sss.move("arm",[ARM_JOINT_CONFIGURATIONS_TRASH["intermediate3_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["intermediate2_carry2clear"],
+					ARM_JOINT_CONFIGURATIONS_TRASH["intermediate1_carry2clear"], ARM_JOINT_CONFIGURATIONS_TRASH["carry"]])
 		#handle_arm = sss.move("arm",[[2.5890188217163086, -1.3564121723175049, 2.3780744075775146, 1.9312158823013306, 0.43163323402404785, 0.4533853530883789, -2.814291000366211]]) # small trash bin
 
 		return 'finished'
@@ -1372,9 +1478,9 @@ class MoveToTrashBinPickingLocation(smach.State):
 		center = Pose2D(x=userdata.trash_bin_pose_.pose.pose.position.x, y=userdata.trash_bin_pose_.pose.pose.position.y, theta=0)
 		print "center: ", center
 		userdata.center = center
-		userdata.radius = 0.45		# adjust this for right distance to trash bin
+		userdata.radius = 0.6		# adjust this for right distance to trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
-		userdata.goal_pose_theta_offset = 1.1*math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.goal_pose_theta_offset = 90.0/180.*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
@@ -1394,22 +1500,27 @@ class ReleaseTrashBin(smach.State):
 		sf = ScreenFormat("ReleaseTrashBin")
 		rospy.loginfo('Executing state Release_Trash_Bin')
 
-		raw_input("trash bin location ok?")
+		if (CONFIRM_MODE==True):
+			raw_input("trash bin location ok?")
 
 		#lwa4d:
 		intermediate_folded2overtrashbin_position = [0.8592779506343683, -0.2794097599517722, -0.6911329304972346, -1.6704895336688126, 2.7189611752193663, -0.6486690697962125, -0.00013962634015954637]
 		overtrashbin_position = [-0.7597243701006117, -0.29044024082437636, 0.35585518118912385, -1.8774681296628202, 3.024934846386492, -0.23268729587588402, 2.3328594380931804]
 		
 		intrashbin_position_large = [-0.7597069168080918, -0.7994306105834827, 0.35585518118912385, -1.6194910129255382, 3.024934846386492, -0.02567379329683659, 2.3328594380931804]
-		intrashbin_position_small = [-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
-
+		deepintrashbin_position_large = [-0.7846651251116107, -0.9414131452332214, 0.35585518118912385, -1.456459807496748, 3.021932880073062, -0.02567379329683659, 2.475854263709076]
+		intrashbin_position_small = [-0.49670325182506625, -0.9567894959432915, 0.15018558213411204, -1.3131333693229736, 3.025004659556572, -0.1595230936322817, 2.374852059896164] #[-0.4967207051175862, -1.0427120550189724, 0.1498365162837132, -1.2064588454410803, 3.024987206264052, -0.15954054692480166, 2.374869513188684]
+		intrashbin_position_smaller = [-0.49658107877742663, -1.2460603661688316, 0.15077899407979012, -0.8043000791965469, 3.0249697529715323, -0.4925493682053197, 2.374869513188684]
+		deepintrashbin_position_small = [-0.4967381584101061, -1.0639701653082632, 0.1500459557939525, -1.474611231717489, 3.024917393093972, 0.13828243663551074, 2.374886966481204] #[-0.49663432530867424, -1.1209673134469444, 0.14990452214815173, -1.428260011571481, 3.0249716446102015, 0.13848445107830495, 2.3748987545970754] #[-0.4967207051175862, -1.223720151743304, 0.1498365162837132, -0.9534384637794623, 3.024987206264052, -0.22654373690886398, 2.374852059896164]
+		deepintrashbin_position_smaller = [-0.4965461721923868, -1.2596215744568275, 0.15086626054238986, -0.9657255817135024, 3.025004659556572, -0.278851254591134, 2.374852059896164] #[-0.49658107877742663, -1.4291454047030367, 0.15676547341413066, -0.5847551125881802, 3.024952299679012, -0.3783524752473308, 2.374886966481204] # [-0.49658107877742663, -1.3030802728314863, 0.15077899407979012, -0.7132986119975625, 3.0249697529715323, -0.4995306852132971, 2.374869513188684]
+		
 		intermediate1_deep2carry = [-0.3857177646907468, 0.21350612739646632, 0.355820274604084, -2.0331864055257545, 3.021915426780542, -0.43065999292960083, -0.13151055913777274]
 		intermediate2_deep2carry = [0.8212821328184517, 0.0005061454830783556, 0.355820274604084, -1.9471765799874738, 2.3328943446782207, -1.2596390277493474, -0.39552651508695497]
-		carry_position = [2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
-
-
+		carry_position = [2.022749336598828, -0.9427919553422969, 0.09196139828758122, -1.5927002089074256, 2.4349786526273687, -1.275155004799577, -0.7997796764338816] #[2.02229555099331, -0.9424428894918981, 0.09210102462774077, -1.5928747418326248, 2.434961199334849, -1.426038718634487, -1.037510973848029] #[2.0313014499336, -0.9694605863127703, 0.2622706266971879, -1.5307061138765867, 2.422900974203568, -1.4726564629552554, -0.407516927048156]
+							# [1.9474732859603128, -0.9245881712439961, -0.31063370026995074, -1.9436335616059253, 2.4089034336025734, -0.8307069107792211, -0.8225038632948477]
+	
 		# 8. arm: put down
-		handle_arm = sss.move("arm",[intermediate2_deep2carry, intermediate1_deep2carry, intrashbin_position_small])
+		handle_arm = sss.move("arm",[intermediate2_deep2carry, intermediate1_deep2carry, intrashbin_position_smaller])
 		#lwa
 		#handle_arm = sss.move("arm",[[0.10628669708967209, -0.21421051025390625, 3.096407413482666, 1.2974236011505127, -0.05254769325256348, 0.7705268859863281, -2.813359022140503]])
 		#handle_arm = sss.move("arm",[[0.10646567493677139, -1.277030110359192, 3.0960710048675537, 0.5529675483703613, -0.05258183926343918, 0.46139299869537354, -2.8133485317230225]])
@@ -1503,13 +1614,121 @@ class ChangeToolManual(smach.State):
 				print "Service call failed: %s"%e
 			tool_change_successful = raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
-		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
-		handle_arm = sss.move("arm",[carrying_position])
+		#carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
 		print 'Manual tool change successfully completed.'
 		
 		return 'CTM_done'
 
+
+class ChangeToolManualPnP(smach.State):
+	def __init__(self, current_tool='sdh'):
+		smach.State.__init__(self, outcomes=['CTM_done'])
+		# command line usage:
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin2", state: 0}'
+		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
+		
+		#self.diagnostics_sub = rospy.Subscriber("/diagnostics_vacuum_cleaner", DiagnosticArray, self.diagnosticCallback)
+		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
+		self.attached = False
+		self.current_tool = current_tool
+
+	def attachmentStatusCallback(self, msg):
+		self.attached = msg.data
+		
+	def execute(self, userdata):
+		sf = ScreenFormat("ChangeToolManualPnP")
+		
+		# move arm with tool facing up (so it cannot fall down on opening)
+		#handle_arm = sss.move("arm", "pregrasp")
+		#handle_arm = sss.move("arm",[[1.064633390424021, -1.1901051103498934, 0.6336766915215812, -1.7237046225621198, -1.554041165975751, -1.7535846593562627, -0.00010471975511965978]])
+		#arm_position = list(ARM_IDLE_POSITION)
+		#arm_position[0] = -0.8
+		#handle_arm = sss.move("arm",[arm_position])
+		
+		if self.current_tool=='sdh':
+			handle_arm = sss.move("arm",[[1.404728248467636, -1.4622368473208494, 0.21975440611860603, -1.7372832841426358, 1.8869103609161093, -1.79756695650652, -0.00013962634015954637],
+									[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
+		elif self.current_tool=='vacuum':
+			handle_arm = sss.move("arm",[[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
+
+		
+		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
+		tool_change_successful = ''
+		while tool_change_successful!='yes':
+			# wait for confirmation to release tool
+			raw_input("Please hold the tool tightly with your hands and then press <Enter> and remove the tool quickly.")
+			rospy.wait_for_service(service_name) 
+			try:
+				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
+				resp = req(uri='tool_changer_pin4', state=0)
+				print 'Resetting tool changer pin4: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
+				resp = req(uri='tool_changer_pin2', state=0)
+				print 'Resetting tool changer pin2: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
+				resp = req(uri='tool_changer_pin4', state=1)
+				print 'Opening tool changer response: uri=', resp.uri, '  state=', resp.state
+				rospy.sleep(1.0)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			try:
+				resp = req(uri='tool_changer_pin4', state=0)
+				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			
+			while self.attached == True:
+				rospy.sleep(0.1)
+			#self.attached = False
+			#rospy.sleep(3.0)
+			tool_change_successful = 'yes' #raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
+		
+		# move arm with end facing down
+		#handle_arm = sss.move("arm",[[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
+
+		print "Device successfully detached."
+
+		tool_change_successful = ''
+		while tool_change_successful!='yes':
+			# wait for confirmation to attach tool
+			#raw_input("Please attach the tool manually and then press <Enter>.")
+			while (self.attached==False):
+				rospy.sleep(0.2)
+			
+			rospy.wait_for_service(service_name) 
+			try:
+				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
+				resp = req(uri='tool_changer_pin2', state=1)
+				print 'Closing tool changer response: uri=', resp.uri, '  state=', resp.state
+				# keep power on closing the changer for safety 
+				#rospy.sleep(1.0)
+				#resp = req(uri='tool_changer_pin4', state=0)
+				#print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+				
+			try:
+				resp = req(uri='tool_changer_pin2', state=0)
+				print 'Resetting tool changer outputs to 0 response: uri=', resp.uri, '  state=', resp.state
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+			
+			tool_change_successful = 'yes' # raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
+		
+		#carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+		
+		print 'Manual tool change successfully completed.'
+		
+		return 'CTM_done'
 
 
 class GoToToolWagonLocation(smach.State):
@@ -1652,7 +1871,8 @@ class ReceiveDirtMap(smach.State):
 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
 					x = u*map_resolution+map_offset.position.x
 					y = v*map_resolution+map_offset.position.y
-					if x>0.0 and y>0.0 and x<5.0 and y<2.5:
+					# hack: limit valid space for cleaning
+					if x>-1.2 and y>-1.0 and x<1.4 and y<1.2:
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
@@ -1678,6 +1898,9 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat("SelectNextUnprocssedDirtSpot")
 		rospy.loginfo('Executing state Select_Next_Unprocssed_Dirt_Spot')
+
+		print "last_visited_dirt_location =", userdata.last_visited_dirt_location
+		print "list_of_dirt_locations =", userdata.list_of_dirt_locations
 		
 		if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location+1==len(userdata.list_of_dirt_locations):
 			return 'no_dirt_spots_left'
@@ -1708,8 +1931,8 @@ class MoveLocationPerimeterCleaning(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.45		# adjust this for right distance to dirt spot
-		userdata.goal_pose_theta_offset = math.pi/2.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
+		userdata.radius = 0.35		# adjust this for right distance to dirt spot
+		userdata.goal_pose_theta_offset = 105.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
@@ -1724,11 +1947,10 @@ class MoveLocationPerimeterCleaning(smach.State):
 
 #-------------------------------------------------------- Clean -------------------------------------------------------------------------------------------------
 
-
-
 class Clean(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['cleaning_done'])
+		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("Clean")
@@ -1738,42 +1960,57 @@ class Clean(smach.State):
 		#handle_arm = sss.move("arm",[[]]) #
 		#handle_arm = sss.move("arm",[[]]) #
 		
-		raw_input("cleaning position ok?")
+		if (CONFIRM_MODE==True):
+			raw_input("cleaning position ok?")
+
+		# 1. adjust base footprint
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
 		
-		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
-		vacuum_on_service_name = '/vacuum_cleaner_controller/vacuum_on'
-		vacuum_off_service_name = '/vacuum_cleaner_controller/vacuum_off'
-		
-		# (re-)init vacuum cleaner
- 		rospy.wait_for_service(vacuum_init_service_name) 
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
 		try:
-			req = rospy.ServiceProxy(vacuum_init_service_name, Trigger)
+			req = rospy.ServiceProxy('/update_footprint',Empty)
 			resp = req()
 		except rospy.ServiceException, e:
-			print "Service call failed: %s"%e
+			print "Service call to /update_footprint failed: %s"%e
 
-		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
-		intermediate1_position = [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447] # intermediate 1
-		intermediate2_position = [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447] # intermediate 2
-		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
-		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
-		cleaning_position = [-0.09923942126839758, -0.909491073214245, 0.08154178265317508, -1.4209598105111834, 1.695622274897531, -0.24858724536155236, 1.066797598696494] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position
+		# 2. clean
+		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
+		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
+		vacuum_off_service_name = '/vacuum_cleaner_controller/power_off'
+		
+		# (re-)init vacuum cleaner
+ 		#rospy.wait_for_service(vacuum_init_service_name) 
+		#try:
+		#	req = rospy.ServiceProxy(vacuum_init_service_name, Trigger)
+		#	resp = req()
+		#except rospy.ServiceException, e:
+		#	print "Service call failed: %s"%e
+
+#		carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
+#		intermediate1_position = [1.4535276543533975, -0.3381749958664213, -0.07175048554948689, -1.937908881659384, 2.2285221821811047, -1.234576099690709, 1.000527447] # intermediate 1
+#		intermediate2_position = [0.7885223027585182, -0.14316935854109486, -0.07175048554948689, -1.937908881659384, 2.0185241665811468, -0.9095783396768448, 1.000527447] # intermediate 2
+#		above_cleaning_20cm_position = [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, 1.000527447] # ca. 20cm above cleaning position
+#		above_cleaning_5cm_position = [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, 1.000527447] # just 5cm above cleaning position
+#		cleaning_position = [-0.09923942126839758, -0.909491073214245, 0.08154178265317508, -1.4209598105111834, 1.695622274897531, -0.24858724536155236, 1.066797598696494] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position 
+							#[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
 
 		# move arm from storage position to cleaning position
 		if JOURNALIST_MODE == False:
-			handle_arm = sss.move("arm",[carrying_position, intermediate1_position, intermediate2_position, above_cleaning_20cm_position, above_cleaning_5cm_position, cleaning_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
 		else:
-			handle_arm = sss.move("arm",[carrying_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[intermediate1_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[intermediate2_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[above_cleaning_20cm_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[above_cleaning_5cm_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"]])
 			raw_input("enter")
-			handle_arm = sss.move("arm",[cleaning_position])
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
 			raw_input("enter")
 		
 		# turn vacuum cleaner on
@@ -1785,13 +2022,15 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 		
 		# move base (if necessary)
-		for i in range(0,1):
-			for j in range(0,2):
-				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
-			for j in range(0,5):
-				handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
-			for j in range(0,2):
-				handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+		#for i in range(0,1):
+		#	for j in range(0,2):
+		#		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+		#	for j in range(0,5):
+		#		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+		#	for j in range(0,2):
+		#		handle_base = sss.move_base_rel("base", (0.0, -0.1, 0.0), blocking=True)
+		for j in range(0,5):
+			handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
 			
 		
 		# turn vacuum cleaner off
@@ -1803,16 +2042,27 @@ class Clean(smach.State):
 			print "Service call failed: %s"%e
 		
 		# move arm back to storage position
-		handle_arm = sss.move("arm",[above_cleaning_5cm_position, above_cleaning_20cm_position, intermediate2_position, intermediate1_position, carrying_position])
+		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
-		rospy.sleep(2)
-		
-		#raw_input("Quit program")
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[]]) #
-		#handle_arm = sss.move("arm",[[1.4605438779464148, -0.548173011466379, 0.08925613794699001, -1.751909143274348, 2.1865310336059762, -1.3275846955294868, -1.9370711236184264]]) #intermediate 1.5?
-		
+		# 4. reset footprint
+		if local_config["footprint"]!=None:
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
+		if (CONFIRM_MODE==True):
+			raw_input("cleaning finished?")
+
+		#rospy.sleep(2)
+	
 		return 'cleaning_done'
 
 
@@ -1839,7 +2089,7 @@ class MoveLocationPerimeterValidation(smach.State):
 		center.y = userdata.next_dirt_location[1]
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 1.60		# adjust this for right distance to dirt spot
+		userdata.radius = 1.40		# adjust this for right distance to dirt spot
 		userdata.goal_pose_theta_offset = 0.0		# todo: adjust this rotation angle for the right position relative to the dirt spot
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
@@ -1870,13 +2120,16 @@ class VerifyCleaningProcess(smach.State):
 		
 		point = Point(x=userdata.next_dirt_location[0], y=userdata.next_dirt_location[1], z=0.0)
 		
-		rospy.loginfo('Executing state verify_Cleaning_Process')
-		rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
-		try:
-			req = rospy.ServiceProxy('/dirt_detection/validate_cleaning_result', ValidateCleaningResult)
-			resp = req(validationPositions=[point], numberValidationImages=-1)
-		except rospy.ServiceException, e:
-			print "Service call failed: %s"%e
+		rospy.sleep(4.0)
+		
+		# hack:
+	#	rospy.loginfo('Executing state verify_Cleaning_Process')
+	#	rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
+	#	try:
+	#		req = rospy.ServiceProxy('/dirt_detection/validate_cleaning_result', ValidateCleaningResult)
+	#		resp = req(validationPositions=[point], numberValidationImages=-1)
+	#	except rospy.ServiceException, e:
+	#		print "Service call failed: %s"%e
 		
 		sss.move("torso", "home", False)
 		
