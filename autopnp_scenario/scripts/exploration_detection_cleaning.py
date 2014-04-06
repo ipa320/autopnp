@@ -194,6 +194,15 @@ class InitAutoPnPScenario(smach.State):
 		CONFIRM_MODE= self.CONFIRM_MODE
 		print "CONFIRM_MODE =", CONFIRM_MODE
 
+		# clear dirt map
+		clear_dirt_map_service_name = "/dirt_detection/reset_dirt_maps"
+		rospy.wait_for_service(clear_dirt_map_service_name) 
+		try:
+			req = rospy.ServiceProxy(clear_dirt_map_service_name, Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /dirt_detection/reset_dirt_maps failed: %s"%e
+
 		# just fill history of global transform listener
 		dummylistener = get_transform_listener()
 		rospy.sleep(5.0)
@@ -1892,22 +1901,24 @@ class ReceiveDirtMap(smach.State):
 class SelectNextUnprocssedDirtSpot(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['selected_next_dirt_location','no_dirt_spots_left'],
-							input_keys=['list_of_dirt_locations', 'last_visited_dirt_location'],
-							output_keys=['next_dirt_location', 'last_visited_dirt_location'])
+							input_keys=['list_of_dirt_locations', 'last_visited_dirt_location_in'],
+							output_keys=['next_dirt_location', 'last_visited_dirt_location_out'])
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("SelectNextUnprocssedDirtSpot")
 		rospy.loginfo('Executing state Select_Next_Unprocssed_Dirt_Spot')
 
-		print "last_visited_dirt_location =", userdata.last_visited_dirt_location
+		print "last_visited_dirt_location =", userdata.last_visited_dirt_location_in
 		print "list_of_dirt_locations =", userdata.list_of_dirt_locations
 		
-		if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location+1==len(userdata.list_of_dirt_locations):
+		if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location_in+1==len(userdata.list_of_dirt_locations):
 			return 'no_dirt_spots_left'
 		else:
-			current_dirt_location = userdata.last_visited_dirt_location + 1
-			userdata.last_visited_dirt_location = current_dirt_location
+			current_dirt_location = userdata.last_visited_dirt_location_in + 1
+			print "current_dirt_location =", current_dirt_location
 			userdata.next_dirt_location = userdata.list_of_dirt_locations[current_dirt_location]
+			userdata.last_visited_dirt_location_out = current_dirt_location
+			print "last_visited_dirt_location =", current_dirt_location
 			print "Next dirt location to clean: ", userdata.list_of_dirt_locations[current_dirt_location]
 			return 'selected_next_dirt_location'
 
@@ -1977,6 +1988,7 @@ class Clean(smach.State):
 
 		# 2. clean
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
+		vacuum_recover_service_name = '/vacuum_cleaner_controller/recover'
 		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
 		vacuum_off_service_name = '/vacuum_cleaner_controller/power_off'
 		
@@ -2012,6 +2024,14 @@ class Clean(smach.State):
 			raw_input("enter")
 			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
 			raw_input("enter")
+
+		# recover vacuum cleaner (turning on is more reliably thereafter)
+		rospy.wait_for_service(vacuum_recover_service_name) 
+		try:
+			req = rospy.ServiceProxy(vacuum_recover_service_name, Trigger)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to vacuum recover failed: %s"%e
 		
 		# turn vacuum cleaner on
 		rospy.wait_for_service(vacuum_on_service_name) 
@@ -2019,7 +2039,7 @@ class Clean(smach.State):
 			req = rospy.ServiceProxy(vacuum_on_service_name, Trigger)
 			resp = req()
 		except rospy.ServiceException, e:
-			print "Service call failed: %s"%e
+			print "Service call to vacuum on failed: %s"%e
 		
 		# move base (if necessary)
 		#for i in range(0,1):
@@ -2039,7 +2059,7 @@ class Clean(smach.State):
 			req = rospy.ServiceProxy(vacuum_off_service_name, Trigger)
 			resp = req()
 		except rospy.ServiceException, e:
-			print "Service call failed: %s"%e
+			print "Service call to vacuum off failed: %s"%e
 		
 		# move arm back to storage position
 		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
