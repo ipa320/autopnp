@@ -60,15 +60,16 @@ import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
 import smach
 import smach_ros
+import sys, os
 
 from exploration_detection_cleaning import *
 
 
-def main():
+def main(confirm):
 	rospy.init_node('exploration_detection_cleaning')
 	
-	# approach tool waggon
 	'''
+	# approach tool waggon
 	sm_scenario = smach.StateMachine(outcomes=['finished'])
 	with sm_scenario:
 		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
@@ -144,15 +145,15 @@ N', GraspTrashBin(),
 							transitions={'RTB_finished':'CWB_done'})
 	'''
 	
-	'''
+	
 	
 	# full scenario
 	sm_scenario = smach.StateMachine(outcomes=['finished', 'failed'])
 	sm_scenario.userdata.sm_trash_bin_counter = 0
 
 	with sm_scenario:
-		
-		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
+
+		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm),
 							transitions={'initialized':'ANALYZE_MAP',
 										'failed':'failed'})
 		
@@ -277,10 +278,15 @@ N', GraspTrashBin(),
 								transitions={'MTTBL_success':'APPROACH_PERIMETER_LINEAR'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
-			smach.StateMachine.add('APPROACH_PERIMETER_LINEAR', ApproachPerimeterLinear(),
-								transitions={'reached':'GRASP_TRASH_BIN', 
-											 'not_reached':'GRASP_TRASH_BIN',
+			smach.StateMachine.add('APPROACH_PERIMETER_LINEAR', ApproachPerimeter(mode='linear'),
+								transitions={'reached':'CHECK_POSITION_TO_TRASH_BIN', 
+											 'not_reached':'CHECK_POSITION_TO_TRASH_BIN',
 											 'failed':'failed'},
+								remapping = {'trash_bin_pose_':'detection_pose'})
+			
+			smach.StateMachine.add('CHECK_POSITION_TO_TRASH_BIN', CheckPositionToTrashBinLocation(),
+								transitions={'success':'GRASP_TRASH_BIN',
+											 'failed':'MOVE_TO_TRASH_BIN_LOCATION_LINEAR'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('GRASP_TRASH_BIN', GraspTrashBin(),
@@ -353,7 +359,7 @@ N', GraspTrashBin(),
 			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonFrontFar(),
 								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION'})
 			
-			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
+			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManualPnP(),
 								transitions={'CTM_done':'tool_change_done'})
 		
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL', sm_sub_change_tool_manual,
@@ -372,7 +378,9 @@ N', GraspTrashBin(),
 		with sm_sub_go_to_next_unprocessed_dirt_location:
 			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
 								transitions={'selected_next_dirt_location':'MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING',
-											'no_dirt_spots_left':'no_dirt_spots_left'})
+											'no_dirt_spots_left':'no_dirt_spots_left'},
+								remapping = {'last_visited_dirt_location_in':'last_visited_dirt_location',
+											 'last_visited_dirt_location_out':'last_visited_dirt_location'})
 			
 			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING', MoveLocationPerimeterCleaning(),
 								transitions={'movement_prepared':'APPROACH_PERIMETER_CLEANING'})
@@ -418,7 +426,6 @@ N', GraspTrashBin(),
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
 							transitions={'finished':'finished'})
-	'''
 	
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')
@@ -434,7 +441,24 @@ N', GraspTrashBin(),
 
 if __name__ == '__main__':
 	try:
-		main()
+		flag = ""
+		if len(sys.argv)<2:
+			CONFIRM_MODE = True
+		else:
+			flag=sys.argv[1]
+		#if len(flag)==0:
+		#	CONFIRM_MODE = True
+
+		if flag=="auto":
+			CONFIRM_MODE = False  # in auto mode the connection to the control pc may interrupted, the scenario will stil work
+			# necessitates that all nodes are started with & and the end, e.g. bringup &
+		elif flag=="special":
+			CONFIRM_MODE = False
+		else:
+			CONFIRM_MODE = True
+
+		print "CONFIRM_MODE ", CONFIRM_MODE
+		main(CONFIRM_MODE)
 	except:
 		print('EXCEPTION THROWN')
 		print('Aborting cleanly')

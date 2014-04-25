@@ -230,7 +230,7 @@ N', GraspTrashBin(),
 
 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_ROOM', sm_sub_go_to_next_unproccessed_room,
 							transitions={'arrived':'DIRT_DETECTION_ON',
-										'no_more_rooms_left': 'DIRT_DETECTION_ON'})#'CHANGE_TOOL_MANUAL'}) #'CHANGE_TOOL_HAND'})
+										'no_more_rooms_left':'CHANGE_TOOL_MANUAL'}) #'CHANGE_TOOL_HAND'})
 		
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
 							transitions={'dirt_detection_on':'TRASH_BIN_DETECTION_ON'})
