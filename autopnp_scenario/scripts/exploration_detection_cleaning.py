@@ -446,6 +446,32 @@ class InspectRoom(smach.State):
 		return 'finished'
 
 
+
+class InspectRoomManual(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['finished'],input_keys=['inspect_room_data_img_in_',
+																	'inspect_room_room_number_',   # vector of already visited rooms and current room at back
+																	'analyze_map_data_room_center_x_',
+																	'analyze_map_data_room_center_y_',
+																	'analyze_map_data_room_min_x_',
+																	'analyze_map_data_room_max_x_',
+																	'analyze_map_data_room_min_y_',
+																	'analyze_map_data_room_max_y_',
+																	'analyze_map_data_map_resolution_',
+																	'analyze_map_data_map_origin_x_',
+																	'analyze_map_data_map_origin_y_'],
+														output_keys=['inspect_room_img_out_'])
+
+	def execute(self, userdata):
+		sf = ScreenFormat(self.__class__.__name__)
+		
+		userdata.inspect_room_img_out_ = userdata.inspect_room_data_img_in_
+		raw_input("finished inspection?")
+		
+		return 'finished'
+
+
+
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -772,7 +798,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni')
 		
 		# 2. detect fiducials and move to corrected pose
 		# wait until wagon is detected
@@ -1145,13 +1171,32 @@ class MoveToTrashBinLocation(smach.State):
 		center.y = userdata.trash_bin_pose_.pose.pose.position.y
 		center.theta = 0
 		userdata.center = center
-		userdata.radius = 0.9		# adjust this for right distance to trash bin
+		userdata.radius = 1.0		# adjust this for right distance to trash bin
 		userdata.goal_pose_theta_offset = 90.0*math.pi/180.0		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'
 
+		return 'MTTBL_success'
+
+class MoveToTrashBinLocationManual(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['MTTBL_success'],input_keys=['trash_bin_pose_'])
+
+	def execute(self, userdata ):
+		sf = ScreenFormat(self.__class__.__name__)
+		#try:
+			#sm = ApproachPerimeter()
+		center = Pose2D()
+		center.x = userdata.trash_bin_pose_.pose.pose.position.x
+		center.y = userdata.trash_bin_pose_.pose.pose.position.y
+		center.theta = 0
+		print "Trash bin pose:"
+		print center
+		
+		raw_input("Trash bin reached?")
+		
 		return 'MTTBL_success'
 
 class MoveToTrashBinLocationLinear(smach.State):
@@ -1429,7 +1474,7 @@ class MoveToTrashBinPickingLocation(smach.State):
 		userdata.center = center
 		userdata.radius = 0.6		# adjust this for right distance to trash bin
 		userdata.rotational_sampling_step = 10.0/180.0*math.pi
-		userdata.goal_pose_theta_offset = 90.0/180.*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
+		userdata.goal_pose_theta_offset = 95.0/180.*math.pi		# todo: adjust this rotation angle for the right position relative to the trash bin
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'          
@@ -2048,6 +2093,9 @@ class Clean(smach.State):
 			handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
 			
 		
+		if (CONFIRM_MODE==True):
+			raw_input("cleaning finished?")
+		
 		# turn vacuum cleaner off
 		rospy.wait_for_service(vacuum_off_service_name) 
 		try:
@@ -2073,10 +2121,6 @@ class Clean(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call to /update_footprint failed: %s"%e
-		if (CONFIRM_MODE==True):
-			raw_input("cleaning finished?")
-
-		#rospy.sleep(2)
 	
 		return 'cleaning_done'
 

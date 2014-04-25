@@ -189,7 +189,7 @@ N', GraspTrashBin(),
 											'find_next_unprocessed_room_loop_counter_out_':'sm_counter'})
 			
 			smach.StateMachine.add('VERIFY_TOOL_CAR_LOCATION', VerifyToolCarLocation(),
-								transitions={'no_need_to_move_it':'arrived', #'GO_TO_LOCATION',
+								transitions={'no_need_to_move_it':'arrived', #'GO_TO_LOCATION',  # hack
 											'tool_wagon_needs_to_be_moved':'MOVE_TOOL_WAGON'})
 
 			sm_sub_move_tool_wagon = smach.StateMachine(outcomes=['finished'],

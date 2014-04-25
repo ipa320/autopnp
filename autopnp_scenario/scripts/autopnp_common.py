@@ -4,6 +4,8 @@ roslib.load_manifest('autopnp_scenario')
 import rospy
 import os
 
+import tf
+
 class ScreenFormat:
     # Convenient functions, which should be called when entering and leaving a state
     # to improve readability of the debug output on the console
