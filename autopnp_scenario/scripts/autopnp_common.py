@@ -41,3 +41,16 @@ class ScreenFormat:
         rospy.loginfo('%s', color)
         rospy.loginfo("- LEAVING \"%s\" ---------------------------------", text)
         rospy.loginfo("%s----------------------------------------------\n\033[0m", out_str)
+
+
+###############''WORKAROUND FOR TRANSFORMLISTENER ISSUE####################
+_tl=None
+_tl_creation_lock=threading.Lock()
+
+def get_transform_listener():
+    global _tl
+    with _tl_creation_lock:
+        if _tl==None:
+            _tl=tf.TransformListener(True, rospy.Duration(40.0))
+        return _tl
+#################################################################################

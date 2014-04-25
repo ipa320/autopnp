@@ -78,12 +78,10 @@ from cob_object_detection_msgs.msg import DetectionArray, Detection
 from geometry_msgs import *
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
-from std_msgs.msg import Bool
-from std_msgs.msg import String
+from std_msgs.msg import Bool, String
 from std_srvs.srv import Empty
 
 from ApproachPerimeter import *
-#from ApproachPerimeterLinear import *
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
@@ -166,18 +164,6 @@ ARM_JOINT_CONFIGURATIONS_VACUUM={
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
-###############''WORKAROUND FOR TRANSFORMLISTENER ISSUE####################
-_tl=None
-_tl_creation_lock=threading.Lock()
-
-def get_transform_listener():
-	global _tl
-	with _tl_creation_lock:
-		if _tl==None:
-			_tl=tf.TransformListener(True, rospy.Duration(40.0))
-		return _tl
-#################################################################################
-
 class InitAutoPnPScenario(smach.State):
 	def __init__(self, confirm_mode):
 		smach.State.__init__(self,
@@ -190,7 +176,7 @@ class InitAutoPnPScenario(smach.State):
 		self.CONFIRM_MODE = confirm_mode
 		
 	def execute(self, userdata):
-		sf = ScreenFormat("InitAutoPnPScenario")
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		CONFIRM_MODE= self.CONFIRM_MODE
 		print "CONFIRM_MODE =", CONFIRM_MODE
@@ -260,12 +246,12 @@ class AnalyzeMap(smach.State):
 																			'analyze_map_data_room_max_y_'])
 
 	def execute(self, userdata):
-		sf = ScreenFormat("AnalyzeMap")
+		sf = ScreenFormat(self.__class__.__name__)
+		
+		# todo: simplify
 		map_segmentation_action_client_object_ = MapSegmentationActionClient()
-		
 		rospy.sleep(1)
-		rospy.loginfo('Executing state analyze map.....')
-		
+
 		map_segmentation_action_server_result_ = map_segmentation_action_client_object_.map_segmentation_action_client_()
 		
 		userdata.analyze_map_data_img_ = map_segmentation_action_server_result_.output_map
@@ -300,9 +286,8 @@ class NextUnprocessedRoom(smach.State):
 																						'find_next_unprocessed_room_center_y_'])  # in pixel
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("NextUnprocessedRoom")
-		#rospy.sleep(10)
-		rospy.loginfo('Executing state next unprocessed room.....')
+		sf = ScreenFormat(self.__class__.__name__)
+
 		if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_data_room_center_x_):
 			find_next_unprocessed_room_action_server_result_ = find_next_unprocessed_room( userdata.find_next_unprocessed_room_data_img_,
 																							userdata.analyze_map_data_room_center_x_,   # in pixel
@@ -338,9 +323,8 @@ class GoToRoomLocation(smach.State):
 																		output_keys=['go_to_room_location_loop_counter_out_'])
 
 	def execute(self, userdata):
-		sf = ScreenFormat("GoToRoomLocation")
-		#rospy.sleep(10)
-		rospy.loginfo('Executing state go to room location')
+		sf = ScreenFormat(self.__class__.__name__)
+		
 		#todo: replace movement command by some standard script
 		if userdata.go_to_room_location_loop_counter_in_ == 0 :
 			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
@@ -385,9 +369,7 @@ class FindRandomLocation(smach.State):
 																								'random_location_finder_data_img_out_'])
 
 	def execute(self, userdata):
-		sf = ScreenFormat("FindRandomLocation")
-		#rospy.sleep(10)
-		rospy.loginfo('Executing state find random location')
+		sf = ScreenFormat(self.__class__.__name__)
 
 		# todo: replace by something simple in the py script
 		
@@ -432,9 +414,7 @@ class InspectRoom(smach.State):
 														output_keys=['inspect_room_img_out_'])
 
 	def execute(self, userdata):
-		sf = ScreenFormat("InspectRoom")
-		#rospy.sleep(10)
-		rospy.loginfo('Executing state inspect_room')
+		sf = ScreenFormat(self.__class__.__name__)
 		
 # 		inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
 # 														userdata.inspect_room_room_number_,
@@ -483,8 +463,7 @@ class VerifyToolCarLocation(smach.State):
 							output_keys=['tool_wagon_goal_pose'])  # in m
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("VerifyToolCarLocation")
-		rospy.loginfo('Executing state Verify_Tool_Car_Location')
+		sf = ScreenFormat(self.__class__.__name__)
 
 		# compare tool wagon location with next goal position (find_next_unprocessed_room_center_x_/y_) -> if to far, move tool wagon
 		next_room_center_x_m = userdata.find_next_unprocessed_room_center_x_*userdata.analyze_map_data_map_resolution_ + userdata.analyze_map_data_map_origin_x_
@@ -635,11 +614,10 @@ class MoveToToolWaggonFront(smach.State):
 			self.last_callback_time = rospy.Time.now()
 
 	def execute(self, userdata):
-		sf = ScreenFormat("MoveToToolWaggonFront")
-		#rospy.loginfo('Executing state MoveToToolWaggonFront')
+		sf = ScreenFormat(self.__class__.__name__)
 
-		sss.move("head", "back")
-		sss.move("torso", "back")
+		sss.move("head", "back", False)
+		sss.move("torso", "back", False)
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -684,11 +662,10 @@ class MoveToToolWaggonFrontFar(smach.State):
 			self.last_callback_time = rospy.Time.now()
 
 	def execute(self, userdata):
-		sf = ScreenFormat("MoveToToolWaggonFrontFar")
-		#rospy.loginfo('Executing state MoveToToolWaggonFrontFar')
+		sf = ScreenFormat(self.__class__.__name__)
 
-		sss.move("head", "back")
-		sss.move("torso", "back")
+		sss.move("head", "back", False)
+		sss.move("torso", "back", False)
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -732,11 +709,10 @@ class MoveToToolWaggonRear(smach.State):
 		self.tool_wagon_pose = computeToolWagonPoseFromFiducials(fiducials)
 
 	def execute(self, userdata):
-		sf = ScreenFormat("MoveToToolWaggonRear")
-		#rospy.loginfo('Executing state MoveToToolWaggonRear')
+		sf = ScreenFormat(self.__class__.__name__)
 
-		sss.move("head", "back")
-		sss.move("torso", "back")
+		sss.move("head", "back", False)
+		sss.move("torso", "back", False)
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -781,11 +757,10 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 			self.last_callback_time = rospy.Time.now()
 
 	def execute(self, userdata):
-		sf = ScreenFormat("MoveToToolWaggonFrontFrontalFar")
-		#rospy.loginfo('Executing state MoveToToolWaggonFrontFrontalFar')
+		sf = ScreenFormat(self.__class__.__name__)
 
-		sss.move("head", "front")
-		sss.move("torso", "front")
+		sss.move("head", "front", False)
+		sss.move("torso", "front", False)
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -830,11 +805,10 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 			self.last_callback_time = rospy.Time.now()
 
 	def execute(self, userdata):
-		sf = ScreenFormat("MoveToToolWaggonFrontTrashClearing")
-		#rospy.loginfo('Executing state MoveToToolWaggonFrontTrashClearing')
+		sf = ScreenFormat(self.__class__.__name__)
 
-		sss.move("head", "back")
-		sss.move("torso", "back")
+		sss.move("head", "back", False)
+		sss.move("torso", "back", False)
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -911,8 +885,7 @@ class GraspHandle(smach.State):
 		smach.State.__init__(self, outcomes=['grasped'])
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("GraspHandle")
-		rospy.loginfo('Executing state Grasp_Handle')
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		##intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
@@ -961,9 +934,7 @@ class GoToNextToolWaggonLocation(smach.State):
 		self.navigation_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("GoToNextToolWaggonLocation")
-		rospy.loginfo('Executing state Go_To_Next_Tool_Waggon_Location')
-		
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		# 1. adjust base movement speeds
 		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.01, "min_vel_y":-0.01,"max_rot_vel":0.1})
@@ -989,9 +960,8 @@ class ReleaseGrasp(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['released'])
 
-	def execute(self, userdata ):
-		sf = ScreenFormat("ReleaseGrasp")
-		rospy.loginfo('Executing state Release_Grasp')
+	def execute(self, userdata):
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		##intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
@@ -1034,8 +1004,6 @@ class DirtDetectionOn(smach.State):
 
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
-#		rospy.sleep(2)
-		rospy.loginfo('Executing state Dirt_Detection_On')
 
 		# move torso and head to frontal inspection perspective
 		sss.move("torso","front_extreme", False)
@@ -1068,8 +1036,7 @@ class TrashBinDetectionOn(smach.State):
 
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
-#		rospy.sleep(2)
-		rospy.loginfo('Executing state Trash_Bin_Detection_On')
+		
 		rospy.wait_for_service('activate_trash_bin_detection_service')
 		try:
 			req = rospy.ServiceProxy('activate_trash_bin_detection_service', ActivateTrashBinDetection)
@@ -1086,8 +1053,6 @@ class DirtDetectionOff(smach.State):
 
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
-#		rospy.sleep(2)
-		rospy.loginfo('Executing state Dirt_Detection_Off')
 
 		# move torso back to normal position
 		sss.move("torso","home")
@@ -1109,8 +1074,7 @@ class TrashBinDetectionOff(smach.State):
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
-#		rospy.sleep(2)
-		rospy.loginfo('Executing state Trash_Bin_Detection_Off')
+
 		rospy.wait_for_service('deactivate_trash_bin_detection_service')
 		try:
 			req = rospy.ServiceProxy('deactivate_trash_bin_detection_service',DeactivateTrashBinDetection)
@@ -1122,7 +1086,7 @@ class TrashBinDetectionOff(smach.State):
 		
 		print "userdata.detected_waste_bin_poses: ", resp.detected_trash_bin_poses.detections
 		
- 		# hack: reset processed trash bin counter
+ 		# kind of hack: reset processed trash bin counter (implies that respective trash bins are always directly cleared after each search)
 		userdata.sm_trash_bin_counter = 0
 
 		if len(resp.detected_trash_bin_poses.detections)==0:
@@ -1144,8 +1108,7 @@ class GoToNextUnprocessedWasteBin(smach.State):
 
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
-#		rospy.sleep(2)
-		rospy.loginfo('Executing state Go_To_Next_Unprocessed_Waste_Bin')
+
 		if (len(userdata.go_to_next_unprocessed_waste_bin_in_)==0 or
 			userdata.number_of_unprocessed_trash_bin_in_ == len(userdata.go_to_next_unprocessed_waste_bin_in_)):
 			rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
@@ -1381,7 +1344,7 @@ class ClearTrashBinIntoToolWagonPart1(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['finished'])
 
-	def execute(self, userdata ):
+	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
 		sss.move("head", "back", False)
@@ -1408,7 +1371,7 @@ class ClearTrashBinIntoToolWagonPart2(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['finished'])
 
-	def execute(self, userdata ):
+	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
 		if (CONFIRM_MODE==True):
@@ -1541,7 +1504,7 @@ class ChangeToolManual(smach.State):
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
 		
 	def execute(self, userdata):
-		sf = ScreenFormat("ChangeToolManual")
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		# move arm with tool facing up (so it cannot fall down on opening)
 		handle_arm = sss.move("arm", "pregrasp")
@@ -1623,7 +1586,7 @@ class ChangeToolManualPnP(smach.State):
 		self.attachment = msg.data
 		
 	def execute(self, userdata):
-		sf = ScreenFormat("ChangeToolManualPnP")
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		# move arm with tool facing up (so it cannot fall down on opening)
 		#handle_arm = sss.move("arm", "pregrasp")
@@ -1731,7 +1694,7 @@ class ChangeToolManualPnPAttachOnly(smach.State):
 		self.attachment = msg.data
 		
 	def execute(self, userdata):
-		sf = ScreenFormat("ChangeToolManualPnPAttachOnly")
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		# move arm with tool facing up (so it cannot fall down on opening)
 		#handle_arm = sss.move("arm", "pregrasp")
@@ -1791,9 +1754,7 @@ class GoToToolWagonLocation(smach.State):
         smach.State.__init__(self, outcomes=['GTTWL_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("GoToToolWagonLocation")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Go_To_Tool_Wagon_Location')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'GTTWL_done'
     
     
@@ -1803,9 +1764,7 @@ class DetectSlotForCurrentTool(smach.State):
         smach.State.__init__(self, outcomes=['slot_pose'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("DetectSlotForCurrentTool")
-#         rospy.sleep(2)
-        rospy.loginfo('Executing state Detect_Slot_For_Current_Tool')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'slot_pose'
     
     
@@ -1815,9 +1774,7 @@ class MoveArmToSlot(smach.State):
         smach.State.__init__(self, outcomes=['MATS_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("MoveArmToSlot")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_Arm_To_Slot')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'MATS_done'
     
     
@@ -1827,9 +1784,7 @@ class ReleaseToolChanger(smach.State):
         smach.State.__init__(self, outcomes=['RTC_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("ReleaseToolChanger")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Release_Tool_Changer')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'RTC_done'
     
     
@@ -1839,9 +1794,7 @@ class LiftArm(smach.State):
         smach.State.__init__(self, outcomes=['LA_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("LiftArm")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Lift-Arm')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'LA_done'
     
     
@@ -1851,9 +1804,7 @@ class DetectSlotForNewDevice(smach.State):
         smach.State.__init__(self, outcomes=['DSFND_slot_pose'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("DetectSlotForNewDevice")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Detect_Slot_For_New_Device')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'DSFND_slot_pose'
     
     
@@ -1863,9 +1814,7 @@ class MoveArmToSlot2(smach.State):
         smach.State.__init__(self, outcomes=['MATS2_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("MoveArmToSlot2")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_Arm_To_Slot_2')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'MATS2_done'
       
     
@@ -1875,9 +1824,7 @@ class CloseToolChanger(smach.State):
         smach.State.__init__(self, outcomes=['CTC_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("CloseToolChanger")  
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Close_Tool_Changer')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'CTC_done'
     
     
@@ -1887,9 +1834,7 @@ class MoveArmToStandardLocation(smach.State):
         smach.State.__init__(self, outcomes=['MATSL_done'])
              
     def execute(self, userdata ):
-    	sf = ScreenFormat("MoveArmToStandardLocation")
-#         rospy.sleep(2)                              
-        rospy.loginfo('Executing state Move_Arm_To_Standard_Location')
+    	sf = ScreenFormat(self.__class__.__name__)
         return 'MATSL_done'
 
 
@@ -1907,9 +1852,8 @@ class ReceiveDirtMap(smach.State):
 							output_keys=['list_of_dirt_locations', 'last_visited_dirt_location'])
 
 	def execute(self, userdata ):
-		sf = ScreenFormat("ReceiveDirtMap")
-#		rospy.sleep(2)
-		rospy.loginfo('Executing state ReceiveDirtMap')
+		sf = ScreenFormat(self.__class__.__name__)
+		
 		rospy.wait_for_service('/dirt_detection/get_dirt_map')
 		try:
 			req = rospy.ServiceProxy('/dirt_detection/get_dirt_map', GetDirtMap)
@@ -1951,8 +1895,7 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 							output_keys=['next_dirt_location', 'last_visited_dirt_location_out'])
 	
 	def execute(self, userdata ):
-		sf = ScreenFormat("SelectNextUnprocssedDirtSpot")
-		rospy.loginfo('Executing state Select_Next_Unprocssed_Dirt_Spot')
+		sf = ScreenFormat(self.__class__.__name__)
 
 		print "last_visited_dirt_location =", userdata.last_visited_dirt_location_in
 		print "list_of_dirt_locations =", userdata.list_of_dirt_locations
@@ -1980,8 +1923,7 @@ class MoveLocationPerimeterCleaning(smach.State):
 							output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
 	
 	def execute(self, userdata ):
-		sf = ScreenFormat("MoveLocationPerimeterCleaning")
-		#rospy.loginfo('Executing state MoveLocationPerimeterCleaning')
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		center = Pose2D()
 		center.x = userdata.next_dirt_location[0]
@@ -2010,8 +1952,7 @@ class Clean(smach.State):
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 	
 	def execute(self, userdata ):
-		sf = ScreenFormat("Clean")
-		#rospy.loginfo('Executing state Clean')
+		sf = ScreenFormat(self.__class__.__name__)
 
 		#handle_arm = sss.move("arm",[[0.9865473596897948, -1.0831862403727208, 0.8702560716294125, -0.5028991706696462, 1.4975099515036547, -1.6986067879184412, -8.726646259971648e-05]]) # intermediate position with vacuum cleaner in air
 		#handle_arm = sss.move("arm",[[]]) #
@@ -2155,8 +2096,7 @@ class MoveLocationPerimeterValidation(smach.State):
 							output_keys=['center', 'radius', 'rotational_sampling_step', 'goal_pose_theta_offset', 'new_computation_flag', 'invalidate_other_poses_radius', 'goal_pose_selection_strategy'])
 	
 	def execute(self, userdata ):
-		sf = ScreenFormat("MoveLocationPerimeterCleaning")
-		#rospy.loginfo('Executing state MoveLocationPerimeterCleaning')
+		sf = ScreenFormat(self.__class__.__name__)
 		
 		center = Pose2D()
 		center.x = userdata.next_dirt_location[0]
@@ -2186,10 +2126,9 @@ class VerifyCleaningProcess(smach.State):
 		smach.State.__init__(self, outcomes=['verify_cleaning_done'], input_keys=['next_dirt_location'])
 	
 	def execute(self, userdata ):
-		sf = ScreenFormat("verifyCleaningProcess")
-#		rospy.sleep(2)
+		sf = ScreenFormat(self.__class__.__name__)
 		
-		sss.move("head", "front")
+		sss.move("head", "front", False)
 		sss.move("torso", "front_extreme")
 		
 		point = Point(x=userdata.next_dirt_location[0], y=userdata.next_dirt_location[1], z=0.0)
@@ -2223,9 +2162,8 @@ class ProcessCleaningVerificationResults(smach.State):
         smach.State.__init__(self, outcomes=['finished'])
 
     def execute(self, userdata ):
-    	sf = ScreenFormat("ProcessCleaningVerificationResults")
-#         rospy.sleep(2)
-        rospy.loginfo('Executing state Process_Cleaning_Verification_Results')
+    	sf = ScreenFormat(self.__class__.__name__)
+    	
         return 'finished'
 
 
