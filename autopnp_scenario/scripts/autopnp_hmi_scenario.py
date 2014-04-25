@@ -378,7 +378,9 @@ N', GraspTrashBin(),
 		with sm_sub_go_to_next_unprocessed_dirt_location:
 			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
 								transitions={'selected_next_dirt_location':'MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING',
-											'no_dirt_spots_left':'no_dirt_spots_left'})
+											'no_dirt_spots_left':'no_dirt_spots_left'},
+								remapping = {'last_visited_dirt_location_in':'last_visited_dirt_location',
+											 'last_visited_dirt_location_out':'last_visited_dirt_location'})
 			
 			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING', MoveLocationPerimeterCleaning(),
 								transitions={'movement_prepared':'APPROACH_PERIMETER_CLEANING'})
@@ -450,12 +452,14 @@ if __name__ == '__main__':
 			CONFIRM_MODE = True
 		else:
 			flag=sys.argv[1]
-		if len(flag)==0:
-			CONFIRM_MODE = True
+		#if len(flag)==0:
+		#	CONFIRM_MODE = True
 
 		if flag=="auto":
 			CONFIRM_MODE = False  # in auto mode the connection to the control pc may interrupted, the scenario will stil work
 			# necessitates that all nodes are started with & and the end, e.g. bringup &
+		elif flag=="special":
+			CONFIRM_MODE = False
 		else:
 			CONFIRM_MODE = True
 
