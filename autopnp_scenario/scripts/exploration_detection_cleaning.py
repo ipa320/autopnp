@@ -446,9 +446,9 @@ class InspectRoom(smach.State):
 		rospy.sleep(1.0)
 		handle_move = sss.move("base", [-0.58, 0.58, -0.79],mode='linear')
 		rospy.sleep(1.0)
-		handle_move = sss.move("base", [0.88, 0.0, 2.36],mode='omni')
+		handle_move = sss.move("base", [0.84, 0.0, 2.36],mode='omni')
 		rospy.sleep(3.0)
-		handle_move = sss.move("base", [0.88, 0.0, 3.14],mode='linear')
+		handle_move = sss.move("base", [0.84, 0.0, 3.14],mode='linear')
 		rospy.sleep(3.0)
 		
 		#raw_input("finished inspection?")
@@ -1031,6 +1031,16 @@ class DirtDetectionOn(smach.State):
 		sss.move("torso","front_extreme", False)
 		sss.move("head","front")
 
+		# hack:
+		rospy.wait_for_service('/dirt_detection/reset_dirt_maps') 
+		try:
+			req = rospy.ServiceProxy('/dirt_detection/reset_dirt_maps',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call failed: %s"%e
+
+
+
 		rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
 		try:
 			req = rospy.ServiceProxy('/dirt_detection/activate_dirt_detection',ActivateDirtDetection)
@@ -1085,7 +1095,7 @@ class DirtDetectionOff(smach.State):
 # use the DeactivateTrashBinDetection service to deactivate Trash Bin Detection
 class TrashBinDetectionOff(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['trash_can_found','trash_can_not_found'],output_keys=['detected_waste_bin_poses_'])
+		smach.State.__init__(self, outcomes=['trash_can_found','trash_can_not_found'],output_keys=['detected_waste_bin_poses_', 'sm_trash_bin_counter'])
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat("TrashBinDetectionOff")
@@ -1102,6 +1112,9 @@ class TrashBinDetectionOff(smach.State):
 		
 		print "userdata.detected_waste_bin_poses: ", resp.detected_trash_bin_poses.detections
 		
+ 		# hack: reset processed trash bin counter
+		userdata.sm_trash_bin_counter = 0
+
 		if len(resp.detected_trash_bin_poses.detections)==0:
 			return 'trash_can_not_found'
 		else:
@@ -1977,6 +1990,7 @@ class Clean(smach.State):
 
 		# 2. clean
 		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
+		vacuum_recover_service_name = '/vacuum_cleaner_controller/recover'
 		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
 		vacuum_off_service_name = '/vacuum_cleaner_controller/power_off'
 		
@@ -2013,6 +2027,14 @@ class Clean(smach.State):
 			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
 			raw_input("enter")
 		
+		# recover vacuum cleaner (turning on is more reliably thereafter)
+		rospy.wait_for_service(vacuum_recover_service_name) 
+		try:
+			req = rospy.ServiceProxy(vacuum_recover_service_name, Trigger)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to vacuum recover failed: %s"%e
+
 		# turn vacuum cleaner on
 		rospy.wait_for_service(vacuum_on_service_name) 
 		try:

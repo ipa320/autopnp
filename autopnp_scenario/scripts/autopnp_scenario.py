@@ -67,12 +67,13 @@ from exploration_detection_cleaning import *
 def main():
 	rospy.init_node('exploration_detection_cleaning')
 	
-	''' approach tool waggon '''
+	# approach tool waggon
+	'''
 	sm_scenario = smach.StateMachine(outcomes=['finished'])
 	with sm_scenario:
 		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
 								transitions={'arrived':'finished'})
-	
+	'''
 	'''
 	# clean
 	sm_scenario = smach.StateMachine(outcomes=['cleaning_done'])

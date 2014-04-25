@@ -233,10 +233,10 @@ N', GraspTrashBin(),
 										'no_more_rooms_left': 'DIRT_DETECTION_ON'})#'CHANGE_TOOL_MANUAL'}) #'CHANGE_TOOL_HAND'})
 		
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
-							transitions={'dirt_detection_on':'TRASH_BIN_DETECTION_ON'})
+							transitions={'dirt_detection_on':'INSPECT_ROOM'})
 		
-		smach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
-							transitions={'trash_bin_detection_on':'INSPECT_ROOM'})
+		#smach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
+		#					transitions={'trash_bin_detection_on':'INSPECT_ROOM'})
 		
 		smach.StateMachine.add('INSPECT_ROOM', InspectRoom(),
 							transitions={'finished':'DIRT_DETECTION_OFF'},
@@ -245,12 +245,12 @@ N', GraspTrashBin(),
 										'inspect_room_room_number_':'sm_RoomNo'})
 
 		smach.StateMachine.add('DIRT_DETECTION_OFF', DirtDetectionOff(),
-							transitions={'dirt_detection_off':'TRASH_BIN_DETECTION_OFF'})
+							transitions={'dirt_detection_off':'GET_DIRT_MAP'})
 		
-		smach.StateMachine.add('TRASH_BIN_DETECTION_OFF', TrashBinDetectionOff(),
-							transitions={'trash_can_found':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN',
-										'trash_can_not_found':'GO_TO_NEXT_UNPROCESSED_ROOM'},
-							remapping={'detected_waste_bin_poses_':'trash_detection_poses'})
+		#smach.StateMachine.add('TRASH_BIN_DETECTION_OFF', TrashBinDetectionOff(),
+		#					transitions={'trash_can_found':'GO_TO_NEXT_UNPROCESSED_WASTE_BIN',
+		#								'trash_can_not_found':'GO_TO_NEXT_UNPROCESSED_ROOM'},
+		#					remapping={'detected_waste_bin_poses_':'trash_detection_poses'})
 
 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_WASTE_BIN', GoToNextUnprocessedWasteBin(),
 							transitions={'go_to_trash_location':'CLEAR_TRASH_BIN',
@@ -390,7 +390,7 @@ N', GraspTrashBin(),
 
 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', sm_sub_go_to_next_unprocessed_dirt_location,
 							transitions={'arrived_dirt_location':'CLEAN',
-										'no_dirt_spots_left':'PROCESS_CLEANING_VERIFICATION_RESULTS'})
+										'no_dirt_spots_left':'DIRT_DETECTION_ON'})
 		
 		
 		
@@ -418,7 +418,7 @@ N', GraspTrashBin(),
 		
 		
 		smach.StateMachine.add('VERIFY_CLEANING_SUCCESS', VerifyCleaningProcess(),
-							transitions={'verify_cleaning_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
+							transitions={'verify_cleaning_done':'DIRT_DETECTION_ON'})
 		
 		
 		

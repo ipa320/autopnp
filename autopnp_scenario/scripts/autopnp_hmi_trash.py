@@ -264,6 +264,10 @@ N', GraspTrashBin(),
 		sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['clear_trash_bin_done', 'failed'],input_keys=['detection_pose', 'tool_wagon_pose'])
 
 		with sm_sub_clear_waste_bin:
+			# hack:
+			smach.StateMachine.add('TURN180', Turn180(),
+								transitions={'arrived':'MOVE_TO_TRASH_BIN_LOCATION'})
+
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
 								transitions={'MTTBL_success':'APPROACH_PERIMETER'},
 								remapping = {'trash_bin_pose_':'detection_pose'})

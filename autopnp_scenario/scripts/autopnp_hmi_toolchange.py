@@ -153,6 +153,9 @@ N', GraspTrashBin(),
 
 	with sm_scenario:
 
+		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION_3', ChangeToolManualPnP(current_tool='vacuum'),
+								transitions={'CTM_done':'finished'})
+
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm),
 							transitions={'initialized':'ANALYZE_MAP',
 										'failed':'failed'})
