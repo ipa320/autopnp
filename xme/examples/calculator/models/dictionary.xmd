@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topic:TopicDictionary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dataType="http://chromosome.fortiss.org/metamodel/dataType/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_sOaekcReEeKXVovrYlzQ3g" name="dictionary" projectName="calculator">
+  <topics xmi:id="_JqN_MDAhEeOI5b80zILhMQ" name="calculatorResponse" id="4099">
+    <dataTypeDefinition xmi:id="_OmEOIDAhEeOI5b80zILhMQ">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_OmXJEDAhEeOI5b80zILhMQ">
+        <members xmi:id="_PjZZEDAhEeOI5b80zILhMQ" identifier="result">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#double"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <topics xmi:id="_tbMawMReEeKXVovrYlzQ3g" name="calculatorRequest" id="4098">
+    <dataTypeDefinition xmi:id="_zlSlgMReEeKXVovrYlzQ3g">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_zlnVoMReEeKXVovrYlzQ3g">
+        <members xmi:id="_1n-2AMReEeKXVovrYlzQ3g" identifier="operand1">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int32_t"/>
+        </members>
+        <members xmi:id="_X7Pq4MbQEeKlhqUvSWIkvg" identifier="operand2">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int32_t"/>
+        </members>
+        <members xmi:id="_BcAdsMRfEeKXVovrYlzQ3g" identifier="operation">
+          <dataType xsi:type="dataType:Enum" xmi:id="_AVRCADAhEeOI5b80zILhMQ">
+            <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#uint8_t"/>
+            <literals xmi:id="_AgHAEDAhEeOI5b80zILhMQ" name="ADD"/>
+            <literals xmi:id="_Bgb0oDAhEeOI5b80zILhMQ" name="SUBTRACT" value="1"/>
+            <literals xmi:id="_CUxboDAhEeOI5b80zILhMQ" name="MULTIPLY" value="2"/>
+            <literals xmi:id="_DBVmsDAhEeOI5b80zILhMQ" name="DIVIDE" value="3"/>
+          </dataType>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+</topic:TopicDictionary>

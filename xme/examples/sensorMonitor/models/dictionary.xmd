@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topic:TopicDictionary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dataType="http://chromosome.fortiss.org/metamodel/dataType/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_sOaekcReEeKXVovrYlzQ3g" name="dictionary" projectName="sensorMonitor">
+  <topics xmi:id="_tbMawMReEeKXVovrYlzQ3g" name="sensorData" id="4098">
+    <attributeDefinitions xmi:id="_6a5KYR6-EeOyu_1oprnCYg" key="unit" id="4098">
+      <dataType xsi:type="dataType:Enum" xmi:id="_IMFCUB6_EeOyu_1oprnCYg">
+        <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#uint32_t"/>
+        <literals xmi:id="_I2Hd0B6_EeOyu_1oprnCYg" name="bytes"/>
+        <literals xmi:id="_OqNjYB6_EeOyu_1oprnCYg" name="kilobytes" value="1"/>
+        <literals xmi:id="_Z3zdMB6_EeOyu_1oprnCYg" name="megabytes" value="2"/>
+        <literals xmi:id="_Dol40CBbEeO0L4f2ycabGA" name="gigabytes" value="3"/>
+      </dataType>
+    </attributeDefinitions>
+    <requiredAttributes xmi:id="_6a5KYB6-EeOyu_1oprnCYg" definition="_6a5KYR6-EeOyu_1oprnCYg" publicationDefined="true"/>
+    <dataTypeDefinition xmi:id="_zlSlgMReEeKXVovrYlzQ3g">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_zlnVoMReEeKXVovrYlzQ3g">
+        <members xmi:id="_1n-2AMReEeKXVovrYlzQ3g" identifier="hostName">
+          <dataType xsi:type="dataType:Array" xmi:id="_VVLnkcbQEeKlhqUvSWIkvg" count="32">
+            <dataType xsi:type="dataType:Char" xmi:id="_VVMOoMbQEeKlhqUvSWIkvg"/>
+          </dataType>
+        </members>
+        <members xmi:id="_X7Pq4MbQEeKlhqUvSWIkvg" identifier="sensorType">
+          <dataType xsi:type="dataType:Array" xmi:id="_aouk0MbQEeKlhqUvSWIkvg" count="32">
+            <dataType xsi:type="dataType:Char" xmi:id="_aouk0cbQEeKlhqUvSWIkvg"/>
+          </dataType>
+        </members>
+        <members xmi:id="_BcAdsMRfEeKXVovrYlzQ3g" identifier="sensorInstance">
+          <dataType xsi:type="dataType:Array" xmi:id="_gRFUcMbQEeKlhqUvSWIkvg" count="32">
+            <dataType xsi:type="dataType:Char" xmi:id="_gRFUccbQEeKlhqUvSWIkvg"/>
+          </dataType>
+        </members>
+        <members xmi:id="_LS64cMRfEeKXVovrYlzQ3g" identifier="sensorValue">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#uint64_t"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+</topic:TopicDictionary>

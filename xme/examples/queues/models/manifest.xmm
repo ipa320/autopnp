@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_W6ieAMRuEeKXVovrYlzQ3g" name="queues">
+  <components xmi:id="_yUtQEEbDEeOhrt3j-n7jiQ" name="receiver" id="4098">
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_yUtQEUbDEeOhrt3j-n7jiQ" name="in" queueSize="2">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_yUtQEkbDEeOhrt3j-n7jiQ" name="receive" optionalPorts="_yUtQEUbDEeOhrt3j-n7jiQ" wcetInNs="10000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_yUtQE0bDEeOhrt3j-n7jiQ"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_wkf5wGMqEeO6lt1GUq702g" name="sender" id="4099">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_wkf5wWMqEeO6lt1GUq702g" name="out">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_wkf5wmMqEeO6lt1GUq702g" name="send" requiredPorts="_wkf5wWMqEeO6lt1GUq702g" wcetInNs="10000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_wkf5w2MqEeO6lt1GUq702g"/>
+    </containedFunctions>
+  </components>
+</manifest:Manifest>

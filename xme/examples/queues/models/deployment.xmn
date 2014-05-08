@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment:Deployment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:deployment="http://chromosome.fortiss.org/metamodel/deployment/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_zkVTgMRvEeKXVovrYlzQ3g" projectName="queues">
+  <devices xmi:id="_WSh3QGMpEeO6lt1GUq702g" name="device" nodes="_G19bkGMpEeO6lt1GUq702g">
+    <type href="deviceLibrary.xmh#_F64e8MRuEeKXVovrYlzQ3g"/>
+    <interfaces xmi:id="_WSjscGMpEeO6lt1GUq702g" address="127.0.0.1:33221">
+      <relatedInterface href="deviceLibrary.xmh#_KB3icMRuEeKXVovrYlzQ3g"/>
+    </interfaces>
+  </devices>
+  <nodes xmi:id="_G19bkGMpEeO6lt1GUq702g" name="node" device="_WSh3QGMpEeO6lt1GUq702g" nodeId="1" schedulePeriodLengthInNs="3000000000">
+    <componentInstances xmi:id="_QGLa8GPzEeOy0OcE8iWrEw" name="receiver">
+      <type href="manifest.xmm#_yUtQEEbDEeOhrt3j-n7jiQ"/>
+      <functions xmi:id="_QGMCAGPzEeOy0OcE8iWrEw" executionPeriodInNs="3000000000">
+        <type href="manifest.xmm#_yUtQEkbDEeOhrt3j-n7jiQ"/>
+      </functions>
+      <ports xmi:id="_7pVxEJTLEeO79--u0QtnhQ" queueSize="2">
+        <type xsi:type="port:Subscription" href="manifest.xmm#_yUtQEUbDEeOhrt3j-n7jiQ"/>
+      </ports>
+    </componentInstances>
+    <componentInstances xmi:id="_QfWv8GPzEeOy0OcE8iWrEw" name="sender1">
+      <type href="manifest.xmm#_wkf5wGMqEeO6lt1GUq702g"/>
+      <functions xmi:id="_QfXXAGPzEeOy0OcE8iWrEw" executionPeriodInNs="6000000000">
+        <type href="manifest.xmm#_wkf5wmMqEeO6lt1GUq702g"/>
+      </functions>
+      <ports xmi:id="_7pVxEZTLEeO79--u0QtnhQ" queueSize="1">
+        <type xsi:type="port:Publication" href="manifest.xmm#_wkf5wWMqEeO6lt1GUq702g"/>
+      </ports>
+    </componentInstances>
+    <componentInstances xmi:id="_Q8btgGPzEeOy0OcE8iWrEw" name="sender2">
+      <type href="manifest.xmm#_wkf5wGMqEeO6lt1GUq702g"/>
+      <functions xmi:id="_Q8cUkGPzEeOy0OcE8iWrEw" executionPeriodInNs="6000000000">
+        <type href="manifest.xmm#_wkf5wmMqEeO6lt1GUq702g"/>
+      </functions>
+      <ports xmi:id="_7pVxEpTLEeO79--u0QtnhQ" queueSize="1">
+        <type xsi:type="port:Publication" href="manifest.xmm#_wkf5wWMqEeO6lt1GUq702g"/>
+      </ports>
+    </componentInstances>
+  </nodes>
+</deployment:Deployment>

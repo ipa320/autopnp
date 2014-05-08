@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment:Deployment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:deployment="http://chromosome.fortiss.org/metamodel/deployment/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_4a6YcEe3EeOLTtvL1r-wEw" projectName="AutoPnP">
+  <network xmi:id="_qMumAEe4EeOLTtvL1r-wEw" name="subnet">
+    <segments xmi:id="_si8PcEe4EeOLTtvL1r-wEw" connectedInterfaces="_frQLUEe4EeOLTtvL1r-wEw"/>
+  </network>
+  <devices xmi:id="_frPkQEe4EeOLTtvL1r-wEw" name="Master" nodes="_8ElN0Ee3EeOLTtvL1r-wEw">
+    <type href="deviceLibrary.xmh#_F64e8MRuEeKXVovrYlzQ3g"/>
+    <interfaces xmi:id="_frQLUEe4EeOLTtvL1r-wEw" address=":65000">
+      <relatedInterface href="deviceLibrary.xmh#_KB3icMRuEeKXVovrYlzQ3g"/>
+    </interfaces>
+  </devices>
+  <nodes xmi:id="_8ElN0Ee3EeOLTtvL1r-wEw" name="master" programmingLanuage="Cpp" device="_frPkQEe4EeOLTtvL1r-wEw" nodeId="1" schedulePeriodLengthInNs="100000000" minRequiredCMakeVersion="VERSION 2.8.7" modelOfExecution="BEST_EFFORT">
+    <componentInstances xmi:id="_FibBQEe4EeOLTtvL1r-wEw" name="loginManager">
+      <type href="basicXmeModel:xme_manifest#loginManager"/>
+      <ports xmi:id="_rmyJgJlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.2/@outgoingPorts.0"/>
+      </ports>
+      <ports xmi:id="_rmyJgZlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.2/@outgoingPorts.1"/>
+      </ports>
+      <ports xmi:id="_rmyJgplXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.2/@incomingPorts.0"/>
+      </ports>
+      <ports xmi:id="_rmyJg5lXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.2/@incomingPorts.1"/>
+      </ports>
+      <ports xmi:id="_rmyJhJlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.2/@incomingPorts.2"/>
+      </ports>
+      <functions xmi:id="_FibBQUe4EeOLTtvL1r-wEw">
+        <type href="basicXmeModel:xme_manifest#//@components.2/@containedFunctions.0"/>
+      </functions>
+      <functions xmi:id="_FibBQke4EeOLTtvL1r-wEw">
+        <type href="basicXmeModel:xme_manifest#//@components.2/@containedFunctions.1"/>
+      </functions>
+      <functions xmi:id="_uBweIV5yEeOEAfirIC4QyQ">
+        <type href="basicXmeModel:xme_manifest#//@components.2/@containedFunctions.2"/>
+      </functions>
+    </componentInstances>
+    <componentInstances xmi:id="_fQuNIVBYEeODC7D_0eZ0oQ" name="pnpClient">
+      <type href="basicXmeModel:xme_manifest#pnpClient"/>
+      <ports xmi:id="_rmyJhZlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.0"/>
+      </ports>
+      <ports xmi:id="_rmyJhplXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.1"/>
+      </ports>
+      <ports xmi:id="_rmyJh5lXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.2"/>
+      </ports>
+      <ports xmi:id="_rmyJiJlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.1/@incomingPorts.0"/>
+      </ports>
+      <ports xmi:id="_rmyJiZlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.1/@incomingPorts.1"/>
+      </ports>
+      <ports xmi:id="_lXPNYKACEeOJRaLU5NObxg" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.1/@outgoingPorts.3"/>
+      </ports>
+      <functions xmi:id="_fQzFoFBYEeODC7D_0eZ0oQ">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.0"/>
+      </functions>
+      <functions xmi:id="_fQzFoVBYEeODC7D_0eZ0oQ">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.1"/>
+      </functions>
+      <functions xmi:id="_uBweIl5yEeOEAfirIC4QyQ">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.2"/>
+      </functions>
+      <functions xmi:id="_lXN_QKACEeOJRaLU5NObxg">
+        <type href="basicXmeModel:xme_manifest#//@components.1/@containedFunctions.3"/>
+      </functions>
+    </componentInstances>
+    <componentInstances xmi:id="_hJP1AFBYEeODC7D_0eZ0oQ" name="pnpManager">
+      <type href="basicXmeModel:xme_manifest#pnpManager"/>
+      <ports xmi:id="_rmyJiplXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.0/@outgoingPorts.0"/>
+      </ports>
+      <ports xmi:id="_rmyJi5lXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.0/@outgoingPorts.1"/>
+      </ports>
+      <ports xmi:id="_rmyJjJlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Publication" href="basicXmeModel:xme_manifest#//@components.0/@outgoingPorts.2"/>
+      </ports>
+      <ports xmi:id="_rmyJjZlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.0/@incomingPorts.0"/>
+      </ports>
+      <ports xmi:id="_rmyJjplXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.0/@incomingPorts.1"/>
+      </ports>
+      <ports xmi:id="_rmyJj5lXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.0/@incomingPorts.2"/>
+      </ports>
+      <ports xmi:id="_rmywkJlXEeOoRrS47PP-Aw" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.0/@incomingPorts.3"/>
+      </ports>
+      <ports xmi:id="_lXPNYqACEeOJRaLU5NObxg" queueSize="1">
+        <type xsi:type="port:Subscription" href="basicXmeModel:xme_manifest#//@components.0/@incomingPorts.4"/>
+      </ports>
+      <functions xmi:id="_hJQcEFBYEeODC7D_0eZ0oQ">
+        <type href="basicXmeModel:xme_manifest#//@components.0/@containedFunctions.0"/>
+      </functions>
+      <functions xmi:id="_hJQcEVBYEeODC7D_0eZ0oQ">
+        <type href="basicXmeModel:xme_manifest#//@components.0/@containedFunctions.1"/>
+      </functions>
+      <functions xmi:id="_uBweI15yEeOEAfirIC4QyQ">
+        <type href="basicXmeModel:xme_manifest#//@components.0/@containedFunctions.2"/>
+      </functions>
+      <functions xmi:id="_uBweJF5yEeOEAfirIC4QyQ">
+        <type href="basicXmeModel:xme_manifest#//@components.0/@containedFunctions.3"/>
+      </functions>
+      <functions xmi:id="_lXPNYaACEeOJRaLU5NObxg">
+        <type href="basicXmeModel:xme_manifest#//@components.0/@containedFunctions.4"/>
+      </functions>
+    </componentInstances>
+    <componentInstances xmi:id="_Vb_qQIFZEeO_CJGMTFLVIA" name="capabilitiesView">
+      <type href="manifest.xmm#_Plph8IFZEeO_CJGMTFLVIA"/>
+      <ports xmi:id="_rmzXrplXEeOoRrS47PP-Aw" queueSize="10">
+        <type xsi:type="port:Subscription" href="manifest.xmm#_oCjqwIIfEeOOTZOi4wGB9w"/>
+      </ports>
+      <ports xmi:id="_rmzXr5lXEeOoRrS47PP-Aw" queueSize="10">
+        <type xsi:type="port:Subscription" href="manifest.xmm#_EB-jAIIgEeOOTZOi4wGB9w"/>
+      </ports>
+      <functions xmi:id="_VcCtkIFZEeO_CJGMTFLVIA">
+        <type href="manifest.xmm#_Plph8YFZEeO_CJGMTFLVIA"/>
+      </functions>
+      <functions xmi:id="_b859AIIeEeOOTZOi4wGB9w">
+        <type href="manifest.xmm#_b8j-wYIeEeOOTZOi4wGB9w"/>
+      </functions>
+    </componentInstances>
+    <pluggableComponents href="manifestDemonstrator.xmm#_qrTvMKg-EeOXfu0OG4bFQQ"/>
+  </nodes>
+</deployment:Deployment>

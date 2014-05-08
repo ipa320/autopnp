@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topic:TopicDictionary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dataType="http://chromosome.fortiss.org/metamodel/dataType/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_maHewEeyEeOLTtvL1r-wEw" name="AutoPnPCommon" projectName="AutoPnP">
+  <topics xmi:id="_gvY0kIIeEeOOTZOi4wGB9w" name="add_component" id="4098">
+    <dataTypeDefinition xmi:id="_j0vb8IIeEeOOTZOi4wGB9w" dataTypeDefRef="_Ov6F4YUAEeOJ27JFNM3-Lw"/>
+  </topics>
+  <topics xmi:id="_1OQQAIIfEeOOTZOi4wGB9w" name="remove_component" id="4099">
+    <dataTypeDefinition xmi:id="_3GMpEIIfEeOOTZOi4wGB9w">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_3HPK4IIfEeOOTZOi4wGB9w">
+        <members xmi:id="_3kZA8IIfEeOOTZOi4wGB9w" dataTypeDefRef="_oR_qYIIeEeOOTZOi4wGB9w" identifier="name"/>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <dataTypeDefinitions xmi:id="_oR_qYIIeEeOOTZOi4wGB9w" identifier="componentName">
+    <dataType xsi:type="dataType:Array" xmi:id="_oSARcIIeEeOOTZOi4wGB9w" count="50">
+      <dataType xsi:type="dataType:Char" xmi:id="_oSARcYIeEeOOTZOi4wGB9w"/>
+    </dataType>
+  </dataTypeDefinitions>
+  <dataTypeDefinitions xmi:id="_yo3-oIIeEeOOTZOi4wGB9w" identifier="capability">
+    <dataType xsi:type="dataType:Array" xmi:id="_yo3-oYIeEeOOTZOi4wGB9w" count="50">
+      <dataType xsi:type="dataType:Char" xmi:id="_yo3-ooIeEeOOTZOi4wGB9w"/>
+    </dataType>
+  </dataTypeDefinitions>
+  <dataTypeDefinitions xmi:id="_Ov6F4YUAEeOJ27JFNM3-Lw" identifier="component">
+    <dataType xsi:type="dataType:StructuredDataType" xmi:id="_WPQMUIUAEeOJ27JFNM3-Lw">
+      <members xmi:id="_ki_CAIIeEeOOTZOi4wGB9w" dataTypeDefRef="_oR_qYIIeEeOOTZOi4wGB9w" identifier="name"/>
+      <members xmi:id="_u65RAIIeEeOOTZOi4wGB9w" dataTypeDefRef="_oR_qYIIeEeOOTZOi4wGB9w" identifier="parent"/>
+      <members xmi:id="_LeQj0IIfEeOOTZOi4wGB9w" identifier="capabilities">
+        <dataType xsi:type="dataType:Array" xmi:id="_dp84MIIfEeOOTZOi4wGB9w" dataTypeDefRef="_yo3-oIIeEeOOTZOi4wGB9w" count="10"/>
+      </members>
+      <members xmi:id="_bVtloIVJEeOzR7v9OtewkQ" identifier="capabilitiesCount" initialValueLiteral="">
+        <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#uint8_t"/>
+      </members>
+    </dataType>
+  </dataTypeDefinitions>
+</topic:TopicDictionary>

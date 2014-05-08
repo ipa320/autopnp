@@ -1,0 +1,8 @@
+prefix=/home/josh/xme/examples/ROSGateway/src/application/master/devel
+
+Name: master
+Description: Description of master
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/josh/xme/examples/ROSGateway/src/application/master/devel/lib 
+Requires: roscpp rostime std_msgs

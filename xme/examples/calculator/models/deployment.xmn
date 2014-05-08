@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment:Deployment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:deployment="http://chromosome.fortiss.org/metamodel/deployment/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_zkVTgMRvEeKXVovrYlzQ3g" projectName="calculator">
+  <network xmi:id="_UXV2kMRwEeKXVovrYlzQ3g" name="subnet0"/>
+  <devices xmi:id="_tbT5cDKREeOLtc-Ur2AAHg" name="serverNodeDevice" nodes="_rf58sDKREeOLtc-Ur2AAHg">
+    <type href="deviceLibrary.xmh#_F64e8MRuEeKXVovrYlzQ3g"/>
+    <interfaces xmi:id="_tbT5cTKREeOLtc-Ur2AAHg" address="127.0.0.1:33221">
+      <relatedInterface href="deviceLibrary.xmh#_KB3icMRuEeKXVovrYlzQ3g"/>
+    </interfaces>
+  </devices>
+  <devices xmi:id="_eir0IDKYEeOLtc-Ur2AAHg" name="client1NodeDevice" nodes="_cMVAwDKYEeOLtc-Ur2AAHg">
+    <type href="deviceLibrary.xmh#_F64e8MRuEeKXVovrYlzQ3g"/>
+    <interfaces xmi:id="_eir0ITKYEeOLtc-Ur2AAHg" address="127.0.0.1:33222">
+      <relatedInterface href="deviceLibrary.xmh#_KB3icMRuEeKXVovrYlzQ3g"/>
+    </interfaces>
+  </devices>
+  <devices xmi:id="_j3eI0OMKEeKzuJfoF4y3HQ" name="client2NodeDevice" nodes="_e1WSwOMKEeKzuJfoF4y3HQ">
+    <type href="deviceLibrary.xmh#_F64e8MRuEeKXVovrYlzQ3g"/>
+    <interfaces xmi:id="_k5niUOMKEeKzuJfoF4y3HQ" address="127.0.0.1:33223">
+      <relatedInterface href="deviceLibrary.xmh#_KB3icMRuEeKXVovrYlzQ3g"/>
+    </interfaces>
+  </devices>
+  <nodes xmi:id="_cMVAwDKYEeOLtc-Ur2AAHg" name="client1Node" device="_eir0IDKYEeOLtc-Ur2AAHg" nodeId="2" schedulePeriodLengthInNs="100000000">
+    <componentInstances xmi:id="_cMVAwTKYEeOLtc-Ur2AAHg" name="client1">
+      <type href="manifest.xmm#_WEOroMRvEeKXVovrYlzQ3g"/>
+      <functions xmi:id="_cMVAwjKYEeOLtc-Ur2AAHg" executionPeriodInNs="5000000000">
+        <type href="manifest.xmm#_WERH4MRvEeKXVovrYlzQ3g"/>
+      </functions>
+      <functions xmi:id="_8DLbETZdEeOuFr2KBOZ0tQ">
+        <type href="manifest.xmm#_8DK0ADZdEeOuFr2KBOZ0tQ"/>
+      </functions>
+      <ports xmi:id="_YEcxsJTKEeOo6JmYj-cRyw" queueSize="1">
+        <type xsi:type="port:DccRequestSender" href="manifest.xmm#_r9zZoDAgEeOI5b80zILhMQ"/>
+      </ports>
+      <ports xmi:id="_YEcxsZTKEeOo6JmYj-cRyw" queueSize="1">
+        <type xsi:type="port:DccResponseHandler" href="manifest.xmm#_r9zZoTAgEeOI5b80zILhMQ"/>
+      </ports>
+    </componentInstances>
+  </nodes>
+  <nodes xmi:id="_e1WSwOMKEeKzuJfoF4y3HQ" name="client2Node" device="_j3eI0OMKEeKzuJfoF4y3HQ" nodeId="3" schedulePeriodLengthInNs="100000000">
+    <componentInstances xmi:id="_EzWhcDAiEeOI5b80zILhMQ" name="client2">
+      <type href="manifest.xmm#_WEOroMRvEeKXVovrYlzQ3g"/>
+      <functions xmi:id="_EzWhcTAiEeOI5b80zILhMQ" executionPeriodInNs="5000000000">
+        <type href="manifest.xmm#_WERH4MRvEeKXVovrYlzQ3g"/>
+      </functions>
+      <functions xmi:id="_8DLbEDZdEeOuFr2KBOZ0tQ">
+        <type href="manifest.xmm#_8DK0ADZdEeOuFr2KBOZ0tQ"/>
+      </functions>
+      <ports xmi:id="_YEcxspTKEeOo6JmYj-cRyw" queueSize="1">
+        <type xsi:type="port:DccRequestSender" href="manifest.xmm#_r9zZoDAgEeOI5b80zILhMQ"/>
+      </ports>
+      <ports xmi:id="_YEcxs5TKEeOo6JmYj-cRyw" queueSize="1">
+        <type xsi:type="port:DccResponseHandler" href="manifest.xmm#_r9zZoTAgEeOI5b80zILhMQ"/>
+      </ports>
+    </componentInstances>
+  </nodes>
+  <nodes xmi:id="_rf58sDKREeOLtc-Ur2AAHg" name="serverNode" device="_tbT5cDKREeOLtc-Ur2AAHg" nodeId="1" schedulePeriodLengthInNs="100000000">
+    <componentInstances xmi:id="_EUHAsDAiEeOI5b80zILhMQ" name="calculator">
+      <type href="manifest.xmm#_XpjgIMRuEeKXVovrYlzQ3g"/>
+      <functions xmi:id="_EUQxsDAiEeOI5b80zILhMQ">
+        <type href="manifest.xmm#_XplVUMRuEeKXVovrYlzQ3g"/>
+      </functions>
+      <ports xmi:id="_YEcxtJTKEeOo6JmYj-cRyw" queueSize="1">
+        <type xsi:type="port:DccResponseSender" href="manifest.xmm#_i9y8QTAhEeOI5b80zILhMQ"/>
+      </ports>
+      <ports xmi:id="_YEcxtZTKEeOo6JmYj-cRyw" queueSize="1">
+        <type xsi:type="port:DccRequestHandler" href="manifest.xmm#_i9y8QDAhEeOI5b80zILhMQ"/>
+      </ports>
+    </componentInstances>
+  </nodes>
+</deployment:Deployment>

@@ -1,0 +1,146 @@
+%
+% Copyright (c) 2011-2013, fortiss GmbH.
+% Licensed under the Apache License, Version 2.0.
+% 
+% Use, modification and distribution are subject to the terms specified
+% in the accompanying license file LICENSE.txt located at the root directory
+% of this software distribution. A copy is available at
+% http://chromosome.fortiss.org/.
+%
+% This file is part of CHROMOSOME.
+%
+% $Id$
+%
+
+\section{Known Issues}
+\label{appx:known_issues}
+
+The following known issues exist in this release.
+They will be fixed in upcoming releases.
+
+\subsection{Issue \#2968: XMT: Data sinks not scheduled multiple times for multiple incoming data stream}
+
+Code generated from XMT has the same issue than described in \#2967.
+
+\subsection{Issue \#3039: Separate the various XME applications in the same network from each other}
+
+As soon as multiple XME ''master'' nodes (nodes with \emph{Login Managers}) run in the same network
+(e.g., during testing of various applications) at the same time, XME will be come nondeterministic.
+The reason for this is that a client will connect to any available master and it can not be guaranteed
+that all nodes of an application will belong to the same XME network.
+
+As a simple solution we could include the same GUID into all nodes belonging to the same network.
+If the GUID is zero, it will be have like now. A client will connect to the first master available.
+But it the GUID is not zero, a client will only connect to the master carrying the same GUID.
+
+\subsection{Issue \#3076: Decide upon action if a function exceeds its timeslice in the schedule}
+
+Currently, a function can block the execution of other functions:
+if a function overshoots its worst case execution time (WCET), currently no action is taken.
+This means that the other function following the ''blocker'' in the schedule will be delayed.
+When the ''blocker'' finally ends, the other functions will be repeatedly executed in quick succession until the delay is compensated.
+
+\subsection{Issue \#3183: Monitor losing data}
+
+When sensor and empty nodes are running together the monitor node loses data. So we do not see all updates sent by the nodes on Monitor console.
+
+The reason for this is that data gets internally overwritten on the receiver side if more data gets received than can be handled within one cycle of execution.
+Queues have been recently introduced to cope with this problem, but configuration of the queue size is still a manual task
+(can be performed in XMT, see \emph{queues} example for illustration).
+It is planned to automatically calculate the required queue size based on a specification of the expected input behavior.
+
+\subsection{Issue \#3374: Compiler warnings when building under Visual Studio 2012}
+
+\texttt{warning C28251: Inconsistent annotation for '...': this instance has no\\
+annotations. See ...}
+
+\subsection{Issue \#3514: Scheduling algorithm to address the duration/frequency of functions additional to WCET}
+
+With this feature the scheduling principle in the \emph{Plug and Play Client} for the components received in the runtime graph have to be modified.
+This also may apply to the data structure of runtime graph which is communicated across from \emph{Plug and Play Manager} to \emph{Plug and Play Client}.
+
+\subsection{Issue \#3548: Support for multiple request/response relationships per component}
+
+The \emph{Logical Route Manager} is currently unable to correctly handle multiple request/response communication relationships in a single component.
+The reason for this is that if multiple request or response ports exist, the LRM is unable to determine which request port belongs to which response port.
+
+Consider the example of a ''server'' component with two request handler ports and two response sender ports with different request and response topics.
+In this case, channel mappings might get generated from both input ports to both output ports, which is not the intended behavior.
+In order to resolve this problem, we need to:
+\begin{itemize}
+	\item Either introduce a relationship between input port and output port (index) for every pair of request and response ports.
+	\item Or derive the information from the dependency of the associated functions, if possible.
+		This would require that functions are uniquely associated with at most one request and one response port.
+		However, this is probably not meaningful, because the execution semantics of request sending functions
+		and response handling functions is different and hence one might want to put them into two separate functions.
+\end{itemize}
+
+\subsection{Issue \#3683: ``Generate Build System'' of ``Build Application...'' in deployment model does not work under Linux}
+
+When triggering the action commands are executed, but the build system is not generated. It seems that there are ``''-marks missing surrounding the cmake call with path and the \texttt{-G} option.
+
+\subsection{Issue \#3727: Instantiating same component type twice at runtime causes error}
+
+Calling \texttt{xme\_core\_pnp\_pnpClient\_instantiateComponentOnThisNode()} twice on a node for the same component type fails.
+
+\subsection{Issue \#7344: Input port used by multiple functions leads to nondeterministic behavior}
+
+This leads to undeterministic behaviour. Only one of the functins (``randomly'' chosen depending on the currentl slot in the Execution Manager) will actually process data on the input port.
+The first function calls completeReadOperation on that port, so that the other function(s) do(es) not receive the data.
+
+\subsection{Issue \#3779: pnpInit in \texttt{<node>.c} does not work if node contains \{pnp, login\}\{Client, Master\}}
+
+If the node identifier of \texttt{xme\_core\_pnp\_pnpManager\_instantiateComponentOnNode()} in \texttt{pnpInit} of \texttt{<node>.c} is 0 (dynamic case), you receive the following run-time error:
+
+\begin{verbatim}
+xme_core_pnp_pnpManager_instantiateComponentOnNode component failed.
+Fatal: Error occurred during initialization of CHROMOSOME pnp components.
+Aborting execution.
+\end{verbatim}
+
+\subsection{Issue \#3833: Data structures not completely freed after the required components are removed}
+
+Consider the following scenario:
+Node A : running pnpManager (\emph{Plug and Play Manager})
+Node B : running pnpClient (\emph{Plug and Play Client}), sensorComponent in that order in the schedule
+Node C : running pnpClient (\emph{Plug and Play Client}), monitorComponent in that order in the schedule
+Node B and C have a route between sensorComponent and monitorComponent.
+
+Node B is logged out, Node A sends respective graphs to Node B and Node C.
+Node B shuts down XME.
+For Node C, pnpClient deletes the function descriptor of monitorComponent and removes the monitorComponent from schedule. The new schedule gets only activated from the next cycle.
+Since monitorNode is run after the pnpClient in the current active schedule, if we delete the function descriptor this causes EM to see a fault and it issues a shutdown of the node C.
+This is not correct.
+Hence currently XME does not free the data structures. This is a memory leak.
+
+\subsection{Issue \#3834: Nodes can only be logged out one at a time}
+
+Currently we can logout one node in one execution cycle.
+If multiple nodes are submitted for logout only the last one will be logged out. Request for the rest will be overwritten.
+
+\subsection{Issue \#3836: Incorrect stop semantics may lead to loss of data}
+
+Currently after we receive a logout or stop a component request, XME simply tries to take he required action as soon as possible.
+This may result in loss of data, if there is any, in the ports of the components.
+This may be undesirable in certain cases and one must have some policies regarding the same.
+This becomes even more important when we have queues.
+
+\subsection{Issue \#3848: \texttt{XME\_ASSERT\_NORVAL} in configureSchedule of \texttt{<node>.cpp} raises unexpected exception in C++ mode under MSVC}
+
+For the \texttt{XME\_ASSERT\_NORVAL}s in \texttt{configureSchedule()} of the node files the warning C4297 is raised if compiling in C++ mode.
+
+\subsection{Issue \#3964: Schedule output-related waypoints immediately after associated component}
+
+Currently component instances of the same type share their ports.
+The schedule calculation at runtime does not take this into account.
+This leads to each component instance overwriting the data of the one scheduled before it.
+On the console this triggers a warning of data loss.
+
+\subsection{Issue \#4205: Overwriting of master CMakeLists.txt when using more than one deployment model}
+
+When using more than one deployment model, regeneration of files leads to overwriting of master \texttt{CMakeLists.txt} in application root directory.
+
+\subsection{Issue \#4262: When calling logout of a node the node shall be stopped}
+
+If a node has logged in before, but the manager node vanished in the meantime,
+a logout request sent by the node will timeout and the node will never shut down.

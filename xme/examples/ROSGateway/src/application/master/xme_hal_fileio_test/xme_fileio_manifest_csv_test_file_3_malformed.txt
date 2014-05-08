@@ -1,0 +1,4 @@
+ComponentA,0,1,1
+ComponentB,Container1.so,1,1,hello,xxx;mfg
+ComponentC,Container1.so,7
+ComponentX,Container2.so,0,0
