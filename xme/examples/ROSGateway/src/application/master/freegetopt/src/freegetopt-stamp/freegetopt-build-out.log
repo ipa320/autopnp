@@ -1,0 +1,4 @@
+Scanning dependencies of target freegetoptlib
+[100%] Building C object CMakeFiles/freegetoptlib.dir/getopt.o
+Linking C static library libfreegetoptlib.a
+[100%] Built target freegetoptlib

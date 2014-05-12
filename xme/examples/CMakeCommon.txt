@@ -1,0 +1,46 @@
+#
+# Copyright (c) 2011-2013, fortiss GmbH.
+# Licensed under the Apache License, Version 2.0.
+#
+# Use, modification and distribution are subject to the terms specified
+# in the accompanying license file LICENSE.txt located at the root directory
+# of this software distribution. A copy is available at
+# http://chromosome.fortiss.org/.
+#
+# This file is part of CHROMOSOME.
+#
+# $Id: CMakeCommon.txt 6578 2014-01-31 10:44:02Z geisinger $
+#
+# File:
+#         Common CMake definitions for example projects.
+#         Include this file from within your project to apply
+#         recommended settings to your build system.
+#         This is done by putting the following block below your
+#         project() definition (adapting the number of ".." to
+#         the number of subdirectory levels of your project):
+#
+#         # Main project settings
+#         set_property (GLOBAL PROPERTY XME_TARGET_IDENTIFIER "<target-platform>")
+#         include ("../CMakeCommon.txt")
+#
+#         For a list of supported <target-platform>s, see the directory listing of
+#         xme/ports/targets
+#
+
+# Note: Do *not* use this directory as CMake source directory! Rather use one
+#       of the directories from within the examples directory. CHROMOSOME is
+#       designed such that the firmware for each node is to be built using a
+#       separate build system. Consult the documentation for details.
+
+# 2.8.3: CMAKE_CURRENT_LIST_DIR
+#
+cmake_minimum_required (VERSION 2.8.3)
+
+# Find CHROMOSOME
+set (XME_ROOT "${CMAKE_CURRENT_LIST_DIR}/..")
+set (CMAKE_MODULE_PATH "${XME_ROOT}/tools/cmake")
+# Cannot use xme_set() since package XME has not been loaded (we're actually
+# preparing to do so right now...)
+set_property (GLOBAL PROPERTY XME_CONFIG_TARGET_OS ${XME_CONFIG_TARGET_OS})
+set_property (GLOBAL PROPERTY XME_CONFIG_TARGET_CPU ${XME_CONFIG_TARGET_CPU})
+find_package (XME REQUIRED)

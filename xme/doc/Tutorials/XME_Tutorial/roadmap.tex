@@ -1,0 +1,236 @@
+%
+% Copyright (c) 2011-2013, fortiss GmbH.
+% Licensed under the Apache License, Version 2.0.
+% 
+% Use, modification and distribution are subject to the terms specified
+% in the accompanying license file LICENSE.txt located at the root directory
+% of this software distribution. A copy is available at
+% http://chromosome.fortiss.org/.
+%
+% This file is part of CHROMOSOME.
+%
+% $Id: faq.tex 1047 2012-08-31 13:00:47Z geisinger $
+%
+
+\section{Roadmap}
+\label{appx:roadmap}
+
+This roadmap illustrates the features that are planned for the upcoming releases of \xme.
+
+
+
+\subsection{Version 0.1}
+
+\paragraph{Release:} internal only
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Prototypic API
+\end{itemize}
+
+
+
+\subsection{Version 0.2}
+
+\paragraph{Release:} 2012-04-02 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Prototypic implementation of data centric communication with dynamic login of nodes.
+	\item Software components state their resource requirements and data dependencies only during runtime.
+	\item As such, the feasibility of the system can not be determined in advance.
+	\item Network communication is based on multicast UDP.
+	\item Routes are dynamically calculated during runtime.
+	\item No own scheduler; OS scheduler is wrapped.
+	\item New components can be dynamically logged into the system during runtime.
+\end{itemize}
+
+\paragraph{Components:}
+\begin{itemize}
+	\item \emph{Broker} (prototypic)
+	\item \emph{Routing Table} (prototypic)
+	\item \emph{Directory} (prototypic)
+	\item \emph{Login Manager}, \emph{Login Client}, \emph{Login Sever Proxy}, \emph{Login Client Proxy} (all prototypic)
+	\item \emph{Node Manager} (prototypic)
+	\item \emph{Resource Manager} (prototypic)
+\end{itemize}
+
+\paragraph{Platform support:} Windows (primary), Linux (inofficial), embedded (inofficial)
+\paragraph{Communication protocols:} Multicast UDP, no marshaling support
+\paragraph{Example applications:} Chat example
+
+
+
+\subsection{Version 0.3}
+
+\paragraph{Release:} 2013-05-21 (RC1), 2013-05-29 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Completely redesigned API.
+	\item Implementation of data centric communication based on modeling (CHROMOSOME Modeling Tool, XMT) and static generation/configuration of the runtime system by code generation.
+	\item Software components provide an abstract description of their resource requirements via a so-called manifest.
+	\item No dynamic reconfiguration at runtime.
+	\item As such, feasibility of the system could be checked in advance, although this check is not implemented in this version.
+	\item Own scheduler with time-triggered behavior.
+\end{itemize}
+
+\paragraph{Components:}
+\begin{itemize}
+	\item \emph{Execution Manager}
+	\item \emph{Broker}
+	\item \emph{Data Handler}
+\end{itemize}
+
+\paragraph{Platform support:} Linux (primary), Windows (secondary)
+\paragraph{Communication protocols:} UDP with static addresses, including marshaling
+\paragraph{Example applications:} Sensor data acquisition from hosts in network
+
+
+
+\subsection{Version 0.4}
+
+\paragraph{Release plan:} 2013-07-04 (RC1); 2013-07-17 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Restricted dynamic reconfiguration during runtime: All nodes in the network are known in advance, but software components can be dynamically added (not removed) during runtime.
+	\item Respective automatic calculation of network data paths based on topics (optionally with support of attributes).
+	\item The addresses of all nodes in the network are specified in the modeling tool. No dynamic login or logoff during runtime.
+	\item Plug \& Play Manager exists on dedicated node in the network.
+	\item Plug \& Play Clients exist on all nodes in the network.
+	\item Plug \& Play Manager accepts command from user that indicate changes in the configuration of the application or network (add new node, add new component on node).
+	\item Network topology known in advance (address is known, no dynamic login), no removal of nodes/components.
+\end{itemize}
+
+\paragraph{Components:}
+\begin{itemize}
+	\item \emph{Plug \& Play Manager}
+	\item \emph{Logical Route Manager}
+	\item \emph{Network Topology Calculator}
+\end{itemize}
+
+\paragraph{Platform support:} Linux (primary), Windows (secondary)
+\paragraph{Communication protocols:} UDP with static addresses, including marshaling
+\paragraph{Example applications:} Sensor data acquisition from hosts in network with dynamic activation of additional data sources
+
+
+
+\subsection{Version 0.5}
+
+\paragraph{Release plan:} 2013-08-02 (RC1); 2013-08-27 (RC2); 2013-09-02 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Restricted dynamic reconfiguration during runtime: Nodes can dynamically log into the network during runtime (not removed/logged out).
+	\item Support for data path calculation based on attributes in XMT.
+	\item After login, nodes tell Plug \& Play Manager their manifest (which components are already installed on the node).
+	\item ''Management routes'' built dynamically during runtime.
+	\item Star-topology based communication scheme.
+\end{itemize}
+
+\paragraph{Components:}
+\begin{itemize}
+	\item \emph{Login Manager}
+	\item \emph{Login Client}
+\end{itemize}
+
+\paragraph{Platform support:} Linux (primary), Windows (secondary)
+\paragraph{Communication protocols:} UDP with static addresses, including marshaling
+\paragraph{Example applications:} Sensor data acquisition from dynamically ``plugged'' nodes in network
+
+
+
+\subsection{Version 0.6}
+
+\paragraph{Release plan:} 2013-10-01 (RC1); 2013-10-16 (RC2); 2013-10-31 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Support for data path calculation based on attributes in XME runtime system.
+	\item Native support for request/response (client/server based communication pattern).
+	\item Cleanup and refactoring.
+\end{itemize}
+
+\paragraph{Components:}
+\begin{itemize}
+	\item \textit{(none)}
+	%\item maybe login proxies
+\end{itemize}
+
+\paragraph{Platform support:} Linux (primary), Windows (secondary)
+\paragraph{Communication protocols:} UDP with static addresses, including marshaling and broadcast UDP
+\paragraph{Example applications:} Sensor data acquisition from dynamically ``plugged'' nodes in network; Request-response calculator example
+
+
+
+\subsection{Version 0.7}
+
+\paragraph{Release plan:} 2013-12-13 (RC1); 2013-12-20 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Logout at node level (opposite of node login).
+	%\item Gateway support (nodes with multiple interfaces).
+	\item Interaction with ROS (ROS Gateway).
+	%\item Node neighborhood detection and network topology calculation.
+	%\item Reliable communication based on TCP.
+	\item Configurator extension ''plugins'' for building custom data paths.
+	\item Subscription cardinality specification.
+	\item Manifest interchange format based on XML.
+	\item Cleanup and refactoring.
+\end{itemize}
+
+\paragraph{Platform support:} Linux (primary), Windows (secondary)
+\paragraph{Communication protocols:} UDP with static addresses, including marshaling
+\paragraph{Example applications:} Sensor data acquisition with exchange to/from ROS
+
+
+
+\subsection{Version 0.8}
+
+\paragraph{Release plan:} 2014-03-14 (RC1); 2014-03-28 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item ``Unplugging'' of components.
+	\item Redesigned Data Handler.
+	\item Cleanup and stability improvements.
+\end{itemize}
+
+\paragraph{Platform support:} Linux (primary), Windows (secondary)
+\paragraph{Communication protocols:} UDP with static addresses, including marshaling%; one other non-Ethernet based protocol
+\paragraph{Example applications:} Sensor data acquisition with dynamic loading of sensor and monitor software to previously ''blank'' nodes
+
+
+
+\subsection{Version 0.9}
+
+\paragraph{Release plan:} June 2014 (RC1); June 2014 (Release)
+
+\paragraph{Features:}
+\begin{itemize}
+	\item Microcontroller support (ARM Cortex M3).
+	\item Binary loading for non-microcontroller platforms (based on shared objects).
+	\item XMT: Limited support for Models@Runtime (live feedback of current application state to XMT).
+\end{itemize}
+
+\paragraph{Components:}
+\begin{itemize}
+	\item \emph{Binary Manager}
+\end{itemize}
+
+\paragraph{Platform support:} Linux (primary), Windows (secondary), ARM (tertiary)
+\paragraph{Communication protocols:} UDP with static addresses, including marshaling%; one other non-Ethernet based protocol
+\paragraph{Example applications:} Sensor data acquisition with dynamic loading of sensor and monitor software to previously ''blank'' nodes; microcontroller example application
+
+
+
+\subsection{More}
+
+The following items are planned, but not yet assigned to a milestone on the roadmap:
+\begin{itemize}
+	\item Reliable communication (reliable UDP?).
+	\item Native event driven scheduling and execution.
+	\item Health monitoring (including runtime self-tests).
+\end{itemize}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_W6ieAMRuEeKXVovrYlzQ3g" name="configuratorExtension">
+  <components xmi:id="_yUtQEEbDEeOhrt3j-n7jiQ" name="subscriber" id="4098">
+    <incomingPorts xsi:type="port:Subscription" xmi:id="_yUtQEUbDEeOhrt3j-n7jiQ" name="in" queueSize="3" lowerConnectionBound="2" upperConnectionBound="3">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_yUtQEkbDEeOhrt3j-n7jiQ" name="receive" requiredPorts="_yUtQEUbDEeOhrt3j-n7jiQ" wcetInNs="10000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_yUtQE0bDEeOhrt3j-n7jiQ"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_kx5LUEbDEeOhrt3j-n7jiQ" name="publisherLowQuality" id="4099">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_np1BwEbDEeOhrt3j-n7jiQ" name="out">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <attributeValueDefinitions xmi:id="_1GhTcGMqEeO6lt1GUq702g">
+        <attributeValue xmi:id="_1GhTcWMqEeO6lt1GUq702g" value="12"/>
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_IJuUEGMqEeO6lt1GUq702g"/>
+      </attributeValueDefinitions>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_kx5yYEbDEeOhrt3j-n7jiQ" name="send" requiredPorts="_np1BwEbDEeOhrt3j-n7jiQ" wcetInNs="10000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_kx5yYUbDEeOhrt3j-n7jiQ"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_wkf5wGMqEeO6lt1GUq702g" name="publisherHighQuality" id="4100">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_wkf5wWMqEeO6lt1GUq702g" name="out">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+      <attributeValueDefinitions xmi:id="_1VjN8GMqEeO6lt1GUq702g">
+        <attributeValue xmi:id="_1VjN8WMqEeO6lt1GUq702g" value="42"/>
+        <attribute xsi:type="topic:RequiredAttribute" href="dictionary.xmd#_IJuUEGMqEeO6lt1GUq702g"/>
+      </attributeValueDefinitions>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_wkf5wmMqEeO6lt1GUq702g" name="send" requiredPorts="_wkf5wWMqEeO6lt1GUq702g" wcetInNs="10000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_wkf5w2MqEeO6lt1GUq702g"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_hsprwGi8EeOYRaGFJyDY-A" name="pnpControlUI" id="4101">
+    <containedFunctions xmi:id="_hst9MGi8EeOYRaGFJyDY-A" name="pnpControlUI" wcetInNs="10000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_hst9MWi8EeOYRaGFJyDY-A"/>
+    </containedFunctions>
+  </components>
+</manifest:Manifest>

@@ -1,0 +1,33 @@
+/** ELEMENTS **/
+.source-target-demo .window { 
+	border:2px dotted #346789; 
+	width:14em; 
+	height:4em; 	
+	line-height:4em;
+	padding:0.5em; 	
+}
+.smallWindow { background-color:#adde7c; }
+
+/** ENABLE/DISABLE LINK **/
+#enableDisableSource {
+	position:absolute;
+	top:1em;
+	left:15em;
+	color:#DDD;
+}
+#enableDisableSource:hover {
+	color:orange;
+}
+
+/** LARGE WINDOW STYLE AND POSITION **/
+#sourceWindow1 { 
+	background-color:#0d78bc; 
+	top:9em;
+	left:14em;
+	width:30em;
+	height:6em;	
+	text-align:left;
+}
+
+/** JSPLUMB ARTEFACTS **/
+._jsPlumb_endpoint { z-index:32; }

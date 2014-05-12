@@ -1,0 +1,322 @@
+/*
+ * Copyright (c) 2011-2013, fortiss GmbH.
+ * Licensed under the Apache License, Version 2.0.
+ *
+ * Use, modification and distribution are subject to the terms specified
+ * in the accompanying license file LICENSE.txt located at the root directory
+ * of this software distribution. A copy is available at
+ * http://chromosome.fortiss.org/.
+ *
+ * This file is part of CHROMOSOME.
+ *
+ * $Id$
+ */
+
+/**
+ * \file
+ *         PC-lint/FlexeLint options for CHROMOSOME.
+ */
+
+/* Preprocessor */
+
++e436 // Apparent preprocessor directive in invocation of macro
++e447 // Extraneous whitespace ignored in include directive
++e537 // Repeated include file
++e652 // Define of existing symbol
++e665 // Unparenthesized parameter in macro
++e666 // Expression with side effects passed to repeated macro parameter
++e759 // Header declaration could be moved from header to module
++e766 // Header file not used in module
++e773 // Expression-like macro not parenthesized
+
+/* Syntax errors */
+
++e10  // Expected token
++e26  // Expected an expression
++e118 // Too few arguments for prototype
++e119 // Too many arguments for prototype
++e131 // Syntax error in macro call
++e133 // Too many initializers for aggregate
++e144 // Non-existent return value for symbol
+
+/* Conflicting and redundant definitions/declarations */
+
++e15  // Redeclared symbol
++e18  // Conflicting redeclared symbol
++e31  // Conflicting redefined symbol
++e136 // Illegal macro name
++e667 // Inconsistent use of qualifiers for symbol
++e760 // Redundant macro defined identically at different location
++e761 // Redundant typedef
++e762 // Redundantly declared symbol
++e763 // Redundant declaration for struct, union or enum
++e767 // Macro was defined differently in another module
++e770 // Tag defined identically at different location
++e849 // Symbol has same enumerator value as another enumerator (may raise false positives)
+
+/* Casting */
+
++e64  // Type mismatch
++e503 // Boolean argument to relational
++e507 // Integer size incompatibility
++e514 // Unusual use of a Boolean
++e516 // Symbol has argument type conflict
++e519 // Pointer size incompatibility
++e549 // Suspicious cast
++e570 // Loss of sign
++e571 // Suspicious cast
++e611 // Suspicious cast between object and function pointer
++e619 // Loss of precision in near/far pointer assignment
++e641 // Converting enum to int
++e643 // Loss of precision in near/far pointer cast
++e663 // Suspicious array to pointer conversion
++e730 // Boolean argument to function without bool type
++e740 // Unusual pointer cast (incompatible indirect types)
++e741 // Unusual pointer cast (function qualification)
++e909 // Implicit conversion to bool
++e910 // Implicit conversion from 0 to pointer
+
+--emacro({910}, NULL) // Only allow NULL macro for implicit conversion from 0 to pointer
+
+/* Arithmetic, comparison, overflow and truncation */
+
++e417 // Integral constant longer than long long int
++e504 // Unusual shift operation
++e542 // Excessive size for bit field
++e545 // Suspicious use of address operator "&" in array context
++e546 // Suspicious use of address operator "&" in function context
++e572 // Excessive shift value
++e573 // Signed-unsigned mix with divide
++e574 // Signed-unsigned mix with relational
++e575 // Enumeration constant exceeds range for integers
++e647 // Suspicious truncation
++e648 // Arithmetic overflow in computing constant for operation
++e649 // Sign fill during constant shift
++e650 // Constant out of range
++e653 // Possible loss of fraction in integer division
++e655 // bit-wise operation uses (compatible) enum's
++e656 // Arithmetic operation uses (compatible) enum's
++e679 // Suspicious truncation in arithmetic expression combining with pointer
++e701 // Shift left of signed quantity (int)
++e702 // Shift right of signed quantity (int)
++e703 // Shift left of signed quantity (long)
++e704 // Shift right of signed quantity (long)
++e712 // Loss of precision in assignment between integral quantities
++e713 // Loss of precision in assignment between unsigned/signed quantities
++e732 // Loss of sign in (implicit) assignment from signed to an unsigned quantity
++e734 // Loss of precision in assignment into an object smaller than an int
++e735 // Loss of precision in (implied) assignment from long double to a double
++e736 // Loss of precision in (implied) assignment to a float
++e737 // Loss of sign in promotion of signed to unsigned
++e775 // Non-negative quantity cannot be less than zero
++e776 // Possible truncation of addition
++e777 // Testing floating point numbers for equality
++e779 // String constant in comparison operator
++e942 // Possibly truncated addition promoted to float
+
+/* Division by zero */
+
++e54  // Division by 0
++e414 // Possible division by 0
++e795 // Conceivable division by 0
+
+/* Qualifiers */
+
++e818 // Pointer parameter could be declared pointer to const
++e843 // Variable could be declared as const
++e844 // Pointer variable could be declared as pointing to const
+
+/* Function calls */
+
+// TODO: Define call semantics for functions using -sem
++e426 // Call to function violates semantic
++e437 // Passing struct to ellipsis
++e557 // Unrecognized format string in printf, fprintf, sprintf, scanf, fscanf, or sscanf
++e558 // Too few arguments for format string
++e642 // Format char not supported by wsprintf
++e705 // Argument to printf, fprintf or sprintf nominally inconsistent with format string
++e706 // Indirect object argument to scanf, fscanf or sscanf inconsistent with format string
++e719 // Too many arguments for format string
++e747 // Significant prototype coercion
++e932 // Passing near pointer to library function
++e933 // Passing near pointer to far function
++e934 // Taking address of near auto variable
+
+/* Constant conditionals */
+
++e506 // Constant value Boolean
++e716 // while(1)
++e717 // do ... while(0)
++e774 // Boolean always evaluates to true or false
++e778 // Constant expression evaluates to 0 in operation
++e845 // The left/right argument to an operator is certain to be 0
++e866 // Unusual argument to sizeof
+
+// Suppress "Constant value Boolean" messages for macros that are known to use it
+-emacro({506}, XME_HAL_TABLE)
+-emacro({506}, XME_ASSERT)
+-emacro({506}, XME_ASSERT_RVAL)
+-emacro({506}, XME_ASSERT_RVAL_VOID)
+
+// Suppress "do ... while(0)" messages for macros that are known to use it
+-emacro({717}, XME_ASSERT)
+-emacro({717}, XME_ASSERT_RVAL)
+-emacro({717}, XME_ASSERT_RVAL_VOID)
+-emacro({717}, XME_CHECK)
+-emacro({717}, XME_CHECK_MSG)
+-emacro({717}, XME_CHECK_REC)
+-emacro({717}, XME_CHECK_MSG_REC)
+-emacro({717}, XME_LOG)
+-emacro({717}, XME_HAL_TABLE_INIT)
+-emacro({717}, XME_HAL_SINGLYLINKEDLIST_INIT)
+-emacro({717}, XME_HAL_DOUBLYLINKEDLIST_INIT)
+
+/* Conditionals */
+
++e514 // Unusual use of a Boolean
++e548 // "else" expected
++e731 // Boolean argument to equal/not equal
++e744 // switch statement has no "default"
++e787 // enum constant not used within switch
++e788 // enum constant not used within defaulted switch
++e825 // Control flows into case/default without -fallthrough comment (use "//lint -fallthrough" between cases)
+
+/* Return values */
+
++e532 // Inconsistent return mode of function
++e533 // Function should (not) return a value
++e534 // Ignoring return value of function
+
+/* Pointer arithmetic */
+
++e415 // Access of out-of-bounds pointer
++e416 // Creation of out-of-bounds pointer
++e419 // Apparent data overrun for function
++e448 // Likely access of pointer pointing Integer bytes past nul character
++e604 // Returning address of auto variable
++e674 // Returning address of auto through variable
++e684 // Passing address of auto variable into caller space
++e809 // Possible return of address of auto through variable
++e947 // Subtract operator applied to pointers
+
+/* NULL pointers */
+
++e413 // Likely use of null pointer
++e418 // Passing null pointer to function (library function or user function dubbed with -function)
++e613 // Possible use of null pointer in argument to operator
++e668 // Possibly passing a null pointer to function
++e794 // Conceivable use of null pointer
+
+/* Initialization and lifetime */
+
++e530 // Symbol not initialized
++e540 // Excessive string size
++e603 // Symbol not initialized
++e604 // Returning address of auto variable
++e644 // Variable may not have been initialized
++e645 // Symbol may not have been initialized
++e651 // Potentially confusing initializer
++e728 // Static variable with file scope not explicitly initialized
++e729 // External variable not explicitly initialized
++e733 // Assigning address of auto variable to outer scope symbol
++e738 // Static variable  not explicitly initialized before passed to function
++e771 // Symbol conceivably not initialized (may raise false positives)
++e772 // Symbol conceivably not initialized
++e784 // nul character truncated from string
++e785 // Too few initializers for aggregate
++e786 // String concatenation within initializer
+
+/* Heap memory */
+
++e423 // Creation of memory leak in assignment
++e429 // Custodial pointer has not been freed or returned
++e449 // Pointer variable previously deallocated
++e672 // Possible memory leak in assignment to pointer
++e673 // Possibly inappropriate deallocation
+
+/* Visibility */
+
++e578 // Declaration of symbol hides symbol
++e765 // External symbol could be made static
+
+/* Control flow */
+
++e440 // for clause irregularity: variable tested in 2nd expression does not match variable modified in 3rd
++e441 // for clause irregularity: loop variable not found in 2nd for expression
++e442 // for clause irregularity: testing direction inconsistent with increment direction
++e443 // for clause irregularity: variable initialized in 1st expression does not match variable modified in 3rd
++e444 // for clause irregularity: pointer variable incremented in 3rd expression is tested for NULL in 2nd expression
++e445 // reuse of for loop variable could cause chaos
++e454 // A thread mutex has been locked but not unlocked
++e455 // A thread mutex that had not been locked is being unlocked
++e456 // Two execution paths are being combined with different mutex lock states
++e505 // Redundant left argument to comma
++e646 // case/default within loop;  may have been misplaced
++e838 // Previously assigned value to variable has not been used
++e847 // Thread has unprotected call to thread unsafe function
++e850 // for loop index variable modified in body of the for loop
+
+/* Dead code */
+
++e438 // Last value assigned to variable not used
++e681 // Loop is not entered
++e714 // External variable or function not referenced
++e715 // Formal parameter not referenced
++e749 // Local enumeration constant not referenced
++e750 // Local macro not referenced
++e751 // Local typedef not referenced
++e752 // Local declarator not referenced
++e753 // Local struct, union or enum tag not referenced
++e754 // Local structure member not referenced
++e755 // Global macro not referenced
++e756 // Global typedef not referenced
++e757 // Global declarator not referenced
++e758 // Global struct, union or enum tag not referenced
++e768 // Global struct member not referenced
++e769 // Global enumeration constant not referenced
+
+-esym({454}, xme_hal_sync_enterCriticalSection)
+-esym({455}, xme_hal_sync_leaveCriticalSection)
+
+/* C standard compliance, implementation/undefined behavior, portability */
+
++e657 // Unusual (nonportable) anonymous struct or union
++e718 // Symbol undeclared, assumed to return int
++e742 // Multiple character constant
++e743 // Negative character constant
++e745 // Function has no explicit type or class, int assumed
++e746 // Call to function not made in the presence of a prototype
++e846 // Signedness of bit-field is implementation defined
++e864 // Expression possibly depends on order of evaluation
++e940 // Omitted braces within an initializer
+
+/* Indentation and style */
+
++e525 // Negative indentation
++e539 // Did not expect positive indentation
++e659 // Nothing follows '}' on line within struct/union/enum declaration
++e725 // Expected positive indentation
++e783 // Line does not end with new-line
++e936 // Old-style function definition
++e937 // Old-style function declaration
++e939 // Return type defaults to int
+
+/* MISRA */
+
+//+e960 // Violates MISRA required rule
+//+e961 // Violates MISRA advisory rule
+
+/* Assertion side effects */
+
+// Detect side effects in assertion macros (it is enough to reference the "expr" parameter here twice)
+-"dXME_ASSERT(expr)=do if ((expr)) assert(expr); while(0)"
+-"dXME_ASSERT_RVAL(expr)=do if ((expr)) assert(expr); while(0)"
+-"dXME_ASSERT_RVAL_VOID(expr)=do if ((expr)) assert(expr); while(0)"
+
+// Silence potential side effect warnings when using XME_ASSERT_NO_SIDE_EFFECTS()
+-"dXME_ASSERT_NO_SIDE_EFFECTS(expr)=1"
+
+/* Informational messages */
+
++e848 // Worst case function for stack usage
++e900 // Successful completion (be sure to output a message even if there are no issues)

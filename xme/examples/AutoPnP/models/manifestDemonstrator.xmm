@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_kG9RYKg-EeOXfu0OG4bFQQ" name="AutoPnP">
+  <components xmi:id="_qrTvMKg-EeOXfu0OG4bFQQ" name="exampleGUI" programmingLanuage="Cpp" id="6097">
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_7TYUsKg-EeOXfu0OG4bFQQ" name="addComponent" queueSize="10">
+      <topic href="dictionary.xmd#_gvY0kIIeEeOOTZOi4wGB9w"/>
+    </outgoingPorts>
+    <outgoingPorts xsi:type="port:Publication" xmi:id="_iS-oELWAEeOdCv0qTW62mg" name="removeComponent" queueSize="10">
+      <topic href="dictionary.xmd#_1OQQAIIfEeOOTZOi4wGB9w"/>
+    </outgoingPorts>
+    <containedFunctions xmi:id="_Dm6RIKg_EeOXfu0OG4bFQQ" name="doSomething" wcetInNs="1">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_Dm6RIag_EeOXfu0OG4bFQQ"/>
+    </containedFunctions>
+    <halRequirements href="basicXmeModel:xme_halLibrary#qt"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#sched"/>
+    <halRequirements href="basicXmeModel:xme_halLibrary#time"/>
+  </components>
+</manifest:Manifest>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topic:TopicDictionary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dataType="http://chromosome.fortiss.org/metamodel/dataType/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_sOaekcReEeKXVovrYlzQ3g" name="dictionary" projectName="configuratorExtension">
+  <topics xmi:id="_tbMawMReEeKXVovrYlzQ3g" name="data" id="4098">
+    <attributeDefinitions xmi:id="_IJu7IGMqEeO6lt1GUq702g" key="quality" id="4098">
+      <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#uint32_t"/>
+    </attributeDefinitions>
+    <requiredAttributes xmi:id="_IJuUEGMqEeO6lt1GUq702g" definition="_IJu7IGMqEeO6lt1GUq702g"/>
+    <dataTypeDefinition xmi:id="_zlSlgMReEeKXVovrYlzQ3g">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_zlnVoMReEeKXVovrYlzQ3g">
+        <members xmi:id="_LS64cMRfEeKXVovrYlzQ3g" identifier="value">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#uint8_t"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+</topic:TopicDictionary>

@@ -1,0 +1,120 @@
+%
+% Copyright (c) 2011-2013, fortiss GmbH.
+% Licensed under the Apache License, Version 2.0.
+% 
+% Use, modification and distribution are subject to the terms specified
+% in the accompanying license file LICENSE.txt located at the root directory
+% of this software distribution. A copy is available at
+% http://chromosome.fortiss.org/.
+%
+% This file is part of CHROMOSOME.
+%
+% $Id: introduction.tex 6238 2013-12-20 16:59:17Z ruiz $
+%
+
+\section{Introduction} \label{sec:intro}
+
+For a long time, the focus of embedded systems development has been the implementation of isolated systems with clearly defined boundaries and interfaces.
+Recently, the trend of integrating such independent systems into larger \emph{systems of systems} arises.
+For example, nodes in a wireless sensor network connect \textit{ad-hoc} to other nodes, manufacturing plants get connected with logistics
+and intelligent cars communicate with each other and the infrastructure.
+Due to the different life cycles of the involved systems, adaptability such as plug~\&~play becomes more and more important.
+Systems must allow integration with each other even if the exact type and structure of their counterparts is not known at design time
+without losing their safety, security and real-time capabilities.
+
+In order to achieve this, a powerful domain-independent software platform is required,
+which can flexibly be adapted to various application scenarios.
+\xme\footnote{\url{http://chromosome.fortiss.org/}} is a middleware and runtime system intended to meet these requirements.
+It combines features known from the embedded domain such as determinism with adaptivity known from internet technologies.
+\xme treats extra-functional requirements as first-class entity and provides according mechanisms to fulfill such requirements.
+
+\xme has a large set of designated features and is designed to evolve over time.
+Its runtime system is completely open source and hence transparent to developers and end users.
+
+\subsection{In this Release}
+
+This release of \xme consists of two main parts:
+\begin{enumerate}
+	\item The \xme (XME) runtime system with hardware abstraction layer (HAL) and platform support for Linux and Windows.
+	\item The \xmt (XMT), an Eclipse-based model-driven design tool with automatic code generation capabilities for static configuration of the target system.
+\end{enumerate}
+The objective of the current release is to allow users to \emph{model the distributed system} in a graphical way in XMT
+and allow the modeled system to evolve at runtime using \emph{plug and play}.
+
+Based on the XMT model, code is generated for every device (node) in the network of the distributed application.
+If user-defined components are used, the user then develops the necessary code that is based on the \xme runtime system.
+This makes the code portable between the various target platforms.
+Finally, the code is compiled using \xme's powerful build system infrastructure that is based on CMake
+and transferred to the respective target systems (this is currently still a manual process).
+At runtime, new software components may be added to the nodes using plug and play concepts.
+
+The described features are a subset of the features that will be available in future versions.
+Appendix~\ref{appx:roadmap} provides an overview of the anticipated feature roadmap and the respective timeframe.
+
+The following tutorial will introduce you to the main concepts of \xme and illustrate them with examples that are easy to understand.
+Including installation of required prerequisites, this tutorial will take about two hours to complete.
+
+\clearpage
+
+\subsection{The Name \xme}
+
+\xme stands for \textbf{\underbar{Cro}}ss-domain \textbf{\underbar{M}}odular
+\textbf{\underbar{O}}perating \textbf{\underbar{S}}ystem \textbf{\underbar{o}}r
+\textbf{\underbar{M}}iddlewar\textbf{\underbar{e}}.\footnote{We borrowed the ``H'' from somewhere else.}
+The name expresses the vision of \xme:
+\begin{enumerate}
+	\item We believe that in the future cross-domain solutions for networked embedded systems are required.
+	\item As different applications might have many different requirements
+		and the middleware will be deployed to very heterogeneous platforms,
+		a scalable and modular solution is required.
+	\item \xme will sometimes operate on top of an operating system (OS),
+		but it might also replace an OS due to resource constraints.
+		We think that in the future, the boundary between an operating system and a middleware will be blurry.
+\end{enumerate}
+
+Similar to biology, a \xme instance is built up by a number of genes (here software components).
+It is not the intention of \xme to invent new genes, but instead to use
+existing protocols/solutions to implement components for specific tasks.
+The major idea is that \xme offers a flexible blueprint that enables the
+selection of different solutions to adapt a system to the specific requirements.
+
+Analog to the evolution of mankind, we do \emph{not} believe that the genes provided by \xme are initially perfect.
+Instead we believe in constant improvement based on discussions about specific components.
+This is one of the reasons why we are offering \xme as open-source software.
+In case you have any questions or suggestions for improvement, we are looking forward to your comments.
+
+\subsection{Mailing Lists}
+
+We offer two mailing lists for CHROMOSOME-related topics:
+\begin{itemize}
+	\item \textbf{News and release announcements:} \url{chromosome-announce@lists.fortiss.org} \\
+		Archives: \url{https://lists.fortiss.org/pipermail/chromosome-announce/} \\
+		To subscribe, send an (empty) e-mail to \url{chromosome-announce-subscribe@lists.fortiss.org}.
+		You will then receive an automatic e-mail with further instructions.
+		This list is read-only.
+	\item \textbf{Developers:} \url{chromosome-dev@lists.fortiss.org} \\
+		Archives: \url{https://lists.fortiss.org/pipermail/chromosome-dev/} \\
+		To subscribe, send an (empty) e-mail to \url{chromosome-dev-subscribe@lists.fortiss.org}.
+		You will then receive an automatic e-mail with further instructions.
+		To start a discussion, send an e-mail to \url{chromosome-dev@lists.fortiss.org}.
+		You do not need to subscribe in order to be able to post.
+		In this case, let other people know that you would like to be \texttt{CC:}'d in replies.
+\end{itemize}
+
+\subsection{Questions and Contact Information}
+
+If you have any questions with respect to this tutorial or want to report a bug,
+please check the mailing list archives and the Frequently Asked Questions in Appendix~\ref{appx:faq}.
+If your question is not answered, please post to the \url{chromosome-dev@lists.fortiss.org} mailing list.
+
+\subsection{Acknowledgments}
+
+This work is partially funded by the following research grants:
+\begin{itemize}
+	\item German Federal Ministry of Economics and Technology (BMWi) research grant 01ME12009
+		(project RACE\footnote{\url{http://www.projekt-race.de/}})
+	\item German Federal Ministry of Economics and Technology (BMWi) research grant 01MA11002
+		(project AutoPnP\footnote{\url{http://www.autopnp.com/}})
+	\item Bavarian Ministry of Economic Affairs, Infrastructure, Transport and Technology grant programme 1330/686
+		(Vorlaufforschung fortiss)
+\end{itemize}

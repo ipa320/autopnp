@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topic:TopicDictionary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dataType="http://chromosome.fortiss.org/metamodel/dataType/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_maHewEeyEeOLTtvL1r-wEw" name="dictionary" projectName="ROSGateway">
+  <topics xmi:id="_nU4d4EeyEeOLTtvL1r-wEw" name="message" id="4098">
+    <dataTypeDefinition xmi:id="_tuV6UEeyEeOLTtvL1r-wEw">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_tvBPwEeyEeOLTtvL1r-wEw">
+        <members xmi:id="_u2vs0EeyEeOLTtvL1r-wEw" identifier="text">
+          <dataType xsi:type="dataType:Array" xmi:id="_0hEyYEeyEeOLTtvL1r-wEw" count="256">
+            <dataType xsi:type="dataType:Char" xmi:id="_0hEyYUeyEeOLTtvL1r-wEw"/>
+          </dataType>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <topics xmi:id="_5ykhMEeyEeOLTtvL1r-wEw" name="status" id="4099">
+    <dataTypeDefinition xmi:id="_8dGNwEeyEeOLTtvL1r-wEw">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_8dtRwEeyEeOLTtvL1r-wEw">
+        <members xmi:id="_90EnwEeyEeOLTtvL1r-wEw" identifier="value">
+          <dataType xsi:type="dataType:Flag" xmi:id="_AQIagEezEeOLTtvL1r-wEw"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <topics xmi:id="_DJLEMEezEeOLTtvL1r-wEw" name="sumRequest" id="4100">
+    <dataTypeDefinition xmi:id="_azbxYUuVEeOl8OxZ2jvT4Q">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_a1KPsEuVEeOl8OxZ2jvT4Q">
+        <members xmi:id="_28VJAFBnEeODC7D_0eZ0oQ" identifier="a">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int64_t"/>
+        </members>
+        <members xmi:id="_5GghkFBnEeODC7D_0eZ0oQ" identifier="b">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int64_t"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <topics xmi:id="_RQGioEezEeOLTtvL1r-wEw" name="sumResponse" id="4101">
+    <dataTypeDefinition xmi:id="_TXrTIEezEeOLTtvL1r-wEw">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_TYXPoEezEeOLTtvL1r-wEw">
+        <members xmi:id="_T29QIEezEeOLTtvL1r-wEw" identifier="sum">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int64_t"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <topics xmi:id="_o_ZPwFH2EeOJ46i446rVRA" name="differenceRequest" id="4102">
+    <dataTypeDefinition xmi:id="_o_ZPwVH2EeOJ46i446rVRA">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_o_ZPwlH2EeOJ46i446rVRA">
+        <members xmi:id="_o_ZPw1H2EeOJ46i446rVRA" identifier="a">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int64_t"/>
+        </members>
+        <members xmi:id="_o_ZPxFH2EeOJ46i446rVRA" identifier="b">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int64_t"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <topics xmi:id="_o_ZPxVH2EeOJ46i446rVRA" name="differenceResponse" id="4103">
+    <dataTypeDefinition xmi:id="_o_ZPxlH2EeOJ46i446rVRA">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_o_ZPx1H2EeOJ46i446rVRA">
+        <members xmi:id="_o_ZPyFH2EeOJ46i446rVRA" identifier="difference">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#int64_t"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+</topic:TopicDictionary>

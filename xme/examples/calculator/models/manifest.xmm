@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:Manifest xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:manifest="http://chromosome.fortiss.org/metamodel/manifest/1.0" xmlns:port="http://chromosome.fortiss.org/metamodel/port/1.0" xmi:id="_W6ieAMRuEeKXVovrYlzQ3g" name="calculator">
+  <components xmi:id="_XpjgIMRuEeKXVovrYlzQ3g" name="calculator" id="5000">
+    <outgoingPorts xsi:type="port:DccResponseSender" xmi:id="_i9y8QTAhEeOI5b80zILhMQ" name="calculatorResponse" requestIn="_i9y8QDAhEeOI5b80zILhMQ">
+      <topic href="dictionary.xmd#_JqN_MDAhEeOI5b80zILhMQ"/>
+    </outgoingPorts>
+    <incomingPorts xsi:type="port:DccRequestHandler" xmi:id="_i9y8QDAhEeOI5b80zILhMQ" name="calculatorRequest" responseOut="_i9y8QTAhEeOI5b80zILhMQ">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_XplVUMRuEeKXVovrYlzQ3g" name="calculate" requiredPorts="_i9y8QDAhEeOI5b80zILhMQ _i9y8QTAhEeOI5b80zILhMQ" wcetInNs="20000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_XplVUcRuEeKXVovrYlzQ3g"/>
+    </containedFunctions>
+  </components>
+  <components xmi:id="_WEOroMRvEeKXVovrYlzQ3g" name="client" id="5001">
+    <outgoingPorts xsi:type="port:DccRequestSender" xmi:id="_r9zZoDAgEeOI5b80zILhMQ" name="clientRequest" responseIn="_r9zZoTAgEeOI5b80zILhMQ">
+      <topic href="dictionary.xmd#_tbMawMReEeKXVovrYlzQ3g"/>
+    </outgoingPorts>
+    <incomingPorts xsi:type="port:DccResponseHandler" xmi:id="_r9zZoTAgEeOI5b80zILhMQ" name="clientResponse" requestOut="_r9zZoDAgEeOI5b80zILhMQ">
+      <topic href="dictionary.xmd#_JqN_MDAhEeOI5b80zILhMQ"/>
+    </incomingPorts>
+    <containedFunctions xmi:id="_WERH4MRvEeKXVovrYlzQ3g" name="sendRequest" requiredPorts="_r9zZoDAgEeOI5b80zILhMQ" wcetInNs="20000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_WERH4cRvEeKXVovrYlzQ3g"/>
+    </containedFunctions>
+    <containedFunctions xmi:id="_8DK0ADZdEeOuFr2KBOZ0tQ" name="printResponse" requiredPorts="_r9zZoTAgEeOI5b80zILhMQ" wcetInNs="20000000">
+      <functionBehavior xsi:type="manifest:SimpleBehavior" xmi:id="_8DLbEjZdEeOuFr2KBOZ0tQ"/>
+    </containedFunctions>
+  </components>
+</manifest:Manifest>

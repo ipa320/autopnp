@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<deviceType:DeviceTypeLibrary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:deviceType="http://chromosome.fortiss.org/metamodel/deviceType/1.0" xmi:id="_y6J68O7pEeKiS_6QWf1FoA">
-  <deviceTypes xmi:id="_6yqvUO7pEeKiS_6QWf1FoA" name="PC" targetIdentifier="">
-    <interfaces xmi:id="_9lvT4O7pEeKiS_6QWf1FoA" name="ethernetInterface"/>
-  </deviceTypes>
-</deviceType:DeviceTypeLibrary>
