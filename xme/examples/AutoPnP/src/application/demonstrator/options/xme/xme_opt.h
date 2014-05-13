@@ -281,14 +281,14 @@
 #endif
 // Description: Maximum number of port per single component.
 // Default value: 32
-// Overwritten in /home/josh/xme/examples/AutoPnP/src/application/demonstrator/Options.cmake
+// Overwritten in /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator/Options.cmake
 // Reason: Increase maximum number of port per single component.
 #ifndef XME_CORE_MANIFEST_TYPES_MAX_PORTS_PER_COMPONENT
     #define XME_CORE_MANIFEST_TYPES_MAX_PORTS_PER_COMPONENT 32
 #endif
 // Description: Maximum number of functions per single component.
 // Default value: 16
-// Overwritten in /home/josh/xme/examples/AutoPnP/src/application/demonstrator/Options.cmake
+// Overwritten in /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator/Options.cmake
 // Reason: Increase maximum number of functions per component
 #ifndef XME_CORE_MANIFEST_TYPES_MAX_FUNCTIONS_PER_COMPONENT
     #define XME_CORE_MANIFEST_TYPES_MAX_FUNCTIONS_PER_COMPONENT 16

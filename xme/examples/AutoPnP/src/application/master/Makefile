@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/josh/xme/examples/AutoPnP/src/application/master
+CMAKE_SOURCE_DIR = /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/josh/xme/examples/AutoPnP/src/application/master
+CMAKE_BINARY_DIR = /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -120,9 +120,9 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/josh/xme/examples/AutoPnP/src/application/master/CMakeFiles /home/josh/xme/examples/AutoPnP/src/application/master/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master/CMakeFiles /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/josh/xme/examples/AutoPnP/src/application/master/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -1614,3374 +1614,3374 @@ autoPnP_adv_exampleGUI_automoc.cpp.s:
 	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/autoPnP_adv_exampleGUI_automoc.cpp.s
 .PHONY : autoPnP_adv_exampleGUI_automoc.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.c.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_capabilitiesView.dir/build.make CMakeFiles/autoPnP_adv_capabilitiesView.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.c.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.o: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.o
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.i: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.i
 
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.s: home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s:
-	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s:
+	$(MAKE) -f CMakeFiles/autoPnP_adv_exampleGUI.dir/build.make CMakeFiles/autoPnP_adv_exampleGUI.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.cpp.s
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.o: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.o
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.i: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.i
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.s: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.c.s
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.o: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.o
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.i: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.i
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.s: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.c.s
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.o: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.o
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.i: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.i
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.s: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.c.s
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.o: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.o
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.i: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.i
 
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.s: home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s
-.PHONY : home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler-gen.dir/build.make CMakeFiles/xme_wp_marshal_marshaler-gen.dir/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.c.s
 
-home/josh/xme/xme/com/interface.o: home/josh/xme/xme/com/interface.c.o
-.PHONY : home/josh/xme/xme/com/interface.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.o
 
 # target to build an object file
-home/josh/xme/xme/com/interface.c.o:
-	$(MAKE) -f CMakeFiles/xme_com_interface.dir/build.make CMakeFiles/xme_com_interface.dir/home/josh/xme/xme/com/interface.c.o
-.PHONY : home/josh/xme/xme/com/interface.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.o:
+	$(MAKE) -f CMakeFiles/xme_com_interface.dir/build.make CMakeFiles/xme_com_interface.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.o
 
-home/josh/xme/xme/com/interface.i: home/josh/xme/xme/com/interface.c.i
-.PHONY : home/josh/xme/xme/com/interface.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.i
 
 # target to preprocess a source file
-home/josh/xme/xme/com/interface.c.i:
-	$(MAKE) -f CMakeFiles/xme_com_interface.dir/build.make CMakeFiles/xme_com_interface.dir/home/josh/xme/xme/com/interface.c.i
-.PHONY : home/josh/xme/xme/com/interface.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.i:
+	$(MAKE) -f CMakeFiles/xme_com_interface.dir/build.make CMakeFiles/xme_com_interface.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.i
 
-home/josh/xme/xme/com/interface.s: home/josh/xme/xme/com/interface.c.s
-.PHONY : home/josh/xme/xme/com/interface.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/com/interface.c.s:
-	$(MAKE) -f CMakeFiles/xme_com_interface.dir/build.make CMakeFiles/xme_com_interface.dir/home/josh/xme/xme/com/interface.c.s
-.PHONY : home/josh/xme/xme/com/interface.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.s:
+	$(MAKE) -f CMakeFiles/xme_com_interface.dir/build.make CMakeFiles/xme_com_interface.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.c.s
 
-home/josh/xme/xme/com/packet.o: home/josh/xme/xme/com/packet.c.o
-.PHONY : home/josh/xme/xme/com/packet.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.o
 
 # target to build an object file
-home/josh/xme/xme/com/packet.c.o:
-	$(MAKE) -f CMakeFiles/xme_com_packet.dir/build.make CMakeFiles/xme_com_packet.dir/home/josh/xme/xme/com/packet.c.o
-.PHONY : home/josh/xme/xme/com/packet.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.o:
+	$(MAKE) -f CMakeFiles/xme_com_packet.dir/build.make CMakeFiles/xme_com_packet.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.o
 
-home/josh/xme/xme/com/packet.i: home/josh/xme/xme/com/packet.c.i
-.PHONY : home/josh/xme/xme/com/packet.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.i
 
 # target to preprocess a source file
-home/josh/xme/xme/com/packet.c.i:
-	$(MAKE) -f CMakeFiles/xme_com_packet.dir/build.make CMakeFiles/xme_com_packet.dir/home/josh/xme/xme/com/packet.c.i
-.PHONY : home/josh/xme/xme/com/packet.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.i:
+	$(MAKE) -f CMakeFiles/xme_com_packet.dir/build.make CMakeFiles/xme_com_packet.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.i
 
-home/josh/xme/xme/com/packet.s: home/josh/xme/xme/com/packet.c.s
-.PHONY : home/josh/xme/xme/com/packet.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/com/packet.c.s:
-	$(MAKE) -f CMakeFiles/xme_com_packet.dir/build.make CMakeFiles/xme_com_packet.dir/home/josh/xme/xme/com/packet.c.s
-.PHONY : home/josh/xme/xme/com/packet.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.s:
+	$(MAKE) -f CMakeFiles/xme_com_packet.dir/build.make CMakeFiles/xme_com_packet.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.c.s
 
-home/josh/xme/xme/core/broker/src/broker.o: home/josh/xme/xme/core/broker/src/broker.c.o
-.PHONY : home/josh/xme/xme/core/broker/src/broker.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.o
 
 # target to build an object file
-home/josh/xme/xme/core/broker/src/broker.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/broker.c.o
-.PHONY : home/josh/xme/xme/core/broker/src/broker.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.o
 
-home/josh/xme/xme/core/broker/src/broker.i: home/josh/xme/xme/core/broker/src/broker.c.i
-.PHONY : home/josh/xme/xme/core/broker/src/broker.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/broker/src/broker.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/broker.c.i
-.PHONY : home/josh/xme/xme/core/broker/src/broker.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.i
 
-home/josh/xme/xme/core/broker/src/broker.s: home/josh/xme/xme/core/broker/src/broker.c.s
-.PHONY : home/josh/xme/xme/core/broker/src/broker.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/broker/src/broker.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/broker.c.s
-.PHONY : home/josh/xme/xme/core/broker/src/broker.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.c.s
 
-home/josh/xme/xme/core/broker/src/brokerDataManager.o: home/josh/xme/xme/core/broker/src/brokerDataManager.c.o
-.PHONY : home/josh/xme/xme/core/broker/src/brokerDataManager.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.o
 
 # target to build an object file
-home/josh/xme/xme/core/broker/src/brokerDataManager.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/brokerDataManager.c.o
-.PHONY : home/josh/xme/xme/core/broker/src/brokerDataManager.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.o
 
-home/josh/xme/xme/core/broker/src/brokerDataManager.i: home/josh/xme/xme/core/broker/src/brokerDataManager.c.i
-.PHONY : home/josh/xme/xme/core/broker/src/brokerDataManager.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/broker/src/brokerDataManager.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/brokerDataManager.c.i
-.PHONY : home/josh/xme/xme/core/broker/src/brokerDataManager.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.i
 
-home/josh/xme/xme/core/broker/src/brokerDataManager.s: home/josh/xme/xme/core/broker/src/brokerDataManager.c.s
-.PHONY : home/josh/xme/xme/core/broker/src/brokerDataManager.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/broker/src/brokerDataManager.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/brokerDataManager.c.s
-.PHONY : home/josh/xme/xme/core/broker/src/brokerDataManager.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.c.s
 
-home/josh/xme/xme/core/broker/src/brokerPnPManager.o: home/josh/xme/xme/core/broker/src/brokerPnPManager.c.o
-.PHONY : home/josh/xme/xme/core/broker/src/brokerPnPManager.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.o
 
 # target to build an object file
-home/josh/xme/xme/core/broker/src/brokerPnPManager.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/brokerPnPManager.c.o
-.PHONY : home/josh/xme/xme/core/broker/src/brokerPnPManager.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.o
 
-home/josh/xme/xme/core/broker/src/brokerPnPManager.i: home/josh/xme/xme/core/broker/src/brokerPnPManager.c.i
-.PHONY : home/josh/xme/xme/core/broker/src/brokerPnPManager.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/broker/src/brokerPnPManager.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/brokerPnPManager.c.i
-.PHONY : home/josh/xme/xme/core/broker/src/brokerPnPManager.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.i
 
-home/josh/xme/xme/core/broker/src/brokerPnPManager.s: home/josh/xme/xme/core/broker/src/brokerPnPManager.c.s
-.PHONY : home/josh/xme/xme/core/broker/src/brokerPnPManager.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/broker/src/brokerPnPManager.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/josh/xme/xme/core/broker/src/brokerPnPManager.c.s
-.PHONY : home/josh/xme/xme/core/broker/src/brokerPnPManager.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_broker.dir/build.make CMakeFiles/xme_core_broker.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.c.s
 
-home/josh/xme/xme/core/componentInfo.o: home/josh/xme/xme/core/componentInfo.c.o
-.PHONY : home/josh/xme/xme/core/componentInfo.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.o
 
 # target to build an object file
-home/josh/xme/xme/core/componentInfo.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_core.dir/build.make CMakeFiles/xme_core_core.dir/home/josh/xme/xme/core/componentInfo.c.o
-.PHONY : home/josh/xme/xme/core/componentInfo.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_core.dir/build.make CMakeFiles/xme_core_core.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.o
 
-home/josh/xme/xme/core/componentInfo.i: home/josh/xme/xme/core/componentInfo.c.i
-.PHONY : home/josh/xme/xme/core/componentInfo.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/componentInfo.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_core.dir/build.make CMakeFiles/xme_core_core.dir/home/josh/xme/xme/core/componentInfo.c.i
-.PHONY : home/josh/xme/xme/core/componentInfo.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_core.dir/build.make CMakeFiles/xme_core_core.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.i
 
-home/josh/xme/xme/core/componentInfo.s: home/josh/xme/xme/core/componentInfo.c.s
-.PHONY : home/josh/xme/xme/core/componentInfo.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/componentInfo.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_core.dir/build.make CMakeFiles/xme_core_core.dir/home/josh/xme/xme/core/componentInfo.c.s
-.PHONY : home/josh/xme/xme/core/componentInfo.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_core.dir/build.make CMakeFiles/xme_core_core.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.c.s
 
-home/josh/xme/xme/core/dataHandler/src/dataHandler.o: home/josh/xme/xme/core/dataHandler/src/dataHandler.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/dataHandler.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.o
 
 # target to build an object file
-home/josh/xme/xme/core/dataHandler/src/dataHandler.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_dataHandler.dir/build.make CMakeFiles/xme_core_dataHandler.dir/home/josh/xme/xme/core/dataHandler/src/dataHandler.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/dataHandler.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_dataHandler.dir/build.make CMakeFiles/xme_core_dataHandler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.o
 
-home/josh/xme/xme/core/dataHandler/src/dataHandler.i: home/josh/xme/xme/core/dataHandler/src/dataHandler.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/dataHandler.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/dataHandler/src/dataHandler.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_dataHandler.dir/build.make CMakeFiles/xme_core_dataHandler.dir/home/josh/xme/xme/core/dataHandler/src/dataHandler.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/dataHandler.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_dataHandler.dir/build.make CMakeFiles/xme_core_dataHandler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.i
 
-home/josh/xme/xme/core/dataHandler/src/dataHandler.s: home/josh/xme/xme/core/dataHandler/src/dataHandler.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/dataHandler.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/dataHandler/src/dataHandler.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_dataHandler.dir/build.make CMakeFiles/xme_core_dataHandler.dir/home/josh/xme/xme/core/dataHandler/src/dataHandler.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/dataHandler.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_dataHandler.dir/build.make CMakeFiles/xme_core_dataHandler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.c.s
 
-home/josh/xme/xme/core/dataHandler/src/database.o: home/josh/xme/xme/core/dataHandler/src/database.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/database.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.o
 
 # target to build an object file
-home/josh/xme/xme/core/dataHandler/src/database.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/josh/xme/xme/core/dataHandler/src/database.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/database.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.o
 
-home/josh/xme/xme/core/dataHandler/src/database.i: home/josh/xme/xme/core/dataHandler/src/database.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/database.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/dataHandler/src/database.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/josh/xme/xme/core/dataHandler/src/database.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/database.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.i
 
-home/josh/xme/xme/core/dataHandler/src/database.s: home/josh/xme/xme/core/dataHandler/src/database.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/database.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/dataHandler/src/database.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/josh/xme/xme/core/dataHandler/src/database.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/database.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.c.s
 
-home/josh/xme/xme/core/dataHandler/src/databaseBuilder.o: home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseBuilder.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.o
 
 # target to build an object file
-home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_databaseBuilder.dir/build.make CMakeFiles/xme_core_databaseBuilder.dir/home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_databaseBuilder.dir/build.make CMakeFiles/xme_core_databaseBuilder.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.o
 
-home/josh/xme/xme/core/dataHandler/src/databaseBuilder.i: home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseBuilder.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_databaseBuilder.dir/build.make CMakeFiles/xme_core_databaseBuilder.dir/home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_databaseBuilder.dir/build.make CMakeFiles/xme_core_databaseBuilder.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.i
 
-home/josh/xme/xme/core/dataHandler/src/databaseBuilder.s: home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseBuilder.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_databaseBuilder.dir/build.make CMakeFiles/xme_core_databaseBuilder.dir/home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseBuilder.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_databaseBuilder.dir/build.make CMakeFiles/xme_core_databaseBuilder.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.c.s
 
-home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.o: home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.o
 
 # target to build an object file
-home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.o
 
-home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.i: home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.i
 
-home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.s: home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.c.s
 
-home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.o: home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.o
 
 # target to build an object file
-home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
-	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
+	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.o
 
-home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.i: home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
-	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
+	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.i
 
-home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.s: home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
-	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_database.dir/build.make CMakeFiles/xme_core_database.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
+	$(MAKE) -f CMakeFiles/xme_core_databaseConfigurator.dir/build.make CMakeFiles/xme_core_databaseConfigurator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.c.s
 
-home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.o: home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.o
 
 # target to build an object file
-home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_databaseTestProbe.dir/build.make CMakeFiles/xme_core_databaseTestProbe.dir/home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.o
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_databaseTestProbe.dir/build.make CMakeFiles/xme_core_databaseTestProbe.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.o
 
-home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.i: home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_databaseTestProbe.dir/build.make CMakeFiles/xme_core_databaseTestProbe.dir/home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.i
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_databaseTestProbe.dir/build.make CMakeFiles/xme_core_databaseTestProbe.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.i
 
-home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.s: home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_databaseTestProbe.dir/build.make CMakeFiles/xme_core_databaseTestProbe.dir/home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.s
-.PHONY : home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_databaseTestProbe.dir/build.make CMakeFiles/xme_core_databaseTestProbe.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.c.s
 
-home/josh/xme/xme/core/directory/src/attribute.o: home/josh/xme/xme/core/directory/src/attribute.c.o
-.PHONY : home/josh/xme/xme/core/directory/src/attribute.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.o
 
 # target to build an object file
-home/josh/xme/xme/core/directory/src/attribute.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_directory_attribute.dir/build.make CMakeFiles/xme_core_directory_attribute.dir/home/josh/xme/xme/core/directory/src/attribute.c.o
-.PHONY : home/josh/xme/xme/core/directory/src/attribute.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_directory_attribute.dir/build.make CMakeFiles/xme_core_directory_attribute.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.o
 
-home/josh/xme/xme/core/directory/src/attribute.i: home/josh/xme/xme/core/directory/src/attribute.c.i
-.PHONY : home/josh/xme/xme/core/directory/src/attribute.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/directory/src/attribute.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_directory_attribute.dir/build.make CMakeFiles/xme_core_directory_attribute.dir/home/josh/xme/xme/core/directory/src/attribute.c.i
-.PHONY : home/josh/xme/xme/core/directory/src/attribute.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_directory_attribute.dir/build.make CMakeFiles/xme_core_directory_attribute.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.i
 
-home/josh/xme/xme/core/directory/src/attribute.s: home/josh/xme/xme/core/directory/src/attribute.c.s
-.PHONY : home/josh/xme/xme/core/directory/src/attribute.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/directory/src/attribute.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_directory_attribute.dir/build.make CMakeFiles/xme_core_directory_attribute.dir/home/josh/xme/xme/core/directory/src/attribute.c.s
-.PHONY : home/josh/xme/xme/core/directory/src/attribute.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_directory_attribute.dir/build.make CMakeFiles/xme_core_directory_attribute.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.c.s
 
-home/josh/xme/xme/core/directory/src/nodeRegistryController.o: home/josh/xme/xme/core/directory/src/nodeRegistryController.c.o
-.PHONY : home/josh/xme/xme/core/directory/src/nodeRegistryController.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.o
 
 # target to build an object file
-home/josh/xme/xme/core/directory/src/nodeRegistryController.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_directory_nodeRegistryController.dir/build.make CMakeFiles/xme_core_directory_nodeRegistryController.dir/home/josh/xme/xme/core/directory/src/nodeRegistryController.c.o
-.PHONY : home/josh/xme/xme/core/directory/src/nodeRegistryController.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_directory_nodeRegistryController.dir/build.make CMakeFiles/xme_core_directory_nodeRegistryController.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.o
 
-home/josh/xme/xme/core/directory/src/nodeRegistryController.i: home/josh/xme/xme/core/directory/src/nodeRegistryController.c.i
-.PHONY : home/josh/xme/xme/core/directory/src/nodeRegistryController.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/directory/src/nodeRegistryController.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_directory_nodeRegistryController.dir/build.make CMakeFiles/xme_core_directory_nodeRegistryController.dir/home/josh/xme/xme/core/directory/src/nodeRegistryController.c.i
-.PHONY : home/josh/xme/xme/core/directory/src/nodeRegistryController.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_directory_nodeRegistryController.dir/build.make CMakeFiles/xme_core_directory_nodeRegistryController.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.i
 
-home/josh/xme/xme/core/directory/src/nodeRegistryController.s: home/josh/xme/xme/core/directory/src/nodeRegistryController.c.s
-.PHONY : home/josh/xme/xme/core/directory/src/nodeRegistryController.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/directory/src/nodeRegistryController.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_directory_nodeRegistryController.dir/build.make CMakeFiles/xme_core_directory_nodeRegistryController.dir/home/josh/xme/xme/core/directory/src/nodeRegistryController.c.s
-.PHONY : home/josh/xme/xme/core/directory/src/nodeRegistryController.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_directory_nodeRegistryController.dir/build.make CMakeFiles/xme_core_directory_nodeRegistryController.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.c.s
 
-home/josh/xme/xme/core/directory/src/topicRegistry.o: home/josh/xme/xme/core/directory/src/topicRegistry.c.o
-.PHONY : home/josh/xme/xme/core/directory/src/topicRegistry.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.o
 
 # target to build an object file
-home/josh/xme/xme/core/directory/src/topicRegistry.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_directory_topicRegistry.dir/build.make CMakeFiles/xme_core_directory_topicRegistry.dir/home/josh/xme/xme/core/directory/src/topicRegistry.c.o
-.PHONY : home/josh/xme/xme/core/directory/src/topicRegistry.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_directory_topicRegistry.dir/build.make CMakeFiles/xme_core_directory_topicRegistry.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.o
 
-home/josh/xme/xme/core/directory/src/topicRegistry.i: home/josh/xme/xme/core/directory/src/topicRegistry.c.i
-.PHONY : home/josh/xme/xme/core/directory/src/topicRegistry.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/directory/src/topicRegistry.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_directory_topicRegistry.dir/build.make CMakeFiles/xme_core_directory_topicRegistry.dir/home/josh/xme/xme/core/directory/src/topicRegistry.c.i
-.PHONY : home/josh/xme/xme/core/directory/src/topicRegistry.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_directory_topicRegistry.dir/build.make CMakeFiles/xme_core_directory_topicRegistry.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.i
 
-home/josh/xme/xme/core/directory/src/topicRegistry.s: home/josh/xme/xme/core/directory/src/topicRegistry.c.s
-.PHONY : home/josh/xme/xme/core/directory/src/topicRegistry.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/directory/src/topicRegistry.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_directory_topicRegistry.dir/build.make CMakeFiles/xme_core_directory_topicRegistry.dir/home/josh/xme/xme/core/directory/src/topicRegistry.c.s
-.PHONY : home/josh/xme/xme/core/directory/src/topicRegistry.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_directory_topicRegistry.dir/build.make CMakeFiles/xme_core_directory_topicRegistry.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.c.s
 
-home/josh/xme/xme/core/executionManager/src/componentRepository.o: home/josh/xme/xme/core/executionManager/src/componentRepository.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/componentRepository.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/componentRepository.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/componentRepository.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/componentRepository.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.o
 
-home/josh/xme/xme/core/executionManager/src/componentRepository.i: home/josh/xme/xme/core/executionManager/src/componentRepository.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/componentRepository.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/componentRepository.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/componentRepository.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/componentRepository.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.i
 
-home/josh/xme/xme/core/executionManager/src/componentRepository.s: home/josh/xme/xme/core/executionManager/src/componentRepository.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/componentRepository.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/componentRepository.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/componentRepository.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/componentRepository.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.c.s
 
-home/josh/xme/xme/core/executionManager/src/configurator.o: home/josh/xme/xme/core/executionManager/src/configurator.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/configurator.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/configurator.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/configurator.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/configurator.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.o
 
-home/josh/xme/xme/core/executionManager/src/configurator.i: home/josh/xme/xme/core/executionManager/src/configurator.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/configurator.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/configurator.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/configurator.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/configurator.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.i
 
-home/josh/xme/xme/core/executionManager/src/configurator.s: home/josh/xme/xme/core/executionManager/src/configurator.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/configurator.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/configurator.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/configurator.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/configurator.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.c.s
 
-home/josh/xme/xme/core/executionManager/src/cycleControl.o: home/josh/xme/xme/core/executionManager/src/cycleControl.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/cycleControl.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/cycleControl.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/cycleControl.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/cycleControl.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.o
 
-home/josh/xme/xme/core/executionManager/src/cycleControl.i: home/josh/xme/xme/core/executionManager/src/cycleControl.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/cycleControl.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/cycleControl.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/cycleControl.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/cycleControl.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.i
 
-home/josh/xme/xme/core/executionManager/src/cycleControl.s: home/josh/xme/xme/core/executionManager/src/cycleControl.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/cycleControl.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/cycleControl.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/cycleControl.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/cycleControl.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.c.s
 
-home/josh/xme/xme/core/executionManager/src/descriptorTable.o: home/josh/xme/xme/core/executionManager/src/descriptorTable.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/descriptorTable.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/descriptorTable.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/descriptorTable.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/descriptorTable.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.o
 
-home/josh/xme/xme/core/executionManager/src/descriptorTable.i: home/josh/xme/xme/core/executionManager/src/descriptorTable.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/descriptorTable.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/descriptorTable.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/descriptorTable.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/descriptorTable.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.i
 
-home/josh/xme/xme/core/executionManager/src/descriptorTable.s: home/josh/xme/xme/core/executionManager/src/descriptorTable.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/descriptorTable.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/descriptorTable.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/descriptorTable.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/descriptorTable.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.c.s
 
-home/josh/xme/xme/core/executionManager/src/dispatcher.o: home/josh/xme/xme/core/executionManager/src/dispatcher.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/dispatcher.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/dispatcher.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/dispatcher.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/dispatcher.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.o
 
-home/josh/xme/xme/core/executionManager/src/dispatcher.i: home/josh/xme/xme/core/executionManager/src/dispatcher.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/dispatcher.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/dispatcher.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/dispatcher.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/dispatcher.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.i
 
-home/josh/xme/xme/core/executionManager/src/dispatcher.s: home/josh/xme/xme/core/executionManager/src/dispatcher.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/dispatcher.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/dispatcher.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/dispatcher.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/dispatcher.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.c.s
 
-home/josh/xme/xme/core/executionManager/src/executionManager.o: home/josh/xme/xme/core/executionManager/src/executionManager.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManager.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/executionManager.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/executionManager.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManager.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.o
 
-home/josh/xme/xme/core/executionManager/src/executionManager.i: home/josh/xme/xme/core/executionManager/src/executionManager.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManager.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/executionManager.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/executionManager.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManager.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.i
 
-home/josh/xme/xme/core/executionManager/src/executionManager.s: home/josh/xme/xme/core/executionManager/src/executionManager.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManager.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/executionManager.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/executionManager.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManager.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.c.s
 
-home/josh/xme/xme/core/executionManager/src/executionManagerUtils.o: home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManagerUtils.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.o
 
-home/josh/xme/xme/core/executionManager/src/executionManagerUtils.i: home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManagerUtils.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.i
 
-home/josh/xme/xme/core/executionManager/src/executionManagerUtils.s: home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManagerUtils.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/executionManagerUtils.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.c.s
 
-home/josh/xme/xme/core/executionManager/src/scheduleOperations.o: home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleOperations.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.o
 
-home/josh/xme/xme/core/executionManager/src/scheduleOperations.i: home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleOperations.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.i
 
-home/josh/xme/xme/core/executionManager/src/scheduleOperations.s: home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleOperations.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleOperations.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.c.s
 
-home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.o: home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.o
 
-home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.i: home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.i
 
-home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.s: home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.c.s
 
-home/josh/xme/xme/core/executionManager/src/scheduler.o: home/josh/xme/xme/core/executionManager/src/scheduler.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduler.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/scheduler.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduler.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduler.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.o
 
-home/josh/xme/xme/core/executionManager/src/scheduler.i: home/josh/xme/xme/core/executionManager/src/scheduler.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduler.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/scheduler.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduler.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduler.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.i
 
-home/josh/xme/xme/core/executionManager/src/scheduler.s: home/josh/xme/xme/core/executionManager/src/scheduler.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduler.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/scheduler.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/scheduler.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/scheduler.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.c.s
 
-home/josh/xme/xme/core/executionManager/src/taskTimer.o: home/josh/xme/xme/core/executionManager/src/taskTimer.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/taskTimer.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/taskTimer.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/taskTimer.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/taskTimer.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.o
 
-home/josh/xme/xme/core/executionManager/src/taskTimer.i: home/josh/xme/xme/core/executionManager/src/taskTimer.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/taskTimer.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/taskTimer.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/taskTimer.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/taskTimer.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.i
 
-home/josh/xme/xme/core/executionManager/src/taskTimer.s: home/josh/xme/xme/core/executionManager/src/taskTimer.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/taskTimer.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/taskTimer.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/taskTimer.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/taskTimer.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.c.s
 
-home/josh/xme/xme/core/executionManager/src/wrapperInterface.o: home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/wrapperInterface.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.o
 
 # target to build an object file
-home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.o
-.PHONY : home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.o
 
-home/josh/xme/xme/core/executionManager/src/wrapperInterface.i: home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/wrapperInterface.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.i
-.PHONY : home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.i
 
-home/josh/xme/xme/core/executionManager/src/wrapperInterface.s: home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/wrapperInterface.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.s
-.PHONY : home/josh/xme/xme/core/executionManager/src/wrapperInterface.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_executionManager.dir/build.make CMakeFiles/xme_core_executionManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.c.s
 
-home/josh/xme/xme/core/log.o: home/josh/xme/xme/core/log.c.o
-.PHONY : home/josh/xme/xme/core/log.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.o
 
 # target to build an object file
-home/josh/xme/xme/core/log.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/core/log.c.o
-.PHONY : home/josh/xme/xme/core/log.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.o
 
-home/josh/xme/xme/core/log.i: home/josh/xme/xme/core/log.c.i
-.PHONY : home/josh/xme/xme/core/log.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/log.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/core/log.c.i
-.PHONY : home/josh/xme/xme/core/log.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.i
 
-home/josh/xme/xme/core/log.s: home/josh/xme/xme/core/log.c.s
-.PHONY : home/josh/xme/xme/core/log.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/log.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/core/log.c.s
-.PHONY : home/josh/xme/xme/core/log.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.c.s
 
-home/josh/xme/xme/core/logUtils.o: home/josh/xme/xme/core/logUtils.c.o
-.PHONY : home/josh/xme/xme/core/logUtils.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.o
 
 # target to build an object file
-home/josh/xme/xme/core/logUtils.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/core/logUtils.c.o
-.PHONY : home/josh/xme/xme/core/logUtils.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.o
 
-home/josh/xme/xme/core/logUtils.i: home/josh/xme/xme/core/logUtils.c.i
-.PHONY : home/josh/xme/xme/core/logUtils.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/logUtils.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/core/logUtils.c.i
-.PHONY : home/josh/xme/xme/core/logUtils.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.i
 
-home/josh/xme/xme/core/logUtils.s: home/josh/xme/xme/core/logUtils.c.s
-.PHONY : home/josh/xme/xme/core/logUtils.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/logUtils.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/core/logUtils.c.s
-.PHONY : home/josh/xme/xme/core/logUtils.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginClientComponent.o: home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponent.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginClientComponent.i: home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponent.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginClientComponent.s: home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponent.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponent.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.o: home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.i: home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.s: home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginClientManifest.o: home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientManifest.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginClientManifest.i: home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientManifest.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginClientManifest.s: home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientManifest.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientManifest.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.o: home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.i: home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.s: home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.o: home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.i: home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.s: home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.o: home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.i: home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.s: home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.o: home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.i: home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.s: home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerComponent.o: home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponent.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerComponent.i: home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponent.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerComponent.s: home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponent.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponent.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.o: home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.i: home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.s: home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerManifest.o: home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerManifest.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerManifest.i: home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerManifest.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerManifest.s: home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerManifest.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerManifest.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.o: home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.i: home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.s: home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.o: home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.i: home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.s: home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.o: home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.i: home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.s: home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.o: home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.i: home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.s: home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.o: home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.i: home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.s: home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.c.s
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.o: home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.o
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.i: home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.i
 
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.s: home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.c.s
 
-home/josh/xme/xme/core/login/src/loginClient.o: home/josh/xme/xme/core/login/src/loginClient.c.o
-.PHONY : home/josh/xme/xme/core/login/src/loginClient.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src/loginClient.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src/loginClient.c.o
-.PHONY : home/josh/xme/xme/core/login/src/loginClient.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.o
 
-home/josh/xme/xme/core/login/src/loginClient.i: home/josh/xme/xme/core/login/src/loginClient.c.i
-.PHONY : home/josh/xme/xme/core/login/src/loginClient.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src/loginClient.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src/loginClient.c.i
-.PHONY : home/josh/xme/xme/core/login/src/loginClient.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.i
 
-home/josh/xme/xme/core/login/src/loginClient.s: home/josh/xme/xme/core/login/src/loginClient.c.s
-.PHONY : home/josh/xme/xme/core/login/src/loginClient.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src/loginClient.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/core/login/src/loginClient.c.s
-.PHONY : home/josh/xme/xme/core/login/src/loginClient.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.c.s
 
-home/josh/xme/xme/core/login/src/loginManager.o: home/josh/xme/xme/core/login/src/loginManager.c.o
-.PHONY : home/josh/xme/xme/core/login/src/loginManager.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.o
 
 # target to build an object file
-home/josh/xme/xme/core/login/src/loginManager.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src/loginManager.c.o
-.PHONY : home/josh/xme/xme/core/login/src/loginManager.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.o
 
-home/josh/xme/xme/core/login/src/loginManager.i: home/josh/xme/xme/core/login/src/loginManager.c.i
-.PHONY : home/josh/xme/xme/core/login/src/loginManager.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/login/src/loginManager.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src/loginManager.c.i
-.PHONY : home/josh/xme/xme/core/login/src/loginManager.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.i
 
-home/josh/xme/xme/core/login/src/loginManager.s: home/josh/xme/xme/core/login/src/loginManager.c.s
-.PHONY : home/josh/xme/xme/core/login/src/loginManager.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/login/src/loginManager.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/core/login/src/loginManager.c.s
-.PHONY : home/josh/xme/xme/core/login/src/loginManager.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.c.s
 
-home/josh/xme/xme/core/manifestRepository/src/manifestRepository.o: home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.o
-.PHONY : home/josh/xme/xme/core/manifestRepository/src/manifestRepository.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.o
 
 # target to build an object file
-home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_manifestRepository.dir/build.make CMakeFiles/xme_core_manifestRepository.dir/home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.o
-.PHONY : home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_manifestRepository.dir/build.make CMakeFiles/xme_core_manifestRepository.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.o
 
-home/josh/xme/xme/core/manifestRepository/src/manifestRepository.i: home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.i
-.PHONY : home/josh/xme/xme/core/manifestRepository/src/manifestRepository.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_manifestRepository.dir/build.make CMakeFiles/xme_core_manifestRepository.dir/home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.i
-.PHONY : home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_manifestRepository.dir/build.make CMakeFiles/xme_core_manifestRepository.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.i
 
-home/josh/xme/xme/core/manifestRepository/src/manifestRepository.s: home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.s
-.PHONY : home/josh/xme/xme/core/manifestRepository/src/manifestRepository.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_manifestRepository.dir/build.make CMakeFiles/xme_core_manifestRepository.dir/home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.s
-.PHONY : home/josh/xme/xme/core/manifestRepository/src/manifestRepository.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_manifestRepository.dir/build.make CMakeFiles/xme_core_manifestRepository.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.c.s
 
-home/josh/xme/xme/core/node.o: home/josh/xme/xme/core/node.c.o
-.PHONY : home/josh/xme/xme/core/node.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.o
 
 # target to build an object file
-home/josh/xme/xme/core/node.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_node.dir/build.make CMakeFiles/xme_core_node.dir/home/josh/xme/xme/core/node.c.o
-.PHONY : home/josh/xme/xme/core/node.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_node.dir/build.make CMakeFiles/xme_core_node.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.o
 
-home/josh/xme/xme/core/node.i: home/josh/xme/xme/core/node.c.i
-.PHONY : home/josh/xme/xme/core/node.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/node.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_node.dir/build.make CMakeFiles/xme_core_node.dir/home/josh/xme/xme/core/node.c.i
-.PHONY : home/josh/xme/xme/core/node.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_node.dir/build.make CMakeFiles/xme_core_node.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.i
 
-home/josh/xme/xme/core/node.s: home/josh/xme/xme/core/node.c.s
-.PHONY : home/josh/xme/xme/core/node.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/node.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_node.dir/build.make CMakeFiles/xme_core_node.dir/home/josh/xme/xme/core/node.c.s
-.PHONY : home/josh/xme/xme/core/node.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_node.dir/build.make CMakeFiles/xme_core_node.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.c.s
 
-home/josh/xme/xme/core/nodeManager/src/componentRepository.o: home/josh/xme/xme/core/nodeManager/src/componentRepository.c.o
-.PHONY : home/josh/xme/xme/core/nodeManager/src/componentRepository.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.o
 
 # target to build an object file
-home/josh/xme/xme/core/nodeManager/src/componentRepository.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_nodeManager_componentRepository.dir/build.make CMakeFiles/xme_core_nodeManager_componentRepository.dir/home/josh/xme/xme/core/nodeManager/src/componentRepository.c.o
-.PHONY : home/josh/xme/xme/core/nodeManager/src/componentRepository.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_nodeManager_componentRepository.dir/build.make CMakeFiles/xme_core_nodeManager_componentRepository.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.o
 
-home/josh/xme/xme/core/nodeManager/src/componentRepository.i: home/josh/xme/xme/core/nodeManager/src/componentRepository.c.i
-.PHONY : home/josh/xme/xme/core/nodeManager/src/componentRepository.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/nodeManager/src/componentRepository.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_nodeManager_componentRepository.dir/build.make CMakeFiles/xme_core_nodeManager_componentRepository.dir/home/josh/xme/xme/core/nodeManager/src/componentRepository.c.i
-.PHONY : home/josh/xme/xme/core/nodeManager/src/componentRepository.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_nodeManager_componentRepository.dir/build.make CMakeFiles/xme_core_nodeManager_componentRepository.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.i
 
-home/josh/xme/xme/core/nodeManager/src/componentRepository.s: home/josh/xme/xme/core/nodeManager/src/componentRepository.c.s
-.PHONY : home/josh/xme/xme/core/nodeManager/src/componentRepository.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/nodeManager/src/componentRepository.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_nodeManager_componentRepository.dir/build.make CMakeFiles/xme_core_nodeManager_componentRepository.dir/home/josh/xme/xme/core/nodeManager/src/componentRepository.c.s
-.PHONY : home/josh/xme/xme/core/nodeManager/src/componentRepository.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_nodeManager_componentRepository.dir/build.make CMakeFiles/xme_core_nodeManager_componentRepository.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.o: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.i: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.s: home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.o: home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.i: home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.s: home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.o: home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.i: home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.s: home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.o: home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_configuratorExtension.dir/build.make CMakeFiles/xme_core_pnp_configuratorExtension.dir/home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_configuratorExtension.dir/build.make CMakeFiles/xme_core_pnp_configuratorExtension.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.i: home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_configuratorExtension.dir/build.make CMakeFiles/xme_core_pnp_configuratorExtension.dir/home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_configuratorExtension.dir/build.make CMakeFiles/xme_core_pnp_configuratorExtension.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.s: home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_configuratorExtension.dir/build.make CMakeFiles/xme_core_pnp_configuratorExtension.dir/home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_configuratorExtension.dir/build.make CMakeFiles/xme_core_pnp_configuratorExtension.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.o: home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_dataLinkGraph.dir/build.make CMakeFiles/xme_core_pnp_dataLinkGraph.dir/home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_dataLinkGraph.dir/build.make CMakeFiles/xme_core_pnp_dataLinkGraph.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.i: home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_dataLinkGraph.dir/build.make CMakeFiles/xme_core_pnp_dataLinkGraph.dir/home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_dataLinkGraph.dir/build.make CMakeFiles/xme_core_pnp_dataLinkGraph.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.s: home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_dataLinkGraph.dir/build.make CMakeFiles/xme_core_pnp_dataLinkGraph.dir/home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_dataLinkGraph.dir/build.make CMakeFiles/xme_core_pnp_dataLinkGraph.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.o: home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_logicalRouteManager.dir/build.make CMakeFiles/xme_core_pnp_logicalRouteManager.dir/home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_logicalRouteManager.dir/build.make CMakeFiles/xme_core_pnp_logicalRouteManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.i: home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_logicalRouteManager.dir/build.make CMakeFiles/xme_core_pnp_logicalRouteManager.dir/home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_logicalRouteManager.dir/build.make CMakeFiles/xme_core_pnp_logicalRouteManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.s: home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_logicalRouteManager.dir/build.make CMakeFiles/xme_core_pnp_logicalRouteManager.dir/home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_logicalRouteManager.dir/build.make CMakeFiles/xme_core_pnp_logicalRouteManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.o: home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/build.make CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/build.make CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.i: home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/build.make CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/build.make CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.s: home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/build.make CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/build.make CMakeFiles/xme_core_pnp_networkConfigurationCalculator.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.o: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.i: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.s: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.o: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.i: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.s: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.o: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.i: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.s: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.c.s
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.o: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.o
 
 # target to build an object file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.o
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.i: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.i
 
 # target to preprocess a source file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.i
 
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.s: home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s
-.PHONY : home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.c.s
 
-home/josh/xme/xme/defines.o: home/josh/xme/xme/defines.c.o
-.PHONY : home/josh/xme/xme/defines.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.o
 
 # target to build an object file
-home/josh/xme/xme/defines.c.o:
-	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/josh/xme/xme/defines.c.o
-.PHONY : home/josh/xme/xme/defines.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.o:
+	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.o
 
-home/josh/xme/xme/defines.i: home/josh/xme/xme/defines.c.i
-.PHONY : home/josh/xme/xme/defines.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.i
 
 # target to preprocess a source file
-home/josh/xme/xme/defines.c.i:
-	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/josh/xme/xme/defines.c.i
-.PHONY : home/josh/xme/xme/defines.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.i:
+	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.i
 
-home/josh/xme/xme/defines.s: home/josh/xme/xme/defines.c.s
-.PHONY : home/josh/xme/xme/defines.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/defines.c.s:
-	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/josh/xme/xme/defines.c.s
-.PHONY : home/josh/xme/xme/defines.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.s:
+	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.c.s
 
-home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.o: home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o
-.PHONY : home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_math.dir/build.make CMakeFiles/xme_hal_math.dir/home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o
-.PHONY : home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_math.dir/build.make CMakeFiles/xme_hal_math.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.o
 
-home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.i: home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i
-.PHONY : home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_math.dir/build.make CMakeFiles/xme_hal_math.dir/home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i
-.PHONY : home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_math.dir/build.make CMakeFiles/xme_hal_math.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.i
 
-home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.s: home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s
-.PHONY : home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_math.dir/build.make CMakeFiles/xme_hal_math.dir/home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s
-.PHONY : home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_math.dir/build.make CMakeFiles/xme_hal_math.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.o: home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_circularBuffer.dir/build.make CMakeFiles/xme_hal_circularBuffer.dir/home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_circularBuffer.dir/build.make CMakeFiles/xme_hal_circularBuffer.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.i: home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_circularBuffer.dir/build.make CMakeFiles/xme_hal_circularBuffer.dir/home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_circularBuffer.dir/build.make CMakeFiles/xme_hal_circularBuffer.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.s: home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_circularBuffer.dir/build.make CMakeFiles/xme_hal_circularBuffer.dir/home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_circularBuffer.dir/build.make CMakeFiles/xme_hal_circularBuffer.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.o: home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_cmdLine.dir/build.make CMakeFiles/xme_hal_cmdLine.dir/home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_cmdLine.dir/build.make CMakeFiles/xme_hal_cmdLine.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.i: home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_cmdLine.dir/build.make CMakeFiles/xme_hal_cmdLine.dir/home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_cmdLine.dir/build.make CMakeFiles/xme_hal_cmdLine.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.s: home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_cmdLine.dir/build.make CMakeFiles/xme_hal_cmdLine.dir/home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_cmdLine.dir/build.make CMakeFiles/xme_hal_cmdLine.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.o: home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_context.dir/build.make CMakeFiles/xme_hal_context.dir/home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_context.dir/build.make CMakeFiles/xme_hal_context.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.i: home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_context.dir/build.make CMakeFiles/xme_hal_context.dir/home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_context.dir/build.make CMakeFiles/xme_hal_context.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.s: home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_context.dir/build.make CMakeFiles/xme_hal_context.dir/home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_context.dir/build.make CMakeFiles/xme_hal_context.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.o: home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.i: home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.s: home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_defines.dir/build.make CMakeFiles/xme_defines.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.o: home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_graph.dir/build.make CMakeFiles/xme_hal_graph.dir/home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_graph.dir/build.make CMakeFiles/xme_hal_graph.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.i: home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_graph.dir/build.make CMakeFiles/xme_hal_graph.dir/home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_graph.dir/build.make CMakeFiles/xme_hal_graph.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.s: home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_graph.dir/build.make CMakeFiles/xme_hal_graph.dir/home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_graph.dir/build.make CMakeFiles/xme_hal_graph.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.o: home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o:
-	$(MAKE) -f CMakeFiles/xme_hal_graphviz.dir/build.make CMakeFiles/xme_hal_graphviz.dir/home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o:
+	$(MAKE) -f CMakeFiles/xme_hal_graphviz.dir/build.make CMakeFiles/xme_hal_graphviz.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.o
 
-home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.i: home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i:
-	$(MAKE) -f CMakeFiles/xme_hal_graphviz.dir/build.make CMakeFiles/xme_hal_graphviz.dir/home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i:
+	$(MAKE) -f CMakeFiles/xme_hal_graphviz.dir/build.make CMakeFiles/xme_hal_graphviz.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.i
 
-home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.s: home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s:
-	$(MAKE) -f CMakeFiles/xme_hal_graphviz.dir/build.make CMakeFiles/xme_hal_graphviz.dir/home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s:
+	$(MAKE) -f CMakeFiles/xme_hal_graphviz.dir/build.make CMakeFiles/xme_hal_graphviz.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.cpp.s
 
-home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.o: home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_linkedList.dir/build.make CMakeFiles/xme_hal_linkedList.dir/home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_linkedList.dir/build.make CMakeFiles/xme_hal_linkedList.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.i: home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_linkedList.dir/build.make CMakeFiles/xme_hal_linkedList.dir/home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_linkedList.dir/build.make CMakeFiles/xme_hal_linkedList.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.s: home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_linkedList.dir/build.make CMakeFiles/xme_hal_linkedList.dir/home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_linkedList.dir/build.make CMakeFiles/xme_hal_linkedList.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.o: home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.i: home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.s: home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_log.dir/build.make CMakeFiles/xme_core_log.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.o: home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_net.dir/build.make CMakeFiles/xme_hal_net.dir/home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_net.dir/build.make CMakeFiles/xme_hal_net.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.i: home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_net.dir/build.make CMakeFiles/xme_hal_net.dir/home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_net.dir/build.make CMakeFiles/xme_hal_net.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.s: home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_net.dir/build.make CMakeFiles/xme_hal_net.dir/home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_net.dir/build.make CMakeFiles/xme_hal_net.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.o: home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o:
-	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o:
+	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.o
 
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.i: home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i:
-	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i:
+	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.i
 
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.s: home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s:
-	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s:
+	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.cpp.s
 
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.o: home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o:
-	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o:
+	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.o
 
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.i: home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i:
-	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i:
+	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.i
 
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.s: home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s:
-	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s:
+	$(MAKE) -f CMakeFiles/xme_hal_qt.dir/build.make CMakeFiles/xme_hal_qt.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.cpp.s
 
-home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.o: home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o:
-	$(MAKE) -f CMakeFiles/xme_hal_ros.dir/build.make CMakeFiles/xme_hal_ros.dir/home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o:
+	$(MAKE) -f CMakeFiles/xme_hal_ros.dir/build.make CMakeFiles/xme_hal_ros.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.o
 
-home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.i: home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i:
-	$(MAKE) -f CMakeFiles/xme_hal_ros.dir/build.make CMakeFiles/xme_hal_ros.dir/home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i:
+	$(MAKE) -f CMakeFiles/xme_hal_ros.dir/build.make CMakeFiles/xme_hal_ros.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.i
 
-home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.s: home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s:
-	$(MAKE) -f CMakeFiles/xme_hal_ros.dir/build.make CMakeFiles/xme_hal_ros.dir/home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s:
+	$(MAKE) -f CMakeFiles/xme_hal_ros.dir/build.make CMakeFiles/xme_hal_ros.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.cpp.s
 
-home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.o: home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_sharedPtr.dir/build.make CMakeFiles/xme_hal_sharedPtr.dir/home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_sharedPtr.dir/build.make CMakeFiles/xme_hal_sharedPtr.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.i: home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_sharedPtr.dir/build.make CMakeFiles/xme_hal_sharedPtr.dir/home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_sharedPtr.dir/build.make CMakeFiles/xme_hal_sharedPtr.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.s: home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_sharedPtr.dir/build.make CMakeFiles/xme_hal_sharedPtr.dir/home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_sharedPtr.dir/build.make CMakeFiles/xme_hal_sharedPtr.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.o: home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_table.dir/build.make CMakeFiles/xme_hal_table.dir/home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_table.dir/build.make CMakeFiles/xme_hal_table.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.i: home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_table.dir/build.make CMakeFiles/xme_hal_table.dir/home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_table.dir/build.make CMakeFiles/xme_hal_table.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.s: home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_table.dir/build.make CMakeFiles/xme_hal_table.dir/home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_table.dir/build.make CMakeFiles/xme_hal_table.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.c.s
 
-home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.o: home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.o
 
-home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.i: home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.i
 
-home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.s: home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_env.dir/build.make CMakeFiles/xme_hal_env.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_env.dir/build.make CMakeFiles/xme_hal_env.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_env.dir/build.make CMakeFiles/xme_hal_env.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_env.dir/build.make CMakeFiles/xme_hal_env.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_env.dir/build.make CMakeFiles/xme_hal_env.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_env.dir/build.make CMakeFiles/xme_hal_env.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_mmap.dir/build.make CMakeFiles/xme_hal_mmap.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_mmap.dir/build.make CMakeFiles/xme_hal_mmap.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_mmap.dir/build.make CMakeFiles/xme_hal_mmap.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_mmap.dir/build.make CMakeFiles/xme_hal_mmap.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_mmap.dir/build.make CMakeFiles/xme_hal_mmap.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_mmap.dir/build.make CMakeFiles/xme_hal_mmap.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_safeString.dir/build.make CMakeFiles/xme_hal_safeString.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_safeString.dir/build.make CMakeFiles/xme_hal_safeString.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_safeString.dir/build.make CMakeFiles/xme_hal_safeString.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_safeString.dir/build.make CMakeFiles/xme_hal_safeString.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_safeString.dir/build.make CMakeFiles/xme_hal_safeString.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_safeString.dir/build.make CMakeFiles/xme_hal_safeString.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_sched.dir/build.make CMakeFiles/xme_hal_sched.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_sched.dir/build.make CMakeFiles/xme_hal_sched.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_sched.dir/build.make CMakeFiles/xme_hal_sched.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_sched.dir/build.make CMakeFiles/xme_hal_sched.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_sched.dir/build.make CMakeFiles/xme_hal_sched.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_sched.dir/build.make CMakeFiles/xme_hal_sched.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_sleep.dir/build.make CMakeFiles/xme_hal_sleep.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_sleep.dir/build.make CMakeFiles/xme_hal_sleep.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_sleep.dir/build.make CMakeFiles/xme_hal_sleep.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_sleep.dir/build.make CMakeFiles/xme_hal_sleep.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_sleep.dir/build.make CMakeFiles/xme_hal_sleep.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_sleep.dir/build.make CMakeFiles/xme_hal_sleep.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_sync.dir/build.make CMakeFiles/xme_hal_sync.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_sync.dir/build.make CMakeFiles/xme_hal_sync.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_sync.dir/build.make CMakeFiles/xme_hal_sync.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_sync.dir/build.make CMakeFiles/xme_hal_sync.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_sync.dir/build.make CMakeFiles/xme_hal_sync.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_sync.dir/build.make CMakeFiles/xme_hal_sync.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_time.dir/build.make CMakeFiles/xme_hal_time.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_time.dir/build.make CMakeFiles/xme_hal_time.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_time.dir/build.make CMakeFiles/xme_hal_time.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_time.dir/build.make CMakeFiles/xme_hal_time.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_time.dir/build.make CMakeFiles/xme_hal_time.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_time.dir/build.make CMakeFiles/xme_hal_time.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.c.s
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.o: home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.o
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.i: home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.i
 
-home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.s: home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_tls.dir/build.make CMakeFiles/xme_hal_tls.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.c.s
 
-home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.o: home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_mem.dir/build.make CMakeFiles/xme_hal_mem.dir/home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_mem.dir/build.make CMakeFiles/xme_hal_mem.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.o
 
-home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.i: home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_mem.dir/build.make CMakeFiles/xme_hal_mem.dir/home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_mem.dir/build.make CMakeFiles/xme_hal_mem.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.i
 
-home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.s: home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_mem.dir/build.make CMakeFiles/xme_hal_mem.dir/home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_mem.dir/build.make CMakeFiles/xme_hal_mem.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.c.s
 
-home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.o: home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.o
 
 # target to build an object file
-home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o:
-	$(MAKE) -f CMakeFiles/xme_hal_random.dir/build.make CMakeFiles/xme_hal_random.dir/home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o:
+	$(MAKE) -f CMakeFiles/xme_hal_random.dir/build.make CMakeFiles/xme_hal_random.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.o
 
-home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.i: home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.i
 
 # target to preprocess a source file
-home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i:
-	$(MAKE) -f CMakeFiles/xme_hal_random.dir/build.make CMakeFiles/xme_hal_random.dir/home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i:
+	$(MAKE) -f CMakeFiles/xme_hal_random.dir/build.make CMakeFiles/xme_hal_random.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.i
 
-home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.s: home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s:
-	$(MAKE) -f CMakeFiles/xme_hal_random.dir/build.make CMakeFiles/xme_hal_random.dir/home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s
-.PHONY : home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s:
+	$(MAKE) -f CMakeFiles/xme_hal_random.dir/build.make CMakeFiles/xme_hal_random.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.c.s
 
-home/josh/xme/xme/wp/channel/src/channelInjector.o: home/josh/xme/xme/wp/channel/src/channelInjector.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjector.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.o
 
 # target to build an object file
-home/josh/xme/xme/wp/channel/src/channelInjector.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/josh/xme/xme/wp/channel/src/channelInjector.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjector.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.o
 
-home/josh/xme/xme/wp/channel/src/channelInjector.i: home/josh/xme/xme/wp/channel/src/channelInjector.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjector.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/channel/src/channelInjector.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/josh/xme/xme/wp/channel/src/channelInjector.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjector.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.i
 
-home/josh/xme/xme/wp/channel/src/channelInjector.s: home/josh/xme/xme/wp/channel/src/channelInjector.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjector.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/channel/src/channelInjector.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/josh/xme/xme/wp/channel/src/channelInjector.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjector.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.c.s
 
-home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.o: home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.o
 
-home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.i: home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.i
 
-home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.s: home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelInjector.dir/build.make CMakeFiles/xme_wp_channel_channelInjector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.c.s
 
-home/josh/xme/xme/wp/channel/src/channelSelector.o: home/josh/xme/xme/wp/channel/src/channelSelector.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelector.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.o
 
 # target to build an object file
-home/josh/xme/xme/wp/channel/src/channelSelector.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/josh/xme/xme/wp/channel/src/channelSelector.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelector.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.o
 
-home/josh/xme/xme/wp/channel/src/channelSelector.i: home/josh/xme/xme/wp/channel/src/channelSelector.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelector.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/channel/src/channelSelector.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/josh/xme/xme/wp/channel/src/channelSelector.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelector.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.i
 
-home/josh/xme/xme/wp/channel/src/channelSelector.s: home/josh/xme/xme/wp/channel/src/channelSelector.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelector.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/channel/src/channelSelector.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/josh/xme/xme/wp/channel/src/channelSelector.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelector.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.c.s
 
-home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.o: home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.o
 
-home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.i: home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.i
 
-home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.s: home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_channel_channelSelector.dir/build.make CMakeFiles/xme_wp_channel_channelSelector.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.c.s
 
-home/josh/xme/xme/wp/marshal/src/demarshaler.o: home/josh/xme/xme/wp/marshal/src/demarshaler.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshaler.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.o
 
 # target to build an object file
-home/josh/xme/xme/wp/marshal/src/demarshaler.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/josh/xme/xme/wp/marshal/src/demarshaler.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshaler.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.o
 
-home/josh/xme/xme/wp/marshal/src/demarshaler.i: home/josh/xme/xme/wp/marshal/src/demarshaler.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshaler.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/marshal/src/demarshaler.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/josh/xme/xme/wp/marshal/src/demarshaler.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshaler.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.i
 
-home/josh/xme/xme/wp/marshal/src/demarshaler.s: home/josh/xme/xme/wp/marshal/src/demarshaler.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshaler.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/marshal/src/demarshaler.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/josh/xme/xme/wp/marshal/src/demarshaler.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshaler.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.c.s
 
-home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.o: home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.o
 
 # target to build an object file
-home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.o
 
-home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.i: home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.i
 
-home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.s: home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_demarshaler.dir/build.make CMakeFiles/xme_wp_marshal_demarshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.c.s
 
-home/josh/xme/xme/wp/marshal/src/marshaler.o: home/josh/xme/xme/wp/marshal/src/marshaler.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshaler.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.o
 
 # target to build an object file
-home/josh/xme/xme/wp/marshal/src/marshaler.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/josh/xme/xme/wp/marshal/src/marshaler.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshaler.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.o
 
-home/josh/xme/xme/wp/marshal/src/marshaler.i: home/josh/xme/xme/wp/marshal/src/marshaler.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshaler.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/marshal/src/marshaler.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/josh/xme/xme/wp/marshal/src/marshaler.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshaler.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.i
 
-home/josh/xme/xme/wp/marshal/src/marshaler.s: home/josh/xme/xme/wp/marshal/src/marshaler.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshaler.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/marshal/src/marshaler.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/josh/xme/xme/wp/marshal/src/marshaler.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshaler.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.c.s
 
-home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.o: home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.o
 
 # target to build an object file
-home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.o
 
-home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.i: home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.i
 
-home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.s: home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s
-.PHONY : home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_marshal_marshaler.dir/build.make CMakeFiles/xme_wp_marshal_marshaler.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.c.s
 
-home/josh/xme/xme/wp/udp/src/udpReceive.o: home/josh/xme/xme/wp/udp/src/udpReceive.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceive.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.o
 
 # target to build an object file
-home/josh/xme/xme/wp/udp/src/udpReceive.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/josh/xme/xme/wp/udp/src/udpReceive.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceive.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.o
 
-home/josh/xme/xme/wp/udp/src/udpReceive.i: home/josh/xme/xme/wp/udp/src/udpReceive.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceive.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/udp/src/udpReceive.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/josh/xme/xme/wp/udp/src/udpReceive.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceive.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.i
 
-home/josh/xme/xme/wp/udp/src/udpReceive.s: home/josh/xme/xme/wp/udp/src/udpReceive.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceive.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/udp/src/udpReceive.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/josh/xme/xme/wp/udp/src/udpReceive.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceive.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.c.s
 
-home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.o: home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.o
 
-home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.i: home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.i
 
-home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.s: home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpReceive.dir/build.make CMakeFiles/xme_wp_udp_udpReceive.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.c.s
 
-home/josh/xme/xme/wp/udp/src/udpSend.o: home/josh/xme/xme/wp/udp/src/udpSend.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSend.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.o
 
 # target to build an object file
-home/josh/xme/xme/wp/udp/src/udpSend.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/josh/xme/xme/wp/udp/src/udpSend.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSend.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.o
 
-home/josh/xme/xme/wp/udp/src/udpSend.i: home/josh/xme/xme/wp/udp/src/udpSend.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSend.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/udp/src/udpSend.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/josh/xme/xme/wp/udp/src/udpSend.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSend.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.i
 
-home/josh/xme/xme/wp/udp/src/udpSend.s: home/josh/xme/xme/wp/udp/src/udpSend.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSend.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/udp/src/udpSend.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/josh/xme/xme/wp/udp/src/udpSend.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSend.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.c.s
 
-home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.o: home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.o
 
 # target to build an object file
-home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.o
 
-home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.i: home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.i
 
-home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.s: home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s:
-	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s
-.PHONY : home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s:
+	$(MAKE) -f CMakeFiles/xme_wp_udp_udpSend.dir/build.make CMakeFiles/xme_wp_udp_udpSend.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.c.s
 
-home/josh/xme/xme/wp/waypointConfigInfrastructure.o: home/josh/xme/xme/wp/waypointConfigInfrastructure.c.o
-.PHONY : home/josh/xme/xme/wp/waypointConfigInfrastructure.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.o: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.o
 
 # target to build an object file
-home/josh/xme/xme/wp/waypointConfigInfrastructure.c.o:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.o
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.o
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.o
-.PHONY : home/josh/xme/xme/wp/waypointConfigInfrastructure.c.o
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.o:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.o
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.o
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.o
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.o
 
-home/josh/xme/xme/wp/waypointConfigInfrastructure.i: home/josh/xme/xme/wp/waypointConfigInfrastructure.c.i
-.PHONY : home/josh/xme/xme/wp/waypointConfigInfrastructure.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.i: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.i
 
 # target to preprocess a source file
-home/josh/xme/xme/wp/waypointConfigInfrastructure.c.i:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.i
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.i
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.i
-.PHONY : home/josh/xme/xme/wp/waypointConfigInfrastructure.c.i
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.i:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.i
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.i
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.i
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.i
 
-home/josh/xme/xme/wp/waypointConfigInfrastructure.s: home/josh/xme/xme/wp/waypointConfigInfrastructure.c.s
-.PHONY : home/josh/xme/xme/wp/waypointConfigInfrastructure.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.s: home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.s
 
 # target to generate assembly for a file
-home/josh/xme/xme/wp/waypointConfigInfrastructure.c.s:
-	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.s
-	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.s
-	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/josh/xme/xme/wp/waypointConfigInfrastructure.c.s
-.PHONY : home/josh/xme/xme/wp/waypointConfigInfrastructure.c.s
+home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.s:
+	$(MAKE) -f CMakeFiles/xme_core_login_loginClient.dir/build.make CMakeFiles/xme_core_login_loginClient.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.s
+	$(MAKE) -f CMakeFiles/xme_core_login_loginManager.dir/build.make CMakeFiles/xme_core_login_loginManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.s
+	$(MAKE) -f CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/build.make CMakeFiles/xme_core_pnp_plugAndPlayManager.dir/home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.s
+.PHONY : home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.c.s
 
 master.o: master.cpp.o
 .PHONY : master.o
@@ -5159,426 +5159,426 @@ help:
 	@echo "... autoPnP_adv_exampleGUI_automoc.o"
 	@echo "... autoPnP_adv_exampleGUI_automoc.i"
 	@echo "... autoPnP_adv_exampleGUI_automoc.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.s"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.o"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.i"
-	@echo "... home/josh/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/com/interface.o"
-	@echo "... home/josh/xme/xme/com/interface.i"
-	@echo "... home/josh/xme/xme/com/interface.s"
-	@echo "... home/josh/xme/xme/com/packet.o"
-	@echo "... home/josh/xme/xme/com/packet.i"
-	@echo "... home/josh/xme/xme/com/packet.s"
-	@echo "... home/josh/xme/xme/core/broker/src/broker.o"
-	@echo "... home/josh/xme/xme/core/broker/src/broker.i"
-	@echo "... home/josh/xme/xme/core/broker/src/broker.s"
-	@echo "... home/josh/xme/xme/core/broker/src/brokerDataManager.o"
-	@echo "... home/josh/xme/xme/core/broker/src/brokerDataManager.i"
-	@echo "... home/josh/xme/xme/core/broker/src/brokerDataManager.s"
-	@echo "... home/josh/xme/xme/core/broker/src/brokerPnPManager.o"
-	@echo "... home/josh/xme/xme/core/broker/src/brokerPnPManager.i"
-	@echo "... home/josh/xme/xme/core/broker/src/brokerPnPManager.s"
-	@echo "... home/josh/xme/xme/core/componentInfo.o"
-	@echo "... home/josh/xme/xme/core/componentInfo.i"
-	@echo "... home/josh/xme/xme/core/componentInfo.s"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/dataHandler.o"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/dataHandler.i"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/dataHandler.s"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/database.o"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/database.i"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/database.s"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseBuilder.o"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseBuilder.i"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseBuilder.s"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.o"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.i"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseConfigurator.s"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.o"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.i"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseInternalMethods.s"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.o"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.i"
-	@echo "... home/josh/xme/xme/core/dataHandler/src/databaseTestProbe.s"
-	@echo "... home/josh/xme/xme/core/directory/src/attribute.o"
-	@echo "... home/josh/xme/xme/core/directory/src/attribute.i"
-	@echo "... home/josh/xme/xme/core/directory/src/attribute.s"
-	@echo "... home/josh/xme/xme/core/directory/src/nodeRegistryController.o"
-	@echo "... home/josh/xme/xme/core/directory/src/nodeRegistryController.i"
-	@echo "... home/josh/xme/xme/core/directory/src/nodeRegistryController.s"
-	@echo "... home/josh/xme/xme/core/directory/src/topicRegistry.o"
-	@echo "... home/josh/xme/xme/core/directory/src/topicRegistry.i"
-	@echo "... home/josh/xme/xme/core/directory/src/topicRegistry.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/componentRepository.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/componentRepository.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/componentRepository.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/configurator.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/configurator.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/configurator.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/cycleControl.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/cycleControl.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/cycleControl.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/descriptorTable.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/descriptorTable.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/descriptorTable.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/dispatcher.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/dispatcher.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/dispatcher.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/executionManager.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/executionManager.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/executionManager.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/executionManagerUtils.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/executionManagerUtils.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/executionManagerUtils.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduleOperations.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduleOperations.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduleOperations.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduleSetOperations.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduler.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduler.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/scheduler.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/taskTimer.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/taskTimer.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/taskTimer.s"
-	@echo "... home/josh/xme/xme/core/executionManager/src/wrapperInterface.o"
-	@echo "... home/josh/xme/xme/core/executionManager/src/wrapperInterface.i"
-	@echo "... home/josh/xme/xme/core/executionManager/src/wrapperInterface.s"
-	@echo "... home/josh/xme/xme/core/log.o"
-	@echo "... home/josh/xme/xme/core/log.i"
-	@echo "... home/josh/xme/xme/core/log.s"
-	@echo "... home/josh/xme/xme/core/logUtils.o"
-	@echo "... home/josh/xme/xme/core/logUtils.i"
-	@echo "... home/josh/xme/xme/core/logUtils.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientComponent.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientComponent.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientComponent.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientComponentWrapper.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientManifest.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientManifest.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientManifest.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunction.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerComponent.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerComponent.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerComponent.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerComponentWrapper.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerManifest.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerManifest.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerManifest.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.s"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/login/src/loginClient.o"
-	@echo "... home/josh/xme/xme/core/login/src/loginClient.i"
-	@echo "... home/josh/xme/xme/core/login/src/loginClient.s"
-	@echo "... home/josh/xme/xme/core/login/src/loginManager.o"
-	@echo "... home/josh/xme/xme/core/login/src/loginManager.i"
-	@echo "... home/josh/xme/xme/core/login/src/loginManager.s"
-	@echo "... home/josh/xme/xme/core/manifestRepository/src/manifestRepository.o"
-	@echo "... home/josh/xme/xme/core/manifestRepository/src/manifestRepository.i"
-	@echo "... home/josh/xme/xme/core/manifestRepository/src/manifestRepository.s"
-	@echo "... home/josh/xme/xme/core/node.o"
-	@echo "... home/josh/xme/xme/core/node.i"
-	@echo "... home/josh/xme/xme/core/node.s"
-	@echo "... home/josh/xme/xme/core/nodeManager/src/componentRepository.o"
-	@echo "... home/josh/xme/xme/core/nodeManager/src/componentRepository.i"
-	@echo "... home/josh/xme/xme/core/nodeManager/src/componentRepository.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/configuratorExtension.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/dataLinkGraph.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/logicalRouteManager.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClient.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.s"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.o"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.i"
-	@echo "... home/josh/xme/xme/core/plugAndPlay/src/plugAndPlayManager.s"
-	@echo "... home/josh/xme/xme/defines.o"
-	@echo "... home/josh/xme/xme/defines.i"
-	@echo "... home/josh/xme/xme/defines.s"
-	@echo "... home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.o"
-	@echo "... home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.i"
-	@echo "... home/josh/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.o"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.i"
-	@echo "... home/josh/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/env_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sched_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/sync_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/time_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/os/posix/xme/hal/tls_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.s"
-	@echo "... home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.o"
-	@echo "... home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.i"
-	@echo "... home/josh/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.s"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelInjector.o"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelInjector.i"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelInjector.s"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelSelector.o"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelSelector.i"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelSelector.s"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/wp/marshal/src/demarshaler.o"
-	@echo "... home/josh/xme/xme/wp/marshal/src/demarshaler.i"
-	@echo "... home/josh/xme/xme/wp/marshal/src/demarshaler.s"
-	@echo "... home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.o"
-	@echo "... home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.i"
-	@echo "... home/josh/xme/xme/wp/marshal/src/demarshalerInternalTypes.s"
-	@echo "... home/josh/xme/xme/wp/marshal/src/marshaler.o"
-	@echo "... home/josh/xme/xme/wp/marshal/src/marshaler.i"
-	@echo "... home/josh/xme/xme/wp/marshal/src/marshaler.s"
-	@echo "... home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.o"
-	@echo "... home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.i"
-	@echo "... home/josh/xme/xme/wp/marshal/src/marshalerInternalTypes.s"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpReceive.o"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpReceive.i"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpReceive.s"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpSend.o"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpSend.i"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpSend.s"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.o"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.i"
-	@echo "... home/josh/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.s"
-	@echo "... home/josh/xme/xme/wp/waypointConfigInfrastructure.o"
-	@echo "... home/josh/xme/xme/wp/waypointConfigInfrastructure.i"
-	@echo "... home/josh/xme/xme/wp/waypointConfigInfrastructure.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/addComponentFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponent.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewComponentWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesViewManifest.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/capabilitiesWindow.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/capabilitiesView/src/removeComponentFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/doSomethingFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponent.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIComponentWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/exampleGUIManifest.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/autoPnP/adv/exampleGUI/src/window.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshaler.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/demarshalerFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshaler.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/xme/wp/marshal/src-gen/marshalerFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/interface.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/com/packet.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/broker.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerDataManager.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/broker/src/brokerPnPManager.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/componentInfo.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/dataHandler.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/database.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseBuilder.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseConfigurator.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseInternalMethods.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/dataHandler/src/databaseTestProbe.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/attribute.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/nodeRegistryController.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/directory/src/topicRegistry.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/componentRepository.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/configurator.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/cycleControl.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/descriptorTable.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/dispatcher.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManager.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/executionManagerUtils.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleOperations.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduleSetOperations.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/scheduler.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/taskTimer.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/executionManager/src/wrapperInterface.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/log.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/logUtils.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponent.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientComponentWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientManifest.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientProcessResponseFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginClientSendRequestFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponent.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerComponentWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerManifest.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessLogoutNotificationFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessRequestFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src-gen/loginManagerProcessResponseFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginClient.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/login/src/loginManager.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/manifestRepository/src/manifestRepository.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/node.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/nodeManager/src/componentRepository.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponent.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientComponentWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientProcessGraphFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendLogoutRequestFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendManifestFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayClientSendRemoveComponentRequestFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponent.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerComponentWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerGenerateRuntimeGraphsFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLoginRegistrationFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutAcknowledgmentsFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessLogoutRequestsFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunction.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/plugAndPlayManagerProcessRemoveComponentRequestFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpClientManifest.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src-gen/pnpManagerManifest.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/configuratorExtension.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/dataLinkGraph.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/logicalRouteManager.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/networkConfigurationCalculator.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClient.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientConfiguration.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayClientScheduling.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/core/plugAndPlay/src/plugAndPlayManager.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/defines.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/hardware/cpu/gen_c/xme/hal/math_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/circularBuffer/dynamicMemory/xme/hal/circularBuffer_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/cmdLine/freegetopt/xme/hal/cmdLine_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/context/basedOnTls/xme/hal/context_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/defines/checkSideEffects/xme/core/defines_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graph/generic/xme/hal/graph_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/graphviz/generic/xme/hal/graphviz_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/linkedList/dynamicMemory/xme/hal/linkedList_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/log/winPosix/xme/core/log_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/net/winPosix/xme/hal/net_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/QtApplication.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/qt/generic/xme/hal/qt_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/ros/generic/xme/hal/ros_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/sharedPtr/dynamicMemory/xme/hal/sharedPtr_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/table/dynamicMemory/xme/hal/table_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/generic-os/tls/multiThread/xme/hal/tls_util.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/env_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/mmap_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/safeString_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sched_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sleep_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/sync_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/time_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/os/posix/xme/hal/tls_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/mem/xme/hal/mem_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/ports/software/toolchain/stdlib/random/xme/hal/random_arch.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjector.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelInjectorWayPointFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelector.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/channel/src/channelSelectorWayPointFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshaler.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/demarshalerInternalTypes.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshaler.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/marshal/src/marshalerInternalTypes.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceive.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpReceiveWayPointFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSend.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/udp/src/udpSendWayPointFunctionWrapper.s"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.o"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.i"
+	@echo "... home/rmb-om/git/care-o-bot/autopnp/xme/xme/wp/waypointConfigInfrastructure.s"
 	@echo "... master.o"
 	@echo "... master.i"
 	@echo "... master.s"

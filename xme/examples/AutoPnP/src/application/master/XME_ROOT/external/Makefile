@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/josh/xme/examples/AutoPnP/src/application/master
+CMAKE_SOURCE_DIR = /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/josh/xme/examples/AutoPnP/src/application/master
+CMAKE_BINARY_DIR = /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -120,14 +120,14 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/josh/xme/examples/AutoPnP/src/application/master && $(CMAKE_COMMAND) -E cmake_progress_start /home/josh/xme/examples/AutoPnP/src/application/master/CMakeFiles /home/josh/xme/examples/AutoPnP/src/application/master/XME_ROOT/external/CMakeFiles/progress.marks
-	cd /home/josh/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/josh/xme/examples/AutoPnP/src/application/master/CMakeFiles 0
+	cd /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master && $(CMAKE_COMMAND) -E cmake_progress_start /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master/CMakeFiles /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master/XME_ROOT/external/CMakeFiles/progress.marks
+	cd /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/josh/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/clean
+	cd /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/clean
 .PHONY : clean
 
 # The main clean target
@@ -136,17 +136,17 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/josh/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/preinstall
+	cd /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/josh/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/preinstall
+	cd /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master && $(MAKE) -f CMakeFiles/Makefile2 XME_ROOT/external/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/josh/xme/examples/AutoPnP/src/application/master && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Help Target
@@ -173,6 +173,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/josh/xme/examples/AutoPnP/src/application/master && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/master && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

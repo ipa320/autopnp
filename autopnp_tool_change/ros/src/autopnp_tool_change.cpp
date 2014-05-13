@@ -400,12 +400,12 @@ void ToolChange::moveToChosenTool(const autopnp_tool_change::GoToStartPositionGo
 	if(tool_name.compare(VAC_CLEANER) == 0)
 	{
 		//move to start position in front of the vacuum cleaner
-		success = processMoveToChosenTool(VAC_CLEANER_OFFSET);
+		//success = processMoveToChosenTool(VAC_CLEANER_OFFSET);
 	}
 	else if(tool_name.compare(ARM_STATION) == 0)
 	{
 		// move to start position in front of the arm slot
-		success = processMoveToChosenTool(ARM_STATION_OFFSET);
+		//success = processMoveToChosenTool(ARM_STATION_OFFSET);
 	}
 	autopnp_tool_change::GoToStartPositionResult result;
 	std::string feedback;
@@ -636,8 +636,8 @@ printPose(arm_fiducial);
 
 		//EXECUTE THE PLAN !!!!!! BE CAREFUL
 		if (have_plan==true) {
-			group.execute(plan);
-			group.move();
+			//group.execute(plan);
+			//group.move();
 		}
 		else
 		{
@@ -697,8 +697,8 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose)
 	ROS_WARN("STARTE MOVE");
 	//EXECUTE THE PLAN !!!!!! BE CAREFUL
 	if (have_plan==true) {
-		group.execute(plan);
-		group.move();
+		//group.execute(plan);
+		//group.move();
 	}
 	else
 	{
