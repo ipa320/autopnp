@@ -12,7 +12,7 @@ spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
 # double
-dirtThreshold: 0.2 #0.09 #0.2  #0.35 #0.5
+dirtThreshold: 0.3 #0.09 #0.2  #0.35 #0.5
 
 # number of time steps used for the detection history logging (in [1,10000])
 # int
@@ -58,8 +58,8 @@ gridOrigin_y: 0.0
 
 # number of grid cells in x and y direction = width and height [in number grid cells], these dimensions are set automatically in database testing mode or when a map is available
 # int
-gridDimensions_x: 20
-gridDimensions_y: 20
+gridDimensions_x: 30 #20
+gridDimensions_y: 30 #20
 
 # the number of attempts to segment the floor plane in the image
 # int
