@@ -4,14 +4,14 @@
 
 
 # Configuration directories and files
-SourceDirectory: /home/josh/xme/examples/AutoPnP/src/application/demonstrator
-BuildDirectory: /home/josh/xme/examples/AutoPnP/src/application/demonstrator
+SourceDirectory: /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator
+BuildDirectory: /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator
 
 # Where to place the cost data store
 CostDataFile: 
 
 # Site is something like machine.domain, i.e. pragmatic.crd
-Site: josh-CELSIUS-R920
+Site: rbormann-WS558-Ubuntu
 
 # Build name is osname-revision-compiler, i.e. Linux-2.4.2-2smp-c++
 BuildName: Linux-c++
@@ -33,7 +33,7 @@ ScpCommand: /usr/bin/scp
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/usr/bin/cmake" "/home/josh/xme/examples/AutoPnP/src/application/demonstrator"
+ConfigureCommand: "/usr/bin/cmake" "/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator"
 MakeCommand: /usr/bin/make -i
 DefaultCTestConfigurationType: Release
 
@@ -63,7 +63,7 @@ Compiler: /usr/bin/c++
 PurifyCommand: 
 ValgrindCommand: 
 ValgrindCommandOptions: 
-MemoryCheckCommand: /usr/bin/valgrind
+MemoryCheckCommand: MEMORYCHECK_COMMAND-NOTFOUND
 MemoryCheckCommandOptions: 
 MemoryCheckSuppressionFile: 
 

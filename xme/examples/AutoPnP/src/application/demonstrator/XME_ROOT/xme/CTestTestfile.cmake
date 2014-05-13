@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/josh/xme/xme
-# Build directory: /home/josh/xme/examples/AutoPnP/src/application/demonstrator/XME_ROOT/xme
+# Source directory: /home/rmb-om/git/care-o-bot/autopnp/xme/xme
+# Build directory: /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator/XME_ROOT/xme
 # 
 # This file includes the relevent testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

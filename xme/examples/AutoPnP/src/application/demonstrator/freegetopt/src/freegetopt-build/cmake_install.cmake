@@ -1,4 +1,4 @@
-# Install script for directory: /home/josh/xme/external/freegetopt
+# Install script for directory: /home/rmb-om/git/care-o-bot/autopnp/xme/external/freegetopt
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,7 +38,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/home/josh/xme/examples/AutoPnP/src/application/demonstrator/freegetopt/src/freegetopt-build/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator/freegetopt/src/freegetopt-build/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/home/josh/xme/examples/AutoPnP/src/application/demonstrator/freegetopt/src/freegetopt-build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator/freegetopt/src/freegetopt-build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)

@@ -45,6 +45,8 @@ CapabilitiesWindow::~CapabilitiesWindow()
 
 void CapabilitiesWindow::updateCapabilities()
 {
+	if(!this) return;
+
 	static executeParameter_t parameter = {ui, &filepath};
 
 	xme_hal_qt_triggerExecution(updateCapabilitiesImage, &parameter);
