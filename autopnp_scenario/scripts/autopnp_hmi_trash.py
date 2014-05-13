@@ -189,7 +189,7 @@ N', GraspTrashBin(),
 											'find_next_unprocessed_room_loop_counter_out_':'sm_counter'})
 			
 			smach.StateMachine.add('VERIFY_TOOL_CAR_LOCATION', VerifyToolCarLocation(),
-								transitions={'no_need_to_move_it':'arrived', #'GO_TO_LOCATION',  # hack
+								transitions={'no_need_to_move_it':'arrived', #'GO_TO_LOCATION',
 											'tool_wagon_needs_to_be_moved':'MOVE_TOOL_WAGON'})
 
 			sm_sub_move_tool_wagon = smach.StateMachine(outcomes=['finished'],
@@ -230,7 +230,7 @@ N', GraspTrashBin(),
 
 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_ROOM', sm_sub_go_to_next_unproccessed_room,
 							transitions={'arrived':'DIRT_DETECTION_ON',
-										'no_more_rooms_left':'CHANGE_TOOL_MANUAL'}) #'CHANGE_TOOL_HAND'})
+										'no_more_rooms_left': 'DIRT_DETECTION_ON'})#'CHANGE_TOOL_MANUAL'}) #'CHANGE_TOOL_HAND'})
 		
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
 							transitions={'dirt_detection_on':'TRASH_BIN_DETECTION_ON'})
@@ -264,6 +264,10 @@ N', GraspTrashBin(),
 		sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['clear_trash_bin_done', 'failed'],input_keys=['detection_pose', 'tool_wagon_pose'])
 
 		with sm_sub_clear_waste_bin:
+			# hack:
+			smach.StateMachine.add('TURN180', Turn180(),
+								transitions={'arrived':'MOVE_TO_TRASH_BIN_LOCATION'})
+
 			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
 								transitions={'MTTBL_success':'APPROACH_PERIMETER'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
@@ -378,9 +382,7 @@ N', GraspTrashBin(),
 		with sm_sub_go_to_next_unprocessed_dirt_location:
 			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
 								transitions={'selected_next_dirt_location':'MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING',
-											'no_dirt_spots_left':'no_dirt_spots_left'},
-								remapping = {'last_visited_dirt_location_in':'last_visited_dirt_location',
-											 'last_visited_dirt_location_out':'last_visited_dirt_location'})
+											'no_dirt_spots_left':'no_dirt_spots_left'})
 			
 			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING', MoveLocationPerimeterCleaning(),
 								transitions={'movement_prepared':'APPROACH_PERIMETER_CLEANING'})
@@ -425,8 +427,14 @@ N', GraspTrashBin(),
 		
 		
 		smach.StateMachine.add('PROCESS_CLEANING_VERIFICATION_RESULTS', ProcessCleaningVerificationResults(),
-							transitions={'finished':'finished'})
-	
+							transitions={'finished':'GO_TO_TOOL_WAGON_LOCATION_2'})
+
+		smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION_2', MoveToToolWaggonFrontFrontalFar(),
+								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION_2'})
+			
+		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION_2', ChangeToolManualPnP(current_tool='vacuum'),
+								transitions={'CTM_done':'finished'})
+		
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')
 	sis.start()
@@ -446,14 +454,12 @@ if __name__ == '__main__':
 			CONFIRM_MODE = True
 		else:
 			flag=sys.argv[1]
-		#if len(flag)==0:
-		#	CONFIRM_MODE = True
+		if len(flag)==0:
+			CONFIRM_MODE = True
 
 		if flag=="auto":
 			CONFIRM_MODE = False  # in auto mode the connection to the control pc may interrupted, the scenario will stil work
 			# necessitates that all nodes are started with & and the end, e.g. bringup &
-		elif flag=="special":
-			CONFIRM_MODE = False
 		else:
 			CONFIRM_MODE = True
 

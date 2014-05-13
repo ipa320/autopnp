@@ -2,7 +2,7 @@
 #include <diagnostic_msgs/DiagnosticArray.h>
 #include <cob_srvs/Trigger.h>
 #include <visualization_msgs/Marker.h>
-#include <std_msgs/Bool.h>
+#include <std_msgs/String.h>
 
 class ToolchangePnPManager
 {
@@ -24,11 +24,11 @@ public:
 		vis_pub_first_ = true;
 		hand_status_ = -1;
 		vacuum_status_ = -1;
-		diagnostics_sdh_sub_ = node_handle_.subscribe("diagnostics", 10, &ToolchangePnPManager::diagnostics, this);
+		diagnostics_sdh_sub_ = node_handle_.subscribe("diagnostics", 200, &ToolchangePnPManager::diagnostics, this);
 		//diagnostics_sdh_sub_ = node_handle_.subscribe("/diagnostics", 1, &ToolchangePnPManager::diagnosticsSDHCallback, this);
 		//diagnostics_vacuum_sub_ = node_handle_.subscribe("/diagnostics_vacuum_cleaner", 1, &ToolchangePnPManager::diagnosticsVacuumCallback, this);
 		vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>("attachment_visulization", 0);
-		attachment_status_ = node_handle_.advertise<std_msgs::Bool>("attachment_status", 0);
+		attachment_status_ = node_handle_.advertise<std_msgs::String>("attachment_status", 0);
 	}
 
 	void diagnostics(const diagnostic_msgs::DiagnosticArray::ConstPtr& diagnostics_msg)
@@ -140,9 +140,9 @@ public:
 		vacuum_status_ = val;
 	}
 
-	void publishAttachmentStatus(bool val)
+	void publishAttachmentStatus(std::string val)
 	{
-		std_msgs::Bool msg;
+		std_msgs::String msg;
 		msg.data = val;
 		attachment_status_.publish(msg);
 	}
@@ -218,7 +218,12 @@ int main(int argc, char** argv)
 			//lastCheckedDevice = 0;
 		}
 
-		tPnP.publishAttachmentStatus(any_device_initialized);
+		if (tPnP.getHandStatus()==0)
+		  tPnP.publishAttachmentStatus("sdh");
+		else if (tPnP.getVacuumStatus()==0)
+		  tPnP.publishAttachmentStatus("vacuum");
+		else
+		  tPnP.publishAttachmentStatus("");
 
 		rate.sleep();
 		ros::spinOnce();

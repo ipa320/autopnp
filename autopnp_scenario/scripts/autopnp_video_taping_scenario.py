@@ -238,7 +238,7 @@ N', GraspTrashBin(),
 		smach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
 							transitions={'trash_bin_detection_on':'INSPECT_ROOM'})
 		
-		smach.StateMachine.add('INSPECT_ROOM', InspectRoom(),
+		smach.StateMachine.add('INSPECT_ROOM', InspectRoomManual(),
 							transitions={'finished':'DIRT_DETECTION_OFF'},
 							remapping={'inspect_room_data_img_in_':'sm_img',
 										'inspect_room_img_out_':'sm_img',
@@ -264,8 +264,8 @@ N', GraspTrashBin(),
 		sm_sub_clear_waste_bin = smach.StateMachine(outcomes=['clear_trash_bin_done', 'failed'],input_keys=['detection_pose', 'tool_wagon_pose'])
 
 		with sm_sub_clear_waste_bin:
-			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
-								transitions={'MTTBL_success':'APPROACH_PERIMETER'},
+			smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),  #MoveToTrashBinLocationManual(),
+								transitions={'MTTBL_success':'APPROACH_PERIMETER'},  #GRASP_TRASH_BIN
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
 			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
