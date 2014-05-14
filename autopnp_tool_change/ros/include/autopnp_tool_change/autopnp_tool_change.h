@@ -18,6 +18,7 @@
 #include <sensor_msgs/JointState.h>
 #include <cob_object_detection_msgs/DetectionArray.h>
 #include <cob_object_detection_msgs/Detection.h>
+#include <tf/tfMessage.h>
 
 #include <message_filters/subscriber.h>
 // boost
@@ -75,7 +76,8 @@ static const double MAX_TOLERANCE = 0.001;
 
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
-static const std::string EE_NAME = "arm_7_link";
+//static const std::string EE_NAME = "arm_7_link";
+static const std::string EE_NAME = "arm_toolchanger_link";
 
 static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, -0.07);
 static const tf::Vector3 FORWARD = tf::Vector3(-0.12, 0.0, 0.0);
@@ -125,6 +127,7 @@ protected:
 
 	/// SUBSCRIBERS
 	ros::Subscriber input_color_camera_info_sub_;
+	ros::Subscriber tf_sub;
 	message_filters::Subscriber<cob_object_detection_msgs::DetectionArray> input_marker_detection_sub_;
 	message_filters::Subscriber<sensor_msgs::JointState> joint_states_sub_;
 
@@ -146,14 +149,13 @@ protected:
 	///transformation data between the arm and the wagon slot
 	tf::Transform transform_CA_FA_;
 	tf::Transform transform_CA_FB_;
-	//tf::Transform transform_CA_BA_;
+	tf::Transform transform_BA_CA_;
 	geometry_msgs::PoseStamped current_ee_pose_;
 
 
 	///CALLBACKS
 	// Callback for the incoming point cloud data stream of fiducials.
 	void markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
-
 	///SERVER CALLBACK if goal received
 	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 	void moveToChosenTool(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);

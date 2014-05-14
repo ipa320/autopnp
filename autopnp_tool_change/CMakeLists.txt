@@ -31,12 +31,13 @@ list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
 		    ${PROJECT_SOURCE_DIR}/common/include)		    		    
-
+#rosbuild_add_boost_directories()
 rosbuild_add_executable(autopnp_tool_change ros/src/autopnp_tool_change.cpp)
 #rosbuild_add_executable(autopnp_tool_change_client ros/src/autopnp_tool_change_client.cpp)
 
 target_link_libraries(autopnp_tool_change moveit_move_group_interface)
 #rosbuild_link_boost(autopnp_tool_change signals)
+
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
