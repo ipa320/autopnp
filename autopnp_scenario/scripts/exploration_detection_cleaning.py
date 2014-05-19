@@ -468,7 +468,7 @@ class InspectRoomShowcase(smach.State):
 			sss.say(["I am searching through the room."], False)
 		
 		for pose in self.inspection_poses:
-			handle_move = sss.move("base", [pose[0]], mode=pose[1])
+			handle_move = sss.move("base", pose[0], mode=pose[1])
 			rospy.sleep(self.inspection_time)
 		
 		return 'finished'
@@ -1066,7 +1066,7 @@ class DirtDetectionOn(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# move torso and head to frontal inspection perspective
-		sss.say(["I am looking to the ground now to search for dirt spots with my cameras."], False)
+		sss.say(["I am looking at the ground now to search for dirt spots with my cameras."], False)
 		sss.move("torso","front_extreme", False)
 		sss.move("head","front")
 
@@ -1098,6 +1098,11 @@ class TrashBinDetectionOn(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
 		
+		# move torso and head to frontal inspection perspective
+		sss.say(["I am looking at the ground now to search for trash bins with my cameras."], False)
+		sss.move("torso","front_extreme", False)
+		sss.move("head","front", False)
+		
 		rospy.wait_for_service('activate_trash_bin_detection_service')
 		try:
 			req = rospy.ServiceProxy('activate_trash_bin_detection_service', ActivateTrashBinDetection)
@@ -1116,7 +1121,7 @@ class DirtDetectionOff(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# move torso back to normal position
-		sss.move("torso","home")
+		sss.move("torso","home", False)
 
 		rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
 		try:
@@ -1136,6 +1141,9 @@ class TrashBinDetectionOff(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
 
+		# move torso back to normal position
+		sss.move("torso","home", False)
+		
 		rospy.wait_for_service('deactivate_trash_bin_detection_service')
 		try:
 			req = rospy.ServiceProxy('deactivate_trash_bin_detection_service',DeactivateTrashBinDetection)
@@ -1340,8 +1348,8 @@ class GraspTrashBin(smach.State):
 		#lwa4d
 		handle_arm = sss.move("arm",[intrashbin_position_smaller])
 
-		#if JOURNALIST_MODE == True:
-		raw_input("in trash bin?")
+		if JOURNALIST_MODE == True:
+			raw_input("in trash bin?")
 		
 		#lwa
 		#handle_arm = sss.move("arm",[[0.5458570122718811, -1.0000877380371094, 2.07297420501709, 1.4942553043365479, 1.6078239679336548, 0.7354173064231873, -3.9213883876800537]]) # large trash bin
@@ -1351,7 +1359,7 @@ class GraspTrashBin(smach.State):
 		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
 		handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
 		#rospy.sleep(5)
-		raw_input("moved?")
+		#raw_input("moved?")
 
 		# 4. get deeper into trash bin
 		handle_arm = sss.move("arm",[deepintrashbin_position_smaller])
@@ -1699,9 +1707,9 @@ class ChangeToolManualPnP(smach.State):
 		#handle_arm = sss.move("arm",[arm_position])
 		
 		### move arm to release configuration on the backside
-		# wait for 5s to read out currently attached device
+		# wait for 10s to read out currently attached device
 		attempt = 0;
-		while attempt < 50 and self.received_attachment_status==False:
+		while attempt < 100 and self.received_attachment_status==False:
 			rospy.sleep(0.1)
 			attempt = attempt+1
 		

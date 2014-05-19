@@ -64,17 +64,18 @@ import sys, os
 
 from exploration_detection_cleaning import *
 
+# todo: turn180 -> geht nicht immer
 
 def main(confirm):
 	rospy.init_node('exploration_detection_cleaning')
 	
 	# todo: parameters
-	tool_wagon_map_pose = Pose2D(x=0.0, y=0.0, theta=0.0)  # the map coordinates of the tool wagon center
-	trash_bin_inspection_map_poses = [ [[1.0, 1.0, 0.0], "omni"],   # list of inspection positions (x,y,theta) of robot with movement mode
-									   [[1.0, 1.0, math.pi], "linear"] ]
-	dirt_inspection_map_poses = [ [[-1.0, -1.0, 0.0], "omni"],      # list of inspection positions (x,y,theta) of robot with movement mode
-								  [[-1.0, -1.0, -math.pi], "linear"] ]
-	valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, -2.2]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
+	tool_wagon_map_pose = Pose2D(x=1.5, y=0.0, theta=1.5*math.pi)  # the map coordinates of the tool wagon center
+	trash_bin_inspection_map_poses = [ [[2.0, -1.5, 0.0], "omni"],   # list of inspection positions (x,y,theta) of robot with movement mode
+									   [[2.0, -1.5, 1.5*math.pi], "linear"] ]
+	dirt_inspection_map_poses = [ [[1.0, -2.0, 0.0], "omni"],      # list of inspection positions (x,y,theta) of robot with movement mode
+								  [[1.0, -2.0, 1.5*math.pi], "linear"] ]
+	valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, 0.0]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
 	
 	# full Automatica scenario (i.e. let the operator attach/change the tool, do the job according to the attached tool)
 	sm_scenario = smach.StateMachine(outcomes=['finished', 'failed'])
@@ -83,7 +84,7 @@ def main(confirm):
 	with sm_scenario:
 
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm, tool_wagon_pose=tool_wagon_map_pose),
-							transitions={'initialized':'ANALYZE_MAP',
+							transitions={'initialized':'CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
 										'failed':'failed'})
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
