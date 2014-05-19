@@ -182,7 +182,7 @@ class NodeClass
 				b = std::min(b, (int)scan.ranges.size()-1);
 				
 				for(int j=a; j<=b; j++)
-					scan.ranges[j] = 10000;
+					scan.ranges[j] = 0.0;
 			}
 			
 			laser_pub_.publish(scan);
