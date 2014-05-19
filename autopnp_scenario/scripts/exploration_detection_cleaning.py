@@ -431,32 +431,45 @@ class InspectRoom(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
-# 		inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
-# 														userdata.inspect_room_room_number_,
-# 														userdata.analyze_map_data_room_center_x_,
-# 														userdata.analyze_map_data_room_center_y_,
-# 														userdata.analyze_map_data_room_min_x_,
-# 														userdata.analyze_map_data_room_max_x_,
-# 														userdata.analyze_map_data_room_min_y_,
-# 														userdata.analyze_map_data_room_max_y_,
-# 														userdata.analyze_map_data_map_resolution_,
-# 														userdata.analyze_map_data_map_origin_x_,
-# 														userdata.analyze_map_data_map_origin_y_)
+		inspect_room_action_server_result_= inspect_room( userdata.inspect_room_data_img_in_,
+														userdata.inspect_room_room_number_,
+														userdata.analyze_map_data_room_center_x_,
+														userdata.analyze_map_data_room_center_y_,
+														userdata.analyze_map_data_room_min_x_,
+														userdata.analyze_map_data_room_max_x_,
+														userdata.analyze_map_data_room_min_y_,
+														userdata.analyze_map_data_room_max_y_,
+														userdata.analyze_map_data_map_resolution_,
+														userdata.analyze_map_data_map_origin_x_,
+														userdata.analyze_map_data_map_origin_y_)
 		#rospy.sleep(10)
-#		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
+		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
 
-		#hack:
-		userdata.inspect_room_img_out_ = userdata.inspect_room_data_img_in_
-		handle_move = sss.move("base", [-0.58, 0.58, 0.0],mode='omni')
-		rospy.sleep(1.0)
-		handle_move = sss.move("base", [-0.58, 0.58, -0.79],mode='linear')
-		rospy.sleep(1.0)
-		handle_move = sss.move("base", [0.84, 0.0, 2.36],mode='omni')
-		rospy.sleep(3.0)
-		handle_move = sss.move("base", [0.84, 0.0, 3.14],mode='linear')
-		rospy.sleep(3.0)
+		return 'finished'
+
+
+# The InspectRoomShowcase class defines a simplified inspection behavior for showcase purposes    
+class InspectRoomShowcase(smach.State):
+	def __init__(self, inspection_poses=[], inspection_time=0, search_target=''):
+		smach.State.__init__(self, outcomes=['finished'])
+		self.inspection_poses = inspection_poses
+		if inspection_time<=0:
+			self.inspection_time = 2.0
+		else:
+			self.inspection_time = inspection_time
+		self.search_target = search_target
 		
-		#raw_input("finished inspection?")
+	def execute(self, userdata):
+		sf = ScreenFormat(self.__class__.__name__)
+		
+		if self.search_target != '':
+			sss.say(["I am looking for ", self.search_target], False)
+		else:
+			sss.say(["I am searching through the room."], False)
+		
+		for pose in self.inspection_poses:
+			handle_move = sss.move("base", [pose[0]], mode=pose[1])
+			rospy.sleep(self.inspection_time)
 		
 		return 'finished'
 
@@ -1053,10 +1066,11 @@ class DirtDetectionOn(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# move torso and head to frontal inspection perspective
+		sss.say(["I am looking to the ground now to search for dirt spots with my cameras."], False)
 		sss.move("torso","front_extreme", False)
 		sss.move("head","front")
 
-		# hack:
+		# hack: reset dirt map from previous runs 
 		rospy.wait_for_service('/dirt_detection/reset_dirt_maps') 
 		try:
 			req = rospy.ServiceProxy('/dirt_detection/reset_dirt_maps',Empty)
@@ -1159,6 +1173,7 @@ class GoToNextUnprocessedWasteBin(smach.State):
 		if (len(userdata.go_to_next_unprocessed_waste_bin_in_)==0 or
 			userdata.number_of_unprocessed_trash_bin_in_ == len(userdata.go_to_next_unprocessed_waste_bin_in_)):
 			rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
+			sss.say(["All found trash bins have been cleared."], False)
 			return 'all_trash_bins_cleared'
 		else:
 			rospy.loginfo('Total Number of Trash Bin: %d',len(userdata.go_to_next_unprocessed_waste_bin_in_))
@@ -1166,6 +1181,7 @@ class GoToNextUnprocessedWasteBin(smach.State):
 			userdata.go_to_next_unprocessed_waste_bin_out_ = userdata.go_to_next_unprocessed_waste_bin_in_[userdata.number_of_unprocessed_trash_bin_in_]
 			print "Pose of next trash bin to clear: ", userdata.go_to_next_unprocessed_waste_bin_in_[userdata.number_of_unprocessed_trash_bin_in_]
 			userdata.number_of_unprocessed_trash_bin_out_ = userdata.number_of_unprocessed_trash_bin_in_+1
+			sss.say(["I am going to clear the next trash bin."], False)
 			return 'go_to_trash_location'
 
 
@@ -1984,9 +2000,10 @@ class MoveArmToStandardLocation(smach.State):
 
 
 class ReceiveDirtMap(smach.State):
-	def __init__(self):
+	def __init__(self, valid_rectangle_for_dirt_detections=0):
 		smach.State.__init__(self, outcomes=['list_of_dirt_location'],
 							output_keys=['list_of_dirt_locations', 'last_visited_dirt_location'])
+		self.valid_rectangle_for_dirt_detections = valid_rectangle_for_dirt_detections
 
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
@@ -2009,15 +2026,12 @@ class ReceiveDirtMap(smach.State):
 					y = v*map_resolution+map_offset.position.y
 					# hack: limit valid space for cleaning
 					print "(", x, ", ", y, ")?"
-					if x>-1.0 and y>-4.8 and x<3.0 and y<-2.2:
+					if (self.valid_rectangle_for_dirt_detections==0 or
+					   (x>valid_rectangle_for_dirt_detections[0] and y>valid_rectangle_for_dirt_detections[1] and
+					    x<valid_rectangle_for_dirt_detections[2] and y<valid_rectangle_for_dirt_detections[3]) ):
 						list_of_dirt_locations.append([x,y])
 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
-		# hack:
-		if len(list_of_dirt_locations)==0:
-			list_of_dirt_locations.append([14.5, -9.1])
-			list_of_dirt_locations.append([14.5, -9.1])
-			
 		userdata.list_of_dirt_locations = list_of_dirt_locations
 		userdata.last_visited_dirt_location = -1
 		
@@ -2039,6 +2053,8 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 	
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
+
+		# todo: check whether the next spot is always selected correctly
 
 		print "last_visited_dirt_location =", userdata.last_visited_dirt_location_in
 		print "list_of_dirt_locations =", userdata.list_of_dirt_locations
@@ -2079,6 +2095,8 @@ class MoveLocationPerimeterCleaning(smach.State):
 		userdata.new_computation_flag = True
 		userdata.invalidate_other_poses_radius = 1.0 #in meters, radius the current goal covers
 		userdata.goal_pose_selection_strategy = 'closest_to_robot'  #'closest_to_target_gaze_direction', 'closest_to_robot'
+		
+		sss.say(["I am now moving to the next dirty spot."], False)
 		
 		return 'movement_prepared'
 
@@ -2139,7 +2157,7 @@ class Clean(smach.State):
 							#[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
 
 
-		raw_input("cleaning position ok?")
+		#raw_input("cleaning position ok?")
 
 		# move arm from storage position to cleaning position
 		if JOURNALIST_MODE == False:
@@ -2166,13 +2184,13 @@ class Clean(smach.State):
 		except rospy.ServiceException, e:
 			print "Service call to vacuum recover failed: %s"%e
 		
-		# recover vacuum cleaner (turning on is more reliably thereafter)
-		rospy.wait_for_service(vacuum_recover_service_name) 
-		try:
-			req = rospy.ServiceProxy(vacuum_recover_service_name, Trigger)
-			resp = req()
-		except rospy.ServiceException, e:
-			print "Service call to vacuum recover failed: %s"%e
+# 		# recover vacuum cleaner (turning on is more reliably thereafter)
+# 		rospy.wait_for_service(vacuum_recover_service_name) 
+# 		try:
+# 			req = rospy.ServiceProxy(vacuum_recover_service_name, Trigger)
+# 			resp = req()
+# 		except rospy.ServiceException, e:
+# 			print "Service call to vacuum recover failed: %s"%e
 
 		# turn vacuum cleaner on
 		rospy.wait_for_service(vacuum_on_service_name) 
@@ -2195,7 +2213,7 @@ class Clean(smach.State):
 			
 		
 		#if (CONFIRM_MODE==True):
-		raw_input("cleaning finished?")
+		#raw_input("cleaning finished?")
 		
 		# turn vacuum cleaner off
 		rospy.wait_for_service(vacuum_off_service_name) 
@@ -2273,14 +2291,15 @@ class VerifyCleaningProcess(smach.State):
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
 		
+		sss.say(["I am now checking whether my cleaning was successful. If not, I will inform somebody about the persitent stain."], False)
+		
 		sss.move("head", "front", False)
 		sss.move("torso", "front_extreme")
 		
-		point = Point(x=userdata.next_dirt_location[0], y=userdata.next_dirt_location[1], z=0.0)
-		
 		rospy.sleep(4.0)
-		
+
 		# hack:
+	#	point = Point(x=userdata.next_dirt_location[0], y=userdata.next_dirt_location[1], z=0.0)
 	#	rospy.loginfo('Executing state verify_Cleaning_Process')
 	#	rospy.wait_for_service('/dirt_detection/validate_cleaning_result')
 	#	try:
