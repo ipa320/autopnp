@@ -80,6 +80,7 @@ from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 from std_msgs.msg import Bool, String
 from std_srvs.srv import Empty
+from sensor_msgs.msg import Joy
 
 from ApproachPerimeter import *
 
@@ -1642,20 +1643,28 @@ class ChangeToolManual(smach.State):
 
 
 class ChangeToolManualPnP(smach.State):
-	def __init__(self, current_tool='sdh'):
-		smach.State.__init__(self, outcomes=['CTM_done'])
+	def __init__(self, current_tool='sdh', release_confirmation_device='keyboard'):
+		smach.State.__init__(self, outcomes=['CTM_done_sdh', 'CTM_done_vacuum'])
 		# command line usage:
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin2", state: 0}'
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
 		
 		#self.diagnostics_sub = rospy.Subscriber("/diagnostics_vacuum_cleaner", DiagnosticArray, self.diagnosticCallback)
 
-#		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", String, self.attachmentStatusCallback)
-		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
+		if release_confirmation_device=='joystick':
+			self.joystick_sub = rospy.Subscriber("/joy", Joy, self.releaseConfirmationCallback)
+		self.releaseConfirmation = False
 
-		self.attachment = False #""
+		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", String, self.attachmentStatusCallback)
+#		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
+
+		self.attachment = ""
 		self.current_tool = current_tool
 
+	def releaseConfirmationCallback(self, msg):
+		if msg.buttons[0]==0 and msg.buttons[1]==1 and msg.buttons[2]==0 and msg.buttons[3]==0 and msg.buttons[4]==1 and msg.buttons[5]==1 and msg.buttons[6]==0 and msg.buttons[7]==0 and msg.buttons[8]==0 and msg.buttons[9]==0 and msg.buttons[10]==0 and msg.buttons[11]==0:
+			self.releaseConfirmation = True
+	
 	def attachmentStatusCallback(self, msg):
 		self.attachment = msg.data
 		
@@ -1680,7 +1689,17 @@ class ChangeToolManualPnP(smach.State):
 		tool_change_successful = ''
 		while tool_change_successful!='yes':
 			# wait for confirmation to release tool
-			raw_input("Please hold the tool tightly with your hands and then press <Enter> and remove the tool quickly.")
+			sss.say("Waiting for confirmation to release tool.", False)
+			if release_confirmation_device=='joystick':
+				# wait for joystick [0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0] --> buttons 5+6+2 (= both upper triggers + lower of the four buttons)
+				self.releaseConfirmation = False
+				while self.releaseConfirmation == False:
+					rospy.sleep(0.05);
+				self.releaseConfirmation = False
+			else:
+				raw_input("Please hold the tool tightly with your hands and then press <Enter> and remove the tool quickly.")
+			sss.say("Releasing tool", False)
+			
 			rospy.wait_for_service(service_name) 
 			try:
 				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
@@ -1707,7 +1726,7 @@ class ChangeToolManualPnP(smach.State):
 			except rospy.ServiceException, e:
 				print "Service call failed: %s"%e
 			
-			while self.attachment != False: #"":
+			while self.attachment != "":
 				rospy.sleep(0.1)
 			#self.attachment = ""
 			#rospy.sleep(3.0)
@@ -1722,8 +1741,8 @@ class ChangeToolManualPnP(smach.State):
 		while tool_change_successful!='yes':
 			# wait for confirmation to attach tool
 			#raw_input("Please attach the tool manually and then press <Enter>.")
-			while (self.attachment==False): #""):
-				rospy.sleep(0.2)
+			while (self.attachment==""):
+				rospy.sleep(0.1)
 			
 			rospy.wait_for_service(service_name) 
 			try:
@@ -1745,12 +1764,27 @@ class ChangeToolManualPnP(smach.State):
 			
 			tool_change_successful = 'yes' # raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
+		
+		if self.attachment=="sdh":
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], 'folded'])
+			print 'Manual tool change successfully completed with sdh attached.'
+			sss.say()
+			return 'CTM_done_sdh'
+		elif self.attachment=="vacuum":
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+			print 'Manual tool change successfully completed with vacuum cleaner attached.'
+			sss.say()
+			return 'CTM_done_vacuum'
+		
+		print 'Manual tool change failed.'
+		return 'failed'
+			
 		#carrying_position = [1.978714679571011, -0.9163502171745829, 0.08915141819187035, -1.796921184683282, 2.4326209849093216, -1.2165643018101275, 1.2519770323330925] # carrying position
-		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+#		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
-		print 'Manual tool change successfully completed.'
+#		print 'Manual tool change successfully completed.'
 		
-		return 'CTM_done'
+#		return 'CTM_done'
 
 
 class ChangeToolManualPnPAttachOnly(smach.State):
