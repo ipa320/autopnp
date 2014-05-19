@@ -8,8 +8,12 @@ tmux new-window -t $SESSION:1 -n 'ROS'
 tmux split-window -h
 tmux select-pane -t 0
 tmux send-keys "sleep 15;bringup" C-m
-tmux select-pane -t 1
-tmux send-keys "sleep 50;ssh cob3-2-pc3 navi" C-m
+tmux split-window -v
+tmux resize-pane -D 10
+tmux send-keys "sleep 60;autopnp" C-m
+
+tmux select-pane -t 2
+tmux send-keys "sleep 40;navi" C-m
 tmux split-window -v
 tmux resize-pane -D 20
 tmux send-keys "roscore" C-m
