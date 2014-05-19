@@ -223,7 +223,7 @@ int main(int argc, char** argv)
 		else if (tPnP.getVacuumStatus()==0)
 		  tPnP.publishAttachmentStatus("vacuum");
 		else
-		  tPnP.publishAttachmentStatus("");
+		  tPnP.publishAttachmentStatus("none");
 
 		rate.sleep();
 		ros::spinOnce();

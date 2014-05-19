@@ -1643,8 +1643,8 @@ class ChangeToolManual(smach.State):
 
 
 class ChangeToolManualPnP(smach.State):
-	def __init__(self, current_tool='sdh', release_confirmation_device='keyboard'):
-		smach.State.__init__(self, outcomes=['CTM_done_sdh', 'CTM_done_vacuum'])
+	def __init__(self, release_confirmation_device='keyboard'):  #current_tool='sdh', 
+		smach.State.__init__(self, outcomes=['CTM_done_sdh', 'CTM_done_vacuum', 'failed'])
 		# command line usage:
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin2", state: 0}'
 		# rosservice call /cob_phidgets_toolchanger/ifk_toolchanger/set_digital '{uri: "tool_changer_pin4", state: 0}'
@@ -1653,20 +1653,24 @@ class ChangeToolManualPnP(smach.State):
 
 		if release_confirmation_device=='joystick':
 			self.joystick_sub = rospy.Subscriber("/joy", Joy, self.releaseConfirmationCallback)
-		self.releaseConfirmation = False
+		self.release_confirmation = False
+		self.release_confirmation_device = release_confirmation_device
 
 		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", String, self.attachmentStatusCallback)
 #		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", Bool, self.attachmentStatusCallback)
 
 		self.attachment = ""
-		self.current_tool = current_tool
+		self.received_attachment_status = False
+		#self.current_tool = current_tool
 
 	def releaseConfirmationCallback(self, msg):
-		if msg.buttons[0]==0 and msg.buttons[1]==1 and msg.buttons[2]==0 and msg.buttons[3]==0 and msg.buttons[4]==1 and msg.buttons[5]==1 and msg.buttons[6]==0 and msg.buttons[7]==0 and msg.buttons[8]==0 and msg.buttons[9]==0 and msg.buttons[10]==0 and msg.buttons[11]==0:
-			self.releaseConfirmation = True
+		# check for joystick [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0] --> buttons 6+8+2 (= both right triggers + lower of the four buttons)
+		if msg.buttons[0]==0 and msg.buttons[1]==1 and msg.buttons[2]==0 and msg.buttons[3]==0 and msg.buttons[4]==0 and msg.buttons[5]==1 and msg.buttons[6]==0 and msg.buttons[7]==1 and msg.buttons[8]==0 and msg.buttons[9]==0 and msg.buttons[10]==0 and msg.buttons[11]==0:
+			self.release_confirmation = True
 	
 	def attachmentStatusCallback(self, msg):
 		self.attachment = msg.data
+		self.received_attachment_status = True
 		
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
@@ -1678,28 +1682,45 @@ class ChangeToolManualPnP(smach.State):
 		#arm_position[0] = -0.8
 		#handle_arm = sss.move("arm",[arm_position])
 		
-		if self.current_tool=='sdh':
-			handle_arm = sss.move("arm",[[1.404728248467636, -1.4622368473208494, 0.21975440611860603, -1.7372832841426358, 1.8869103609161093, -1.79756695650652, -0.00013962634015954637],
-									[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
-		elif self.current_tool=='vacuum':
-			handle_arm = sss.move("arm",[[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
-
+		### move arm to release configuration on the backside
+		# wait for 5s to read out currently attached device
+		attempt = 0;
+		while attempt < 50 and self.received_attachment_status==False:
+			rospy.sleep(0.1)
+			attempt = attempt+1
 		
+		TOOLCHANGE_POSITION = [1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]
+		if self.attachment=='sdh' or self.attachment=='none':	# self.current_tool
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], #[1.404728248467636, -1.4622368473208494, 0.21975440611860603, -1.7372832841426358, 1.8869103609161093, -1.79756695650652, -0.00013962634015954637],
+									TOOLCHANGE_POSITION])
+		elif self.attachment=='vacuum':  # self.current_tool
+			handle_arm = sss.move("arm",[TOOLCHANGE_POSITION])
+		else:
+			sss.say(["I cannot determine the attached device. I will abort."])
+			return 'failed'
+		if handle_arm.get_error_code() != 0:
+			sss.say(["Could not move the arm. I will abort."])
+			rospy.logerr("Could not move the arm. I will abort.")
+			return 'failed'
+			
+		
+		### detach tool
 		service_name = '/cob_phidgets_toolchanger/ifk_toolchanger/set_digital'
 		tool_change_successful = ''
 		while tool_change_successful!='yes':
 			# wait for confirmation to release tool
-			sss.say("Waiting for confirmation to release tool.", False)
-			if release_confirmation_device=='joystick':
-				# wait for joystick [0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0] --> buttons 5+6+2 (= both upper triggers + lower of the four buttons)
-				self.releaseConfirmation = False
-				while self.releaseConfirmation == False:
+			sss.say(["Waiting for confirmation to open the tool changer."], False)
+			if self.release_confirmation_device=='joystick':
+				# wait for joystick [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0] --> buttons 6+8+2 (= both right triggers + lower of the four buttons)
+				self.release_confirmation = False
+				while self.release_confirmation == False:
 					rospy.sleep(0.05);
-				self.releaseConfirmation = False
+				self.release_confirmation = False
 			else:
 				raw_input("Please hold the tool tightly with your hands and then press <Enter> and remove the tool quickly.")
-			sss.say("Releasing tool", False)
+			sss.say(["Releasing tool"], False)
 			
+			# open tool changer
 			rospy.wait_for_service(service_name) 
 			try:
 				req = rospy.ServiceProxy(service_name, SetDigitalSensor)
@@ -1726,22 +1747,22 @@ class ChangeToolManualPnP(smach.State):
 			except rospy.ServiceException, e:
 				print "Service call failed: %s"%e
 			
-			while self.attachment != "":
+			while self.attachment != "none":
 				rospy.sleep(0.1)
-			#self.attachment = ""
-			#rospy.sleep(3.0)
 			tool_change_successful = 'yes' #raw_input("If the tool was successfully removed type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
 		# move arm with end facing down
 		#handle_arm = sss.move("arm",[[1.3676400018627566, -0.882106857250454, 0.8536754437354664, -1.6116893911691237, 2.041947958370766, -1.7976018630915598, -0.00010471975511965978]])
 
 		print "Device successfully detached."
+		sss.say(["Device successfully detached."], False)
 
+		### attach new tool
 		tool_change_successful = ''
 		while tool_change_successful!='yes':
 			# wait for confirmation to attach tool
 			#raw_input("Please attach the tool manually and then press <Enter>.")
-			while (self.attachment==""):
+			while (self.attachment=="none"):
 				rospy.sleep(0.1)
 			
 			rospy.wait_for_service(service_name) 
@@ -1764,16 +1785,24 @@ class ChangeToolManualPnP(smach.State):
 			
 			tool_change_successful = 'yes' # raw_input("If the tool was successfully attached type 'yes' and press <Enter>, otherwise just press enter to repeat. >>")
 		
-		
+		### move arm into respective carrying position for the new tool
 		if self.attachment=="sdh":
-			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], 'folded'])
 			print 'Manual tool change successfully completed with sdh attached.'
-			sss.say()
+			sss.say(["The hand was attached successfully."], False)
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], 'folded'])
+			if handle_arm.get_error_code() != 0:
+				sss.say(["Could not move the arm. I will abort."])
+				rospy.logerr("Could not move the arm. I will abort.")
+				return 'failed'
 			return 'CTM_done_sdh'
 		elif self.attachment=="vacuum":
-			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 			print 'Manual tool change successfully completed with vacuum cleaner attached.'
-			sss.say()
+			sss.say(["The vacuum cleaner was attached successfully."], False)
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+			if handle_arm.get_error_code() != 0:
+				sss.say(["Could not move the arm. I will abort."])
+				rospy.logerr("Could not move the arm. I will abort.")
+				return 'failed'
 			return 'CTM_done_vacuum'
 		
 		print 'Manual tool change failed.'

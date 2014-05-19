@@ -74,8 +74,8 @@ def main(confirm):
 
 	with sm_scenario:
 
-		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManualPnP(current_tool='vacuum', release_confirmation_device='joystick'),
-								transitions={'CTM_done_sdh':'finished', 'CTM_done_vacuum':'finished'})
+		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManualPnP(release_confirmation_device='joystick'),
+								transitions={'CTM_done_sdh':'finished', 'CTM_done_vacuum':'finished', 'failed':'failed'})
 		
 	# Create and start the introspection server
 	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')
