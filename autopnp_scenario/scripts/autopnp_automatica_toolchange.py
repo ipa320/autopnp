@@ -15,15 +15,15 @@
 # \note
 #   ROS package name: autopnp_scenario
 #
-# \author: Mohammad Muinul Islam(email-> mohammad.islam@ipa.fraunhofer.de)
+# \author: Richard Bormann(email:richard.bormann@ipa.fraunhofer.de)
 #
 # \author
-# Supervised by: Richard Bormann(email:richard.bormann@ipa.fraunhofer.de) 
+# Supervised by:  
 # 
-# \date Date of creation: August 2013
+# \date Date of creation: May 2014
 #
 # \brief
-# smach representation of Autopnp project
+# SMACH representation of AutoPnP Automatica demo for toolchange PnP
 #
 #################################################################
 #
@@ -91,20 +91,21 @@ def main(confirm):
 
 if __name__ == '__main__':
 	try:
-		flag = ""
-		if len(sys.argv)<2:
-			CONFIRM_MODE = True
-		else:
-			flag=sys.argv[1]
-		if len(flag)==0:
-			CONFIRM_MODE = True
+#		flag = ""
+#		if len(sys.argv)<2:
+#			CONFIRM_MODE = True
+#		else:
+#			flag=sys.argv[1]
+#		if len(flag)==0:
+#			CONFIRM_MODE = True
+#
+#		if flag=="auto":
+#			CONFIRM_MODE = False  # in auto mode the connection to the control pc may interrupted, the scenario will still work
+#			# necessitates that all nodes are started with & and the end, e.g. bringup &
+#		else:
+#			CONFIRM_MODE = True
 
-		if flag=="auto":
-			CONFIRM_MODE = False  # in auto mode the connection to the control pc may interrupted, the scenario will stil work
-			# necessitates that all nodes are started with & and the end, e.g. bringup &
-		else:
-			CONFIRM_MODE = True
-
+		CONFIRM_MODE = False		
 		print "CONFIRM_MODE ", CONFIRM_MODE
 		main(CONFIRM_MODE)
 	except:

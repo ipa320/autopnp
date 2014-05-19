@@ -179,7 +179,7 @@ ARM_JOINT_CONFIGURATIONS_VACUUM={
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
 class InitAutoPnPScenario(smach.State):
-	def __init__(self, confirm_mode):
+	def __init__(self, confirm_mode, tool_wagon_pose=0):
 		smach.State.__init__(self,
 			outcomes=['initialized', 'failed'],
 			input_keys=[],
@@ -188,11 +188,12 @@ class InitAutoPnPScenario(smach.State):
 		self.dwa_planner_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
 		print "confirm_mode", confirm_mode
 		self.CONFIRM_MODE = confirm_mode
+		self.tool_wagon_pose = tool_wagon_pose
 		
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
-		CONFIRM_MODE= self.CONFIRM_MODE
+		CONFIRM_MODE = self.CONFIRM_MODE
 		print "CONFIRM_MODE =", CONFIRM_MODE
 
 		# clear dirt map
@@ -232,10 +233,9 @@ class InitAutoPnPScenario(smach.State):
 		print 'robot_pose: ', (robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0])
 		print 'tool_wagon_pose ', tool_wagon_pose
 		
-		# hack hmi
-#		tool_wagon_pose.x = 15.0
-#		tool_wagon_pose.y = -1.1
-#		tool_wagon_pose.theta = 0.79
+		# hack: fixed position if provided by caller
+		if self.tool_wagon_pose != 0:
+			tool_wagon_pose = self.tool_wagon_pose
 		
 		userdata.tool_wagon_pose = tool_wagon_pose
 				
