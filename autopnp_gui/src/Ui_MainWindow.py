@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Tue May 20 10:21:34 2014
+# Created: Tue May 20 11:04:19 2014
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(581, 196)
+        MainWindow.resize(581, 195)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
@@ -34,7 +34,24 @@ class Ui_MainWindow(object):
         self.rLin = QtGui.QRadioButton(self.groupBox)
         self.rLin.setObjectName(_fromUtf8("rLin"))
         self.verticalLayout_2.addWidget(self.rLin)
+        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.btnB = QtGui.QPushButton(self.groupBox)
+        self.btnB.setObjectName(_fromUtf8("btnB"))
+        self.horizontalLayout_2.addWidget(self.btnB)
+        self.btnA = QtGui.QPushButton(self.groupBox)
+        self.btnA.setObjectName(_fromUtf8("btnA"))
+        self.horizontalLayout_2.addWidget(self.btnA)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.verticalLayout.addWidget(self.groupBox)
+        self.groupBox_2 = QtGui.QGroupBox(self.centralwidget)
+        self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
+        self.horizontalLayout_3 = QtGui.QHBoxLayout(self.groupBox_2)
+        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
+        self.btnToolChange = QtGui.QPushButton(self.groupBox_2)
+        self.btnToolChange.setObjectName(_fromUtf8("btnToolChange"))
+        self.horizontalLayout_3.addWidget(self.btnToolChange)
+        self.verticalLayout.addWidget(self.groupBox_2)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.horizontalLayout.addLayout(self.verticalLayout)
@@ -80,6 +97,10 @@ class Ui_MainWindow(object):
         self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Navigation", None, QtGui.QApplication.UnicodeUTF8))
         self.rDWA.setText(QtGui.QApplication.translate("MainWindow", "Dynamic Window Apporach", None, QtGui.QApplication.UnicodeUTF8))
         self.rLin.setText(QtGui.QApplication.translate("MainWindow", "Linear Navigation", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnB.setText(QtGui.QApplication.translate("MainWindow", "A", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnA.setText(QtGui.QApplication.translate("MainWindow", "B", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox_2.setTitle(QtGui.QApplication.translate("MainWindow", "Actions", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnToolChange.setText(QtGui.QApplication.translate("MainWindow", "Tool Change", None, QtGui.QApplication.UnicodeUTF8))
         self.gripper.setTitle(QtGui.QApplication.translate("MainWindow", "Gripper", None, QtGui.QApplication.UnicodeUTF8))
         self.btnOpen.setText(QtGui.QApplication.translate("MainWindow", "Open Gripper", None, QtGui.QApplication.UnicodeUTF8))
         self.btnClose.setText(QtGui.QApplication.translate("MainWindow", "Close Gripper", None, QtGui.QApplication.UnicodeUTF8))
