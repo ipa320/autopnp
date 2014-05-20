@@ -861,6 +861,8 @@ xmeInit
     XME_CHECK(XME_STATUS_SUCCESS == xme_core_log_logUtils_init(), XME_STATUS_OUT_OF_RESOURCES);
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_cmdLine_init(argc, argv, "v::", 1), XME_STATUS_OUT_OF_RESOURCES);
 
+        char addressBuffer[128] = "127.0.0.1:65000";
+
     // Parse command line options. Do this right here to ensure that
     // the settings are applied before further processing is started.
     {
@@ -906,6 +908,12 @@ xmeInit
         }
     }
 
+	for(int i=0; i<argc-1; i++) {
+		if(strcmp(argv[i], "master")==0)
+			strcpy(addressBuffer, argv[i+1]);
+	}
+
+
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_env_init(), XME_STATUS_OUT_OF_RESOURCES);
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_sync_init(), XME_STATUS_OUT_OF_RESOURCES);
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_sched_init(), XME_STATUS_OUT_OF_RESOURCES);
@@ -940,10 +948,9 @@ xmeInit
 
     // Add interface to node registry
     {
-        char addressBuffer[22];
         xme_com_interface_address_t interfaceAddress;
 
-        XME_CHECK_MSG
+        /*XME_CHECK_MSG
         (
             XME_STATUS_SUCCESS == xme_hal_net_getInterfaceAddr(NULL, XME_COM_INTERFACE_ADDRESS_TYPE_IPV4, addressBuffer),
             XME_STATUS_INTERNAL_ERROR,
@@ -951,7 +958,7 @@ xmeInit
             "Unable to get the interface address of the local node.\n"
         );
 
-        (void)xme_hal_safeString_strncat(addressBuffer, ":65000", sizeof(addressBuffer));
+        (void)xme_hal_safeString_strncat(addressBuffer, ":65000", sizeof(addressBuffer));*/
 
         XME_LOG
         (
