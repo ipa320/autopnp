@@ -4,14 +4,14 @@
 
 
 # Configuration directories and files
-SourceDirectory: /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator
-BuildDirectory: /home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator
+SourceDirectory: /u/rmb/git/autopnp/xme/examples/AutoPnP/src/application/demonstrator
+BuildDirectory: /u/rmb/git/autopnp/xme/examples/AutoPnP/src/application/demonstrator
 
 # Where to place the cost data store
 CostDataFile: 
 
 # Site is something like machine.domain, i.e. pragmatic.crd
-Site: rbormann-WS558-Ubuntu
+Site: cob3-2-pc1
 
 # Build name is osname-revision-compiler, i.e. Linux-2.4.2-2smp-c++
 BuildName: Linux-c++
@@ -33,7 +33,7 @@ ScpCommand: /usr/bin/scp
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/usr/bin/cmake" "/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator"
+ConfigureCommand: "/usr/bin/cmake" "/u/rmb/git/autopnp/xme/examples/AutoPnP/src/application/demonstrator"
 MakeCommand: /usr/bin/make -i
 DefaultCTestConfigurationType: Release
 

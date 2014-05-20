@@ -1,6 +1,9 @@
+import roslib
+roslib.load_manifest('cob_script_server')
 import rospy
 from std_msgs.msg import String
 import threading 
+from simple_script_server import simple_script_server
 
 import sys
 from PyQt4.QtCore import QThread
@@ -28,6 +31,8 @@ class RosThread(QThread):
 
         ui.rLin.clicked.connect(self.lin)
         ui.rDWA.clicked.connect(self.DWA)
+
+        self.sss = simple_script_server()
  
     def run(self):        
         rospy.spin()
@@ -41,17 +46,17 @@ class RosThread(QThread):
            self.ui.gripper.hide()
 
     def open_gripper(self):
-        self.gripper.publish(String("hello"))
+        self.sss.move("sdh", "cylopen")
     def close_gripper(self):
-        self.gripper.publish(String("hello"))
+	self.sss.move("sdh", "home")
 
     def lin(self):
-        #todo: move to...
+        self.sss.move("base", [0,0,0], mode='linear')
         self.pub_add.publish(String("Linear Navigation"))
         self.pub_rem.publish(String("Dynamic Window Approach"))
 
     def DWA(self):
-        #todo: move to...
+        self.sss.move("base", [0,0,0], mode='omni')
         self.pub_rem.publish(String("Linear Navigation"))
         self.pub_add.publish(String("Dynamic Window Approach"))
 

@@ -55,16 +55,16 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 #################################################################
+import sys, os
+os.system("rosservice call /say 'I am going to clean this room.' &")
 
 import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
 import smach
 import smach_ros
-import sys, os
+
 
 from exploration_detection_cleaning import *
-
-# todo: turn180 -> geht nicht immer
 
 def main(confirm):
 	rospy.init_node('exploration_detection_cleaning')
@@ -78,18 +78,22 @@ def main(confirm):
 	valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, 0.0]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
 	
 	# full Automatica scenario (i.e. let the operator attach/change the tool, do the job according to the attached tool)
+	# just fill history of global transform listener
+	listener = get_transform_listener()
+	rospy.sleep(5.0)
+	
 	sm_scenario = smach.StateMachine(outcomes=['finished', 'failed'])
 	sm_scenario.userdata.sm_trash_bin_counter = 0
 
 	with sm_scenario:
 
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm, tool_wagon_pose=tool_wagon_map_pose),
-							transitions={'initialized':'CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
+							transitions={'initialized':'finished',#CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
 										'failed':'failed'})
 		
-		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
-							transitions={'list_of_rooms': 'CHANGE_TOOL_MANUAL'},   #'GO_TO_NEXT_UNPROCESSED_ROOM'},
-							remapping={'analyze_map_data_img_':'sm_img'})
+		#smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
+		#					transitions={'list_of_rooms': 'CHANGE_TOOL_MANUAL'},   #'GO_TO_NEXT_UNPROCESSED_ROOM'},
+		#					remapping={'analyze_map_data_img_':'sm_img'})
 		
 		
 		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['sdh_attached', 'vacuum_attached', 'failed'],
@@ -140,7 +144,7 @@ def main(confirm):
 								transitions={'MTTBL_success':'APPROACH_PERIMETER'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
-			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
+			smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(tf_listener=get_transform_listener()),
 								transitions={'reached':'MOVE_TO_TRASH_BIN_LOCATION_LINEAR', 
 											 'not_reached':'MOVE_TO_TRASH_BIN_LOCATION_LINEAR',
 											 'failed':'failed'},
@@ -150,7 +154,7 @@ def main(confirm):
 								transitions={'MTTBL_success':'APPROACH_PERIMETER_LINEAR'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
-			smach.StateMachine.add('APPROACH_PERIMETER_LINEAR', ApproachPerimeter(mode='linear'),
+			smach.StateMachine.add('APPROACH_PERIMETER_LINEAR', ApproachPerimeter(mode='linear', tf_listener=get_transform_listener()),
 								transitions={'reached':'CHECK_POSITION_TO_TRASH_BIN', 
 											 'not_reached':'CHECK_POSITION_TO_TRASH_BIN',
 											 'failed':'failed'},
@@ -184,7 +188,7 @@ def main(confirm):
 								transitions={'MTTBPL_done':'APPROACH_PERIMETER_2'},
 								remapping = {'trash_bin_pose_':'detection_pose'})
 			
-			smach.StateMachine.add('APPROACH_PERIMETER_2', ApproachPerimeter(),
+			smach.StateMachine.add('APPROACH_PERIMETER_2', ApproachPerimeter(tf_listener=get_transform_listener()),
 								transitions={'reached':'RELEASE_TRASH_BIN', 
 											'not_reached':'RELEASE_TRASH_BIN',
 											'failed':'failed'},
@@ -230,7 +234,7 @@ def main(confirm):
 			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING', MoveLocationPerimeterCleaning(),
 								transitions={'movement_prepared':'APPROACH_PERIMETER_CLEANING'})
 			
-			smach.StateMachine.add('APPROACH_PERIMETER_CLEANING', ApproachPerimeter(),
+			smach.StateMachine.add('APPROACH_PERIMETER_CLEANING', ApproachPerimeter(tf_listener=get_transform_listener()),
 								transitions={'reached':'arrived_dirt_location', 
 											 'not_reached':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT',
 											 'failed':'failed'})
@@ -252,7 +256,7 @@ def main(confirm):
 			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_VALIDATION', MoveLocationPerimeterValidation(),
 								transitions={'movement_prepared':'APPROACH_PERIMETER_VALIDATION'})
 			
-			smach.StateMachine.add('APPROACH_PERIMETER_VALIDATION', ApproachPerimeter(),
+			smach.StateMachine.add('APPROACH_PERIMETER_VALIDATION', ApproachPerimeter(tf_listener=get_transform_listener()),
 								transitions={'reached':'arrived_cleaning_inspection_location', 
 											 'not_reached':'not_reached',
 											 'failed':'failed'})

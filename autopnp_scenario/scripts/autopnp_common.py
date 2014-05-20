@@ -3,6 +3,7 @@ import roslib
 roslib.load_manifest('autopnp_scenario')
 import rospy
 import os
+import threading
 
 import tf
 
@@ -45,3 +46,22 @@ class ScreenFormat:
         rospy.loginfo("%s----------------------------------------------\n\033[0m", out_str)
 
 
+###############''WORKAROUND FOR TRANSFORMLISTENER ISSUE####################
+_tl=None
+_tl_creation_lock=threading.Lock()
+
+def get_transform_listener():
+	global _tl
+	with _tl_creation_lock:
+		if _tl==None:
+			_tl=tf.TransformListener(True, rospy.Duration(40.0))
+		return _tl
+#################################################################################
+
+
+def sign(val):
+	if val<0:
+		return -1.0
+	elif val>0:
+		return 1.0
+	return 0

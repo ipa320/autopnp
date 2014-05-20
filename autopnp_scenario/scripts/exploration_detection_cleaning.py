@@ -60,10 +60,11 @@ import roslib; roslib.load_manifest('autopnp_scenario') #; roslib.load_manifest(
 import rospy
 import smach
 import smach_ros
-import threading
 import tf
 
 import dynamic_reconfigure.client
+
+from autopnp_common import *
 
 from map_segmentation_action_client import MapSegmentationActionClient
 from find_next_unprocessed_room_action_client import find_next_unprocessed_room
@@ -87,18 +88,6 @@ from ApproachPerimeter import *
 from simple_script_server import simple_script_server
 sss = simple_script_server()
 
-
-###############''WORKAROUND FOR TRANSFORMLISTENER ISSUE####################
-_tl=None
-_tl_creation_lock=threading.Lock()
-
-def get_transform_listener():
-    global _tl
-    with _tl_creation_lock:
-        if _tl==None:
-            _tl=tf.TransformListener(True, rospy.Duration(40.0))
-        return _tl
-#################################################################################
 
 #-------------------------------------------------------- Global Definitions ---------------------------------------------------------------------------------------
 global JOURNALIST_MODE
@@ -205,9 +194,9 @@ class InitAutoPnPScenario(smach.State):
 		except rospy.ServiceException, e:
 			print "Service call to /dirt_detection/reset_dirt_maps failed: %s"%e
 
-		# just fill history of global transform listener
-		dummylistener = get_transform_listener()
-		rospy.sleep(5.0)
+# 		# just fill history of global transform listener
+# 		dummylistener = get_transform_listener()
+# 		rospy.sleep(5.0)
 
 		#todo: set acceleration
 		# adjust base footprint
@@ -1408,6 +1397,18 @@ class Turn180(smach.State):
 		smach.State.__init__(self, outcomes=['arrived'])
 		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 
+	def checkAngleDiff(self, goal_angle):
+		robot_pose_translation = None
+		while robot_pose_translation==None:
+			(robot_pose_translation, robot_pose_rotation, robot_pose_rotation_euler) = currentRobotPose()
+		angle_diff = goal_angle - robot_pose_rotation_euler[0]
+		while angle_diff < -math.pi:
+			angle_diff += 2*math.pi
+		while angle_diff > math.pi:
+			angle_diff -= 2*math.pi
+		return angle_diff
+
+
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
 
@@ -1421,7 +1422,8 @@ class Turn180(smach.State):
 #		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.40,0.36],[-0.40,0.36],[-0.40,-0.36],[0.40,-0.36]]"})
 
 		# 2. turn around
-		sss.move('base', [robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0]+math.pi], mode='linear')
+		goal_pose = [robot_pose_translation[0], robot_pose_translation[1], robot_pose_rotation_euler[0]+math.pi]
+		sss.move('base', goal_pose, mode='linear')
 
 		# 3. reset footprint
 #		if local_config["footprint"]!=None:
@@ -1430,7 +1432,15 @@ class Turn180(smach.State):
 #			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
 #			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 
-		raw_input("turned 180?")
+		# check pose
+		angle_diff = self.checkAngleDiff(goal_pose[2])
+		while abs(angle_diff) > 10.0/180.0*math.pi:
+			# correct pose
+			sss.move_base_rel('base', (0.0, 0.0, min(max(angle_diff, -10.0/180.0*math.pi), 10.0/180.0*math.pi)), blocking=False)
+			angle_diff = self.checkAngleDiff(goal_pose[2])
+			rospy.logwarn("Turn180: Linear navigation did not succeed. Using alternative mode.")
+		
+		#raw_input("turned 180?")
 
 		return 'arrived'
 

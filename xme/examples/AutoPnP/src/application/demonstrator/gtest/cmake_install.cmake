@@ -2,7 +2,7 @@
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  SET(CMAKE_INSTALL_PREFIX "/home/rmb-om/git/care-o-bot/autopnp/xme/examples/AutoPnP/src/application/demonstrator/install")
+  SET(CMAKE_INSTALL_PREFIX "/u/rmb/git/autopnp/xme/examples/AutoPnP/src/application/demonstrator/install")
 ENDIF(NOT DEFINED CMAKE_INSTALL_PREFIX)
 STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
