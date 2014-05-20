@@ -55,12 +55,13 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 #################################################################
+import sys, os
+os.system("rosservice call /say 'I am going to demonstrate the plug and play tool changer.' &")
 
 import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
 import smach
 import smach_ros
-import sys, os
 
 from exploration_detection_cleaning import *
 

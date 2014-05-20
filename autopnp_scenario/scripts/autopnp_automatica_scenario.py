@@ -56,7 +56,7 @@
 #
 #################################################################
 import sys, os
-os.system("rosservice call /say 'I am going to clean this room.' &")
+os.system("rosservice call /say 'Let's clean this room.' &")
 
 import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
@@ -88,7 +88,7 @@ def main(confirm):
 	with sm_scenario:
 
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm, tool_wagon_pose=tool_wagon_map_pose),
-							transitions={'initialized':'finished',#CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
+							transitions={'initialized':'DETERMINE_ATTACHED_TOOL',#CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
 										'failed':'failed'})
 		
 		#smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
@@ -111,7 +111,13 @@ def main(confirm):
 							transitions={'sdh_attached':'TRASH_BIN_DETECTION_ON',
 										 'vacuum_attached':'DIRT_DETECTION_ON',
 										 'failed':'failed'})
-		
+
+		smach.StateMachine.add('DETERMINE_ATTACHED_TOOL', DetermineAttachedTool(),
+							transitions={'sdh':'TRASH_BIN_DETECTION_ON',
+										 'vacuum':'DIRT_DETECTION_ON',
+										 'none':'CHANGE_TOOL_MANUAL',
+										 'failed':'failed'})
+
 
 		### trash bin clearing sub-script
 		smach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
@@ -205,7 +211,7 @@ def main(confirm):
 		
 		### dirt cleaning sub-script
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
-							transitions={'dirt_detection_on':'TRASH_BIN_DETECTION_ON'})
+							transitions={'dirt_detection_on':'INSPECT_ROOM_FOR_DIRT'})
 
 		smach.StateMachine.add('INSPECT_ROOM_FOR_DIRT', InspectRoomShowcase(inspection_poses=dirt_inspection_map_poses,
 																		  inspection_time=3.0,

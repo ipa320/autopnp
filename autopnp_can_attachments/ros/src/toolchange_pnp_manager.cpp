@@ -11,7 +11,7 @@ private:
 	ros::Subscriber diagnostics_sdh_sub_;
 	ros::Subscriber diagnostics_vacuum_sub_;
 	ros::Publisher vis_pub_;
-	ros::Publisher attachment_status_;
+	ros::Publisher attachment_status_, chromosome_add_, chromosome_rem_;
 	bool vis_pub_first_;
 	int hand_status_;			// -1=not attached, 0=initialized and attached
 	int vacuum_status_;
@@ -29,6 +29,8 @@ public:
 		//diagnostics_vacuum_sub_ = node_handle_.subscribe("/diagnostics_vacuum_cleaner", 1, &ToolchangePnPManager::diagnosticsVacuumCallback, this);
 		vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>("attachment_visulization", 0);
 		attachment_status_ = node_handle_.advertise<std_msgs::String>("attachment_status", 0);
+		chromosome_add_ = node_handle_.advertise<std_msgs::String>("/chromosom/addComponent", 0);
+		chromosome_rem_ = node_handle_.advertise<std_msgs::String>("/chromosom/remComponent", 0);
 	}
 
 	void diagnostics(const diagnostic_msgs::DiagnosticArray::ConstPtr& diagnostics_msg)
@@ -140,11 +142,34 @@ public:
 		vacuum_status_ = val;
 	}
 
+	std_msgs::String old_;
 	void publishAttachmentStatus(std::string val)
 	{
+		if(old_.data!=val)
+		{
+			std_msgs::String msg;
+			if (old_.data=="sdh")
+				msg.data = "3-Finger-Hand";
+			else if (old_.data=="vacuum")
+				msg.data = "Vacuum-Cleaner";
+			else
+				msg.data = "";
+			if (msg.data!="")
+				chromosome_rem_.publish(msg);
+		}
+
 		std_msgs::String msg;
 		msg.data = val;
 		attachment_status_.publish(msg);
+		old_ = msg;
+		if (val=="sdh")
+			msg.data = "3-Finger-Hand";
+		else if (val=="vacuum")
+			msg.data = "Vacuum-Cleaner";
+		else
+			return;
+
+		chromosome_add_.publish(msg);
 	}
 };
 

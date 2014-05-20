@@ -15,10 +15,11 @@
 # \note
 #   ROS package name: autopnp_scenario
 #
-# \author: Mohammad Muinul Islam(email-> mohammad.islam@ipa.fraunhofer.de)
+# \author: Mohammad Muinul Islam(email:mohammad.islam@ipa.fraunhofer.de),
+#          Richard Bormann(email:richard.bormann@ipa.fraunhofer.de)
 #
 # \author
-# Supervised by: Richard Bormann(email:richard.bormann@ipa.fraunhofer.de) 
+# Supervised by: Richard Bormann(email:richard.bormann@ipa.fraunhofer.de)
 # 
 # \date Date of creation: August 2013
 #
@@ -184,6 +185,10 @@ class InitAutoPnPScenario(smach.State):
 		
 		CONFIRM_MODE = self.CONFIRM_MODE
 		print "CONFIRM_MODE =", CONFIRM_MODE
+
+		# reset torso and head
+		sss.move("head", "front", False)
+		sss.move("torso", "home", False)
 
 		# clear dirt map
 		clear_dirt_map_service_name = "/dirt_detection/reset_dirt_maps"
@@ -1917,6 +1922,41 @@ class ChangeToolManualPnPAttachOnly(smach.State):
 			return 'CTM_done_vacuum'
 		
 		print 'Manual tool change failed.'
+		return 'failed'
+
+
+class DetermineAttachedTool(smach.State):
+	def __init__(self): 
+		smach.State.__init__(self, outcomes=['sdh', 'vacuum', 'none', 'failed'])
+
+		self.attachment_status_sub = rospy.Subscriber("/toolchange_pnp_manager/attachment_status", String, self.attachmentStatusCallback)
+
+		self.attachment = ""
+		self.received_attachment_status = False
+
+	def attachmentStatusCallback(self, msg):
+		self.attachment = msg.data
+		self.received_attachment_status = True
+		
+	def execute(self, userdata):
+		sf = ScreenFormat(self.__class__.__name__)
+		
+		# wait for 10s to read out currently attached device
+		attempt = 0;
+		while attempt < 100 and self.received_attachment_status==False:
+			rospy.sleep(0.1)
+			attempt = attempt+1
+		if self.attachment=='sdh':
+			sss.say(["I am using my hand now to clear trash bins."], False)
+			return 'sdh'
+		elif self.attachment=='vacuum':
+			sss.say(["I am using my vacuum cleaner now to clean dirty spots on the ground."], False)
+			return 'vacuum'
+		elif self.attachment=='none':
+			sss.say(["There is no tool attached to my arm."], False)
+			return 'none'
+		
+		sss.say(["I cannot determine the attached device. I will abort."], False)
 		return 'failed'
 
 
