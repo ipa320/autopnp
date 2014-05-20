@@ -1,0 +1,15 @@
+<package>
+  <description brief="autopnp_gui">
+
+     autopnp_gui
+
+  </description>
+  <author>josh</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/autopnp_gui</url>
+  <depend package="rospy"/>
+
+</package>
+
+
