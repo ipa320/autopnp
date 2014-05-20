@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Tue May 13 13:42:42 2014
+# Created: Tue May 20 10:21:34 2014
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -54,6 +54,22 @@ class Ui_MainWindow(object):
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem1)
         self.horizontalLayout.addLayout(self.verticalLayout_3)
+        self.verticalLayout_14 = QtGui.QVBoxLayout()
+        self.verticalLayout_14.setObjectName(_fromUtf8("verticalLayout_14"))
+        self.vacuum = QtGui.QGroupBox(self.centralwidget)
+        self.vacuum.setObjectName(_fromUtf8("vacuum"))
+        self.verticalLayout_141 = QtGui.QVBoxLayout(self.vacuum)
+        self.verticalLayout_141.setObjectName(_fromUtf8("verticalLayout_141"))
+        self.btnOn = QtGui.QPushButton(self.vacuum)
+        self.btnOn.setObjectName(_fromUtf8("btnOn"))
+        self.verticalLayout_141.addWidget(self.btnOn)
+        self.btnOff = QtGui.QPushButton(self.vacuum)
+        self.btnOff.setObjectName(_fromUtf8("btnOff"))
+        self.verticalLayout_141.addWidget(self.btnOff)
+        self.verticalLayout_14.addWidget(self.vacuum)
+        spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_14.addItem(spacerItem2)
+        self.horizontalLayout.addLayout(self.verticalLayout_14)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -67,4 +83,7 @@ class Ui_MainWindow(object):
         self.gripper.setTitle(QtGui.QApplication.translate("MainWindow", "Gripper", None, QtGui.QApplication.UnicodeUTF8))
         self.btnOpen.setText(QtGui.QApplication.translate("MainWindow", "Open Gripper", None, QtGui.QApplication.UnicodeUTF8))
         self.btnClose.setText(QtGui.QApplication.translate("MainWindow", "Close Gripper", None, QtGui.QApplication.UnicodeUTF8))
+        self.vacuum.setTitle(QtGui.QApplication.translate("MainWindow", "Vacuum Cleaner", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnOn.setText(QtGui.QApplication.translate("MainWindow", "Power On", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnOff.setText(QtGui.QApplication.translate("MainWindow", "Power Off", None, QtGui.QApplication.UnicodeUTF8))
 
