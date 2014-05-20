@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>581</width>
-    <height>196</height>
+    <height>195</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,9 +37,44 @@
            </property>
           </widget>
          </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="btnB">
+             <property name="text">
+              <string>A</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnA">
+             <property name="text">
+              <string>B</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
         <zorder>rLin</zorder>
         <zorder>rDWA</zorder>
+        <zorder>horizontalLayoutWidget</zorder>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Actions</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QPushButton" name="btnToolChange">
+           <property name="text">
+            <string>Tool Change</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
