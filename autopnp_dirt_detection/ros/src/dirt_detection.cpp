@@ -98,6 +98,7 @@ DirtDetection::DirtDetection(ros::NodeHandle node_handle)
 	storeLastImage_ = false;
 	labelingStarted_ = false;
 	lastIncomingMessage_ = ros::Time::now();
+	useDirtMappingMask_ = false;
 }
 
 /////////////////////////////////////////////////
@@ -163,6 +164,8 @@ void DirtDetection::init()
 	std::cout << "planeNormalMaxZ = " << planeNormalMaxZ_ << std::endl;
 	node_handle_.param("dirt_detection/planeMaxHeight", planeMaxHeight_, 0.3);
 	std::cout << "planeMaxHeight = " << planeMaxHeight_ << std::endl;
+	node_handle_.param("dirt_detection/dirtMappingMaskFilename", dirtMappingMaskFilename_, std::string(""));
+	std::cout << "dirtMappingMaskFilename = " << dirtMappingMaskFilename_ << std::endl;
 	node_handle_.param("dirt_detection/experimentFolder", experimentFolder_, std::string(""));
 	std::cout << "experimentFolder = " << experimentFolder_ << std::endl;
 	node_handle_.param("dirt_detection/labelingFilePath", labelingFilePath_, std::string(""));
@@ -210,6 +213,18 @@ void DirtDetection::init()
 	gridOrigin_ = cv::Point2d(floor_plan_.info.origin.position.x, floor_plan_.info.origin.position.y);
 	double scale = floor_plan_.info.resolution*gridResolution_;
 	gridDimensions_ = cv::Point2i(cvRound(floor_plan_.info.width*scale), cvRound(floor_plan_.info.height*scale));
+
+	// load dirt mapping mask
+	if (dirtMappingMaskFilename_ != "")
+	{
+		ROS_INFO("Opening dirt mapping mask from file: %s.", dirtMappingMaskFilename_.c_str());
+		cv::Mat originalDirtMappingMask = cv::imread(dirtMappingMaskFilename_, CV_LOAD_IMAGE_GRAYSCALE);
+		cv::resize(originalDirtMappingMask, dirtMappingMask_, cv::Size(gridDimensions_.x, gridDimensions_.y));
+		cv::imshow("original mask", originalDirtMappingMask);
+		cv::imshow("mask", dirtMappingMask_);
+		cv::waitKey();
+		useDirtMappingMask_ = true;
+	}
 #else
 	// use standard values for map properties
 #endif
@@ -1228,6 +1243,7 @@ void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::Occupancy
 	//		if (u>-gridOrigin_.x*gridResolution_-6 && u<-gridOrigin_.x*gridResolution_+17 && v>-gridOrigin_.y*gridResolution_-24 && v<-gridOrigin_.y*gridResolution_-11)
 				//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 				// todo: new mode
+			if (useDirtMappingMask_==false || dirtMappingMask_.at<uchar>(v,u)==255)
 				detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
 }
 

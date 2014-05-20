@@ -215,6 +215,7 @@ protected:
 	std::vector<std::vector<std::vector<unsigned char> > > listOfLastDetections_;	// stores a list of the last x measurements (detection/no detection) for each grid cell (indices: 1=u, 2=v, 3=history)
 	cv::Mat historyLastEntryIndex_;	// stores the index of last modified number in the history array (type: 32SC1)
 	int detectionHistoryDepth_;		// number of time steps used for the detection history logging
+	cv::Mat dirtMappingMask_;	// a mask that defines areas in the map where dirt detections are valid (i.e. this mask can be used to exclude areas from dirt mapping, white=detection area, black=do not detect)
 
 	// evaluation
 	int rosbagMessagesProcessed_;	// number of ros messages received by the program
@@ -230,6 +231,8 @@ protected:
 	int modeOfOperation_;
 	double birdEyeResolution_;		// resolution for bird eye's perspective [pixel/m]
 	bool dirtDetectionActivatedOnStartup_;	// for normal operation mode, specifies whether dirt detection is on right from the beginning
+	std::string dirtMappingMaskFilename_;	// if not an empty string, this enables using a mask that defines areas in the map where dirt detections are valid (i.e. this mask can be used to exclude areas from dirt mapping, white=detection area, black=do not detect)
+	bool useDirtMappingMask_;
 
 	std::string experimentFolder_;		// storage location of the database index file and writing location for the results of an experiment
 	std::string labelingFilePath_;		// path to labeling file storage
