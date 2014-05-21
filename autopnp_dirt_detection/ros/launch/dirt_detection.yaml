@@ -91,7 +91,7 @@ showOriginalImage: false #true
 showPlaneColorImage: false #true
 
 # shows the warped color image of the plane
-showWarpedOriginalImage: false
+showWarpedOriginalImage: true
 
 # displays the saliency image before rescaling
 showSaliencyBadScale: false
@@ -109,7 +109,7 @@ showSaliencyDetection: false #true
 showDetectedLines: false
 
 # displays the dirt detection results drawn into the color image
-showDirtDetections: false #true
+showDirtDetections: true #true
 
 # displays the grid that illustrates the number of observations of each floor cell (the image might be displayed rotated)
 showObservationsGrid: false
