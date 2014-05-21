@@ -795,6 +795,8 @@ destroyChannelSelectorWaypointInstance
 xme_status_t
 addDataPacketTransferEntries(void);
 
+static char g_addressBuffer[128] = "127.0.0.1:65100";
+
 XME_EXTERN_C_END
 
 /******************************************************************************/
@@ -855,6 +857,11 @@ xmeInit
         }
     }
 
+	for(int i=0; i<argc-1; i++) {
+		if(strcmp(argv[i], "master")==0)
+			strcpy(g_addressBuffer, argv[i+1]);
+	}
+
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_env_init(), XME_STATUS_OUT_OF_RESOURCES);
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_sync_init(), XME_STATUS_OUT_OF_RESOURCES);
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_sched_init(), XME_STATUS_OUT_OF_RESOURCES);
@@ -885,8 +892,8 @@ xmeInit
 
     // Add interface to node registry
     {
-        char addressBuffer[22];
         xme_com_interface_address_t interfaceAddress;
+        /*char addressBuffer[22];
 
         XME_CHECK_MSG
         (
@@ -896,16 +903,16 @@ xmeInit
             "Unable to get the interface address of the local node.\n"
         );
 
-        (void)xme_hal_safeString_strncat(addressBuffer, ":65100", sizeof(addressBuffer));
+        (void)xme_hal_safeString_strncat(addressBuffer, ":65100", sizeof(addressBuffer));*/
 
         XME_LOG
         (
             XME_LOG_NOTE,
             "Node operates on network interface address: %s\n",
-            addressBuffer
+            g_addressBuffer
         );
 
-        xme_com_interface_ipv4StringToGenericAddress(addressBuffer, &interfaceAddress);
+        xme_com_interface_ipv4StringToGenericAddress(g_addressBuffer, &interfaceAddress);
         xme_core_node_addInterface(interfaceAddress);
     }
 
