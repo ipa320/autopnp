@@ -1,7 +1,5 @@
 #include <autopnp_tool_change/autopnp_tool_change.h>
 #include <math.h>
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_listener.h>
 #include <moveit/move_group_interface/move_group.h>
 
 
@@ -36,6 +34,7 @@ _____________________________________________________________
  * and sleeping functions to run simultaneously.
  */
 ToolChange::ToolChange(ros::NodeHandle nh)
+: transform_listener_(nh)
 {
 	std::cout << "Starting server..." << std::endl;
 
@@ -62,28 +61,7 @@ ToolChange::ToolChange(ros::NodeHandle nh)
 	//SERVERS
 	resetServers();
 
-
-
-	tf::TransformListener listener;
-	tf::StampedTransform transform;
-	try{
-		ROS_INFO("try");
-		listener.lookupTransform("/base_link", "/head_cam3d_link",
-				ros::Time::now(), transform);
-	}
-	catch (tf::TransformException ex)
-	{
-		ROS_WARN("Base to camera transform unavailable %s", ex.what());
-	}
-
-
-	ROS_INFO("Die Transformation %f %f %f", transform.getOrigin().m_floats[0],
-			transform.getOrigin().m_floats[1], transform.getOrigin().m_floats[2]);
-
-	//transform_BA_CA_.setOrigin(transform.getOrigin());
-	//transform_BA_CA_.setRotation(transform.getRotation());
-	//transform_BA_CA_.getRotation().normalize();
-	//printPose(transform_BA_CA_);
+	ROS_INFO("Done init");
 }
 /*
  * Reset the servers to false. Let them start and wait for a goal message.
@@ -187,6 +165,23 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 	tf::Point translation;
 	tf::Quaternion orientation;
 
+
+	/*tf::StampedTransform transform;
+	transform.setIdentity();
+
+	try{
+		//ROS_INFO("try to listen to %s", input_marker_detections_msg->header.frame_id.c_str());
+		//look up transform "base_link" to "cam3d_link"
+		transform_listener_.lookupTransform("/base_link", input_marker_detections_msg->header.frame_id,
+				input_marker_detections_msg->header.stamp, transform);
+	}
+	catch (tf::TransformException ex)
+	{
+		ROS_WARN("Transform unavailable %s", ex.what());
+	}
+
+*/
+
 	for (unsigned int i = 0; i < input_marker_detections_msg->detections.size(); ++i)
 	{
 		//retrieve the number of label
@@ -197,6 +192,7 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		//convert translation and orientation Points msgs to tf Pose respectively
 		tf::pointMsgToTF(input_marker_detections_msg->detections[i].pose.pose.position, translation);
 		tf::quaternionMsgToTF(input_marker_detections_msg->detections[i].pose.pose.orientation, orientation);
+
 
 		// average only the 3 markers from the board. Set the average on initial position of the {@value VAC_CLEANER)
 		if (fiducial_label.compare(VAC_CLEANER)==0 || fiducial_label.compare(ARM_STATION)==0 || fiducial_label.compare(EXTRA_FIDUCIAL)==0)
@@ -215,38 +211,33 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 			}
 		}
 
-		//if(fiducial_label_num == arm_marker_number)
 		if (fiducial_label.compare(ARM)==0)
 		{
-
+			std::string fidu_name_arm = "/fiducial/"+ input_marker_detections_msg->detections[i].label;
 			detected_arm_fiducial = true;
 			result.arm_.translation.setOrigin(translation);
 			result.arm_.translation.setRotation(orientation);
 			result.arm_.translation.getRotation().normalize();
 
-			std::string fidu_name = "/fiducial/"+ input_marker_detections_msg->detections[i].label;
+			//broadcast pose to tf
 			static tf::TransformBroadcaster br;
-			tf::Transform transform;
-			transform.setOrigin( result.arm_.translation.getOrigin());
-			transform.setRotation(result.arm_.translation.getRotation());
-			br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/head_cam3d_link", fidu_name ));
-
+			br.sendTransform(tf::StampedTransform(result.arm_.translation, input_marker_detections_msg->header.stamp,
+					input_marker_detections_msg->header.frame_id, fidu_name_arm ));
+			latest_time_ = input_marker_detections_msg->header.stamp;
 		}
-
-		/*if (fiducial_label.compare("tag_3")==0)
-{
-detected_cam_fiducial = true;
-result.cam.translation.setOrigin(translation);
-result.cam.translation.setRotation(orientation);
-result.cam.translation.getRotation().normalize();
-}
-		 */
 	}
 	if(count != 0)
 	{
+		std::string fidu_name_board = "/fiducial/tag_board";
 		result.board_.translation.getOrigin() /=(double)count;
 		result.board_.translation.getRotation() /= (double)count;
 		result.board_.translation.getRotation().normalize();
+
+		//broadcast pose to tf
+		static tf::TransformBroadcaster br;
+		br.sendTransform(tf::StampedTransform(result.board_.translation, input_marker_detections_msg->header.stamp,
+				input_marker_detections_msg->header.frame_id, fidu_name_board ));
+
 	}
 	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
@@ -273,29 +264,11 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
 
 	transform_CA_FA.setOrigin(arm_pose.getOrigin() );
 	transform_CA_FB.setOrigin(board_pose.getOrigin() );
-	transform_CA_FA.setRotation( arm_pose.getRotation() );
-	transform_CA_FB.setRotation( board_pose.getRotation());
+	transform_CA_FA.setRotation(arm_pose.getRotation() );
+	transform_CA_FB.setRotation(board_pose.getRotation());
 
 	//calculate the transformation between arm and board
 	result.mult(transform_CA_FA.inverse() ,transform_CA_FB);
-
-	/// JUST DRAWING IN RVIZ FOR TEST PURPOSES
-
-	tf::Transform a_tf;
-	tf::Transform b_tf;
-	geometry_msgs::PoseStamped a = current_ee_pose_;
-	geometry_msgs::PoseStamped pose;
-	geometry_msgs::PoseStamped base;
-	geometry_msgs::PoseStamped result_stamped;
-
-	tf::poseMsgToTF(a.pose, a_tf);
-	b_tf = a_tf * result;
-	tf::poseTFToMsg(b_tf, pose.pose);
-	tf::poseTFToMsg(result, result_stamped.pose);
-	//drawLine(0.85, 0.55, 0.30, 1.0, base, result_stamped);
-	//drawLine(0.85, 0.55, 0.0, 1.0,current_ee_pose_, pose);
-
-	///END DRAWING
 
 	return result;
 
@@ -521,6 +494,10 @@ void ToolChange::clearFiducials()
  * and rotation (between end effector and board fiducial)
  *
  */
+
+
+
+/*
 bool ToolChange::moveToWagonFiducial(const std::string& action)
 {
 	move_action_state_ = false;
@@ -650,7 +627,7 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test2_msg);
 	drawLine(0.5, 0.5, 0.0, 1.0, cam_msg, test6_msg);
 	 */
-
+/*
 	transform_EE_GO.mult(transform_BA_FB, transform_EE_FA);
 	tf::poseTFToMsg( transform_EE_GO, test5_msg.pose);
 	//drawLine(0.0, 0.30, 0.0, 1.0, base, test5_msg);
@@ -725,7 +702,96 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 	return true;
 }
 
+*/
 
+bool ToolChange::moveToWagonFiducial(const std::string& action)
+{
+	move_action_state_ = false;
+	geometry_msgs::PoseStamped ee_pose;
+	geometry_msgs::PoseStamped goal_pose;
+	tf::StampedTransform stamped_transform_FA_EE;
+	tf::Transform transform_FA_EE;
+	tf::Transform ee_pose_tf;
+	tf::Transform goal_pose_tf;
+
+	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
+	goal_pose.header.frame_id = BASE_LINK;
+	goal_pose.header.stamp = ros::Time::now();
+	group.setPoseReferenceFrame(BASE_LINK);
+
+	tf::StampedTransform transform;
+			transform.setIdentity();
+
+			try{
+				//ROS_INFO("try to listen to %s", input_marker_detections_msg->header.frame_id.c_str());
+				transform_listener_.lookupTransform("/base_link", EE_NAME,
+						latest_time_, transform);
+				//transform_listener_.lookupTransform("/", EE_NAME,
+										//ros::Time::now(), stamped_transform_FA_EE);
+			}
+			catch (tf::TransformException ex)
+			{
+				ROS_WARN("Transform unavailable %s", ex.what());
+			}
+           printPose(transform);
+
+
+	//get the position of the end effector (= arm_7_joint)
+	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
+    printPose(ee_pose_tf);
+
+	// just move without rotation
+	if(action.compare(MOVE)== 0)
+	{
+
+
+	}
+	//just rotate without movement
+	else if(action.compare(TURN)==0)
+	{
+
+
+	}
+
+	//tf -> msg
+	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
+
+	double length ;
+	ROS_WARN_STREAM(" distance in move :"<< length << ".");
+
+	group.setPoseTarget(goal_pose, EE_NAME);
+
+	if(length > MAX_TOLERANCE)
+	{
+		ROS_WARN_STREAM("STARTE MOVE TO FIDUCIAL");
+		// plan the motion
+		bool have_plan = false;
+		moveit::planning_interface::MoveGroup::Plan plan;
+		have_plan = group.plan(plan);
+
+		//EXECUTE THE PLAN !!!!!! BE CAREFUL
+		if (have_plan==true) {
+			//group.execute(plan);
+			//group.move();
+		}
+		else
+		{
+			ROS_WARN("No valid plan found for the arm movement.");
+			move_action_state_ = false;
+			return false;
+		}
+	}else{
+		ROS_WARN_STREAM(" no movement occured with length "<< length <<".");
+	}
+
+	current_ee_pose_.pose = group.getCurrentPose(EE_NAME).pose;
+	move_action_state_ = true;
+	clearFiducials();
+
+	return true;
+}
 
 
 /*

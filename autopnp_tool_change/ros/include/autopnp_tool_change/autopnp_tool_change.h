@@ -19,6 +19,8 @@
 #include <cob_object_detection_msgs/DetectionArray.h>
 #include <cob_object_detection_msgs/Detection.h>
 #include <tf/tfMessage.h>
+#include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 
 #include <message_filters/subscriber.h>
 // boost
@@ -131,6 +133,8 @@ protected:
 	message_filters::Subscriber<cob_object_detection_msgs::DetectionArray> input_marker_detection_sub_;
 	message_filters::Subscriber<sensor_msgs::JointState> joint_states_sub_;
 
+	tf::TransformListener transform_listener_;
+
 	///PUBLISHERS
 	ros::Publisher vis_pub_;
 
@@ -141,6 +145,7 @@ protected:
 
 	/// CLIENTS
 	ros::ServiceClient execute_known_traj_client_ ;
+	ros::Time latest_time_;
 
 	bool slot_position_detected_;
 	bool move_action_state_;
