@@ -219,10 +219,12 @@ void DirtDetection::init()
 	{
 		ROS_INFO("Opening dirt mapping mask from file: %s.", dirtMappingMaskFilename_.c_str());
 		cv::Mat originalDirtMappingMask = cv::imread(dirtMappingMaskFilename_, CV_LOAD_IMAGE_GRAYSCALE);
-		cv::resize(originalDirtMappingMask, dirtMappingMask_, cv::Size(gridDimensions_.x, gridDimensions_.y));
-		cv::imshow("original mask", originalDirtMappingMask);
-		cv::imshow("mask", dirtMappingMask_);
-		cv::waitKey();
+		cv::Mat temp;
+		cv::resize(originalDirtMappingMask, temp, cv::Size(gridDimensions_.x, gridDimensions_.y));
+		cv::flip(temp, dirtMappingMask_, 0); // flip image to align with the coordinate format of the other grids
+		//cv::imshow("original mask", originalDirtMappingMask);
+		//cv::imshow("mask", dirtMappingMask_);
+		//cv::waitKey();
 		useDirtMappingMask_ = true;
 	}
 #else
@@ -1235,16 +1237,21 @@ void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::Occupancy
 //	detectionMap.data[(-gridOrigin_.y*gridResolution_+6)*gridPositiveVotes_.cols-gridOrigin_.x*gridResolution_-7] = (int8_t)100;
 //	detectionMap.data[(-gridOrigin_.y*gridResolution_+6)*gridPositiveVotes_.cols-gridOrigin_.x*gridResolution_+8] = (int8_t)100;
 
+//	cv::imshow("mask", dirtMappingMask_);
 	for (int v=0, i=0; v<gridPositiveVotes_.rows; v++)
 		for (int u=0; u<gridPositiveVotes_.cols; u++, i++)
+		{
 			// hack: autonomik-scenario: only map dirt within a certain area
 			//if (u>gridPositiveVotes_.cols/2-limit_square && u<gridPositiveVotes_.cols/2+limit_square && v>gridPositiveVotes_.rows/2-limit_square && v<gridPositiveVotes_.rows/2+limit_square)
 			//if (u>-gridOrigin_.x*gridResolution_-7 && u<-gridOrigin_.x*gridResolution_+8 && v>-gridOrigin_.y*gridResolution_+2 && v<-gridOrigin_.y*gridResolution_+6)
 	//		if (u>-gridOrigin_.x*gridResolution_-6 && u<-gridOrigin_.x*gridResolution_+17 && v>-gridOrigin_.y*gridResolution_-24 && v<-gridOrigin_.y*gridResolution_-11)
 				//detectionMap.data[i] = (int8_t)(100.*(double)gridPositiveVotes_.at<int>(v,u)/((double)gridNumberObservations_.at<int>(v,u)));
 				// todo: new mode
-			if (useDirtMappingMask_==false || dirtMappingMask_.at<uchar>(v,u)==255)
+			if (useDirtMappingMask_==false || dirtMappingMask_.at<uchar>(v,u)>=240)
 				detectionMap.data[i] = (int8_t)(100.*(double)sumOfUCharArray(listOfLastDetections_[u][v])/((double)detectionHistoryDepth_) > 25 ? 100 : 0);  // hack: binary decision in the end  // 9,15
+			else
+				detectionMap.data[i] = 0;
+		}
 }
 
 

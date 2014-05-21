@@ -12,7 +12,7 @@ spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
 # double
-dirtThreshold: 0.3 #0.09 #0.2  #0.35 #0.5
+dirtThreshold: 0.25 #0.09 #0.2  #0.35 #0.5
 
 # number of time steps used for the detection history logging (in [1,10000])
 # int
@@ -49,7 +49,7 @@ removeLines: true
 # spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 10-20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
 # if set <0 then the grid resolution of the navigation map is used if available
 # double
-gridResolution: 5.0
+gridResolution: 10.0
 
 # these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode or when a map is available
 # double
@@ -75,7 +75,7 @@ planeNormalMaxZ: -0.5
 
 # maximum height of the detected plane above the mapped ground
 # double
-planeMaxHeight: 0.1
+planeMaxHeight: 0.15
 
 # subfolder name for storing the results of the current experiment - not applicable in this configuration - useful in order to avoid overwriting existing data when multiple experiments are running on the same machine in parallel
 # string
