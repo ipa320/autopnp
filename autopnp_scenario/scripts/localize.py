@@ -9,6 +9,8 @@ import imreg, numpy
 from nav_msgs.msg import OccupancyGrid, GridCells
 from std_msgs.msg import String
 from geometry_msgs.msg import PoseWithCovarianceStamped
+from sensor_msgs.msg import Joy
+from simple_script_server import simple_script_server
 
 def say(sen):
 	rospy.wait_for_service('/say')
@@ -55,10 +57,57 @@ def OccupancyGrid2Im(m):
 	return numpy.swapaxes(numpy.asarray(d).reshape([m.info.height, m.info.width]),0,1)
 
 im_map=None
+confirm=False
+
+def cb_joy(msg):
+	global confirm
+	# check for joystick [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0] --> buttons 6+8+2 (= both right triggers + lower of the four buttons)
+	if msg.buttons[0]==0 and msg.buttons[1]==1 and msg.buttons[2]==0 and msg.buttons[3]==0 and msg.buttons[4]==0 and msg.buttons[5]==1 and msg.buttons[6]==0 and msg.buttons[7]==1 and msg.buttons[8]==0 and msg.buttons[9]==0 and msg.buttons[10]==0 and msg.buttons[11]==0:
+		confirm = True
+
 def cb_map(m):
 	global im_map
+	global confirm
 	im_map = OccupancyGrid2Im(m)
 	imreg.imshow(im_map)
+
+	return
+	#now seems up, so turn around
+	sss = simple_script_server()
+	say("I am ready. I will initialize myself. Then I will turn around.")
+	say("Please onfirm")
+	confirm = False
+	while confirm==False: rospy.sleep(0.1)
+
+	# initialize components
+	handle_head = sss.init("head")
+
+	handle_torso = sss.init("torso")
+	if handle_torso.get_error_code() != 0:
+		return say("failed to initialize torso")
+		
+	handle_tray = sss.init("tray")
+
+	handle_arm = sss.init("arm")
+	if handle_arm.get_error_code() != 0:
+		return say("failed to initialize arm")
+
+	handle_sdh = sss.init("sdh")
+
+	handle_base = sss.init("base")
+	if handle_base.get_error_code() != 0:
+		return say("failed to initialize base")
+	
+	# recover components
+	handle_head = sss.recover("head")
+	if handle_head.get_error_code() != 0:
+		return say("failed to recover head")		
+
+	#turn around
+	for x in xrange(8): sss.move_base_rel('base', [0,0,math.pi/8])
+
+	#ready
+	im_map = tmp
 
 def cb_local(m):
 	global im_map
@@ -82,7 +131,7 @@ def cb_local(m):
 	im_local = numpy.asarray(d)
 	say("Starting to localize myself")
 
-	imreg.imshow(im_map, im_local)
+	imreg.imshow(im_map, im_local, 0.125)
 
 	#registrate images
 	match = imreg.find_match(im_map, im_local)
@@ -111,5 +160,6 @@ if __name__ == '__main__':
 	rospy.init_node('localize')
 	rospy.Subscriber("/map", OccupancyGrid, cb_map)
 	rospy.Subscriber("/obstacles", GridCells, cb_local)
+	rospy.Subscriber("/joy", Joy, cb_joy)
 	rospy.spin()
 	
