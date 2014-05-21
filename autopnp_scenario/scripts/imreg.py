@@ -266,21 +266,19 @@ def imread(fname, norm=True):
     return img
 
 
-def imshow(im0, im1, im2, im3=None, cmap=None, **kwargs):
+def imshow(im0, im1=None, im2=None, im3=None, cmap=None, **kwargs):
     """Plot images using matplotlib."""
     from matplotlib import pyplot
     if cmap is None:
         cmap = 'coolwarm'
-    if im3 is None:
-        im3 = abs(im2 - im0)
     pyplot.subplot(221)
-    pyplot.imshow(im0, cmap, **kwargs)
+    if im0!=None: pyplot.imshow(im0, cmap, **kwargs)
     pyplot.subplot(222)
-    pyplot.imshow(im1, cmap, **kwargs)
+    if im1!=None: pyplot.imshow(im1, cmap, **kwargs)
     pyplot.subplot(223)
-    pyplot.imshow(im3, cmap, **kwargs)
+    if im3!=None: pyplot.imshow(im3, cmap, **kwargs)
     pyplot.subplot(224)
-    pyplot.imshow(im2, cmap, **kwargs)
+    if im2!=None: pyplot.imshow(im2, cmap, **kwargs)
     pyplot.show()
 
 def blur_out(img):
@@ -319,7 +317,6 @@ def find_match(im0, im1, step_size=0.25):
 		x+=int(step_size*im1.shape[0])
 
 	return match
-	#imshow(im0, im1, im2, im3)
 
 
 if __name__ == '__main__':

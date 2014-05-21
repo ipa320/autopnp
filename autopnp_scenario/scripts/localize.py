@@ -6,7 +6,7 @@ import tf
 import os, sys, math
 import imreg, numpy
 
-from nav_msgs.msg import OccupancyGrid
+from nav_msgs.msg import OccupancyGrid, GridCells
 from std_msgs.msg import String
 from geometry_msgs.msg import PoseWithCovarianceStamped
 
@@ -49,21 +49,40 @@ def OccupancyGrid2Im(m):
 	#normalize
 	d = []
 	for i in xrange(len(m.data)):
-		d.append( max(0,m.data[i])/100. )
-	return numpy.asarray(d).reshape([m.info.width, m.info.height])
+		v=0.
+		if m.data[i]>50 or m.data[i]<0: v=1.
+		d.append( v )
+	return numpy.swapaxes(numpy.asarray(d).reshape([m.info.height, m.info.width]),0,1)
 
 im_map=None
 def cb_map(m):
 	global im_map
 	im_map = OccupancyGrid2Im(m)
+	imreg.imshow(im_map)
 
 def cb_local(m):
 	global im_map
 	if im_map==None: return
 
 	#now both (map + local_map) are present
-	im_local = OccupancyGrid2Im(m)
+	mia=[0,0,0,0]
+	for c in m.cells:
+		x = int(c.x/cell_width)
+		y = int(c.y/cell_width)
+		mia = [min(x,mia[0]), min(y,mia[1]), max(x,mia[2]), max(y,mia[3]) ]
+	d=[]
+	for x in xrange(mia[2]-mia[0]):
+		d.append([])
+		for y in xrange(mia[3]-mia[1]):
+			d[len(d)-1].append(0.)
+	for c in m.cells:
+		x = int(c.x/cell_width)
+		y = int(c.y/cell_width)
+		d[x][y]=1.
+	im_local = numpy.asarray(d)
 	say("Starting to localize myself")
+
+	imreg.imshow(im_map, im_local)
 
 	#registrate images
 	match = imreg.find_match(im_map, im_local)
@@ -91,6 +110,6 @@ def cb_local(m):
 if __name__ == '__main__':
 	rospy.init_node('localize')
 	rospy.Subscriber("/map", OccupancyGrid, cb_map)
-	rospy.Subscriber("/map", OccupancyGrid, cb_local)
+	rospy.Subscriber("/obstacles", GridCells, cb_local)
 	rospy.spin()
 	
