@@ -2081,6 +2081,7 @@ class ReceiveDirtMap(smach.State):
 				index = v*width + u
 				if dirtMap.data[index] > 25 and groupMap[index]==0:
 					# label a new region and find all connected pixels
+					print u,v, index, currentLabel
 					groupMap[index] = currentLabel
 					queue = [ [u,v] ]
 					while len(queue)>0:
@@ -2132,20 +2133,19 @@ class ReceiveDirtMap(smach.State):
 		map_resolution = resp.dirtMap.info.resolution
 		map_offset = resp.dirtMap.info.origin
 		for group_label in dirt_groups:
-			for points in dirt_groups[group_label]:
-				for point in points:
-					x = point[0]*map_resolution+map_offset.position.x
-					y = point[1]*map_resolution+map_offset.position.y
-					# hack: limit valid space for cleaning
-					print "(", x, ", ", y, ")?"
-					if (self.valid_rectangle_for_dirt_detections==0 or
-					   (x>valid_rectangle_for_dirt_detections[0] and y>valid_rectangle_for_dirt_detections[1] and
-					    x<valid_rectangle_for_dirt_detections[2] and y<valid_rectangle_for_dirt_detections[3]) ):
-						if group_label in list_of_dirt_locations:
-							list_of_dirt_locations[group_label].append([x,y])
-						else:
-							list_of_dirt_locations[group_label] = [[x,y]]
-						print "group:", group_label, " --> adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
+			for point in dirt_groups[group_label]:
+				x = point[0]*map_resolution+map_offset.position.x
+				y = point[1]*map_resolution+map_offset.position.y
+				# hack: limit valid space for cleaning
+				print "(", x, ", ", y, ")?"
+				if (self.valid_rectangle_for_dirt_detections==0 or
+				   (x>valid_rectangle_for_dirt_detections[0] and y>valid_rectangle_for_dirt_detections[1] and
+				    x<valid_rectangle_for_dirt_detections[2] and y<valid_rectangle_for_dirt_detections[3]) ):
+					if group_label in list_of_dirt_locations:
+						list_of_dirt_locations[group_label].append([x,y])
+					else:
+						list_of_dirt_locations[group_label] = [[x,y]]
+					print "group:", group_label, " --> adding dirt location at (", point[0], ",", point[1] ,")pix = (", x, ",", y, ")m"
 
 		
 		# old school: dirt cell by dirt cell

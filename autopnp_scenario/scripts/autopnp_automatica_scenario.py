@@ -87,7 +87,7 @@ def main(confirm):
 
 	with sm_scenario:
 
-		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
+		smach.StateMachine.add('GET_DIRT_MAP_TEST', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
 					transitions={'list_of_dirt_location':'finished',
 								 'failed': 'finished'})
 

@@ -78,8 +78,8 @@ static const double MAX_TOLERANCE = 0.001;
 
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
-//static const std::string EE_NAME = "arm_7_link";
-static const std::string EE_NAME = "arm_toolchanger_link";
+static const std::string EE_NAME = "arm_7_link";
+//static const std::string EE_NAME = "arm_toolchanger_link";
 
 static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, -0.07);
 static const tf::Vector3 FORWARD = tf::Vector3(-0.12, 0.0, 0.0);
@@ -90,9 +90,8 @@ static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 static const tf::Vector3 ARM_FIDUCIAL_OFFSET = tf::Vector3(0.05, 0.025, 0.03);
 static const tf::Quaternion ARM_FIDUCIAL_ORIENTATION_OFFSET = tf::Quaternion(0.653883, 0.225928, 0.668417, -0.273153);
 
-static const tf::Vector3 TOOL_FIDUCIAL_OFFSET = tf::Vector3(0.0, 0.0,- 0.30);
-static const tf::Vector3 TOOL_FIDUCIAL_OFFSET_0 = tf::Vector3(0.30, 0.0, 0.0);
-static const tf::Vector3 ARM_FIDUCIAL_OFFSET_0 = tf::Vector3(0.0, 0.0, 0.0);
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(0.0, 0.0, 0.35);
+
 static const tf::Vector3 VAC_CLEANER_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 static const tf::Vector3 ARM_STATION_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 
