@@ -795,6 +795,8 @@ destroyChannelSelectorWaypointInstance
 xme_status_t
 addDataPacketTransferEntries(void);
 
+static char g_addressBuffer[128] = "127.0.0.1:65100";
+
 XME_EXTERN_C_END
 
 /******************************************************************************/
@@ -810,7 +812,6 @@ xmeInit
     XME_CHECK(XME_STATUS_SUCCESS == xme_core_log_logUtils_init(), XME_STATUS_OUT_OF_RESOURCES);
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_cmdLine_init(argc, argv, "v::", 1), XME_STATUS_OUT_OF_RESOURCES);
 
-        char addressBuffer[128] = "127.0.0.1:65100";
     // Parse command line options. Do this right here to ensure that
     // the settings are applied before further processing is started.
     {
@@ -858,7 +859,7 @@ xmeInit
 
 	for(int i=0; i<argc-1; i++) {
 		if(strcmp(argv[i], "master")==0)
-			strcpy(addressBuffer, argv[i+1]);
+			strcpy(g_addressBuffer, argv[i+1]);
 	}
 
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_env_init(), XME_STATUS_OUT_OF_RESOURCES);
@@ -892,8 +893,9 @@ xmeInit
     // Add interface to node registry
     {
         xme_com_interface_address_t interfaceAddress;
+        /*char addressBuffer[22];
 
-        /*XME_CHECK_MSG
+        XME_CHECK_MSG
         (
             XME_STATUS_SUCCESS == xme_hal_net_getInterfaceAddr(NULL, XME_COM_INTERFACE_ADDRESS_TYPE_IPV4, addressBuffer),
             XME_STATUS_INTERNAL_ERROR,
@@ -907,10 +909,10 @@ xmeInit
         (
             XME_LOG_NOTE,
             "Node operates on network interface address: %s\n",
-            addressBuffer
+            g_addressBuffer
         );
 
-        xme_com_interface_ipv4StringToGenericAddress(addressBuffer, &interfaceAddress);
+        xme_com_interface_ipv4StringToGenericAddress(g_addressBuffer, &interfaceAddress);
         xme_core_node_addInterface(interfaceAddress);
     }
 

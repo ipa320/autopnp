@@ -848,6 +848,8 @@ addDataPacketTransferEntries(void);
 
 XME_EXTERN_C_END
 
+static char g_addressBuffer[128] = "127.0.0.1:65000";
+
 /******************************************************************************/
 /***   Implementation                                                       ***/
 /******************************************************************************/
@@ -860,8 +862,6 @@ xmeInit
 {
     XME_CHECK(XME_STATUS_SUCCESS == xme_core_log_logUtils_init(), XME_STATUS_OUT_OF_RESOURCES);
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_cmdLine_init(argc, argv, "v::", 1), XME_STATUS_OUT_OF_RESOURCES);
-
-        char addressBuffer[128] = "127.0.0.1:65000";
 
     // Parse command line options. Do this right here to ensure that
     // the settings are applied before further processing is started.
@@ -910,7 +910,7 @@ xmeInit
 
 	for(int i=0; i<argc-1; i++) {
 		if(strcmp(argv[i], "master")==0)
-			strcpy(addressBuffer, argv[i+1]);
+			strcpy(g_addressBuffer, argv[i+1]);
 	}
 
 
@@ -964,10 +964,10 @@ xmeInit
         (
             XME_LOG_NOTE,
             "Node operates on network interface address: %s\n",
-            addressBuffer
+            g_addressBuffer
         );
 
-        xme_com_interface_ipv4StringToGenericAddress(addressBuffer, &interfaceAddress);
+        xme_com_interface_ipv4StringToGenericAddress(g_addressBuffer, &interfaceAddress);
         xme_core_node_addInterface(interfaceAddress);
     }
 
@@ -1043,8 +1043,8 @@ pnpInit(void)
 
         // Add interface to node registry
         {
-            char addressBuffer[22];
             xme_com_interface_address_t interfaceAddress;
+            /*char addressBuffer[22];
 
             XME_CHECK_MSG
             (
@@ -1054,9 +1054,9 @@ pnpInit(void)
                 "Unable to get the interface address of the local node.\n"
             );
 
-            (void)xme_hal_safeString_strncat(addressBuffer, ":65000", sizeof(addressBuffer));
+            (void)xme_hal_safeString_strncat(addressBuffer, ":65000", sizeof(addressBuffer));*/
 
-            xme_com_interface_ipv4StringToGenericAddress(addressBuffer, &interfaceAddress);
+            xme_com_interface_ipv4StringToGenericAddress(g_addressBuffer, &interfaceAddress);
             status = xme_core_directory_nodeRegistryController_addInterface((xme_core_node_nodeId_t)1, interfaceAddress);
             XME_CHECK_MSG
             (
