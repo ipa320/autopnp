@@ -111,6 +111,9 @@ showDetectedLines: false
 # displays the dirt detection results drawn into the color image
 showDirtDetections: true #true
 
+# publishes a ROS message with the dirt detection results drawn into the color image
+publishDirtDetections: true #true
+
 # displays the grid that illustrates the number of observations of each floor cell (the image might be displayed rotated)
 showObservationsGrid: false
 

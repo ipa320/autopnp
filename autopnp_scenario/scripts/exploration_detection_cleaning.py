@@ -189,6 +189,8 @@ class InitAutoPnPScenario(smach.State):
 		# reset torso and head
 		sss.move("head", "front", False)
 		sss.move("torso", "home", False)
+		
+		#todo: check arm position?
 
 		# clear dirt map
 		clear_dirt_map_service_name = "/dirt_detection/reset_dirt_maps"
@@ -203,12 +205,13 @@ class InitAutoPnPScenario(smach.State):
 # 		dummylistener = get_transform_listener()
 # 		rospy.sleep(5.0)
 
-		#todo: set acceleration
-		# adjust base footprint
+		# adjust base footprint -> not necessary at this place
 #		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.25],[0.45,-0.25],[0.25,-0.45],[-0.25,-0.45],[-0.45,-0.25],[-0.45,0.25],[-0.25,0.45],[0.25,0.45]]"})
+		
+		# set acceleration
 		self.dwa_planner_dynamic_reconfigure_client.update_configuration({"acc_lim_x": 1.0, "acc_lim_y": 1.0, "acc_lim_theta": 1.0, "xy_goal_tolerance": 0.05, "yaw_goal_tolerance": 0.06})
 
-		
+		# compute tool wagon pose from robot starting point
 		tool_wagon_pose = Pose2D()
 		try:
 			listener = get_transform_listener()
@@ -731,7 +734,7 @@ class MoveToToolWaggonFrontFar(smach.State):
 		robot_pose = Pose2D(x = userdata.tool_wagon_pose.x + dx*math.cos(userdata.tool_wagon_pose.theta)-dy*math.sin(userdata.tool_wagon_pose.theta),
 							y = userdata.tool_wagon_pose.y + dx*math.sin(userdata.tool_wagon_pose.theta)+dy*math.cos(userdata.tool_wagon_pose.theta),
 							theta = userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni') #hack
+		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta],mode='omni')
 		
 		# 2. detect fiducials and move to corrected pose
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front_far"]
@@ -1060,7 +1063,7 @@ class DirtDetectionOn(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# move torso and head to frontal inspection perspective
-		sss.say(["I am looking at the ground now to search for dirt spots with my cameras."], False)
+		sss.say(["By bowing my head I can look at the ground to search for dirt spots with my cameras."], False)
 		sss.move("torso","front_extreme", False)
 		sss.move("head","front")
 
@@ -1093,7 +1096,7 @@ class TrashBinDetectionOn(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 		
 		# move torso and head to frontal inspection perspective
-		sss.say(["I am looking at the ground now to search for trash bins with my cameras."], False)
+		sss.say(["By bowing my head I can search for trash bins with my cameras."], False)
 		sss.move("torso","front_extreme", False)
 		sss.move("head","front", False)
 		
@@ -1941,11 +1944,15 @@ class DetermineAttachedTool(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
+		# reset status flag
+		self.received_attachment_status=False
+		
 		# wait for 10s to read out currently attached device
 		attempt = 0;
 		while attempt < 100 and self.received_attachment_status==False:
 			rospy.sleep(0.1)
 			attempt = attempt+1
+		
 		if self.attachment=='sdh':
 			sss.say(["I am using my hand now to clear trash bins."], False)
 			return 'sdh'

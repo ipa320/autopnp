@@ -171,9 +171,9 @@ void DirtDetection::init()
 	node_handle_.param("dirt_detection/labelingFilePath", labelingFilePath_, std::string(""));
 	std::cout << "labelingFilePath = " << labelingFilePath_ << std::endl;
 
-	node_handle_.param("dirt_detection/showOriginalImage", debug_["showOriginalImage"], true);
+	node_handle_.param("dirt_detection/showOriginalImage", debug_["showOriginalImage"], false);
 	std::cout << "showOriginalImage = " << debug_["showOriginalImage"] << std::endl;
-	node_handle_.param("dirt_detection/showPlaneColorImage", debug_["showPlaneColorImage"], true);
+	node_handle_.param("dirt_detection/showPlaneColorImage", debug_["showPlaneColorImage"], false);
 	std::cout << "showPlaneColorImage = " << debug_["showPlaneColorImage"] << std::endl;
 	node_handle_.param("dirt_detection/showWarpedOriginalImage", debug_["showWarpedOriginalImage"], false);
 	std::cout << "showWarpedOriginalImage = " << debug_["showWarpedOriginalImage"] << std::endl;
@@ -183,15 +183,17 @@ void DirtDetection::init()
 	std::cout << "showColorWithArtificialDirt = " << debug_["showColorWithArtificialDirt"] << std::endl;
 	node_handle_.param("dirt_detection/showSaliencyWithArtificialDirt", debug_["showSaliencyWithArtificialDirt"], false);
 	std::cout << "showSaliencyWithArtificialDirt = " << debug_["showSaliencyWithArtificialDirt"] << std::endl;
-	node_handle_.param("dirt_detection/showSaliencyDetection", debug_["showSaliencyDetection"], true);
+	node_handle_.param("dirt_detection/showSaliencyDetection", debug_["showSaliencyDetection"], false);
 	std::cout << "showSaliencyDetection = " << debug_["showSaliencyDetection"] << std::endl;
-	node_handle_.param("dirt_detection/showDetectedLines", debug_["showDetectedLines"], true);
+	node_handle_.param("dirt_detection/showDetectedLines", debug_["showDetectedLines"], false);
 	std::cout << "showDetectedLines = " << debug_["showDetectedLines"] << std::endl;
-	node_handle_.param("dirt_detection/showDirtDetections", debug_["showDirtDetections"], true);
+	node_handle_.param("dirt_detection/showDirtDetections", debug_["showDirtDetections"], false);
 	std::cout << "showDirtDetections = " << debug_["showDirtDetections"] << std::endl;
-	node_handle_.param("dirt_detection/showObservationsGrid", debug_["showObservationsGrid"], true);
+	node_handle_.param("dirt_detection/publishDirtDetections", debug_["publishDirtDetections"], false);
+	std::cout << "publishDirtDetections = " << debug_["publishDirtDetections"] << std::endl;
+	node_handle_.param("dirt_detection/showObservationsGrid", debug_["showObservationsGrid"], false);
 	std::cout << "showObservationsGrid = " << debug_["showObservationsGrid"] << std::endl;
-	node_handle_.param("dirt_detection/showDirtGrid", debug_["showDirtGrid"], true);
+	node_handle_.param("dirt_detection/showDirtGrid", debug_["showDirtGrid"], false);
 	std::cout << "showDirtGrid = " << debug_["showDirtGrid"] << std::endl;
 
 	// dynamic reconfigure
@@ -1009,10 +1011,13 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 		}
 
 		// publish image
-//		cv_bridge::CvImage cv_ptr;
-//		cv_ptr.image = new_plane_color_image;
-//		cv_ptr.encoding = "bgr8";
-//		dirt_detection_image_pub_.publish(cv_ptr.toImageMsg());
+		if (debug_["publishDirtDetections"] == true)
+		{
+			cv_bridge::CvImage cv_ptr;
+			cv_ptr.image = new_plane_color_image;
+			cv_ptr.encoding = "bgr8";
+			dirt_detection_image_pub_.publish(cv_ptr.toImageMsg());
+		}
 //
 //		if (debug_["showObservationsGrid"] == true)
 //		{

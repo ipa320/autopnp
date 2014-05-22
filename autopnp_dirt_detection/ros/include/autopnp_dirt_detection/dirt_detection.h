@@ -199,7 +199,7 @@ protected:
 	ros::Publisher clock_pub_;
 	ros::Publisher ground_truth_map_pub_;
 	ros::Publisher detection_map_pub_;
-	image_transport::Publisher dirt_detection_image_pub_; ///< topic for publishing the image containing the people positions
+	image_transport::Publisher dirt_detection_image_pub_; ///< topic for publishing the image containing the dirt positions
 	image_transport::Publisher dirt_detection_image_with_map_pub_;	///< image containing the map and the found dirt regions (mainly usable for visualization)
 
 	// labeling

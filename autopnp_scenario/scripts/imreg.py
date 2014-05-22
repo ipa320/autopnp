@@ -176,6 +176,8 @@ def similarity(im0, im1):
 
     f0 = fft2(im0)
     f1 = fft2(im2)
+    if f0.shape!=f1.shape:
+       return im1, 1, 0, [0,0], 0
     ir = abs(ifft2((f0 * f1.conjugate()) / (abs(f0) * abs(f1))))
     t0, t1 = numpy.unravel_index(numpy.argmax(ir), ir.shape)
     sim = ir[t0,t1]
@@ -195,6 +197,14 @@ def similarity(im0, im1):
         d = int((int(im1.shape[0] / scale) * math.sin(math.radians(angle))))
         t0, t1 = d+t1, d+t0
     scale = (im1.shape[1] - 1) / (int(im1.shape[1] / scale) - 1)
+
+    S=0
+    N=0
+    for x in xrange(im2.shape[0]):
+        for y in xrange(im2.shape[1]):
+            if im0[x,y]>0.5: S+=1
+            if im2[x,y]>0.5 and im0[x,y]>0.5: N+=1
+    sim *= float(N)/S
 
     return im2, scale, angle, [-t0, -t1], sim
 
@@ -292,20 +302,24 @@ def blur_out(img):
 
 #map, sub-image, step-size[%]
 def find_match(im0, im1, step_size=0.25):
-	im1 = blur_out(im1)
+	misc.imsave("/tmp/a.png", im0)
+	misc.imsave("/tmp/b.png", im1)
+	#im1 = blur_out(im1)
 	x=0
 	best=0
 	mathch=None
+	numS = im0.shape[0]/(step_size*im1.shape[0]) * im0.shape[1]/(step_size*im1.shape[1])
+	numC = 0
 	while x+im1.shape[0]<=im0.shape[0]:
 		y=0
+		numC += 1
 		while y+im1.shape[1]<=im0.shape[1]:
-			im2_, scale, angle, (t0, t1), sim = similarity( numpy.asarray(im0[x:x+im1.shape[0], y:y+im1.shape[1]]), im1)
+			im2_, scale, angle, (t0, t1), sim = similarity(im1, numpy.asarray(im0[x:x+im1.shape[0], y:y+im1.shape[1]]))
 			#print(scale, angle, x, y, t0, t1, sim)
-			print(sim)
-			if sim>best:
-				print("BEST")
+			#print(sim)
+			if sim>best:# or sim>0.1:
+				print("BEST "+str(100.*numC/numS)+"%")
 				print(scale, angle, x, y, t0, t1, sim)
-				print(im1.shape)
 				im2=im2_
 				best=sim
 				tt0=math.cos(-angle)*t0 - math.sin(-angle)*t1
@@ -313,8 +327,15 @@ def find_match(im0, im1, step_size=0.25):
 				ox=int(tt0+x)
 				oy=int(tt1+y)
 				match=(ox,oy,-angle, sim)
+
 			y+=int(step_size*im1.shape[1])
 		x+=int(step_size*im1.shape[0])
+
+	im = misc.imrotate(im0, match[2])
+	ox = max(match[0],0)
+	oy = max(match[1],0)
+	im3= numpy.asarray(im[ox:(ox+im1.shape[0]), oy:(oy+im1.shape[1])])
+	imshow(im0,im1,im3,im2_)
 
 	return match
 

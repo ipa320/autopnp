@@ -75,7 +75,7 @@ def main(confirm):
 									   [[2.0, -1.5, 1.5*math.pi], "linear"] ]
 	dirt_inspection_map_poses = [ [[1.0, -2.0, 0.0], "omni"],      # list of inspection positions (x,y,theta) of robot with movement mode
 								  [[1.0, -2.0, 1.5*math.pi], "linear"] ]
-	valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, 0.0]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
+	# deactivated at the moment: valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, 0.0]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
 	
 	# full Automatica scenario (i.e. let the operator attach/change the tool, do the job according to the attached tool)
 	# just fill history of global transform listener
@@ -96,6 +96,12 @@ def main(confirm):
 		#					remapping={'analyze_map_data_img_':'sm_img'})
 		
 		
+		smach.StateMachine.add('DETERMINE_ATTACHED_TOOL', DetermineAttachedTool(),
+							transitions={'sdh':'TRASH_BIN_DETECTION_ON',
+										 'vacuum':'DIRT_DETECTION_ON',
+										 'none':'CHANGE_TOOL_MANUAL',
+										 'failed':'failed'})
+
 		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['sdh_attached', 'vacuum_attached', 'failed'],
 														input_keys=['tool_wagon_pose'])
 		with sm_sub_change_tool_manual:
@@ -110,12 +116,6 @@ def main(confirm):
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL', sm_sub_change_tool_manual,
 							transitions={'sdh_attached':'TRASH_BIN_DETECTION_ON',
 										 'vacuum_attached':'DIRT_DETECTION_ON',
-										 'failed':'failed'})
-
-		smach.StateMachine.add('DETERMINE_ATTACHED_TOOL', DetermineAttachedTool(),
-							transitions={'sdh':'TRASH_BIN_DETECTION_ON',
-										 'vacuum':'DIRT_DETECTION_ON',
-										 'none':'CHANGE_TOOL_MANUAL',
 										 'failed':'failed'})
 
 
@@ -221,7 +221,7 @@ def main(confirm):
 		smach.StateMachine.add('DIRT_DETECTION_OFF', DirtDetectionOff(),
 							transitions={'dirt_detection_off':'GET_DIRT_MAP'})
 
-		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(valid_rectangle_for_dirt_detections=valid_rectangle_for_dirt_detections),
+		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
 							transitions={'list_of_dirt_location':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
 		
 		
