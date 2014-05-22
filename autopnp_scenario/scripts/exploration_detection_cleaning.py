@@ -2086,15 +2086,18 @@ class ReceiveDirtMap(smach.State):
 					queue = [ [u,v] ]
 					while len(queue)>0:
 						point = queue.pop()
-						for dv in range(-1, 1):
-							for du in range(-1, 1):
+						print "queue point:", point
+						for dv in range(-1, 2):
+							for du in range(-1, 2):
 								if dv==0 and du==0:
 									continue
 								newU = point[0]+du
 								newV = point[1]+dv
 								if newV<0 or newV>=height or newU<0 or newU>=width:
 									continue
+								print "newU, newV:", newU, newV
 								if dirtMap.data[newV*width+newU] > 25:
+									print "added point:", newU, newV
 									groupMap[newV*width+newU] = currentLabel
 									queue.append([newU, newV])
 					currentLabel += 1
