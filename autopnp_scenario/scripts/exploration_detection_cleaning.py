@@ -2066,9 +2066,52 @@ class MoveArmToStandardLocation(smach.State):
 
 class ReceiveDirtMap(smach.State):
 	def __init__(self, valid_rectangle_for_dirt_detections=0):
-		smach.State.__init__(self, outcomes=['list_of_dirt_location'],
+		smach.State.__init__(self, outcomes=['list_of_dirt_location', 'failed'],
 							output_keys=['list_of_dirt_locations', 'last_visited_dirt_location'])
 		self.valid_rectangle_for_dirt_detections = valid_rectangle_for_dirt_detections
+
+	def agglomerate(self, dirtMap):
+		# label individual dirt regions in image/map
+		height = dirtMap.info.height
+		width = dirtMap.info.width
+		groupMap = [0] * width*height
+		currentLabel = 1
+		for v in range(0, height):
+			for u in range(0, width):
+				index = v*width + u
+				if dirtMap.data[index] > 25 and groupMap[index]==0:
+					# label a new region and find all connected pixels
+					groupMap[index] = currentLabel
+					queue = [ [u,v] ]
+					while len(queue)>0:
+						point = queue.pop()
+						for dv in range(-1, 1):
+							for du in range(-1, 1):
+								if dv==0 and du==0:
+									continue
+								newU = point[0]+du
+								newV = point[1]+dv
+								if newV<0 or newV>=height or newU<0 or newU>=width:
+									continue
+								if dirtMap.data[newV*width+newU] > 25:
+									groupMap[newV*width+newU] = currentLabel
+									queue.append([newU, newV])
+					currentLabel += 1
+		
+		# create a list of cell groups that belong to the same cluster
+		groups = {}
+		for v in range(0, height):
+			for u in range(0, width):
+				index = v*width + u
+				label = groupMap[index]
+				if label != 0:
+					if label in groups:
+						groups[label].append([u,v])
+					else:
+						groups[label] = [[u,v]]
+		
+		return groups
+
 
 	def execute(self, userdata ):
 		sf = ScreenFormat(self.__class__.__name__)
@@ -2079,23 +2122,49 @@ class ReceiveDirtMap(smach.State):
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s"%e
+			return 'failed'
 		
-		# create list out of map
-		list_of_dirt_locations = []
+		# group detections
+		dirt_groups = self.agglomerate(resp.dirtMap)
+
+		# convert to metric coordinates
+		list_of_dirt_locations = {}
 		map_resolution = resp.dirtMap.info.resolution
 		map_offset = resp.dirtMap.info.origin
-		for v in range(0, resp.dirtMap.info.height):
-			for u in range(0, resp.dirtMap.info.width):
-				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
-					x = u*map_resolution+map_offset.position.x
-					y = v*map_resolution+map_offset.position.y
+		for group_label in dirt_groups:
+			for points in dirt_groups[group_label]:
+				for point in points:
+					x = point[0]*map_resolution+map_offset.position.x
+					y = point[1]*map_resolution+map_offset.position.y
 					# hack: limit valid space for cleaning
 					print "(", x, ", ", y, ")?"
 					if (self.valid_rectangle_for_dirt_detections==0 or
 					   (x>valid_rectangle_for_dirt_detections[0] and y>valid_rectangle_for_dirt_detections[1] and
 					    x<valid_rectangle_for_dirt_detections[2] and y<valid_rectangle_for_dirt_detections[3]) ):
-						list_of_dirt_locations.append([x,y])
-						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
+						if group_label in list_of_dirt_locations:
+							list_of_dirt_locations[group_label].append([x,y])
+						else:
+							list_of_dirt_locations[group_label] = [[x,y]]
+						print "group:", group_label, " --> adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
+
+		
+		# old school: dirt cell by dirt cell
+# 		# create list out of map
+# 		list_of_dirt_locations = []
+# 		map_resolution = resp.dirtMap.info.resolution
+# 		map_offset = resp.dirtMap.info.origin
+# 		for v in range(0, resp.dirtMap.info.height):
+# 			for u in range(0, resp.dirtMap.info.width):
+# 				if resp.dirtMap.data[v*resp.dirtMap.info.width + u] > 25:
+# 					x = u*map_resolution+map_offset.position.x
+# 					y = v*map_resolution+map_offset.position.y
+# 					# hack: limit valid space for cleaning
+# 					print "(", x, ", ", y, ")?"
+# 					if (self.valid_rectangle_for_dirt_detections==0 or
+# 					   (x>valid_rectangle_for_dirt_detections[0] and y>valid_rectangle_for_dirt_detections[1] and
+# 					    x<valid_rectangle_for_dirt_detections[2] and y<valid_rectangle_for_dirt_detections[3]) ):
+# 						list_of_dirt_locations.append([x,y])
+# 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
 		userdata.list_of_dirt_locations = list_of_dirt_locations
 		userdata.last_visited_dirt_location = -1

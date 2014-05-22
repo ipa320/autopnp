@@ -87,6 +87,10 @@ def main(confirm):
 
 	with sm_scenario:
 
+		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
+					transitions={'list_of_dirt_location':'finished',
+								 'failed': 'finished'})
+
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm, tool_wagon_pose=tool_wagon_map_pose),
 							transitions={'initialized':'DETERMINE_ATTACHED_TOOL',#CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
 										'failed':'failed'})
@@ -222,7 +226,8 @@ def main(confirm):
 							transitions={'dirt_detection_off':'GET_DIRT_MAP'})
 
 		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
-							transitions={'list_of_dirt_location':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})
+							transitions={'list_of_dirt_location':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION',
+										 'failed': 'DIRT_DETECTION_ON'})
 		
 		
 		
