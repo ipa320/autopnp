@@ -26,6 +26,7 @@ def say(sen):
 	  resp1 = say_(s)
 	except rospy.ServiceException as exc:
 	  print("Service did not process request: " + str(exc))
+	return False
 
 def global_localization():
 	rospy.wait_for_service('/global_localization')
@@ -113,6 +114,8 @@ def init():
 	if handle_head.get_error_code() != 0:
 		return say("failed to recover head")
 
+	say("All components are ready. Please drive me around until I am localized.")
+
 	return True
 
 def cb_map(m):
@@ -168,6 +171,17 @@ def cb_particles(msg):
 		say("Distance: "+str("%.1f" % dist)+" meters")
 		say("Delta angle: "+str(int(round(angle)))+" degrees")
 
+		say("Please confirm within 10 seconds.")
+		confirm = False
+		for i in xrange(100):
+			rospy.sleep(0.1)
+			if confirm==True: break
+		if confirm==False:
+			say("Localization failed. Retrying.")
+			global_localization()
+			return
+
+		say("Localized.")
 		done = 3
 		exit(0)
 

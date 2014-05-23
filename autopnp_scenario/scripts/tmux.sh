@@ -17,6 +17,8 @@ tmux send-keys "sleep 40;navi" C-m
 tmux split-window -v
 tmux resize-pane -U 5
 tmux send-keys "sleep 60;autopnp" C-m
+tmux split-window -v
+tmux send-keys "sleep 40;rosrun autopnp_scenario localize.py" C-m
 
 # Set default window
 tmux select-window -t $SESSION:1
