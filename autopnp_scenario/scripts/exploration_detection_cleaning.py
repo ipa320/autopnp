@@ -78,6 +78,7 @@ from autopnp_scenario.msg import *
 from autopnp_dirt_detection.srv import *
 from cob_object_detection_msgs.msg import DetectionArray, Detection
 from geometry_msgs import *
+from geometry_msgs.msg import Pose2D
 from cob_phidgets.srv import SetDigitalSensor
 from cob_srvs.srv import Trigger
 from std_msgs.msg import Bool, String
@@ -85,6 +86,7 @@ from std_srvs.srv import Empty
 from sensor_msgs.msg import Joy
 
 from ApproachPerimeter import *
+from cob_map_accessibility_analysis.srv import CheckPointAccessibility
 
 from simple_script_server import simple_script_server
 sss = simple_script_server()
@@ -2170,7 +2172,7 @@ class ReceiveDirtMap(smach.State):
 # 						print "adding dirt location at (", u, ",", v ,")pix = (", x, ",", y, ")m"
 		
 		userdata.list_of_dirt_locations = list_of_dirt_locations
-		userdata.last_visited_dirt_location = -1
+		userdata.last_visited_dirt_location = 0  #-1
 		
 		return 'list_of_dirt_location'
 
@@ -2196,7 +2198,8 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 		print "last_visited_dirt_location =", userdata.last_visited_dirt_location_in
 		print "list_of_dirt_locations =", userdata.list_of_dirt_locations
 		
-		if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location_in+1==len(userdata.list_of_dirt_locations):
+		#if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location_in+1==len(userdata.list_of_dirt_locations):
+		if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location_in==len(userdata.list_of_dirt_locations):
 			return 'no_dirt_spots_left'
 		else:
 			current_dirt_location = userdata.last_visited_dirt_location_in + 1
@@ -2380,6 +2383,312 @@ class Clean(smach.State):
 	
 		return 'cleaning_done'
 
+
+class CleanCellGroup(smach.State):
+	def __init__(self):
+		smach.State.__init__(self, outcomes=['cleaning_done'], input_keys=['next_dirt_location'])
+		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+	
+	def computeClosestPoint(self, grid_robot, next_point):
+		min_dist = 10000000.0
+		closest_point = 0
+		for point in grid_robot:
+			dist = math.sqrt((point[0]-next_point[0])*(point[0]-next_point[0]) + (point[1]-next_point[1])*(point[1]-next_point[1]))
+			if dist < min_dist:
+				min_dist = dist
+				closest_point = point
+		return [closest_point, min_dist]
+	
+	def computeCleaningPath(self, map_points_to_clean):
+		# determine size of dirt spot
+		min_x = 10000000.0  # in [m]
+		max_x = -10000000.0
+		min_y = 10000000.0
+		max_y = -10000000.0
+		for point in map_points_to_clean:
+			if point[0] < min_x:
+				min_x = point[0]
+			if point[0] > max_x:
+				max_x = point[0]
+			if point[1] < min_y:
+				min_y = point[1]
+			if point[1] > max_y:
+				max_y = point[1]
+		min_x -= 0.1
+		max_x += 0.1
+		min_y -= 0.1
+		max_y += 0.1
+		
+		# create a regular grid of points to clean
+		grid_tool = []
+		grid_step = 0.1
+		x = min_x
+		while x < max_x+grid_step:
+			y = min_y
+			while y < max_y+grid_step:
+				y += grid_step
+				grid_tool.append([x,y])
+			x += grid_step
+		
+		### check accessibility of several trajectories
+		tool_offset_to_base_link = [-0.14, -0.53]   # the x-y-plane offset of the tool center w.r.t. base_link measured in the base_link coordinate system [in m]
+		movement_direction = [ [grid_step, 0.0], [0.0, grid_step], [-grid_step, 0.0], [0.0, -grid_step] ]   # potential movement directions of the robot, measured in map coordinates [in m]
+		# compute tool offset vectors in the map coordinate system
+		tool_offset_vectors_map = []   # (x,y,alpha) tool offset to base_link in map coordinate system for each movement direction [x,y, in m] and angle alpha of movement direction in map coordinate system
+		lanes = []   # estimate of the number of lanes to cover the target area while driving along the possible movement directions
+		for dir in movement_direction:
+			alpha = math.atan2(dir[1], dir[0])
+			offset_vector = [ math.cos(alpha)*tool_offset_to_base_link[0] - math.sin(alpha)*tool_offset_to_base_link[1], math.sin(alpha)*tool_offset_to_base_link[0] + math.cos(alpha)*tool_offset_to_base_link[1], alpha ]
+			tool_offset_vectors_map.append(offset_vector)
+			### estimate number of lanes to cover the target area while driving along the current direction
+			p1 = []
+			p2 = []
+			if (x>=0 and y>=0) or (x<0 and y<0):
+				# corner points: (min_x, max_y) and (max_x, min_y)
+				p1 = [min_x, max_y]
+				p2 = [max_x, min_y]
+			else:
+				# corner points: (min_x, max_y) and (max_x, min_y)
+				p1 = [max_x, max_y]
+				p2 = [min_x, min_y]
+			# create linear equation in Hesse normal form
+			norm = (math.sqrt(dir[0]*dir[0]+dir[1]*dir[1]))
+			normal = [dir[1]/norm, -dir[0]/norm]
+			d = normal[0]*p1[0]+normal[1]*p1[1]
+			if d<0:
+				d *= -1
+				normal[0] *= -1
+				normal[1] *= -1
+			# compute distance between p2 and line
+			dist = normal[0]*p2[0]+normal[1]*p2[1] - d
+			lanes.append(dist/grid_step)
+			print "dir:", dir, "  offset_vector:", offset_vector, "  dist:", dist
+		# create a grid of robot positions from the grid of tool positions for each movement direction, count the number of accessibile points among them
+		number_accessible_points = []   # number of accessible points in each movement direction
+		accessible_points = []   # set of accessible points
+		for offset_vector in tool_offset_vectors_map:
+			grid_robot = []
+			for point in grid_tool:
+				pose = Pose2D()
+				pose.x = point[0]-offset_vector[0]
+				pose.y = point[1]-offset_vector[1]
+				pose.theta = offset_vector[2]
+				grid_robot.append(pose)
+			# check accessibility of all grid points
+			rospy.wait_for_service('map_accessibility_analysis/map_points_accessibility_check',10)
+			try:
+				get_approach_pose = rospy.ServiceProxy('map_accessibility_analysis/map_points_accessibility_check', CheckPointAccessibility)
+				res = get_approach_pose(grid_robot)
+			except rospy.ServiceException, e:
+				print "Service call failed: %s"%e
+				return 'failed'  # todo
+			# count accessible points
+			acc = 0
+			acc_points = []
+			for i in range(0, len(res.accessibility_flags)):
+				if flag[i]==True:
+					acc += 1
+					acc_points.append(grid_robot[i])
+			accessible_points.append(acc_points)
+			number_accessible_points.append(acc)
+			print "offset_vector:", offset_vector, "   number_accessible_points:", acc, " ( from", len(grid_robot), ")"
+		
+		### select best trajectory
+		best_trajectories = []
+		max_acc = 0
+		for i in range(0,len(number_accessible_points)):   # most accessible points
+			if number_accessible_points[i] > max_acc:
+				max_acc = number_accessible_points[i]
+				best_trajectories = [i]
+			elif number_accessible_points[i] == max_acc:
+				best_trajectories.append(i)
+		print "most acc:", max_acc, "  at directions:", best_trajectories
+		best_trajectories2 = []
+		min_lanes = 100000000
+		for j in range(0, len(best_trajectories)):   # minimum lanes
+			if lanes[best_trajectories[j]] < min_lanes:
+				min_lanes = lanes[best_trajectories[j]]
+				best_trajectories2 = [best_trajectories[j]]
+			elif lanes[best_trajectories[j]] == min_lanes:
+				best_trajectories2.append(best_trajectories[j])
+		print "min lanes:", min_lanes, "  at directions:", best_trajectories2
+		best_direction = -1
+		trajectory_starting_point = []
+		min_dist = 100000000.0
+		robot_pose_translation = None
+		while robot_pose_translation==None:
+			(robot_pose_translation, robot_pose_rotation, robot_pose_rotation_euler) = currentRobotPose()
+		for i in range(0, len(best_trajectories2)):   # closest point to robot
+			starting_point = []
+			if movement_direction[best_trajectories2[i]][0] > 0 and movement_direction[best_trajectories2[i]][1] >= 0:
+				starting_point = [min_x, max_y]
+			elif movement_direction[best_trajectories2[i]][0] >= 0 and movement_direction[best_trajectories2[i]][1] < 0:
+				starting_point = [max_x, max_y]
+			elif movement_direction[best_trajectories2[i]][0] < 0 and movement_direction[best_trajectories2[i]][1] <= 0:
+				starting_point = [max_x, min_y]
+			elif movement_direction[best_trajectories2[i]][0] <= 0 and movement_direction[best_trajectories2[i]][1] > 0:
+				starting_point = [min_x, min_y]
+			dist = math.sqrt((robot_pose_translation[0]-starting_point[0])*(robot_pose_translation[0]-starting_point[0]) + (robot_pose_translation[1]-starting_point[1])*(robot_pose_translation[1]-starting_point[1]))
+			if dist < min_dist:
+				min_dist = dist
+				trajectory_starting_point = starting_point
+				best_direction = i
+		print "min dist:", min_dist, "  at direction:", best_direction, "  with starting point:", trajectory_starting_point
+		
+		### compute ordered set of best trajectory way points
+		# todo: this simple solution only works properly for axis aligned movement directions
+		# todo: it furthermore assumes that all grid points are accessible, inaccessible points will be neglected
+		grid_robot = []
+		for point in grid_tool:
+			grid_robot.append([point[0]-tool_offset_vectors_map[best_direction][0], point[1]-tool_offset_vectors_map[best_direction][1], tool_offset_vectors_map[best_direction][2]])
+		last_point = [starting_point[0], starting_point[1], tool_offset_vectors_map[best_direction][2]]
+		line = [last_point]
+		trajectory = []
+		grid_robot.remove(last_point)
+		dir = movement_direction[best_direction]
+		normal_dir = [dir[1], -dir[0]]
+		max_dist = 0.8*grid_step
+		while True:
+			next_point = [last_point[0]+dir[0], last_point[1]+dir[1], last_point[2]]
+			[closest_point, min_dist] = self.computeClosestPoint(grid_robot, next_point)
+			if min_dist < max_dist:   # there was a point in the sampled grid in movement direction from the last point
+				line.append(closest_point)
+				grid_robot.remove(closest_point)
+				last_point = closest_point
+			else:   # no more points in movement direction -> line finished
+				first_point_in_line = line[0]
+				trajectory.append(line)
+				next_point = [first_point_in_line[0]+normal_dir[0], first_point_in_line[1]+normal_dir[1], first_point_in_line[2]]
+				[closest_point, min_dist] = self.computeClosestPoint(grid_robot, next_point)
+				if min_dist < max_dist:   # start a new line
+					line = [closest_point]
+					grid_robot.remove(closest_point)
+					last_point = closest_point
+				else:   # no more points to sample
+					if len(grid_robot)>0:
+						print "grid_robot is not empty:", grid_robot
+					break
+		
+		return trajectory
+		
+	def execute(self, userdata ):
+		sf = ScreenFormat(self.__class__.__name__)
+		
+#		if (CONFIRM_MODE==True):
+#			raw_input("cleaning position ok?")
+
+		# compute trajectory
+		print "cleaning the following cells:", userdata.next_dirt_location
+		trajectory = self.computeCleaningPath(userdata.next_dirt_location)
+		
+		if len(trajectory)==0:
+			print "Error: empty trajectory."
+			return 'cleaning_done'
+		if len(trajectory[0])==0:
+			print "Error: empty first line."
+			return 'cleaning_done'
+
+		# move to first point
+		sss.move("base", trajectory[0][0], mode='omni')
+
+		# 1. adjust base footprint
+		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"}) #[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
+		
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
+
+		# 2. clean
+		vacuum_init_service_name = '/vacuum_cleaner_controller/init'
+		vacuum_recover_service_name = '/vacuum_cleaner_controller/recover'
+		vacuum_on_service_name = '/vacuum_cleaner_controller/power_on'
+		vacuum_off_service_name = '/vacuum_cleaner_controller/power_off'
+		
+		#raw_input("cleaning position ok?")
+
+		# move arm from storage position to cleaning position
+		if JOURNALIST_MODE == False:
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
+		else:
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"]])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"]])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"]])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"]])
+			raw_input("enter")
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
+			raw_input("enter")
+
+		# recover vacuum cleaner (turning on is more reliably thereafter)
+		rospy.wait_for_service(vacuum_recover_service_name) 
+		try:
+			req = rospy.ServiceProxy(vacuum_recover_service_name, Trigger)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to vacuum recover failed: %s"%e
+		
+		# turn vacuum cleaner on
+		rospy.wait_for_service(vacuum_on_service_name) 
+		try:
+			req = rospy.ServiceProxy(vacuum_on_service_name, Trigger)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to vacuum on failed: %s"%e
+		
+# 		# move base (if necessary)
+# 		for j in range(0,5):
+# 			handle_base = sss.move_base_rel("base", (0.0, 0.1, 0.0), blocking=True)
+
+		# move along trajectory
+		for line in trajectory:
+			if len(line)==0:
+				continue
+			sss.move("base", line[0], mode='linear')
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
+			for point in line:
+				sss.move("base", point, mode='linear')
+			# lift arm
+			handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"]])
+		
+		#if (CONFIRM_MODE==True):
+		#raw_input("cleaning finished?")
+		
+		# turn vacuum cleaner off
+		rospy.wait_for_service(vacuum_off_service_name) 
+		try:
+			req = rospy.ServiceProxy(vacuum_off_service_name, Trigger)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to vacuum off failed: %s"%e
+		
+		# move arm back to storage position
+		handle_arm = sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+		
+		# 4. reset footprint
+		if local_config["footprint"]!=None:
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+		else:
+			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+
+		rospy.sleep(0.5)
+		rospy.wait_for_service('/update_footprint') 
+		try:
+			req = rospy.ServiceProxy('/update_footprint',Empty)
+			resp = req()
+		except rospy.ServiceException, e:
+			print "Service call to /update_footprint failed: %s"%e
+	
+		return 'cleaning_done'
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------
