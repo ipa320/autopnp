@@ -122,10 +122,12 @@ def cb_map(m):
 	global done
 	if done>0: return
 
-	if init()!=True: return
+	while done<=0:
+		if init()!=True: continue
 
-	global_localization()
-	done = 1
+		global_localization()
+		done = 1
+		break
 
 def cb_particles(msg):
 	global done
@@ -179,6 +181,7 @@ def cb_particles(msg):
 		if confirm==False:
 			say("Localization failed. Retrying.")
 			global_localization()
+			done = 1
 			return
 
 		say("Localized.")
