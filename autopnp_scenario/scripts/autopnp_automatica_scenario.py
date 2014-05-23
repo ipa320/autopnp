@@ -71,10 +71,10 @@ def main(confirm):
 	
 	# todo: parameters
 	tool_wagon_map_pose = Pose2D(x=1.5, y=0.0, theta=1.5*math.pi)  # the map coordinates of the tool wagon center
-	trash_bin_inspection_map_poses = [ [[2.0, -1.5, 0.0], "omni"],   # list of inspection positions (x,y,theta) of robot with movement mode
-									   [[2.0, -1.5, 1.5*math.pi], "linear"] ]
-	dirt_inspection_map_poses = [ [[1.0, -2.0, 0.0], "omni"],      # list of inspection positions (x,y,theta) of robot with movement mode
-								  [[1.0, -2.0, 1.5*math.pi], "linear"] ]
+	trash_bin_inspection_map_poses = [ [[2.0, -1.5, 0.0], "omni"],
+									   [[2.0, -1.5, 1.5*math.pi], "linear"] ]   # list of inspection positions (x,y,theta) of robot with movement mode
+	dirt_inspection_map_poses = [ [[1.0, -2.0, 0.0], "omni"],
+								  [[1.0, -2.0, 1.5*math.pi], "linear"] ]	  # list of inspection positions (x,y,theta) of robot with movement mode
 	# deactivated at the moment: valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, 0.0]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
 	
 	# full Automatica scenario (i.e. let the operator attach/change the tool, do the job according to the attached tool)
@@ -264,7 +264,7 @@ def main(confirm):
 		
 #		smach.StateMachine.add('CLEAN', Clean(), transitions={'cleaning_done':'GO_TO_INSPECT_LOCATION'})
 		
-		smach.StateMachine.add('CLEAN_CELL_GROUP', CleanCellGroup(), transitions={'cleaning_done':'GO_TO_INSPECT_LOCATION'})
+		smach.StateMachine.add('CLEAN_CELL_GROUP', CleanCellGroup(), transitions={'cleaning_done':'GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION'})#'GO_TO_INSPECT_LOCATION'})
 		
 		
 		
@@ -319,6 +319,7 @@ if __name__ == '__main__':
 		else:
 			CONFIRM_MODE = True
 
+		CONFIRM_MODE = False
 		print "CONFIRM_MODE ", CONFIRM_MODE
 		main(CONFIRM_MODE)
 	except:
