@@ -56,7 +56,7 @@
 #
 #################################################################
 import sys, os
-os.system("rosservice call /say 'Let's clean this room.' &")
+os.system("rosservice call /say 'Lets clean this room.' &")
 
 import roslib; roslib.load_manifest('autopnp_scenario')
 import rospy
@@ -87,9 +87,9 @@ def main(confirm):
 
 	with sm_scenario:
 
-		smach.StateMachine.add('GET_DIRT_MAP_TEST', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
-					transitions={'list_of_dirt_location':'finished',
-								 'failed': 'finished'})
+# 		smach.StateMachine.add('GET_DIRT_MAP_TEST', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
+# 					transitions={'list_of_dirt_location':'finished',
+# 								 'failed': 'finished'})
 
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm, tool_wagon_pose=tool_wagon_map_pose),
 							transitions={'initialized':'DETERMINE_ATTACHED_TOOL',#CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
@@ -235,28 +235,36 @@ def main(confirm):
 																		input_keys=['list_of_dirt_locations', 'last_visited_dirt_location'],
 																		output_keys=['next_dirt_location'])
 
-		with sm_sub_go_to_next_unprocessed_dirt_location:
-			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
-								transitions={'selected_next_dirt_location':'MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING',
-											'no_dirt_spots_left':'no_dirt_spots_left'},
-								remapping = {'last_visited_dirt_location_in':'last_visited_dirt_location',
-											 'last_visited_dirt_location_out':'last_visited_dirt_location'})
-			
-			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING', MoveLocationPerimeterCleaning(),
-								transitions={'movement_prepared':'APPROACH_PERIMETER_CLEANING'})
-			
-			smach.StateMachine.add('APPROACH_PERIMETER_CLEANING', ApproachPerimeter(tf_listener=get_transform_listener()),
-								transitions={'reached':'arrived_dirt_location', 
-											 'not_reached':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT',
-											 'failed':'failed'})
+# 		with sm_sub_go_to_next_unprocessed_dirt_location:
+# 			smach.StateMachine.add('SELECT_NEXT_UNPROCESSED_DIRT_SPOT', SelectNextUnprocssedDirtSpot(),
+# 								transitions={'selected_next_dirt_location':'MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING',
+# 											'no_dirt_spots_left':'no_dirt_spots_left'},
+# 								remapping = {'last_visited_dirt_location_in':'last_visited_dirt_location',
+# 											 'last_visited_dirt_location_out':'last_visited_dirt_location'})
+# 			
+# 			smach.StateMachine.add('MOVE_TO_DIRT_LOCATION_PERIMETER_CLEANING', MoveLocationPerimeterCleaning(),
+# 								transitions={'movement_prepared':'APPROACH_PERIMETER_CLEANING'})
+# 			
+# 			smach.StateMachine.add('APPROACH_PERIMETER_CLEANING', ApproachPerimeter(tf_listener=get_transform_listener()),
+# 								transitions={'reached':'arrived_dirt_location', 
+# 											 'not_reached':'SELECT_NEXT_UNPROCESSED_DIRT_SPOT',
+# 											 'failed':'failed'})
+# 
+# 		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', sm_sub_go_to_next_unprocessed_dirt_location,
+# 							transitions={'arrived_dirt_location':'CLEAN',
+# 										'no_dirt_spots_left':'DIRT_DETECTION_ON'})
 
-		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', sm_sub_go_to_next_unprocessed_dirt_location,
-							transitions={'arrived_dirt_location':'CLEAN',
-										'no_dirt_spots_left':'DIRT_DETECTION_ON'})
+		smach.StateMachine.add('GO_TO_NEXT_UNPROCESSED_DIRT_LOCATION', SelectNextUnprocssedDirtSpot(),
+							transitions={'selected_next_dirt_location':'CLEAN_CELL_GROUP',
+										'no_dirt_spots_left':'DIRT_DETECTION_ON'},
+							remapping = {'last_visited_dirt_location_in':'last_visited_dirt_location',
+										 'last_visited_dirt_location_out':'last_visited_dirt_location'})
 		
 		
 		
-		smach.StateMachine.add('CLEAN', Clean(), transitions={'cleaning_done':'GO_TO_INSPECT_LOCATION'})
+#		smach.StateMachine.add('CLEAN', Clean(), transitions={'cleaning_done':'GO_TO_INSPECT_LOCATION'})
+		
+		smach.StateMachine.add('CLEAN_CELL_GROUP', CleanCellGroup(), transitions={'cleaning_done':'GO_TO_INSPECT_LOCATION'})
 		
 		
 		
