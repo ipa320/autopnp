@@ -25,10 +25,16 @@ If necessary change position ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"
 
 
 Todo:
-- BTG: Banden? Welche? Einpacken?
-- BTG: Ladegerät?
-- BTG: Wer transportiert Zubehör für uns zur Automatica?
+- BTG: Banden? Welche? Einpacken?   --> (2*3m, 2*2m aus Berlin, Alex fragen: wir müssen noch 3* 2.5m Banden mitnehmen)
+- BTG: Ladegerät?                   --> (ist in Berlin, kommt Freitag wieder)
+- BTG: Wer transportiert Zubehör für uns zur Automatica?   --> (anfordern per Mail)
 - Batterien separat transportieren
-- Steuerlaptop wenn JOSH nicht mehr da?
+- Steuerlaptop wenn JOSH nicht mehr da?  --> (Damon gibt ihn Birgit mit)
 - RMB: pdf for fiducials
 - JOSH: get rmbs rviz config
+- batterien
+
+
+Video:
+- kurz: 45s  + Schnitt bei 15s-18s  + etwas Text + Hervorherbungen lassen
+- lang: 120s + Schnitt bei schlechter Navi bei Auskippen +Bildschirmausgaben

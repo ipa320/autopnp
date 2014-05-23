@@ -130,7 +130,7 @@ def cb_map(m):
 		break
 
 def cb_particles(msg):
-	global done
+	global done, confirm
 	if done!=1: return
 	arr_x=[]
 	arr_y=[]

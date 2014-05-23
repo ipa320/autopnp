@@ -176,8 +176,6 @@ class NodeClass
 				a = (params_[mode_].angles_[i].start_-scan.angle_min)/(scan.angle_max-scan.angle_min)*(scan.ranges.size()-1);
 				b = (params_[mode_].angles_[i].stop_-scan.angle_min)/(scan.angle_max-scan.angle_min)*(scan.ranges.size()-1);
 				
-				std::cout<<a<<" "<<scan.ranges.size()<<std::endl;
-				
 				a = std::max(a, 0);
 				b = std::min(b, (int)scan.ranges.size()-1);
 				

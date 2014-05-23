@@ -70,11 +70,11 @@ def main(confirm):
 	rospy.init_node('exploration_detection_cleaning')
 	
 	# todo: parameters
-	tool_wagon_map_pose = Pose2D(x=1.5, y=0.0, theta=1.5*math.pi)  # the map coordinates of the tool wagon center
-	trash_bin_inspection_map_poses = [ [[2.0, -1.5, 0.0], "omni"],
-									   [[2.0, -1.5, 1.5*math.pi], "linear"] ]   # list of inspection positions (x,y,theta) of robot with movement mode
-	dirt_inspection_map_poses = [ [[1.0, -2.0, 0.0], "omni"],
-								  [[1.0, -2.0, 1.5*math.pi], "linear"] ]	  # list of inspection positions (x,y,theta) of robot with movement mode
+	tool_wagon_map_pose = Pose2D(x=0.0, y=0.0, theta=0.0)  # the map coordinates of the tool wagon center
+	trash_bin_inspection_map_poses = [ [[1.0, 0.0, 0.0], "omni"],
+									   [[1.0, 0.0, -0.5*math.pi], "linear"] ]   # list of inspection positions (x,y,theta) of robot with movement mode
+	dirt_inspection_map_poses = [ [[1.0, 0.0, 0.0*math.pi], "omni"],
+								  [[1.0, 0.0, -0.25*math.pi], "linear"] ]	  # list of inspection positions (x,y,theta) of robot with movement mode
 	# deactivated at the moment: valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, 0.0]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
 	
 	# full Automatica scenario (i.e. let the operator attach/change the tool, do the job according to the attached tool)
@@ -86,10 +86,6 @@ def main(confirm):
 	sm_scenario.userdata.sm_trash_bin_counter = 0
 
 	with sm_scenario:
-
-# 		smach.StateMachine.add('GET_DIRT_MAP_TEST', ReceiveDirtMap(valid_rectangle_for_dirt_detections=0),  #valid_rectangle_for_dirt_detections),
-# 					transitions={'list_of_dirt_location':'finished',
-# 								 'failed': 'finished'})
 
 		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(confirm_mode=confirm, tool_wagon_pose=tool_wagon_map_pose),
 							transitions={'initialized':'DETERMINE_ATTACHED_TOOL',#CHANGE_TOOL_MANUAL', #'ANALYZE_MAP',
