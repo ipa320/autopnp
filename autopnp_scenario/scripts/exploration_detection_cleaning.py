@@ -656,7 +656,7 @@ def positionControlLoopLinear(self_tool_wagon_pose, dx, dy, dtheta):
 	while delta_theta < -1.5*math.pi:
 		delta_theta = delta_theta + 2* math.pi
 	print "(x,y)-dist: ", dist, "  yaw-dist: ", delta_theta
-	if dist > 0.04 or abs(delta_theta)>0.03:		# in m      # rot: 0.02 #trans: 0.03
+	if dist > 0.04 or abs(delta_theta)>0.03:		# in m      # rot: 0.02 #trans: 0.03  # josh
 		return False
 	else:
 		return True
