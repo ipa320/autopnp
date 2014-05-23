@@ -34,6 +34,7 @@ Todo:
 - JOSH: get rmbs rviz config
 - batterien
 
+- Probleme mit Scenario wenn mit Gamepad gestartet
 
 Video:
 - kurz: 45s  + Schnitt bei 15s-18s  + etwas Text + Hervorherbungen lassen

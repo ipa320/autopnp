@@ -876,7 +876,7 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		sss.move("head", "back", False)
 		sss.move("torso", "back", False)
 		
-		sss.say("I will now move closer to the waste container.", False)
+		sss.say(["I will now move closer to the waste container."], False)
 
 		self.tool_wagon_pose = None
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
@@ -1406,7 +1406,7 @@ class GraspTrashBin(smach.State):
 		# handle_arm = sss.move("arm",[[2.5890188217163086, -1.3564121723175049, 2.3780744075775146, 1.9312158823013306, 0.43163323402404785, 0.4533853530883789, -2.814291000366211]]) # small trash bin
 		# #handle_arm = sss.move("arm",[[1.7155265808105469, -0.5807472467422485, 2.374333143234253, 0.20792463421821594, -0.19672517478466034, 1.9377082586288452, -2.8133485317230225]])
 		
-		sss.say("Lets take the trash can to the waste container.", False)
+		sss.say(["Lets take the trash can to the waste container."], False)
 
 		return 'GTB_success'
 
@@ -1609,7 +1609,7 @@ class ReleaseTrashBin(smach.State):
 		# handle_arm = sss.move("arm",[[1.2847840785980225, -0.6864653825759888, 2.384225845336914, 1.362023115158081, 0.159407377243042, 0.9801371097564697, -1.39732344150543213]])
 
 		# 11. close hand
-		sss.move("sdh", "home")
+		sss.move("sdh", "home", False)
 
 		# 12. arm: over trash bin -> folded
 		handle_arm = sss.move("arm", [intermediate_folded2overtrashbin_position, "folded"])
@@ -1842,7 +1842,7 @@ class ChangeToolManualPnP(smach.State):
 		# ## move arm into respective carrying position for the new tool
 		if self.attachment == "sdh":
 			print 'Manual tool change successfully completed with sdh attached.'
-			sss.say(["The hand was attached successfully."], False)
+			sss.say(["The hand was connected successfully."], False)
 			handle_arm = sss.move("arm", [ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], 'folded'])
 			if handle_arm.get_error_code() != 0:
 				sss.say(["Could not move the arm. I will abort."])
@@ -1851,7 +1851,7 @@ class ChangeToolManualPnP(smach.State):
 			return 'CTM_done_sdh'
 		elif self.attachment == "vacuum":
 			print 'Manual tool change successfully completed with vacuum cleaner attached.'
-			sss.say(["The vacuum cleaner was attached successfully."], False)
+			sss.say(["The vacuum cleaner was connected successfully."], False)
 			handle_arm = sss.move("arm", [ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 			if handle_arm.get_error_code() != 0:
 				sss.say(["Could not move the arm. I will abort."])
@@ -1972,7 +1972,7 @@ class DetermineAttachedTool(smach.State):
 			sss.say(["I am using my vacuum cleaner now to clean dirty spots on the ground."], False)
 			return 'vacuum'
 		elif self.attachment == 'none':
-			sss.say(["There is no tool attached to my arm."], False)
+			sss.say(["There is no tool connected to my arm."], False)
 			return 'none'
 		
 		sss.say(["I cannot determine the attached device. I will abort."], False)
@@ -2208,7 +2208,7 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 		
 		# if (len(userdata.list_of_dirt_locations)==0) or userdata.last_visited_dirt_location_in+1==len(userdata.list_of_dirt_locations):
 		if (len(userdata.list_of_dirt_locations) == 0) or userdata.last_visited_dirt_location_in == len(userdata.list_of_dirt_locations):
-			sss.say("All dirt spots have been cleaned.", False)
+			sss.say(["All dirt spots have been cleaned."], False)
 			return 'no_dirt_spots_left'
 		else:
 			current_dirt_location = userdata.last_visited_dirt_location_in + 1
@@ -2217,7 +2217,7 @@ class SelectNextUnprocssedDirtSpot(smach.State):
 			userdata.last_visited_dirt_location_out = current_dirt_location
 			print "last_visited_dirt_location =", current_dirt_location
 			print "Next dirt location to clean: ", userdata.list_of_dirt_locations[current_dirt_location]
-			sss.say("I am going to clean the next dirt spot.", False)
+			sss.say(["I am going to clean the next dirt spot."], False)
 			return 'selected_next_dirt_location'
 
 		print "Error: the script should never visit this point."
