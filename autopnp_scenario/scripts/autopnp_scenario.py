@@ -235,8 +235,10 @@ N', GraspTrashBin(),
 		smach.StateMachine.add('DIRT_DETECTION_ON', DirtDetectionOn(),
 							transitions={'dirt_detection_on':'TRASH_BIN_DETECTION_ON'})
 		
-		smach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
-							transitions={'trash_bin_detection_on':'INSPECT_ROOM'})
+		smach.StateMachine.add('TRASH_BIN_DETECTION_ON', MoveToToolWaggonFrontFrontalFar(),
+							transitions={'arrived':'finished'})
+		#mach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
+		#					transitions={'trash_bin_detection_on':'INSPECT_ROOM'})
 		
 		smach.StateMachine.add('INSPECT_ROOM', InspectRoom(),
 							transitions={'finished':'DIRT_DETECTION_OFF'},

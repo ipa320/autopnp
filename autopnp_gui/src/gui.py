@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import roslib
 roslib.load_manifest('cob_script_server')
 import rospy
@@ -133,9 +135,9 @@ class RosThread(QThread):
         self.pub_add.publish(String("DWA"))
 
     def A(self):
-        self.sss.move("base", [1,-2,0], mode=self.mode)
+        self.sss.move("base", [-0.13,-0.6,0.85], mode=self.mode)
     def B(self):
-        self.sss.move("base", [2,-2,0], mode=self.mode)
+        self.sss.move("base", [0.6,0.58,1.1], mode=self.mode)
 
 ui.gripper.hide()
 ui.vacuum.hide()

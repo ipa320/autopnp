@@ -87,15 +87,11 @@ static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, 0.04);
 static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
-/*
- * - Translation: [-0.080, 0.020, -0.018]
-- Rotation: in Quaternion [0.675, 0.171, 0.676, 0.241]
- *
- */
-static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.080, 0.020, -0.015);
-static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.675, 0.171, 0.676, 0.241);
 
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.10, -0.10, 0.35);
+static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.052, 0.032, -0.030);
+static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.661, 0.175, 0.677, 0.272);
+
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.10, -0.10, 0.30);
 
 static const tf::Vector3 VAC_CLEANER_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 static const tf::Vector3 ARM_STATION_OFFSET = tf::Vector3(0.0, 0.0, 0.0);

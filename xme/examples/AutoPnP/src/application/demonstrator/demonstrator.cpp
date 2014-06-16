@@ -796,6 +796,7 @@ xme_status_t
 addDataPacketTransferEntries(void);
 
 static char g_addressBuffer[128] = "127.0.0.1:65100";
+static char g_addressBufferMulti[128] = "255.255.255.255";
 
 XME_EXTERN_C_END
 
@@ -860,6 +861,8 @@ xmeInit
 	for(int i=0; i<argc-1; i++) {
 		if(strcmp(argv[i], "master")==0)
 			strcpy(g_addressBuffer, argv[i+1]);
+		if(strcmp(argv[i], "multi")==0)
+			strcpy(g_addressBufferMulti, argv[i+1]);
 	}
 
     XME_CHECK(XME_STATUS_SUCCESS == xme_hal_env_init(), XME_STATUS_OUT_OF_RESOURCES);
@@ -1605,7 +1608,7 @@ createWaypoints(void)
                     udpSendWaypointDescriptor,
                     &ports[18], // udpSend.configuration[0].in (loginClient.outRequest)
                     key,
-                    "255.255.255.255",
+                    g_addressBufferMulti,
                     33200,
                     XME_CORE_TOPIC_LOGIN_LOGINREQUEST,
                     sizeof(xme_core_topic_login_loginRequest_t),

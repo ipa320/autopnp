@@ -104,8 +104,9 @@ MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.0  # maximum allowed distance of tool
 
 global TOOL_WAGON_LOCATIONS
 TOOL_WAGON_LOCATIONS = []  # valid parking positions of tool wagon in current map [in m and rad]
-TOOL_WAGON_LOCATIONS.append(Pose2D(x=5.3, y=0, theta=math.pi))
-TOOL_WAGON_LOCATIONS.append(Pose2D(x=0, y=0, theta=0))
+#TOOL_WAGON_LOCATIONS.append(Pose2D(x=5.3, y=0, theta=math.pi))
+#TOOL_WAGON_LOCATIONS.append(Pose2D(x=0, y=0, theta=0))
+TOOL_WAGON_LOCATIONS.append(Pose2D(x=1.513, y=-0.890, theta=0.7))
 
 global TOOL_WAGON_MARKER_OFFSETS
 TOOL_WAGON_MARKER_OFFSETS = {  # todo: measure translational offsets
@@ -121,7 +122,7 @@ TOOL_WAGON_ROBOT_OFFSETS = {
 						"front_far":	Pose2D(x=-1.4, y=0.0, theta=0.0),
 						"rear":		Pose2D(x=-1.45, y=0.0, theta=math.pi),
 						"front_frontal_far":	Pose2D(x=1.4, y=0.0, theta=math.pi),
-						"front_trash_clearing":	Pose2D(x=-0.90, y=0.0, theta=0.0)  # Pose2D(x=-1.05, y=0.0, theta=0.0)
+						"front_trash_clearing":	Pose2D(x=-0.95, y=0.0, theta=0.0)  # Pose2D(x=-1.05, y=0.0, theta=0.0)
 						}  # describes the offset of the tool wagon center with respect to base_link (x-axis in tool wagon is directed to the front, y-axis to the left)
 
 global FIDUCIALS_MARKER_DICTIONARY
@@ -163,7 +164,8 @@ ARM_JOINT_CONFIGURATIONS_VACUUM = {
 	"above_cleaning_20cm_position": [-0.09950122065619672, -0.19219565722961557, 0.08124507668033604, -2.1109059171170617, 1.7055153453006288, -0.2646093678948603, -0.500527447],  # 7:1.000527447 # ca. 20cm above cleaning position
 	"above_cleaning_5cm_position": [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, -0.520801552756769],
 		# hmi: [-0.09944886077863689, -0.7551690607529065, 0.08124507668033604, -1.562907438575882, 1.7055153453006288, -0.2646093678948603, -1.3], #7:1.000527447 # just 5cm above cleaning position
-	"cleaning_position": [-0.09951867394871666, -0.9302779446054975, 0.08077383778229758, -1.3722127645029818, 1.6754811753295165, -0.20858429890584235, -0.520801552756769]  # hard ground ipa
+	"cleaning_position": [-0.09939650090107707, -0.9171356153379803, 0.08103563717009671, -1.3722302177955017, 1.6754986286220364, -0.20853193902828246, -0.520806248795108]
+#[-0.09951867394871666, -0.9302779446054975, 0.08077383778229758, -1.3722127645029818, 1.6754811753295165, -0.20858429890584235, -0.520801552756769]  # hard ground ipa
 	     # hmi: [-0.09946631407115684, -0.921219685787647, 0.08096582400001694, -1.341006277477323, 1.705518291756339, -0.2665815899496139, -2.085563736378104]
 	     # [-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, -2.0844467256568278] #[-0.09944886077863689, -0.9020385173082293, 0.08121017009529616, -1.401132870208528, 1.705518291756339, -0.2665815899496139, 1.0595544823007175] #[-0.09944886077863689, -0.9291958404692611, 0.08124507668033604, -1.4179229376127134, 1.7055153453006288, -0.2646093678948603, 1.000527447] # cleaning position #[-0.09943140748611694, -0.8705527776022516, 0.0813497964354557, -1.4487105456178933, 1.6995143591294783, -0.22661355007894374, 0.997525480684839]
 	}
@@ -173,7 +175,7 @@ ARM_JOINT_CONFIGURATIONS_VACUUM = {
 # put down
 # sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"]])
 # lift up:
-# sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+#sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
@@ -632,6 +634,7 @@ def positionControlLoopLinear(self_tool_wagon_pose, dx, dy, dtheta):
 	# move to corrected pose
 	tool_wagon_pose_3d = self_tool_wagon_pose.pose
 	tool_wagon_pose_3d_euler = tf.transformations.euler_from_quaternion([tool_wagon_pose_3d.orientation.x, tool_wagon_pose_3d.orientation.y, tool_wagon_pose_3d.orientation.z, tool_wagon_pose_3d.orientation.w], 'rzyx')  # yields yaw, pitch, roll
+	print "wagon theta: ", tool_wagon_pose_3d_euler[0], dtheta
 	tool_wagon_pose = Pose2D(x=tool_wagon_pose_3d.position.x, y=tool_wagon_pose_3d.position.y, theta=tool_wagon_pose_3d_euler[0])
 	robot_goal_pose = Pose2D(x=tool_wagon_pose.x + dx * math.cos(tool_wagon_pose.theta) - dy * math.sin(tool_wagon_pose.theta),
 							y=tool_wagon_pose.y + dx * math.sin(tool_wagon_pose.theta) + dy * math.cos(tool_wagon_pose.theta),
@@ -838,7 +841,11 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 		robot_pose = Pose2D(x=userdata.tool_wagon_pose.x + dx * math.cos(userdata.tool_wagon_pose.theta) - dy * math.sin(userdata.tool_wagon_pose.theta),
 							y=userdata.tool_wagon_pose.y + dx * math.sin(userdata.tool_wagon_pose.theta) + dy * math.cos(userdata.tool_wagon_pose.theta),
 							theta=userdata.tool_wagon_pose.theta - robot_offset.theta)
-		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta], mode='omni')
+
+		d=True
+		while d:
+			handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta], mode='linear')
+			if handle_base.get_error_code() == 0: d=False
 		
 		# 2. detect fiducials and move to corrected pose
 		# wait until wagon is detected
@@ -1111,12 +1118,14 @@ class TrashBinDetectionOn(smach.State):
 		sss.move("torso", "front_extreme", False)
 		sss.move("head", "front", False)
 		
-		rospy.wait_for_service('activate_trash_bin_detection_service')
 		try:
-			req = rospy.ServiceProxy('activate_trash_bin_detection_service', ActivateTrashBinDetection)
+			rospy.wait_for_service('/activate_trash_bin_detection_service')
+			req = rospy.ServiceProxy('/activate_trash_bin_detection_service', ActivateTrashBinDetection)
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s" % e
+		except ee:
+			print "Service call failed: %s" % ee
 		return 'trash_bin_detection_on'
 
 
@@ -1152,9 +1161,9 @@ class TrashBinDetectionOff(smach.State):
 		# move torso back to normal position
 		sss.move("torso", "home", False)
 		
-		rospy.wait_for_service('deactivate_trash_bin_detection_service')
 		try:
-			req = rospy.ServiceProxy('deactivate_trash_bin_detection_service', DeactivateTrashBinDetection)
+			rospy.wait_for_service('/deactivate_trash_bin_detection_service')
+			req = rospy.ServiceProxy('/deactivate_trash_bin_detection_service', DeactivateTrashBinDetection)
 			resp = req()
 		except rospy.ServiceException, e:
 			print "Service call failed: %s" % e
@@ -1221,7 +1230,7 @@ class MoveToTrashBinLocation(smach.State):
 			# sm = ApproachPerimeter()
 		center = Pose2D()
 		center.x = userdata.trash_bin_pose_.pose.pose.position.x
-		center.y = userdata.trash_bin_pose_.pose.pose.position.y
+		center.y = userdata.trash_bin_pose_.pose.pose.position.y+0.15 #wmb
 		center.theta = 0
 		userdata.center = center
 		userdata.radius = 1.0  # adjust this for right distance to trash bin
@@ -1966,16 +1975,16 @@ class DetermineAttachedTool(smach.State):
 			attempt = attempt + 1
 		
 		if self.attachment == 'sdh':
-			sss.say(["I am using my hand now to clear trash bins."], False)
+			sss.say(["I am using my hand now to clear trash bins."], True)
 			return 'sdh'
 		elif self.attachment == 'vacuum':
-			sss.say(["I am using my vacuum cleaner now to clean dirty spots on the ground."], False)
+			sss.say(["I am using my vacuum cleaner now to clean dirty spots on the ground."], True)
 			return 'vacuum'
 		elif self.attachment == 'none':
-			sss.say(["There is no tool connected to my arm."], False)
+			sss.say(["There is no tool connected to my arm."], True)
 			return 'none'
 		
-		sss.say(["I cannot determine the attached device. I will abort."], False)
+		sss.say(["I cannot determine the attached device. I will abort."], True)
 		return 'failed'
 
 
@@ -2447,7 +2456,7 @@ class CleanCellGroup(smach.State):
 		print "grid_tool:", grid_tool, "\n"
 		
 		# ## check accessibility of several trajectories
-		tool_offset_to_base_link = [-0.14, -0.53]  # the x-y-plane offset of the tool center w.r.t. base_link measured in the base_link coordinate system [in m]
+		tool_offset_to_base_link = [-0.14, -0.48] #[-0.14, -0.53]  # the x-y-plane offset of the tool center w.r.t. base_link measured in the base_link coordinate system [in m]
 		movement_direction = [ [grid_step, 0.0], [0.0, grid_step], [-grid_step, 0.0], [0.0, -grid_step] ]  # potential movement directions of the robot, measured in map coordinates [in m]
 		# compute tool offset vectors in the map coordinate system
 		tool_offset_vectors_map = []  # (x,y,alpha) tool offset to base_link in map coordinate system for each movement direction [x,y, in m] and angle alpha of movement direction in map coordinate system
@@ -2491,9 +2500,9 @@ class CleanCellGroup(smach.State):
 				pose.theta = offset_vector[2]
 				grid_robot.append(pose)
 			# check accessibility of all grid points
-			rospy.wait_for_service('map_accessibility_analysis/map_points_accessibility_check', 10)
+			rospy.wait_for_service('/map_accessibility_analysis/map_points_accessibility_check', 10)
 			try:
-				get_approach_pose = rospy.ServiceProxy('map_accessibility_analysis/map_points_accessibility_check', CheckPointAccessibility)
+				get_approach_pose = rospy.ServiceProxy('/map_accessibility_analysis/map_points_accessibility_check', CheckPointAccessibility)
 				res = get_approach_pose(grid_robot)
 			except rospy.ServiceException, e:
 				print "Service call failed: %s" % e

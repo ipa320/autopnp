@@ -17,7 +17,7 @@
     <!-- start navigation -->
     <!--- Run map_server -->
     <!--arg name="map" default="$(find cob_default_env_config)/$(arg robot_env)/map.yaml" /-->
-	<node name="map_server" pkg="map_server" type="map_server" args="$(find autopnp_scenario)/config/map-ipa-apartment-small.yaml"/>
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find autopnp_scenario)/config/map-automatica14.yaml"/>
 
 	<!--- Run AMCL -->
 	<include file="$(find cob_navigation_global)/launch/amcl_node.xml" />

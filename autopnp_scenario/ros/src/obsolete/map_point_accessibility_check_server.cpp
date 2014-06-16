@@ -64,6 +64,7 @@ void MapPointAccessibilityCheck::mapDataCallback(const nav_msgs::OccupancyGrid::
 	// compute inflated static map
 	std::cout << "inflation thickness: " << robot_radius_ << std::endl;
 	cv::erode(original_map_, inflated_original_map_, cv::Mat(), cv::Point(-1,-1), cvRound(robot_radius_*inverse_map_resolution_));
+	std::cout << "erode done" << std::endl;
 
 	// todo: you can comment the following two lines to not pop up the inflated original map
 //	cv::imshow("Inflated Original Map", inflated_original_map_);

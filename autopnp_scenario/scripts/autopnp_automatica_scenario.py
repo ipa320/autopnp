@@ -66,15 +66,28 @@ import smach_ros
 
 from exploration_detection_cleaning import *
 
+def h():
+	sys.stderr.write('shutdown requested\n')
+
+#wagon: 1.513, -0.890 0.7
+#trash: 1.352. 0.287. 0.000). Orientation(0.000. 0.000. 0.970. 0.244) = Angle: 2.649
+#dirt1 -0.208. -0.690. 0.000). Orientation(0.000. 0.000. 0.492. 0.871) = Angle: 1,028
+#dirt2 1.5
+
 def main(confirm):
 	rospy.init_node('exploration_detection_cleaning')
+	rospy.on_shutdown(h)
 	
+
+	#sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
+	#exit()
+
 	# todo: parameters
-	tool_wagon_map_pose = Pose2D(x=0.0, y=0.0, theta=0.0)  # the map coordinates of the tool wagon center
-	trash_bin_inspection_map_poses = [ [[1.0, 0.0, 0.0], "omni"],
-									   [[1.0, 0.0, -0.5*math.pi], "linear"] ]   # list of inspection positions (x,y,theta) of robot with movement mode
-	dirt_inspection_map_poses = [ [[1.0, 0.0, 0.0*math.pi], "omni"],
-								  [[1.0, 0.0, -0.25*math.pi], "linear"] ]	  # list of inspection positions (x,y,theta) of robot with movement mode
+	tool_wagon_map_pose = Pose2D(x=1.513, y=-0.890, theta=-0.7+math.pi)  # the map coordinates of the tool wagon center
+	trash_bin_inspection_map_poses = [ [[1.352, 0.1, 2.649], "linear"], [[1.352, 0.1, 2.3], "linear"] ]   # list of inspection positions (x,y,theta) of robot with movement mode
+	#,									   [[1.2, -0.0, 2.4], "linear"]
+	dirt_inspection_map_poses = [ [[-0.208, -0.690, 1.], "linear"],
+								  [[-0.208, -0.690, 1.5], "linear"] ]	  # list of inspection positions (x,y,theta) of robot with movement mode
 	# deactivated at the moment: valid_rectangle_for_dirt_detections = [-1.0, -4.8, 3.0, 0.0]   # dirt detections outside of this rectangle ([min_x, min_y, max_x, max_y]) will not be attended to during the script
 	
 	# full Automatica scenario (i.e. let the operator attach/change the tool, do the job according to the attached tool)
@@ -120,6 +133,8 @@ def main(confirm):
 
 
 		### trash bin clearing sub-script
+		#smach.StateMachine.add('TRASH_BIN_DETECTION_ON', MoveToToolWaggonFrontFrontalFar(),
+		#					transitions={'arrived':'finished'})
 		smach.StateMachine.add('TRASH_BIN_DETECTION_ON', TrashBinDetectionOn(),
 							transitions={'trash_bin_detection_on':'INSPECT_ROOM_FOR_TRASH_BINS'})
 		
@@ -288,15 +303,15 @@ def main(confirm):
 		
 	
 	# Create and start the introspection server
-	sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')
-	sis.start()
+	#sis = smach_ros.IntrospectionServer('server_name', sm_scenario, '/START')
+	#sis.start()
 	
 	# Execute SMACH plan
 	outcome = sm_scenario.execute()
 	
-	#rospy.spin()
+	rospy.spin()
 	
-	sis.stop()
+	#sis.stop()
 
 
 if __name__ == '__main__':

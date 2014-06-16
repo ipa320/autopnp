@@ -18,7 +18,7 @@
 		<!--remap from="colored_point_cloud" to="/cam3d/rgb/points"/-->
 		
 		<!-- if not an empty string, this enables using a mask that defines areas in the map where dirt detections are valid (i.e. this mask can be used to exclude areas from dirt mapping, white=detection area, black=do not detect) -->
-		<param name="dirtMappingMaskFilename" value="$(find autopnp_scenario)/config/map-ipa-apartment-small-ddmask.png" />
+		<param name="dirtMappingMaskFilename" value="$(find autopnp_scenario)/config/map-automatica14-ddmask.png" />
 	</node>
 
 </launch>
