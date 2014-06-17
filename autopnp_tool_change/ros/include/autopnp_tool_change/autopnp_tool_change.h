@@ -74,7 +74,7 @@ static const std::string MOVE_TO_CHOSEN_TOOL_ACTION_NAME = "move_to_chosen_tool_
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
 // 1 mm
-static const double MAX_TOLERANCE = 0.001;
+static const double MAX_TOLERANCE = 0.0008;
 
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
@@ -88,11 +88,11 @@ static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
 
-static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.052, 0.032, -0.030);
+static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.045, 0.055, -0.035);
 static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.661, 0.175, 0.677, 0.272);
 
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.10, -0.10, 0.30);
-
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.10, -0.06, 0.25);
+//static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(0.0, 0.0, 0.25);
 static const tf::Vector3 VAC_CLEANER_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 static const tf::Vector3 ARM_STATION_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 
