@@ -52,6 +52,31 @@ _____________________________________________________________
             in RPY [1.566, 0.014, 1.694]
 
  *
+ *++ good positioning
+ *++
+ *+/base_link to /wagon
+ *- Translation: [-0.792, 0.014, 0.997]
+- Rotation: in Quaternion [0.451, 0.545, 0.536, 0.460]
+            in RPY [1.573, 0.018, 1.741]
+
+            /base_link to /arm_7_link
+ *- Translation: [-0.483, 0.025, 0.996]
+- Rotation: in Quaternion [0.992, 0.089, -0.022, -0.088]
+            in RPY [-2.962, 0.027, 0.182]
+ *
+ *
+ *
+ *top position
+ *ee- Translation: [-0.379, -0.064, 1.099]
+- Rotation: in Quaternion [0.961, 0.274, 0.021, 0.046]
+            in RPY [3.042, -0.016, 0.556]
+ *
+ *
+ *
+ *ZIEL /tag_2 to tag_board
+- Translation: [-0.162, 0.055, -0.135]
+- Rotation: in Quaternion [-0.138, 0.144, 0.673, 0.712]
+            in RPY [-0.003, 0.401, 1.514]
  *
  */
 ToolChange::ToolChange(ros::NodeHandle nh)
@@ -440,8 +465,8 @@ bool ToolChange::processGoToStartPosition()
 	 */
 	//move to position
 	ROS_INFO("GoToStartPosition process starts now");
-	for(int i = 0; i < 3; i++)
-	{
+//	for(int i = 0; i < 1; i++)
+//	{
 
 		if(!moveToWagonFiducial(MOVE))
 		{
@@ -450,7 +475,7 @@ bool ToolChange::processGoToStartPosition()
 
 			return false;
 		}
-	}
+//	}
 	for(int i = 0; i < 2; i++)
 	{
 		if(!moveToWagonFiducial(TURN))
@@ -463,6 +488,7 @@ bool ToolChange::processGoToStartPosition()
 	}
 
 	tf::StampedTransform offset_st;
+
 	try{
 		transform_listener_.lookupTransform( "/arm_7_link","/base_camera_ee_link",
 				latest_time_, offset_st);
@@ -472,7 +498,9 @@ bool ToolChange::processGoToStartPosition()
 	{
 		ROS_WARN("Transform unavailable %s", ex.what());
 	}
+
 	printPose(offset_st);
+
 	double x = offset_st.getOrigin().getX();
 	double y = offset_st.getOrigin().getY();
 	double z = offset_st.getOrigin().getZ();
@@ -498,12 +526,13 @@ bool ToolChange::processGoToStartPosition()
 		return false;
 	}
 
-	movement = tf::Vector3(-0.05, 0.0, 0.0);
+	movement = tf::Vector3(-0.087, 0.0, 0.0);
 		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
 		{
 			ROS_WARN("Error occurred executing move to wagon fiducial.");
 			return false;
 		}
+
 	return true;
 }
 
@@ -692,6 +721,10 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 	m.getRPY(r, p, y);
 	ROS_INFO("rpy %f, %f, %f ",(float)r,(float)p,(float)y);
 	quat.setRPY( p, y, 0.0);
+
+	//offset from wechsler to x-achse
+	tf::Quaternion help_z;
+				help_z.setRPY(0.0,0.0,-0.076);
 	//must be more than zero
 	if(!stamped_transform_BA_FB.getOrigin().isZero())
 
@@ -701,20 +734,40 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 		if(action.compare(MOVE)== 0)
 
 		{
+
 			goal_pose_tf.setOrigin(stamped_transform_BA_FB.getOrigin());
-			goal_pose_tf.setRotation(stamped_transform_BA_FB.getRotation());
+			goal_pose_tf.setRotation(stamped_transform_BA_FB.getRotation()*help_z);
 
 		}
+/*
+	tf::Quaternion help_z;
+	help_z.setRPY(0.0,0.0,-0.08);
+	tf::StampedTransform help;
+	help.setOrigin(goal_pose_tf.getOrigin());
+	help.setRotation(goal_pose_tf.getRotation()*help_z);
+	br.sendTransform(tf::StampedTransform(help, latest_time_,
+					"/base_link", "/tool_change/help"));
 
+*/
 	// just move without rotation
 	if(action.compare(TURN)== 0)
 
 	{
 		goal_pose_tf.setOrigin(stamped_transform_BA_FB.getOrigin());
-		goal_pose_tf.setRotation(stamped_transform_BA_FB.getRotation() * quat);
+		goal_pose_tf.setRotation((stamped_transform_BA_FB.getRotation()* help_z)* quat);
 
 	}
-
+/*
+ * BILDER ABWEICHEN !!!!
+ * - Translation: [-0.171, -0.036, -0.228]
+- Rotation: in Quaternion [-0.161, 0.159, 0.680, 0.697]
+            in RPY [-0.009, 0.457, 1.544]
+ *
+ * - Translation: [-0.171, -0.036, -0.228]
+- Rotation: in Quaternion [-0.161, 0.159, 0.680, 0.697]
+            in RPY [-0.009, 0.457, 1.544]
+ *
+ */
 
 	//tf -> msg
 	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
