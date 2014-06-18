@@ -526,7 +526,7 @@ bool ToolChange::processGoToStartPosition()
 		return false;
 	}
 
-	movement = tf::Vector3(-0.087, 0.0, 0.0);
+	movement = tf::Vector3(-0.09, 0.0, 0.0);
 		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
 		{
 			ROS_WARN("Error occurred executing move to wagon fiducial.");
@@ -724,7 +724,7 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 
 	//offset from wechsler to x-achse
 	tf::Quaternion help_z;
-				help_z.setRPY(0.0,0.0,-0.076);
+				help_z.setRPY(0.0,0.0,-0.055);
 	//must be more than zero
 	if(!stamped_transform_BA_FB.getOrigin().isZero())
 
