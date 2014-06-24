@@ -88,11 +88,10 @@ static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
 static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
 
-static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.025, 0.055, -0.09);
+static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.025, 0.05, -0.09);
 static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.661, 0.175, 0.677, 0.272);
 
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.115, -0.032, 0.25);
-//static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(0.0, 0.0, 0.25);
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.082, -0.027, 0.23);
 static const tf::Vector3 VAC_CLEANER_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 static const tf::Vector3 ARM_STATION_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
 

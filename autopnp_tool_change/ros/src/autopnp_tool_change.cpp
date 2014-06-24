@@ -35,49 +35,21 @@ _____________________________________________________________
  */
 
 /*
- * Start Position /base_link to /arm_7_link
- *
- * - Translation: [-0.534, -0.039, 0.938]
-- Rotation: in Quaternion [0.977, 0.215, 0.002, 0.004]
-            in RPY [3.133, -0.003, 0.434]
- *
- * Start /base to /wagon_fiducial
- * - Translation: [-0.901, -0.093, 0.995]
-- Rotation: in Quaternion [0.412, 0.574, 0.569, 0.421]
-            in RPY [1.568, 0.015, 1.882]
+ /base_link /fiducial/tag_board
+At time 1403623048.817
+- Translation: [-0.771, -0.143, 1.002]
+- Rotation: in Quaternion [0.460, 0.540, 0.526, 0.469]
+            in RPY [1.578, 0.023, 1.707]
+At time 1403623049.721
+- Translation: [-0.771, -0.143, 1.002]
+- Rotation: in Quaternion [0.460, 0.540, 0.526, 0.469]
+            in RPY [1.578, 0.023, 1.708]
+At time 1403623050.725
+- Translation: [-0.771, -0.143, 1.002]
+- Rotation: in Quaternion [0.460, 0.540, 0.526, 0.469]
+            in RPY [1.578, 0.023, 1.707]
 
-            At time 1403018881.297
-- Translation: [-0.857, 0.135, 0.995]
-- Rotation: in Quaternion [0.463, 0.532, 0.528, 0.473]
-            in RPY [1.566, 0.014, 1.694]
 
- *
- *++ good positioning
- *++
- *+/base_link to /wagon
- *- Translation: [-0.792, 0.014, 0.997]
-- Rotation: in Quaternion [0.451, 0.545, 0.536, 0.460]
-            in RPY [1.573, 0.018, 1.741]
-
-            /base_link to /arm_7_link
- *- Translation: [-0.483, 0.025, 0.996]
-- Rotation: in Quaternion [0.992, 0.089, -0.022, -0.088]
-            in RPY [-2.962, 0.027, 0.182]
- *
- *
- *
- *top position
- *ee- Translation: [-0.379, -0.064, 1.099]
-- Rotation: in Quaternion [0.961, 0.274, 0.021, 0.046]
-            in RPY [3.042, -0.016, 0.556]
- *
- *
- *
- *ZIEL /tag_2 to tag_board
-- Translation: [-0.162, 0.055, -0.135]
-- Rotation: in Quaternion [-0.138, 0.144, 0.673, 0.712]
-            in RPY [-0.003, 0.401, 1.514]
- *
  */
 ToolChange::ToolChange(ros::NodeHandle nh)
 : transform_listener_(nh)
@@ -125,8 +97,8 @@ void ToolChange::resetServers()
 	as_move_to_chosen_tool_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
 			node_handle_, MOVE_TO_CHOSEN_TOOL_ACTION_NAME, boost::bind(&ToolChange::moveToChosenTool, this, _1), false));
 	as_move_to_chosen_tool_->start();
-
 }
+
 
 /*
  * Set the garbage container free  and shutdown running processes !!!!!!
@@ -135,7 +107,25 @@ ToolChange::~ToolChange()
 {
 
 }
+/*
+//base_link /fiducial/tag_board
+A- Translation: [-0.772, -0.126, 1.002]
+- Rotation: in Quaternion [0.458, 0.541, 0.528, 0.469]
+            in RPY [1.575, 0.024, 1.713]
+At time 1403626759.448
+- Translation: [-0.772, -0.126, 1.002]
+- Rotation: in Quaternion [0.457, 0.541, 0.528, 0.468]
+            in RPY [1.575, 0.024, 1.715]
+At time 1403626760.448
+- Translation: [-0.772, -0.126, 1.002]
+- Rotation: in Quaternion [0.457, 0.541, 0.528, 0.469]
+            in RPY [1.574, 0.024, 1.714]
+^CAt time 1403626760.757
+- Translation: [-0.772, -0.126, 1.002]
+- Rotation: in Quaternion [0.457, 0.541, 0.528, 0.469]
+            in RPY [1.574, 0.024, 1.714]
 
+*/
 /*
  * Running server after initialization process.
  * Make it spin around waiting for a goal messages.
@@ -280,17 +270,22 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		result.board_.translation.getRotation() /= (double)count;
 		result.board_.translation.getRotation().normalize();
 
-		std::string tool_change_start_pose = "/tool_change/start_point";
+		std::string tool_change_start_pose = "/fiducial/start_point";
 		tf::Quaternion start_point_rotation = tf::createIdentityQuaternion();
 		start_point_rotation.setRPY(M_PI/2, -M_PI/2, 0.0);
 		tf::Transform fidu_board_translated(start_point_rotation,
 				START_POINT_OFFSET);
 
-		std::string tool_change_reference = "/tool_change/reference_point";
+		std::string fiducial_reference = "/fiducial/reference";
 		tf::Quaternion reference_point_rotation = tf::createIdentityQuaternion();
 		reference_point_rotation.setRPY( 0.0, 0.0, -M_PI/2);
+		//reference_point_rotation.setRPY( M_PI/2, -M_PI/2, 0.0);
 		tf::Transform fidu_reference_translated(reference_point_rotation,
 				tf::Vector3(0.0,0.0,0.0));
+
+		std::string fiducial_reference_in = "/fiducial/reference_in";
+		tf::Transform fidu_reference_in(tf::Quaternion(0.501, -0.451, 0.448, 0.587),
+				tf::Vector3(-0.081, -0.078, 0.112));
 
 		//broadcast pose to tf
 
@@ -305,7 +300,10 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 
 		br.sendTransform(tf::StampedTransform(fidu_reference_translated, latest_time_ ,
-				"/fiducial/tag_board", "/fiducial/reference"));
+				"/fiducial/tag_board", fiducial_reference));
+
+		br.sendTransform(tf::StampedTransform(fidu_reference_in, latest_time_ ,
+				"/fiducial/tag_board", fiducial_reference_in ));
 
 
 	}
@@ -323,14 +321,12 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 		try{
 
 			br.sendTransform(tf::StampedTransform(stamped_transform_FA_EE, latest_time_,
-					"/fiducial/tag_2", "/base_camera_ee_link"));
+					"/fiducial/tag_2", "/arm_7_link_real"));
 
 
-			transform_listener_.lookupTransform( "/fiducial/tag_2", "/tool_change/start_point",
+			transform_listener_.lookupTransform( "/fiducial/tag_2", "/fiducial/start_point",
 					stamped_transform_FA_EE.stamp_, stamped_transform_FA_START_POINT);
 
-			br.sendTransform(tf::StampedTransform(stamped_transform_FA_START_POINT,stamped_transform_FA_START_POINT.stamp_ ,
-					"/fiducial/tag_2", "/start_point_from_cam"));
 		}
 		catch (tf::TransformException ex)
 		{
@@ -465,17 +461,17 @@ bool ToolChange::processGoToStartPosition()
 	 */
 	//move to position
 	ROS_INFO("GoToStartPosition process starts now");
-//	for(int i = 0; i < 1; i++)
-//	{
+	//	for(int i = 0; i < 1; i++)
+	//	{
 
-		if(!moveToWagonFiducial(MOVE))
-		{
+	if(!moveToWagonFiducial(MOVE))
+	{
 
-			ROS_WARN("Error occurred executing move to wagon fiducial position.");
+		ROS_WARN("Error occurred executing move to wagon fiducial position.");
 
-			return false;
-		}
-//	}
+		return false;
+	}
+	//	}
 	for(int i = 0; i < 2; i++)
 	{
 		if(!moveToWagonFiducial(TURN))
@@ -486,13 +482,17 @@ bool ToolChange::processGoToStartPosition()
 			return false;
 		}
 	}
-
+	static tf::TransformBroadcaster br;
+	tf::StampedTransform goal;
 	tf::StampedTransform offset_st;
+	geometry_msgs::PoseStamped goal_pose;
+
 
 	try{
-		transform_listener_.lookupTransform( "/arm_7_link","/base_camera_ee_link",
+		transform_listener_.lookupTransform( "/arm_7_link","/arm_7_link_real",
 				latest_time_, offset_st);
-
+		transform_listener_.lookupTransform( "/base_link","/arm_7_link_real",
+				latest_time_, goal);
 	}
 	catch (tf::TransformException ex)
 	{
@@ -513,6 +513,7 @@ bool ToolChange::processGoToStartPosition()
 		ROS_WARN("Error occurred executing move to wagon fiducial.");
 		return false;
 	}
+
 	movement = tf::Vector3(0.0,y, 0.0);
 	if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
 	{
@@ -525,14 +526,44 @@ bool ToolChange::processGoToStartPosition()
 		ROS_WARN("Error occurred executing move to wagon fiducial.");
 		return false;
 	}
+/*
+ * /base_link /fiducial/tag_board
+ *- Translation: [-0.772, -0.127, 1.002]
+- Rotation: in Quaternion [0.461, 0.539, 0.526, 0.469]
+            in RPY [1.577, 0.021, 1.705]
+At time 1403627376.113
+- Translation: [-0.772, -0.127, 1.002]
+- Rotation: in Quaternion [0.462, 0.539, 0.525, 0.469]
+            in RPY [1.579, 0.021, 1.704]
+At time 1403627377.121
+- Translation: [-0.772, -0.127, 1.002]
+- Rotation: in Quaternion [0.461, 0.539, 0.526, 0.469]
+            in RPY [1.578, 0.021, 1.706]
+^CAt time 1403627378.025
+- Translation: [-0.772, -0.127, 1.002]
+- Rotation: in Quaternion [0.462, 0.539, 0.526, 0.469]
+            in RPY [1.578, 0.021, 1.705]
 
-	movement = tf::Vector3(-0.09, 0.0, 0.0);
+*/
+
+
+	movement = tf::Vector3(-0.085, 0.0, 0.0);
 		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
 		{
 			ROS_WARN("Error occurred executing move to wagon fiducial.");
 			return false;
 		}
 
+/*
+    tf::poseTFToMsg(goal, goal_pose.pose);
+
+
+	if(!executeMoveCommand(goal_pose))
+		{
+			ROS_WARN("Error occurred executing move.");
+			return false;
+		}
+	 */
 	return true;
 }
 
@@ -661,13 +692,10 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 	move_action_state_ = false;
 	geometry_msgs::PoseStamped ee_pose;
 	geometry_msgs::PoseStamped goal_pose;
-	tf::StampedTransform stamped_transform_FA_EE;
-	tf::StampedTransform stamped_transform_MT_BA_FB;
-	tf::StampedTransform stamped_transform_BA_FB;
+	tf::StampedTransform st_BA_FB;
 	tf::Transform ee_pose_tf;
 	tf::Transform goal_pose_tf;
-	tf::StampedTransform stamped_transform_BA_CA_EE;
-	tf::StampedTransform stamped_transform_EE_START_POINT;
+	tf::StampedTransform st_START_POINT;
 	tf::StampedTransform tag2_to_ref;
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
@@ -695,15 +723,11 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 		transform_listener_.lookupTransform( "/fiducial/tag_2","/fiducial/reference",
 				latest_time_, tag2_to_ref);
 
-		transform_listener_.lookupTransform( "/base_link", "/tool_change/start_point",
-				latest_time_, stamped_transform_BA_FB);
-
-		br.sendTransform(tf::StampedTransform(stamped_transform_BA_FB, latest_time_,
-				"/base_link", "/tool_change/goal"));
-
+		transform_listener_.lookupTransform( "/base_link", "/fiducial/start_point",
+				latest_time_, st_BA_FB);
 		//distance to go
-		transform_listener_.lookupTransform( "/arm_7_link", "/tool_change/start_point",
-				stamped_transform_BA_FB.stamp_,stamped_transform_EE_START_POINT);
+		transform_listener_.lookupTransform( "/arm_7_link", "/fiducial/start_point",
+				st_BA_FB.stamp_,st_START_POINT);
 
 	}
 	catch (tf::TransformException ex)
@@ -724,9 +748,9 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 
 	//offset from wechsler to x-achse
 	tf::Quaternion help_z;
-				help_z.setRPY(0.0,0.0,-0.055);
+	help_z.setRPY(0.0,0.0,-0.055);
 	//must be more than zero
-	if(!stamped_transform_BA_FB.getOrigin().isZero())
+	if(!st_BA_FB.getOrigin().isZero())
 
 		//- Translation: [-0.018, -0.027, 0.026]
 
@@ -735,44 +759,42 @@ bool ToolChange::moveToWagonFiducial(const std::string& action)
 
 		{
 
-			goal_pose_tf.setOrigin(stamped_transform_BA_FB.getOrigin());
-			goal_pose_tf.setRotation(stamped_transform_BA_FB.getRotation()*help_z);
+			goal_pose_tf.setOrigin(st_BA_FB.getOrigin());
+			goal_pose_tf.setRotation(st_BA_FB.getRotation()*help_z);
+			//goal_pose_tf.setRotation(st_BA_FB.getRotation());
 
 		}
-/*
-	tf::Quaternion help_z;
-	help_z.setRPY(0.0,0.0,-0.08);
-	tf::StampedTransform help;
-	help.setOrigin(goal_pose_tf.getOrigin());
-	help.setRotation(goal_pose_tf.getRotation()*help_z);
-	br.sendTransform(tf::StampedTransform(help, latest_time_,
-					"/base_link", "/tool_change/help"));
 
-*/
 	// just move without rotation
 	if(action.compare(TURN)== 0)
 
 	{
-		goal_pose_tf.setOrigin(stamped_transform_BA_FB.getOrigin());
-		goal_pose_tf.setRotation((stamped_transform_BA_FB.getRotation()* help_z)* quat);
-
+		goal_pose_tf.setOrigin(st_BA_FB.getOrigin());
+		goal_pose_tf.setRotation((st_BA_FB.getRotation()* help_z)* quat);
+		//goal_pose_tf.setRotation((st_BA_FB.getRotation())* quat);
 	}
-/*
- * BILDER ABWEICHEN !!!!
- * - Translation: [-0.171, -0.036, -0.228]
+	/*
+	 * BILDER ABWEICHEN !!!!
+	 * - Translation: [-0.171, -0.036, -0.228]
 - Rotation: in Quaternion [-0.161, 0.159, 0.680, 0.697]
             in RPY [-0.009, 0.457, 1.544]
- *
- * - Translation: [-0.171, -0.036, -0.228]
+	 *
+	 * - Translation: [-0.171, -0.036, -0.228]
 - Rotation: in Quaternion [-0.161, 0.159, 0.680, 0.697]
             in RPY [-0.009, 0.457, 1.544]
- *
- */
+
+	 * rosrun tf tf_echo /fiducial/tag_2 /fiducial/tag_board
+At time 1403597846.576
+- Translation: [-0.157, 0.102, -0.163]
+- Rotation: in Quaternion [-0.122, 0.129, 0.688, 0.704]
+            in RPY [0.006, 0.358, 1.549]
+	 *
+	 */
 
 	//tf -> msg
 	tf::poseTFToMsg(goal_pose_tf, goal_pose.pose);
 
-	double length = stamped_transform_EE_START_POINT.getOrigin().length();
+	double length = st_START_POINT.getOrigin().length();
 	//double abstand = tag2_to_ref.getOrigin().length();
 	ROS_WARN_STREAM(" distance to move " << length << ".");
 
@@ -849,8 +871,8 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose)
 	ROS_WARN("STARTE MOVE");
 	//EXECUTE THE PLAN !!!!!! BE CAREFUL
 	if (have_plan==true) {
-		//group.execute(plan);
-		//group.move();
+		group.execute(plan);
+		group.move();
 	}
 	else
 	{
