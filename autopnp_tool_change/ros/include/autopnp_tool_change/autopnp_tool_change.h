@@ -64,12 +64,15 @@ static const std::string ARM = "tag_2";
 static const std::string VAC_CLEANER = "tag_79";
 static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
+static const std::string VAC_NAME = "vac";
+static const std::string ARM_NAME = "arm";
 
 static const std::string MOVE = "move";
 static const std::string TURN = "turn";
 
 static const std::string GO_TO_START_POSITION_ACTION_NAME = "go_to_start_position_action";
-static const std::string MOVE_TO_CHOSEN_TOOL_ACTION_NAME = "move_to_chosen_tool_action";
+static const std::string GO_TO_SLOT_AND_TURN_ACTION_NAME = "go_to_slot_and_turn_action";
+static const std::string GO_BACK_TO_START_NAME = "go_back_to_start_action";
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
@@ -139,8 +142,8 @@ protected:
 
 	/// SERVER
 	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_to_start_position_;
-	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_move_to_chosen_tool_;
-	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_return_to_start_position_;
+	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_to_slot_and_turn_;
+	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_back_to_start_;
 
 	/// CLIENTS
 	ros::ServiceClient execute_known_traj_client_ ;
@@ -162,7 +165,9 @@ protected:
 	void markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
 	///SERVER CALLBACK if goal received
 	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
-	void moveToChosenTool(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
+	void goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
+	void goBackToStart(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
+
 
 	//calculates translation and orientation distance between arm marker and board marker
 	tf::Transform calculateArmBoardTransformation(const tf::Transform& board, const tf::Transform& arm);
@@ -176,8 +181,10 @@ protected:
 	bool moveToWagonFiducial(const std::string& action);
 
 	///PROCESS MOVEMENTS
-	bool processMoveToChosenTool(const tf::Vector3& offset);
-	bool processGoToStartPosition();
+	bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
+	bool processGoToSlotAndTurn(const tf::Vector3& movement1);
+	bool processGoToStartPosition(const std::string& received_goal);
+	bool processGoBackToStart(const std::string& received_goal);
 
     //small functions to split the code
 	void resetServers();

@@ -7,24 +7,24 @@ import rospy
 import actionlib
 import autopnp_tool_change.msg 
 
-class GoToStartPosition:
+class GoBackToStart:
 	
-	def go_to_start_position_client(self, goal_name):
-		go_to_start_position_client = actionlib.SimpleActionClient('go_to_start_position_action', autopnp_tool_change.msg.GoToStartPositionAction)
-		go_to_start_position_client.wait_for_server()
+	def go_back_to_start_client(self, goal_name):
+		go_back_to_start_client = actionlib.SimpleActionClient('go_back_to_start_action', autopnp_tool_change.msg.GoToStartPositionAction)
+		go_back_to_start_client.wait_for_server()
 
 		# Creates a goal to send to the action server.
 		goal = autopnp_tool_change.msg.GoToStartPositionGoal()
 		goal.goal = goal_name
 
 		# Sends the goal to the action server.
-		go_to_start_position_client.send_goal(goal)
+		go_back_to_start_client.send_goal(goal)
 
 		# Waits for the server to finish performing the action.
-		finished_before_timeout = go_to_start_position_client.wait_for_result(rospy.Duration(300, 0))
+		finished_before_timeout = go_back_to_start_client.wait_for_result(rospy.Duration(300, 0))
 
    		if finished_before_timeout:
-		   	state = go_to_start_position_client.get_state()
+		   	state = go_back_to_start_client.get_state()
 			print "Action finished: %s"%state
 		# Prints out the result of executing the action
    		return state # State after waiting for GoToStartPositionAction

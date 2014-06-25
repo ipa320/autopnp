@@ -94,9 +94,9 @@ void ToolChange::resetServers()
 	as_go_to_start_position_->start();
 
 	//moves the arm to a chosen slot or tool on the wagon
-	as_move_to_chosen_tool_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
-			node_handle_, MOVE_TO_CHOSEN_TOOL_ACTION_NAME, boost::bind(&ToolChange::moveToChosenTool, this, _1), false));
-	as_move_to_chosen_tool_->start();
+	as_go_to_slot_and_turn_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
+			node_handle_, GO_TO_SLOT_AND_TURN_ACTION_NAME, boost::bind(&ToolChange::goToSlotAndTurn, this, _1), false));
+	as_go_to_slot_and_turn_->start();
 }
 
 
@@ -125,7 +125,7 @@ At time 1403626760.448
 - Rotation: in Quaternion [0.457, 0.541, 0.528, 0.469]
             in RPY [1.574, 0.024, 1.714]
 
-*/
+ */
 /*
  * Running server after initialization process.
  * Make it spin around waiting for a goal messages.
@@ -203,28 +203,10 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 	tf::Quaternion orientation;
 	static tf::TransformBroadcaster br;
 
-	/*tf::StampedTransform transform;
-	transform.setIdentity();
-
-	try{
-		//ROS_INFO("try to listen to %s", input_marker_detections_msg->header.frame_id.c_str());
-		//look up transform "base_link" to "cam3d_link"
-		transform_listener_.lookupTransform("/base_link", input_marker_detections_msg->header.frame_id,
-				input_marker_detections_msg->header.stamp, transform);
-	}
-	catch (tf::TransformException ex)
-	{
-		ROS_WARN("Transform unavailable %s", ex.what());
-	}
-
-	 */
-
 	for (unsigned int i = 0; i < input_marker_detections_msg->detections.size(); ++i)
 	{
 		//retrieve the number of label
 		std::string fiducial_label = input_marker_detections_msg->detections[i].label;
-
-
 
 		//convert translation and orientation Points msgs to tf Pose respectively
 		tf::pointMsgToTF(input_marker_detections_msg->detections[i].pose.pose.position, translation);
@@ -304,8 +286,6 @@ struct ToolChange::components ToolChange::computeMarkerPose(
 
 		br.sendTransform(tf::StampedTransform(fidu_reference_in, latest_time_ ,
 				"/fiducial/tag_board", fiducial_reference_in ));
-
-
 	}
 	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
@@ -373,14 +353,12 @@ tf::Transform ToolChange::calculateArmBoardTransformation(
  * ==============================================
  *     ARM        ||  VAC_CLEANER    ||   X    ||
  * ==============================================
- *                     start
+ *    start(arm)        start(vac)
  * ==============================================
  *                     GOAL_FIDUCIAL
  *                         |
  *                         |
- *                        move
- *                         |
- *                        turn
+ *                    move & correct error
  *                         |
  *                    (ARM_FIDUCIAL)
  *
@@ -393,14 +371,14 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
 
 	ROS_INFO("GoToStartPosition received new goal:  %s", goal->goal.c_str());
 	bool success = false;
-
+	std::string received_goal = goal->goal;
 	while(detected_all_fiducials_ == false)
 	{
 		ROS_WARN("No fiducials detected. Spinning and waiting.");
 		ros::spinOnce();
 	}
 	//move to a start position
-	success = processGoToStartPosition();
+	success = processGoToStartPosition(received_goal);
 
 	autopnp_tool_change::GoToStartPositionResult result;
 	std::string feedback;
@@ -448,7 +426,7 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
  *                 (return true/false)
  *================================================
  */
-bool ToolChange::processGoToStartPosition()
+bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 {
 	/*
 	//rotate
@@ -526,9 +504,9 @@ bool ToolChange::processGoToStartPosition()
 		ROS_WARN("Error occurred executing move to wagon fiducial.");
 		return false;
 	}
-/*
- * /base_link /fiducial/tag_board
- *- Translation: [-0.772, -0.127, 1.002]
+	/*
+	 * /base_link /fiducial/tag_board
+	 *- Translation: [-0.772, -0.127, 1.002]
 - Rotation: in Quaternion [0.461, 0.539, 0.526, 0.469]
             in RPY [1.577, 0.021, 1.705]
 At time 1403627376.113
@@ -544,8 +522,8 @@ At time 1403627377.121
 - Rotation: in Quaternion [0.462, 0.539, 0.526, 0.469]
             in RPY [1.578, 0.021, 1.705]
 
-*/
-
+	 */
+	/*
 
 	movement = tf::Vector3(-0.085, 0.0, 0.0);
 		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
@@ -553,8 +531,8 @@ At time 1403627377.121
 			ROS_WARN("Error occurred executing move to wagon fiducial.");
 			return false;
 		}
-
-/*
+	 */
+	/*
     tf::poseTFToMsg(goal, goal_pose.pose);
 
 
@@ -585,28 +563,27 @@ At time 1403627377.121
  *           (result: succeeded/not succeeded)
  *================================================
  */
-void ToolChange::moveToChosenTool(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal)
+void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal)
 {
-	ROS_INFO("MoveToChosenTool received new goal:  %s", goal->goal.c_str());
+	ROS_INFO(":goToSlotAndTurn received new goal:  %s", goal->goal.c_str());
 	bool success = false;
-
 	std::string tool_name = goal->goal;
-
+	/*
 	while(detected_all_fiducials_ == false)
 	{
 		ROS_WARN("No fiducials detected. Spinning and waiting.");
 		ros::spinOnce();
 	}
-
-	if(tool_name.compare(VAC_CLEANER) == 0)
+	 */
+	if(tool_name.compare(VAC_NAME) == 0)
 	{
 		//move to start position in front of the vacuum cleaner
-		//success = processMoveToChosenTool(VAC_CLEANER_OFFSET);
+		//success = processGoToSlotAndTurn(up, forward, down);
 	}
-	else if(tool_name.compare(ARM_STATION) == 0)
+	else if(tool_name.compare(ARM_NAME) == 0)
 	{
 		// move to start position in front of the arm slot
-		//success = processMoveToChosenTool(ARM_STATION_OFFSET);
+		//success = processGoToSlotAndTurn(default);
 	}
 	autopnp_tool_change::GoToStartPositionResult result;
 	std::string feedback;
@@ -614,17 +591,17 @@ void ToolChange::moveToChosenTool(const autopnp_tool_change::GoToStartPositionGo
 	//set the response
 	if(success)
 	{
-		ROS_INFO("GoToStartPosition was successful!");
+		ROS_INFO("GoToSlotAndTurn was successful!");
 		//result.result = true;
-		feedback ="ARM ON THE CHOSEN TOOL POSITION !!";
-		as_move_to_chosen_tool_->setSucceeded(result, feedback);
+		feedback ="ARM ON SLOT POSITION !!";
+		as_go_to_slot_and_turn_->setSucceeded(result, feedback);
 	}
 	else
 	{
-		ROS_INFO("moveToChosenTool failed!");
+		ROS_ERROR("GoToSlotAndTurn  failed!");
 		//result.result = true;
-		feedback ="FAILD TO GET TO THE CHOSEN TOOL POSITION !!";
-		as_move_to_chosen_tool_->setAborted(result, feedback);
+		feedback ="FAILD TO GET TO SLOT POSITION !!";
+		as_go_to_slot_and_turn_->setAborted(result, feedback);
 	}
 }
 
@@ -644,15 +621,35 @@ void ToolChange::moveToChosenTool(const autopnp_tool_change::GoToStartPositionGo
  *              (return true/false)
  *================================================
  */
-bool ToolChange::processMoveToChosenTool(const tf::Vector3& offset)
+bool ToolChange::processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3)
 {
-	tf::Vector3 movement;
-	movement = offset;
+	tf::Vector3 move1,move2,move3;
+	move1 = movement1;
+	move2 = movement2;
+	move3 = movement3;
 
-	if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
+	if(!move1.isZero())
 	{
-		ROS_WARN("Error occurred executing move to wagon fiducial.");
-		return false;
+		if(!executeStraightMoveCommand(move1, MAX_STEP_CM))
+		{
+			return false;
+		}
+	}
+
+	if(!move2.isZero())
+	{
+		if(!executeStraightMoveCommand(move2, MAX_STEP_CM))
+		{
+			return false;
+		}
+	}
+
+	if(!move3.isZero())
+	{
+		if(!executeStraightMoveCommand(move3, MAX_STEP_CM))
+		{
+			return false;
+		}
 	}
 	return true;
 }
