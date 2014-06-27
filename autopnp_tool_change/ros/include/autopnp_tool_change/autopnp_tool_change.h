@@ -63,9 +63,14 @@ static const std::string ARM = "tag_2";
 static const std::string VAC_CLEANER = "tag_79";
 static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
-static const std::string VAC_NAME = "vac";
-static const std::string ARM_NAME = "arm";
+static const std::string DEFAULT = "default";
+static const std::string UP_AND_DOWN = "upAndDown";
+static const std::string UP_AND_MOVE = "upAndMove";
+static const std::string LIFT_AND_BACK = "liftAndBack";
 
+static const std::string PLANNING_GROUP_NAME = "arm";
+static const std::string BASE_LINK = "base_link";
+static const std::string EE_NAME = "arm_7_link";
 static const std::string MOVE = "move";
 static const std::string TURN = "turn";
 
@@ -75,19 +80,13 @@ static const std::string GO_BACK_TO_START_ACTION_NAME = "go_back_to_start_action
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
-
-static const std::string PLANNING_GROUP_NAME = "arm";
-static const std::string BASE_LINK = "base_link";
-static const std::string EE_NAME = "arm_7_link";
-
+static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.26;
 
 static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.03, -0.05, -0.09);
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.12, -0.082, 0.20);
+static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.117, -0.145, 0.13);
+
 static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.655, 0.198, 0.685, 0.251);
-static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.055;
-
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.11, -0.05, 0.23);
-
-static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.115, -0.145, 0.135);
 
 class ToolChange
 {
@@ -160,11 +159,13 @@ protected:
 
     ///MOVEMENTS
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose);
+	bool executeTurn(const tf::Quaternion& quat);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
 	bool moveToStartPosition(const std::string& action);
 
 	///PROCESS MOVEMENTS
 	bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
+	bool processGoToSlotAndTurn(const tf::Vector3& movement1);
 	bool processGoToStartPosition(const std::string& received_goal);
 	bool processGoBackToStart(const std::string& received_goal);
 

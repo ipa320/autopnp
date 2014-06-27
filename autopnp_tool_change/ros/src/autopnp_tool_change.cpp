@@ -15,18 +15,18 @@
 
 /*
  /base_link /fiducial/tag_board
-At time 1403623048.817
-- Translation: [-0.771, -0.143, 1.002]
-- Rotation: in Quaternion [0.460, 0.540, 0.526, 0.469]
-            in RPY [1.578, 0.023, 1.707]
-At time 1403623049.721
-- Translation: [-0.771, -0.143, 1.002]
-- Rotation: in Quaternion [0.460, 0.540, 0.526, 0.469]
-            in RPY [1.578, 0.023, 1.708]
-At time 1403623050.725
-- Translation: [-0.771, -0.143, 1.002]
-- Rotation: in Quaternion [0.460, 0.540, 0.526, 0.469]
-            in RPY [1.578, 0.023, 1.707]
+At time 1403881288.362
+- Translation: [-0.660, -0.215, 1.010]
+- Rotation: in Quaternion [0.413, 0.574, 0.563, 0.428]
+            in RPY [1.572, 0.027, 1.868]
+At time 1403881289.373
+- Translation: [-0.660, -0.215, 1.010]
+- Rotation: in Quaternion [0.413, 0.574, 0.563, 0.428]
+            in RPY [1.570, 0.027, 1.868]
+At time 1403881290.377
+- Translation: [-0.660, -0.215, 1.010]
+- Rotation: in Quaternion [0.413, 0.574, 0.563, 0.428]
+            in RPY [1.571, 0.026, 1.868]
  */
 
 ToolChange::ToolChange(ros::NodeHandle nh)
@@ -79,6 +79,7 @@ void ToolChange::resetServers()
 	as_go_back_to_start_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
 			node_handle_, GO_BACK_TO_START_ACTION_NAME, boost::bind(&ToolChange::goBackToStart, this, _1), false));
 	as_go_back_to_start_->start();
+
 }
 
 /*
@@ -332,7 +333,7 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 
 	if(!moveToStartPosition(MOVE))
 	{
-		ROS_WARN("Error occurred executing move to wagon fiducial position.");
+		ROS_ERROR("Error occurred executing processGoToStartPosition.");
 
 		return false;
 	}
@@ -341,11 +342,12 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 	{
 		if(!moveToStartPosition(TURN))
 		{
-			ROS_WARN("Error occurred executing turn to wagon fiducial position.");
+			ROS_ERROR("Error occurred executing processGoToStartPosition.");
 
 			return false;
 		}
 	}
+
 	//static tf::TransformBroadcaster br;
 	tf::StampedTransform goal, offset_st;
 	geometry_msgs::PoseStamped goal_pose;
@@ -355,8 +357,6 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 
 		transform_listener_.lookupTransform( "/arm_7_link","/arm_7_link_real",
 				latest_time_, offset_st);
-		transform_listener_.lookupTransform( "/base_link","/arm_7_link_real",
-				latest_time_, goal);
 	}
 	catch (tf::TransformException ex)
 	{
@@ -365,69 +365,39 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 
 	printPose(offset_st);
 
-	double x = offset_st.getOrigin().getX();
-	double y = offset_st.getOrigin().getY();
-	double z = offset_st.getOrigin().getZ();
 
-	//- Translation: [-0.018, -0.027, 0.026]
-	/*
-	tf::Vector3 movement = tf::Vector3(x, 0.0, 0.0);
-	if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
+	double x = -offset_st.getOrigin().getX();
+	double y = -offset_st.getOrigin().getY();
+	double z = -offset_st.getOrigin().getZ();
+
+	if(x != 0.0 && y != 0.0 && z != 0.0)
 	{
-		ROS_WARN("Error occurred executing move to wagon fiducial.");
-		return false;
-	}
-
-	movement = tf::Vector3(0.0,y, 0.0);
-	if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
-	{
-		ROS_WARN("Error occurred executing move to wagon fiducial.");
-		return false;
-	}
-	movement = tf::Vector3(0.0, 0.0, z);
-	if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
-	{
-		ROS_WARN("Error occurred executing move to wagon fiducial.");
-		return false;
-	}
-
-	 * /base_link /fiducial/tag_board
-	 *- Translation: [-0.772, -0.127, 1.002]
-- Rotation: in Quaternion [0.461, 0.539, 0.526, 0.469]
-            in RPY [1.577, 0.021, 1.705]
-At time 1403627376.113
-- Translation: [-0.772, -0.127, 1.002]
-- Rotation: in Quaternion [0.462, 0.539, 0.525, 0.469]
-            in RPY [1.579, 0.021, 1.704]
-At time 1403627377.121
-- Translation: [-0.772, -0.127, 1.002]
-- Rotation: in Quaternion [0.461, 0.539, 0.526, 0.469]
-            in RPY [1.578, 0.021, 1.706]
-^CAt time 1403627378.025
-- Translation: [-0.772, -0.127, 1.002]
-- Rotation: in Quaternion [0.462, 0.539, 0.526, 0.469]
-            in RPY [1.578, 0.021, 1.705]
-
-	 */
-	/*
-
-	movement = tf::Vector3(-0.085, 0.0, 0.0);
+		tf::Vector3 movement = tf::Vector3(x, 0.0, 0.0);
 		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
 		{
-			ROS_WARN("Error occurred executing move to wagon fiducial.");
+			ROS_ERROR("Error occurred executing processGoToStartPosition.");
 			return false;
 		}
-	 */
-	/*
-    tf::poseTFToMsg(goal, goal_pose.pose);
 
-
-	if(!executeMoveCommand(goal_pose))
+		movement = tf::Vector3(0.0,y, 0.0);
+		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
 		{
-			ROS_WARN("Error occurred executing move.");
+			ROS_ERROR("Error occurred executing processGoToStartPosition.");
 			return false;
 		}
-	 */
+		movement = tf::Vector3(0.0, 0.0, z);
+		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
+		{
+			ROS_ERROR("Error occurred executing processGoToStartPosition.");
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+
 	return true;
 }
 
@@ -452,15 +422,15 @@ void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoa
 		ros::spinOnce();
 	}
 	 */
-	if(tool_name.compare(VAC_NAME) == 0)
+	if(tool_name.compare(DEFAULT) == 0)
 	{
-		//move to start position in front of the vacuum cleaner
-		//success = processGoToSlotAndTurn(up, forward, down);
+		//move to slot straight once
+		success = processGoToSlotAndTurn(tf::Vector3(-0.083, 0.0, 0.0));
 	}
-	else if(tool_name.compare(ARM_NAME) == 0)
+	else if(tool_name.compare(UP_AND_DOWN) == 0)
 	{
 		// move to start position in front of the arm slot
-		//success = processGoToSlotAndTurn(default);
+		//success = processGoToSlotAndTurn(up, back, down);
 	}
 	autopnp_tool_change::GoToStartPositionResult result;
 	std::string feedback;
@@ -518,9 +488,39 @@ bool ToolChange::processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::
 			return false;
 		}
 	}
+
 	return true;
 }
 
+/*
+ * Processes a straight movement
+ * from the start position to the slot position of the tool before
+ * couple/uncouple action.
+ * */
+bool ToolChange::processGoToSlotAndTurn(const tf::Vector3& movement1)
+{
+	tf::Vector3 move1,move2,move3;
+	move1 = movement1;
+
+	if(!move1.isZero())
+		{
+			if(!executeStraightMoveCommand(move1, MAX_STEP_CM))
+			{
+				return false;
+			}
+		}
+
+    tf::Quaternion rotate_x_offset;
+    rotate_x_offset.setRPY(0.0, 0.0, TOOL_CHANGER_OFFSET_TO_X_AXES);
+
+	if(!executeTurn(rotate_x_offset))
+	{
+		ROS_WARN("Error occurred executing move to wagon fiducial.");
+		return false;
+	}
+
+	return true;
+}
 /*
  * Executes a planning action with moveIt interface utilities.
  * The reference frame, the "base_link" frame,
@@ -560,14 +560,15 @@ bool ToolChange::moveToStartPosition(const std::string& action)
 				time, st_BA_FB);
 
 		transform_listener_.lookupTransform( "/arm_7_link", "/fiducial/start_point",
-				time,st_START_POINT);
+				time, st_START_POINT);
 	}
 	catch (tf::TransformException ex)
 	{
 		ROS_WARN("Transform unavailable %s", ex.what());
 	}
 
-	help_z.setRPY(0.0, 0.0, TOOL_CHANGER_OFFSET_TO_X_AXES);
+
+	//help_z.setRPY(0.0, 0.0, TOOL_CHANGER_OFFSET_TO_X_AXES);
 
 	tf::Matrix3x3 m(tag2_to_ref.getRotation());
 	m.getRPY(rall, pitch, yaw);
@@ -583,14 +584,14 @@ bool ToolChange::moveToStartPosition(const std::string& action)
 
 		{
 			goal_pose_tf.setOrigin(st_BA_FB.getOrigin());
-			goal_pose_tf.setRotation(st_BA_FB.getRotation()*help_z);
+			goal_pose_tf.setRotation(st_BA_FB.getRotation());
 		}
 
 	// just rotate
 	if(action.compare(TURN)== 0)
 	{
 		goal_pose_tf.setOrigin(st_BA_FB.getOrigin());
-		goal_pose_tf.setRotation((st_BA_FB.getRotation()* help_z)* quat);
+		goal_pose_tf.setRotation(st_BA_FB.getRotation() * quat);
 	}
 
 	//tf -> msg
@@ -651,6 +652,69 @@ bool ToolChange::executeMoveCommand(const geometry_msgs::PoseStamped& goal_pose)
 	group.setPoseReferenceFrame(BASE_LINK);
 
 	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
+	group.setPoseTarget(pose, EE_NAME);
+
+	// plan the motion
+	bool have_plan = false;
+	moveit::planning_interface::MoveGroup::Plan plan;
+	have_plan = group.plan(plan);
+
+	ROS_WARN("STARTE MOVE");
+	//EXECUTE THE PLAN !!!!!! BE CAREFUL
+	if (have_plan==true) {
+		group.execute(plan);
+		group.move();
+	}
+	else
+	{
+		ROS_WARN("No valid plan found for the arm movement.");
+		move_action_state_ = false;
+		return false;
+	}
+	move_action_state_ = true;
+
+	return true;
+}
+
+/*
+ * Execute a planning action with moveIt interface utilities.
+ * The reference frame, the "base_link" frame,
+ * initializes the starting point of the coordinate system.
+ * the goal frame describes the end effector ("arm_7_link")
+ * which will be moved to a new position. The {@ goal_pose}
+ * is relative to the end effector frame.
+ * Returns true, if the planned action has been executed.
+ */
+bool ToolChange::executeTurn(const tf::Quaternion& quat)
+{
+	ROS_INFO("Start execute move command with the goal.");
+
+	move_action_state_ = false;
+
+	geometry_msgs::PoseStamped pose;
+	geometry_msgs::PoseStamped ee_pose;
+	tf::Transform ee_pose_tf;
+    tf::Transform current_tf;
+
+	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
+	pose.header.frame_id = BASE_LINK;
+	pose.header.stamp = ros::Time::now();
+	group.setPoseReferenceFrame(BASE_LINK);
+
+	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
+	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
+
+	printPose(ee_pose_tf);
+
+	current_tf.setOrigin(ee_pose_tf.getOrigin());
+	current_tf.setRotation(ee_pose_tf.getRotation() * quat);
+
+	tf::poseTFToMsg(current_tf, pose.pose);
+	printPose(current_tf);
+
+	br_.sendTransform(tf::StampedTransform(current_tf, ros::Time::now(),
+							"/base_link", "fiducial/drehung"));
+
 	group.setPoseTarget(pose, EE_NAME);
 
 	// plan the motion
