@@ -54,7 +54,7 @@ within the marker plane with respect to the marker origin -->
 <!-- Tag size in [m] -->
 <!--LineWidthHeight value="0.100" /-->
 <!--LineWidthHeight value="0.05" /-->
-<LineWidthHeight value="0.06" />
+<LineWidthHeight value="0.05" />
 <!-- Cross ratios line 0 and 1 -->
 <!-- Measurements in % relative to the tag size -->
 <CrossRatioLine0 AB="0.25" AC="0.52" />

@@ -14,8 +14,8 @@ if __name__ == '__main__':
 		rospy.init_node('Arm_uncouple_client_py')
 
 		result = GoToStartPosition().go_to_start_position_client("arm") 		
-		result = GoToSlotAndTurn().go_to_slot_and_turn_client("default")
-		result = GoBackToStart().go_back_to_start_client("upAndMove")     	
+		#result = GoToSlotAndTurn().go_to_slot_and_turn_client("default")
+		#result = GoBackToStart().go_back_to_start_client("upAndMove")     	
 
 
 	except rospy.ROSInterruptException:

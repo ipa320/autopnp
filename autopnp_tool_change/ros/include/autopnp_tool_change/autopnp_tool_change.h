@@ -38,7 +38,6 @@
 #include <std_msgs/ColorRGBA.h>
 
 #include <vector>
-#include <autopnp_tool_change/MoveToWagonAction.h>
 #include <autopnp_tool_change/GoToStartPositionAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <actionlib/client/simple_action_client.h>
@@ -72,31 +71,23 @@ static const std::string TURN = "turn";
 
 static const std::string GO_TO_START_POSITION_ACTION_NAME = "go_to_start_position_action";
 static const std::string GO_TO_SLOT_AND_TURN_ACTION_NAME = "go_to_slot_and_turn_action";
-static const std::string GO_BACK_TO_START_NAME = "go_back_to_start_action";
+static const std::string GO_BACK_TO_START_ACTION_NAME = "go_back_to_start_action";
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
-// 1 mm
-static const double MAX_TOLERANCE = 0.0008;
 
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
 static const std::string EE_NAME = "arm_7_link";
-//static const std::string EE_NAME = "arm_toolchanger_link";
-
-static const tf::Vector3 UP = tf::Vector3(0.0, 0.0, -0.07);
-static const tf::Vector3 FORWARD = tf::Vector3(-0.12, 0.0, 0.0);
-static const tf::Vector3 DOWN = tf::Vector3(0.0, 0.0, 0.04);
-static const tf::Vector3 BACK = tf::Vector3(0.05, 0.0, 0.0);
-static const tf::Vector3 FIDUCIAL_DISTANCE = tf::Vector3(0.0, 0.05, 0.0);
 
 
-static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.025, 0.05, -0.09);
-static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.661, 0.175, 0.677, 0.272);
+static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.03, -0.05, -0.09);
+static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.655, 0.198, 0.685, 0.251);
+static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.055;
 
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.082, -0.027, 0.23);
-static const tf::Vector3 VAC_CLEANER_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
-static const tf::Vector3 ARM_STATION_OFFSET = tf::Vector3(0.0, 0.0, 0.0);
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.11, -0.05, 0.23);
+
+static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.115, -0.145, 0.135);
 
 class ToolChange
 {
@@ -123,7 +114,6 @@ protected:
 	{
 		struct fiducials arm_;
 		struct fiducials board_;
-		struct fiducials cam_;
 	};
 
 	/// ROS node handle
@@ -136,6 +126,7 @@ protected:
 	message_filters::Subscriber<sensor_msgs::JointState> joint_states_sub_;
 
 	tf::TransformListener transform_listener_;
+    tf::TransformBroadcaster br_;
 
 	///PUBLISHERS
 	ros::Publisher vis_pub_;
@@ -149,15 +140,11 @@ protected:
 	ros::ServiceClient execute_known_traj_client_ ;
 	ros::Time latest_time_;
 
+
 	bool slot_position_detected_;
 	bool move_action_state_;
 	bool detected_all_fiducials_;
 
-	///transformation data between the arm and the wagon slot
-	tf::Transform transform_CA_FA_;
-	tf::Transform transform_CA_FB_;
-	tf::Transform transform_BA_CA_;
-	geometry_msgs::PoseStamped current_ee_pose_;
 
 
 	///CALLBACKS
@@ -168,28 +155,22 @@ protected:
 	void goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 	void goBackToStart(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 
-
-	//calculates translation and orientation distance between arm marker and board marker
-	tf::Transform calculateArmBoardTransformation(const tf::Transform& board, const tf::Transform& arm);
 	/// Computes an average pose from multiple detected markers.
-	struct components computeMarkerPose(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
+	void computeMarkerPose(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
 
     ///MOVEMENTS
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
-	bool moveToStartPosition(const geometry_msgs::PoseStamped& start_pose);
-	bool moveToWagonFiducial(const std::string& action);
+	bool moveToStartPosition(const std::string& action);
 
 	///PROCESS MOVEMENTS
 	bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
-	bool processGoToSlotAndTurn(const tf::Vector3& movement1);
 	bool processGoToStartPosition(const std::string& received_goal);
 	bool processGoBackToStart(const std::string& received_goal);
 
     //small functions to split the code
 	void resetServers();
 	void waitForMoveit();
-	void clearFiducials();
 
 
 	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ
@@ -198,10 +179,6 @@ protected:
 	void printPose(tf::Transform& trans_msg);
 	void printMsg(const geometry_msgs::PoseStamped pose);
 	void printVector(const std::vector<double> v);
-	void drawArrowX( double r, double g, double b, double a, const geometry_msgs::PoseStamped& pose);
-	void drawLine( double r, double g, double b, double a, const geometry_msgs::PoseStamped& pose_start,
-			const geometry_msgs::PoseStamped& pose_end);
-	void drawSystem(const geometry_msgs::PoseStamped& pose);
 };
 
 
