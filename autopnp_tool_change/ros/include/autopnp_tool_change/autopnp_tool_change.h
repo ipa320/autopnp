@@ -80,12 +80,31 @@ static const std::string GO_BACK_TO_START_ACTION_NAME = "go_back_to_start_action
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
-static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.26;
+//static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.287;
+static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.226;
 
-static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.03, -0.05, -0.09);
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.12, -0.082, 0.20);
-static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.117, -0.145, 0.13);
+//static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.03, -0.09);
+//static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.10, -0.081, 0.21);
+//static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.105, -0.081, 0.131);
 
+static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.0305, -0.088);
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.106, -0.077, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.106, -0.081, 0.134);
+/*
+ *  /fiducial/tag_board /fiducial/tag_2
+At time 1404134359.724
+- Translation: [-0.109, -0.116, 0.226]
+- Rotation: in Quaternion [0.132, -0.130, -0.684, 0.706]
+            in RPY [0.372, -0.003, -1.541]
+
+            /fiducial/tag_2 /fiducial/tag_board
+At time 1404134393.384
+- Translation: [-0.114, 0.023, -0.251]
+- Rotation: in Quaternion [-0.131, 0.130, 0.684, 0.705]
+            in RPY [-0.007, 0.371, 1.539]
+
+ *
+ */
 static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.655, 0.198, 0.685, 0.251);
 
 class ToolChange

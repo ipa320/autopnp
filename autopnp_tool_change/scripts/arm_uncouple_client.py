@@ -13,8 +13,10 @@ if __name__ == '__main__':
 	# publish and subscribe over ROS.
 		rospy.init_node('Arm_uncouple_client_py')
 
-		result = GoToStartPosition().go_to_start_position_client("arm") 		
-		result = GoToSlotAndTurn().go_to_slot_and_turn_client("default")
+		result = GoToStartPosition().go_to_start_position_client("arm") 
+		print(result)
+		if result == True:		
+			result_2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default")
 		#result = GoBackToStart().go_back_to_start_client("upAndMove")     	
 
 

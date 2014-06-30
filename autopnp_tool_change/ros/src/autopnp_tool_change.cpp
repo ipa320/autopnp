@@ -147,7 +147,7 @@ void ToolChange::computeMarkerPose(
 	bool detected_arm_fiducial = false;
 	bool detected_board_fiducial = false;
 	tf::Point translation;
-	tf::Quaternion orientation;
+	tf::Quaternion orientation = tf::createIdentityQuaternion();
 	//static tf::TransformBroadcaster br;
 	std::string cam_name = "/head_cam3d_link";
 
@@ -187,6 +187,7 @@ void ToolChange::computeMarkerPose(
 
 			std::string fiducial_arm_real = "/arm_7_link_real";
 			tf::StampedTransform stamped_transform_FA_EE;
+			stamped_transform_FA_EE.setIdentity();
 			stamped_transform_FA_EE.setOrigin(FA_EE_OFFSET);
 			stamped_transform_FA_EE.setRotation(FA_EE_ORIENTATION_OFFSET);
 
@@ -204,7 +205,6 @@ void ToolChange::computeMarkerPose(
 			}
 			catch (tf::TransformException ex)
 			{
-				slot_position_detected_ = false;
 				ROS_WARN("Transform unavailable %s", ex.what());
 			}
 		}
@@ -252,7 +252,6 @@ void ToolChange::computeMarkerPose(
 		}
 		catch (tf::TransformException ex)
 		{
-			slot_position_detected_ = false;
 			ROS_WARN("Transform unavailable %s", ex.what());
 		}
 	}
@@ -283,7 +282,7 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
 {
 
 	ROS_INFO("GoToStartPosition received new goal:  %s", goal->goal.c_str());
-	bool success = false;
+
 	std::string received_goal = goal->goal;
 
 	while(detected_all_fiducials_ == false)
@@ -292,7 +291,16 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
 		ros::spinOnce();
 	}
 	//move to a start position
-	success = processGoToStartPosition(received_goal);
+	bool success = processGoToStartPosition(received_goal);
+	int s = -1;
+
+	if(success == true){
+		s = 1;
+	}else if(success == false){
+		s = 0;
+	}
+
+	ROS_INFO("success =  %i", (int) s);
 
 	autopnp_tool_change::GoToStartPositionResult result;
 	std::string feedback;
@@ -300,15 +308,15 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
 	//set response
 	if(success)
 	{
-		ROS_INFO("GoToStartPosition was successful !");
-		//result.result = true;
+		result.result = success;
+		ROS_INFO("GoToStartPosition was successful %i !", (int) result.result);
 		feedback ="ARM ON THE START POSITION !!";
 		as_go_to_start_position_->setSucceeded(result, feedback);
 	}
 	else
 	{
+		result.result = success;
 		ROS_INFO("GoToStartPosition failed !");
-		//result.result = true;
 		feedback ="FAILD TO GET TO THE START POSITION !!";
 		as_go_to_start_position_->setAborted(result, feedback);
 	}
@@ -334,7 +342,6 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 	if(!moveToStartPosition(MOVE))
 	{
 		ROS_ERROR("Error occurred executing processGoToStartPosition.");
-
 		return false;
 	}
 
@@ -343,23 +350,28 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 		if(!moveToStartPosition(TURN))
 		{
 			ROS_ERROR("Error occurred executing processGoToStartPosition.");
-
 			return false;
 		}
 	}
 
 	//static tf::TransformBroadcaster br;
-	tf::StampedTransform goal, offset_st;
+	tf::StampedTransform goal;
+	goal.setIdentity();
+	tf::StampedTransform offset_st;
+	offset_st.setIdentity();
 	geometry_msgs::PoseStamped goal_pose;
 
+    bool slot_position_detected = false;
 
 	try{
 
 		transform_listener_.lookupTransform( "/arm_7_link","/arm_7_link_real",
 				latest_time_, offset_st);
+		slot_position_detected = true;
 	}
 	catch (tf::TransformException ex)
 	{
+		slot_position_detected = false;
 		ROS_WARN("Transform unavailable %s", ex.what());
 	}
 
@@ -370,7 +382,7 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 	double y = -offset_st.getOrigin().getY();
 	double z = -offset_st.getOrigin().getZ();
 
-	if(x != 0.0 && y != 0.0 && z != 0.0)
+	if(x != 0.0 && y != 0.0 && z != 0.0 && slot_position_detected == true)
 	{
 		tf::Vector3 movement = tf::Vector3(x, 0.0, 0.0);
 		if(!executeStraightMoveCommand(movement, MAX_STEP_CM))
@@ -425,7 +437,7 @@ void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoa
 	if(tool_name.compare(DEFAULT) == 0)
 	{
 		//move to slot straight once
-		success = processGoToSlotAndTurn(tf::Vector3(-0.083, 0.0, 0.0));
+		success = processGoToSlotAndTurn(tf::Vector3(-0.08, 0.0, 0.0));
 	}
 	else if(tool_name.compare(UP_AND_DOWN) == 0)
 	{
@@ -438,6 +450,7 @@ void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoa
 	//set the response
 	if(success)
 	{
+		result.result = success;
 		ROS_INFO("GoToSlotAndTurn was successful!");
 		//result.result = true;
 		feedback ="ARM ON SLOT POSITION !!";
@@ -445,6 +458,7 @@ void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoa
 	}
 	else
 	{
+		result.result = success;
 		ROS_ERROR("GoToSlotAndTurn  failed!");
 		//result.result = true;
 		feedback ="FAILD TO GET TO SLOT POSITION !!";
@@ -510,7 +524,7 @@ bool ToolChange::processGoToSlotAndTurn(const tf::Vector3& movement1)
 			}
 		}
 
-    tf::Quaternion rotate_x_offset;
+    tf::Quaternion rotate_x_offset = tf::createIdentityQuaternion();
     rotate_x_offset.setRPY(0.0, 0.0, TOOL_CHANGER_OFFSET_TO_X_AXES);
 
 	if(!executeTurn(rotate_x_offset))
@@ -534,10 +548,17 @@ bool ToolChange::moveToStartPosition(const std::string& action)
 {
 	ROS_INFO("Execute %s ", action.c_str());
 	move_action_state_ = false;
+	bool slot_position_detected = false;
 	geometry_msgs::PoseStamped ee_pose, goal_pose;
-	tf::Transform ee_pose_tf, goal_pose_tf;
-	tf::StampedTransform st_START_POINT, tag2_to_ref, st_BA_FB;
-	tf::Quaternion quat, help_z;
+	tf::Transform ee_pose_tf = tf::Transform::getIdentity();
+	tf::Transform goal_pose_tf = tf::Transform::getIdentity();
+	tf::StampedTransform st_START_POINT;
+	st_START_POINT.setIdentity();
+	tf::StampedTransform tag2_to_ref;
+	tag2_to_ref.setIdentity();
+	tf::StampedTransform st_BA_FB;
+	st_BA_FB.setIdentity();
+	tf::Quaternion quat = tf::createIdentityQuaternion();
 	double rall, pitch, yaw;
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
@@ -561,14 +582,13 @@ bool ToolChange::moveToStartPosition(const std::string& action)
 
 		transform_listener_.lookupTransform( "/arm_7_link", "/fiducial/start_point",
 				time, st_START_POINT);
+		slot_position_detected = true;
 	}
 	catch (tf::TransformException ex)
 	{
+		slot_position_detected = false;
 		ROS_WARN("Transform unavailable %s", ex.what());
 	}
-
-
-	//help_z.setRPY(0.0, 0.0, TOOL_CHANGER_OFFSET_TO_X_AXES);
 
 	tf::Matrix3x3 m(tag2_to_ref.getRotation());
 	m.getRPY(rall, pitch, yaw);
@@ -588,7 +608,7 @@ bool ToolChange::moveToStartPosition(const std::string& action)
 		}
 
 	// just rotate
-	if(action.compare(TURN)== 0)
+	if(action.compare(TURN)== 0 )
 	{
 		goal_pose_tf.setOrigin(st_BA_FB.getOrigin());
 		goal_pose_tf.setRotation(st_BA_FB.getRotation() * quat);
@@ -609,7 +629,8 @@ bool ToolChange::moveToStartPosition(const std::string& action)
 	have_plan = group.plan(plan);
 
 	//EXECUTE THE PLAN !!!!!! BE CAREFUL
-	if (have_plan==true) {
+	if (have_plan==true && slot_position_detected == true)
+	{
 		group.execute(plan);
 		group.move();
 	}
@@ -691,10 +712,11 @@ bool ToolChange::executeTurn(const tf::Quaternion& quat)
 
 	move_action_state_ = false;
 
+	bool slot_position_detected = false;
 	geometry_msgs::PoseStamped pose;
 	geometry_msgs::PoseStamped ee_pose;
-	tf::Transform ee_pose_tf;
-    tf::Transform current_tf;
+	tf::Transform ee_pose_tf = tf::Transform::getIdentity();
+    tf::Transform current_tf = tf::Transform::getIdentity();
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
 	pose.header.frame_id = BASE_LINK;
@@ -706,8 +728,24 @@ bool ToolChange::executeTurn(const tf::Quaternion& quat)
 
 	printPose(ee_pose_tf);
 
+	tf::StampedTransform st_BA_SLOT;
+	st_BA_SLOT.setIdentity();
+
+	try{
+
+			transform_listener_.lookupTransform( "/arm_7_link_real","/fiducial/slot_point",
+					pose.header.stamp, st_BA_SLOT);
+			slot_position_detected = true;
+		}
+		catch (tf::TransformException ex)
+		{
+			slot_position_detected = false;
+			ROS_WARN("Transform unavailable %s", ex.what());
+		}
+
 	current_tf.setOrigin(ee_pose_tf.getOrigin());
 	current_tf.setRotation(ee_pose_tf.getRotation() * quat);
+	//current_tf.setRotation(st_BA_SLOT.getRotation());
 
 	tf::poseTFToMsg(current_tf, pose.pose);
 	printPose(current_tf);
@@ -724,7 +762,7 @@ bool ToolChange::executeTurn(const tf::Quaternion& quat)
 
 	ROS_WARN("STARTE MOVE");
 	//EXECUTE THE PLAN !!!!!! BE CAREFUL
-	if (have_plan==true) {
+	if (have_plan==true && slot_position_detected == true) {
 		group.execute(plan);
 		group.move();
 	}
@@ -756,7 +794,7 @@ is allowed as change in distance in the configuration space of the robot (this i
 Collisions are avoided if avoid_collisions is set to true. If collisions cannot be avoided, the function fails.
 Return a value that is between 0.0 and 1.0 indicating the fraction of the path achieved as described by the waypoints.
 Return -1.0 in case of error. */
-
+    ROS_INFO("Execute straight move command !");
 	move_action_state_ = false;
 	double jump_threshold = 0.0;
 
@@ -764,10 +802,10 @@ Return -1.0 in case of error. */
 
 	geometry_msgs::PoseStamped pose;
 	geometry_msgs::PoseStamped ee_pose;
-	tf::Transform pose_tf;
-	tf::Transform ee_pose_tf;
-	tf::Transform transf;
-	tf::Transform t;
+	tf::Transform pose_tf= tf::Transform::getIdentity();
+	tf::Transform ee_pose_tf= tf::Transform::getIdentity();
+	tf::Transform transf= tf::Transform::getIdentity();
+	tf::Transform t= tf::Transform::getIdentity();
 
 	moveit::planning_interface::MoveGroup group(PLANNING_GROUP_NAME);
 	pose.header.frame_id = BASE_LINK;
