@@ -22,12 +22,14 @@ class GoToStartPosition:
 
 		# Waits for the server to finish performing the action.
 		finished_before_timeout = go_to_start_position_client.wait_for_result(rospy.Duration(300, 0))
-
+		
    		if finished_before_timeout:
 		   	result = go_to_start_position_client.get_result()
+		   	state = go_to_start_position_client.get_state()
 		   	
-			#print "Action result: %s"
-			print(result)
+			print "Action go_to_start_position finished with state: %s"%state
+			print "Action go_to_start_position finished with result: ", result
+
 		# Prints out the result of executing the action
    		return result # State after waiting for GoToStartPositionAction
 

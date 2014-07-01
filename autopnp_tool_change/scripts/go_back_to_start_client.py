@@ -24,9 +24,13 @@ class GoBackToStart:
 		finished_before_timeout = go_back_to_start_client.wait_for_result(rospy.Duration(300, 0))
 
    		if finished_before_timeout:
+   			result = go_back_to_start_client.get_result()
 		   	state = go_back_to_start_client.get_state()
-			print "Action finished: %s"%state
+		   	
+			print "Action go_back_to_start finished with state: %s"%state
+			print "Action go_back_to_start finished with result:", result
+			
 		# Prints out the result of executing the action
-   		return state # State after waiting for GoToStartPositionAction
+   		return result # State after waiting for GoToStartPositionAction
 
 

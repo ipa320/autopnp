@@ -12,11 +12,28 @@ if __name__ == '__main__':
 	# Initializes a rospy node so that the SimpleActionClient can
 	# publish and subscribe over ROS.
 		rospy.init_node('Vac_uncouple_client_py')
-
-		result = GoToStartPosition().go_to_start_position_client("vac") 		
-		result = GoToSlotAndTurn().go_to_slot_and_turn_client("default")
-		result = GoBackToStart().go_back_to_start_client("upAndMove")     	
-
+		
+		result = GoToStartPosition().go_to_start_position_client("vac")
+		
+		if result.result == True:
+			result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default")
+				
+			if result2.result == True:
+				result3 = ToolchnagerOpen.toolchnager_open_client()
+				
+				if result3 == 'yes':
+					result4 = GoBackToStart().go_back_to_start_client("upAndMove")
+					
+					if result4.result == True:
+						print "vac uncoupled OK!"
+					else:
+						print "vac_uncouple failed !"
+				else:
+					print "vac_uncouple failed !"
+			else:
+				print "vac_uncouple failed !"
+		else:
+			print "vac_uncouple failed !"
 
 	except rospy.ROSInterruptException:
- 		print "program interrupted before completion"
+		print "program interrupted before completion"

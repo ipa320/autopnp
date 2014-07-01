@@ -81,15 +81,39 @@ static const std::string GO_BACK_TO_START_ACTION_NAME = "go_back_to_start_action
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
 //static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.287;
-static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.226;
+// good angle
+//static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.226;
+static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.263;
 
-//static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.03, -0.09);
-//static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.10, -0.081, 0.21);
-//static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.105, -0.081, 0.131);
+//gut : just small offset to the right
+//static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.0305, -0.088);
+//static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.106, -0.075, 0.21);
+//static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.106, -0.081, 0.134);
 
-static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.0305, -0.088);
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.106, -0.077, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.106, -0.081, 0.134);
+/*
+ * tf_echo /base_link /fiducial/tag_board
+At time 1404217621.925
+- Translation: [-0.675, -0.169, 1.006]
+- Rotation: in Quaternion [0.441, 0.555, 0.542, 0.452]
+            in RPY [1.576, 0.023, 1.775]
+At time 1404217622.917
+- Translation: [-0.674, -0.169, 1.006]
+- Rotation: in Quaternion [0.442, 0.555, 0.541, 0.451]
+            in RPY [1.578, 0.022, 1.774]
+ *  /fiducial/tag_board /base_link
+At time 1404217671.387
+- Translation: [0.052, -1.002, 0.700]
+- Rotation: in Quaternion [0.441, 0.554, 0.542, -0.452]
+            in RPY [1.592, -1.368, -3.139]
+At time 1404217672.359
+- Translation: [0.052, -1.002, 0.700]
+- Rotation: in Quaternion [0.441, 0.554, 0.542, -0.452]
+            in RPY [1.593, -1.367, -3.141]
+ *
+ */
+static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.030, -0.083);
+static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.104, -0.0767, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.109, -0.077, 0.1385);
 /*
  *  /fiducial/tag_board /fiducial/tag_2
 At time 1404134359.724

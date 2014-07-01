@@ -25,8 +25,11 @@ class GoToSlotAndTurn:
 
    		if finished_before_timeout:
 		   	state = go_to_slot_and_turn.get_state()
-			print "Action finished: %s"%state
+		   	result = go_to_slot_and_turn.get_result()
+		   	
+			print "Action go_to_slot_and_turn finished with state: %s"%state
+			print "Action go_to_slot_and_turn finished with result: %s"%result
 		# Prints out the result of executing the action
-   		return state # State after waiting for GoToStartPositionAction
+   		return result # State after waiting for GoToStartPositionAction
 
 
