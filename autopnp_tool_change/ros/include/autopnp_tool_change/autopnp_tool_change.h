@@ -39,6 +39,7 @@
 
 #include <vector>
 #include <autopnp_tool_change/GoToStartPositionAction.h>
+#include <autopnp_tool_change/GoToSlotAndTurnAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <actionlib/client/simple_action_client.h>
 
@@ -63,6 +64,21 @@ static const std::string ARM = "tag_2";
 static const std::string VAC_CLEANER = "tag_79";
 static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
+
+static const std::string START_POSE_ARM = "/fiducial/start_pose_arm";
+static const std::string START_POSE_VAC = "/fiducial/start_pose_vac";
+static const std::string SLOT_POSE_ARM = "/fiducial/slot_pose_arm";
+static const std::string SLOT_POSE_VAC = "/fiducial/slot_pose_vac";
+static const std::string REFERENCE = "fiducial/reference";
+static const std::string TAG_BOARD = "fiducial/tag_board";
+static const std::string TAG_ARM = "/fiducial/tag_arm";
+static const std::string ARM_7_LINK_REAL = "/arm_7_link_real";
+static const std::string ARM_7_LINK = "/arm_7_link";
+static const std::string CAM = "/head_cam3d_link";
+static const std::string BASE = "/base_link";
+
+
+//static const std::string EXTRA_FIDUCIAL = "tag_0";
 static const std::string DEFAULT = "default";
 static const std::string UP_AND_DOWN = "upAndDown";
 static const std::string UP_AND_MOVE = "upAndMove";
@@ -80,55 +96,27 @@ static const std::string GO_BACK_TO_START_ACTION_NAME = "go_back_to_start_action
 
 static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
-//static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.287;
 // good angle
-//static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.226;
-static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.263;
+//static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.263;
+static const double TOOL_CHANGER_OFFSET_ANGLE = -0.226;
 
 //gut : just small offset to the right
 //static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.0305, -0.088);
 //static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.106, -0.075, 0.21);
 //static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.106, -0.081, 0.134);
 
-/*
- * tf_echo /base_link /fiducial/tag_board
-At time 1404217621.925
-- Translation: [-0.675, -0.169, 1.006]
-- Rotation: in Quaternion [0.441, 0.555, 0.542, 0.452]
-            in RPY [1.576, 0.023, 1.775]
-At time 1404217622.917
-- Translation: [-0.674, -0.169, 1.006]
-- Rotation: in Quaternion [0.442, 0.555, 0.541, 0.451]
-            in RPY [1.578, 0.022, 1.774]
- *  /fiducial/tag_board /base_link
-At time 1404217671.387
-- Translation: [0.052, -1.002, 0.700]
-- Rotation: in Quaternion [0.441, 0.554, 0.542, -0.452]
-            in RPY [1.592, -1.368, -3.139]
-At time 1404217672.359
-- Translation: [0.052, -1.002, 0.700]
-- Rotation: in Quaternion [0.441, 0.554, 0.542, -0.452]
-            in RPY [1.593, -1.367, -3.141]
- *
- */
+
 static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.030, -0.083);
-static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.104, -0.0767, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.109, -0.077, 0.1385);
-/*
- *  /fiducial/tag_board /fiducial/tag_2
-At time 1404134359.724
-- Translation: [-0.109, -0.116, 0.226]
-- Rotation: in Quaternion [0.132, -0.130, -0.684, 0.706]
-            in RPY [0.372, -0.003, -1.541]
+static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.104, -0.0765, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.109, -0.07, 0.1385);
+static const tf::Quaternion SLOT_QUAT_ARM = tf::Quaternion(0.023, -0.023, 0.141, 0.990);
+//static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.111, -0.07, 0.1305);
+static const tf::Vector3 rpy_arm = tf::Vector3(0.039, -0.052, 0.282);
 
-            /fiducial/tag_2 /fiducial/tag_board
-At time 1404134393.384
-- Translation: [-0.114, 0.023, -0.251]
-- Rotation: in Quaternion [-0.131, 0.130, 0.684, 0.705]
-            in RPY [-0.007, 0.371, 1.539]
+static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.062, -0.077, 0.1385);
+static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.060, -0.077, 0.21);
+static const tf::Vector3 rpy_vac = tf::Vector3(0.039, -0.052, 0.282);
 
- *
- */
 static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.655, 0.198, 0.685, 0.251);
 
 class ToolChange
@@ -175,7 +163,7 @@ protected:
 
 	/// SERVER
 	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_to_start_position_;
-	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_to_slot_and_turn_;
+	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToSlotAndTurnAction> > as_go_to_slot_and_turn_;
 	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_back_to_start_;
 
 	/// CLIENTS
@@ -194,7 +182,7 @@ protected:
 	void markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
 	///SERVER CALLBACK if goal received
 	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
-	void goToSlotAndTurn(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
+	void goToSlotAndTurn(const autopnp_tool_change::GoToSlotAndTurnGoalConstPtr& goal);
 	void goBackToStart(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 
 	/// Computes an average pose from multiple detected markers.
@@ -202,15 +190,16 @@ protected:
 
     ///MOVEMENTS
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose);
-	bool executeTurn(const tf::Quaternion& quat);
+	bool executeTurn(const tf::Quaternion& quat, const std::string& tool);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
-	bool moveToStartPosition(const std::string& action);
+	bool moveToStartPosition(const std::string& action, const std::string& tool);
 
 	///PROCESS MOVEMENTS
 	bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
-	bool processGoToSlotAndTurn(const tf::Vector3& movement1);
+	bool processGoToSlotAndTurn(const std::string& goal, const std::string& tool);
 	bool processGoToStartPosition(const std::string& received_goal);
 	bool processGoBackToStart(const std::string& received_goal);
+	bool goToRealArmPose();
 
     //small functions to split the code
 	void resetServers();

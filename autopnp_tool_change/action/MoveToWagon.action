@@ -1,8 +1,0 @@
-# Define the goal
-string goal
----
-# Define the result
-bool result
----
-# Define a feedback message
-bool feedback

@@ -9,13 +9,14 @@ import autopnp_tool_change.msg
 
 class GoToSlotAndTurn:
 	
-	def go_to_slot_and_turn_client(self, goal_name):
-		go_to_slot_and_turn = actionlib.SimpleActionClient('go_to_slot_and_turn_action', autopnp_tool_change.msg.GoToStartPositionAction)
+	def go_to_slot_and_turn_client(self, goal_name, goal_tool):
+		go_to_slot_and_turn = actionlib.SimpleActionClient('go_to_slot_and_turn_action', autopnp_tool_change.msg.GoToSlotAndTurnAction)
 		go_to_slot_and_turn.wait_for_server()
 
 		# Creates a goal to send to the action server.
-		goal = autopnp_tool_change.msg.GoToStartPositionGoal()
+		goal = autopnp_tool_change.msg.GoToSlotAndTurnGoal()
 		goal.goal = goal_name
+		goal.tool = goal_tool
 
 		# Sends the goal to the action server.
 		go_to_slot_and_turn.send_goal(goal)
