@@ -17,13 +17,14 @@ if __name__ == '__main__':
 
 		result = GoToStartPosition().go_to_start_position_client("arm") 
 		if result.result == True:				
-			result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "arm")
-			'''
+			#result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "arm")
+			result2 = True
 			if result2.result == True:
+				'''
 				result3 = ToolchangerOpen.toolchanger_open_client()
-				
+					
 				if result3 == 'yes':
-					result4 = GoBackToStart().go_back_to_start_client("upAndMove")
+					#result4 = GoBackToStart().go_back_to_start_client("upAndMove")
 					
 					if result4 == True:
 						print "arm_uncoupled OK!"
@@ -32,10 +33,10 @@ if __name__ == '__main__':
 						
 				else:
 					print "arm_uncouple failed !"
-					
+				'''	
 			else:
 				print "arm_uncouple failed !"
-			'''	
+			
 		else:
 			print "arm_uncouple failed !"
 			

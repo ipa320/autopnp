@@ -98,20 +98,38 @@ static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_CM = 0.01;
 // good angle
 //static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.263;
-static const double TOOL_CHANGER_OFFSET_ANGLE = -0.226;
+static const double TOOL_CHANGER_OFFSET_ANGLE = 0.226;
 
 //gut : just small offset to the right
 //static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.0305, -0.088);
 //static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.106, -0.075, 0.21);
 //static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.106, -0.081, 0.134);
 
+/*
+ /ARM
+ /base_link /fiducial/tag_boardAt time 1404478882.245
+- Translation: [-0.702, -0.079, 1.005]
+- Rotation: in Quaternion [0.470, 0.530, 0.515, 0.483]
+            in RPY [1.573, 0.027, 1.664]
+At time 1404478883.197
+- Translation: [-0.701, -0.079, 1.006]
+- Rotation: in Quaternion [0.467, 0.529, 0.517, 0.485]
+            in RPY [1.566, 0.029, 1.665]
+
+
+ */
 
 static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.030, -0.083);
+//perfect
 static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.104, -0.0765, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.109, -0.07, 0.1385);
-static const tf::Quaternion SLOT_QUAT_ARM = tf::Quaternion(0.023, -0.023, 0.141, 0.990);
+//try 2 cm away
+//static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.104, -0.077, 0.23);
+static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.108, -0.07, 0.135);
+static const tf::Quaternion OFFSET = tf::Quaternion(0.545, -0.431, 0.426, 0.579);
+static const tf::Quaternion SLOT_QUAT_ARM = tf::Quaternion(0.024, -0.029, 0.136, 0.990);
 //static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.111, -0.07, 0.1305);
-static const tf::Vector3 rpy_arm = tf::Vector3(0.039, -0.052, 0.282);
+static const tf::Vector3 rpy_arm = tf::Vector3(0.039, -0.052, 0.273);
+//0.039, -0.064, 0.271
 
 static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.062, -0.077, 0.1385);
 static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.060, -0.077, 0.21);
@@ -190,7 +208,7 @@ protected:
 
     ///MOVEMENTS
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose);
-	bool executeTurn(const tf::Quaternion& quat, const std::string& tool);
+	bool executeTurn(const tf::Quaternion& quat);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
 	bool moveToStartPosition(const std::string& action, const std::string& tool);
 
@@ -198,7 +216,8 @@ protected:
 	bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
 	bool processGoToSlotAndTurn(const std::string& goal, const std::string& tool);
 	bool processGoToStartPosition(const std::string& received_goal);
-	bool processGoBackToStart(const std::string& received_goal);
+	bool processGoBackLift();
+	bool processGoBackNormal();
 	bool goToRealArmPose();
 
     //small functions to split the code
