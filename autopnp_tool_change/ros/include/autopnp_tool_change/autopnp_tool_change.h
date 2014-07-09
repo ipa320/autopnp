@@ -61,6 +61,7 @@
 
 ///Static constant variables
 static const std::string ARM = "tag_2";
+static const std::string TAG_0 = "tag_0";
 static const std::string VAC_CLEANER = "tag_79";
 static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
@@ -77,8 +78,6 @@ static const std::string ARM_7_LINK = "/arm_7_link";
 static const std::string CAM = "/head_cam3d_link";
 static const std::string BASE = "/base_link";
 
-
-//static const std::string EXTRA_FIDUCIAL = "tag_0";
 static const std::string DEFAULT = "default";
 static const std::string UP_AND_DOWN = "upAndDown";
 static const std::string UP_AND_MOVE = "upAndMove";
@@ -90,15 +89,18 @@ static const std::string EE_NAME = "arm_7_link";
 static const std::string MOVE = "move";
 static const std::string TURN = "turn";
 
+static const std::string ARM_NAME = "arm";
+static const std::string VAC_NAME = "vac";
+
 static const std::string GO_TO_START_POSITION_ACTION_NAME = "go_to_start_position_action";
 static const std::string GO_TO_SLOT_AND_TURN_ACTION_NAME = "go_to_slot_and_turn_action";
 static const std::string GO_BACK_TO_START_ACTION_NAME = "go_back_to_start_action";
 
 static const double MAX_STEP_MIL = 0.001;
+static const double MAX_STEP_MMIL = 0.0001;
 static const double MAX_STEP_CM = 0.01;
-// good angle
-//static const double TOOL_CHANGER_OFFSET_TO_X_AXES = -0.263;
-static const double TOOL_CHANGER_OFFSET_ANGLE = 0.226;
+
+static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.42;
 
 //gut : just small offset to the right
 //static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.0305, -0.088);
@@ -121,15 +123,14 @@ At time 1404478883.197
 
 static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.030, -0.083);
 //perfect
-static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.104, -0.0765, 0.21);
-//try 2 cm away
-//static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.104, -0.077, 0.23);
-static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.108, -0.07, 0.135);
-static const tf::Quaternion OFFSET = tf::Quaternion(0.545, -0.431, 0.426, 0.579);
-static const tf::Quaternion SLOT_QUAT_ARM = tf::Quaternion(0.024, -0.029, 0.136, 0.990);
-//static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.111, -0.07, 0.1305);
-static const tf::Vector3 rpy_arm = tf::Vector3(0.039, -0.052, 0.273);
-//0.039, -0.064, 0.271
+//static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.108, -0.07, 0.21);
+static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.109, -0.073, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.109, -0.068, 0.135);
+static const tf::Vector3 SLOT_DOWN_OFFSET_ARM = tf::Vector3(-0.107, -0.082, 0.137);
+
+static const tf::Quaternion SLOT_DOWN_ROTAT_ARM = tf::Quaternion(0.543, -0.430, 0.415, 0.589);
+static const tf::Vector3 slot_down_rpy_arm = tf::Vector3(1.432, -1.281, 0.077);
+
 
 static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.062, -0.077, 0.1385);
 static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.060, -0.077, 0.21);
@@ -218,12 +219,16 @@ protected:
 	bool processGoToStartPosition(const std::string& received_goal);
 	bool processGoBackLift();
 	bool processGoBackNormal();
-	bool goToRealArmPose();
+	bool optimizeTranslation(const std::string& source_frame, const std::string& target_frame);
+	bool executeUncoupleSession(const std::string& tool_name, const tf::StampedTransform& transformation,
+			const std::string& source_frame, const std::string& target_frame);
 
     //small functions to split the code
 	void resetServers();
 	void waitForMoveit();
 
+	tf::Transform executeStartSession(const std::string& action,const tf::StampedTransform& reference,
+			const tf::StampedTransform& goal_transformation);
 
 	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ
 	geometry_msgs::PoseStamped origin;
@@ -231,6 +236,8 @@ protected:
 	void printPose(tf::Transform& trans_msg);
 	void printMsg(const geometry_msgs::PoseStamped pose);
 	void printVector(const std::vector<double> v);
+
+	//void test();
 };
 
 
