@@ -100,43 +100,62 @@ static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_MMIL = 0.0001;
 static const double MAX_STEP_CM = 0.01;
 
-static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.42;
 
-//gut : just small offset to the right
-//static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.0305, -0.088);
-//static const tf::Vector3 START_POINT_OFFSET = tf::Vector3(-0.106, -0.075, 0.21);
-//static const tf::Vector3 SLOT_POINT_OFFSET = tf::Vector3(-0.106, -0.081, 0.134);
+static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.30;
+
+static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.112, -0.072, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.112, -0.072, 0.133);
+static const tf::Vector3 SLOT_DOWN_OFFSET_ARM = tf::Vector3(-0.113, -0.078, 0.133);
+
+static const tf::Vector3 START_POINT_UP_OFFSET_ARM = tf::Vector3(-0.112, -0.060, 0.21);
+static const tf::Vector3 SLOT_POINT_UP_OFFSET_ARM = tf::Vector3(-0.112, -0.062, 0.133);
+
+
+
+static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.132);
+
+
+//tatic const tf::Vector3 rpy_vac = tf::Vector3(0.039, -0.052, 0.282);
+
+static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.004, -0.038, -0.085);
+static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.643, 0.283, 0.664, 0.257);
+
+////Fidu arm
 
 /*
- /ARM
- /base_link /fiducial/tag_boardAt time 1404478882.245
-- Translation: [-0.702, -0.079, 1.005]
-- Rotation: in Quaternion [0.470, 0.530, 0.515, 0.483]
-            in RPY [1.573, 0.027, 1.664]
-At time 1404478883.197
-- Translation: [-0.701, -0.079, 1.006]
-- Rotation: in Quaternion [0.467, 0.529, 0.517, 0.485]
-            in RPY [1.566, 0.029, 1.665]
-
+ *  /base_link /fiducial/tag_board
+At time 1405001645.991
+- Translation: [-0.656, 0.039, 1.002]
+- Rotation: in Quaternion [0.485, 0.520, 0.502, 0.493]
+            in RPY [1.583, 0.026, 1.615]
+At time 1405001646.975
+- Translation: [-0.656, 0.039, 1.002]
+- Rotation: in Quaternion [0.486, 0.520, 0.501, 0.493]
+            in RPY [1.583, 0.025, 1.613]
+At time 1405001647.988
+- Translation: [-0.656, 0.039, 1.002]
+- Rotation: in Quaternion [0.485, 0.520, 0.501, 0.493]
+            in RPY [1.582, 0.026, 1.614]
+ *
+ *
+ * //Fidu vac
+ /base_link /fiducial/tag_board
+At time 1405004214.671
+- Translation: [-0.630, 0.063, 1.003]
+- Rotation: in Quaternion [0.552, 0.435, 0.428, 0.568]
+            in RPY [1.558, 0.022, 1.314]
+At time 1405004215.628
+- Translation: [-0.629, 0.063, 1.003]
+- Rotation: in Quaternion [0.552, 0.435, 0.428, 0.568]
+            in RPY [1.559, 0.022, 1.314]
+At time 1405004216.688
+- Translation: [-0.629, 0.063, 1.003]
+- Rotation: in Quaternion [0.552, 0.436, 0.429, 0.568]
+            in RPY [1.559, 0.022, 1.315]
+^CAt time 1405004217.128
 
  */
-
-static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.035, -0.030, -0.083);
-//perfect
-//static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.108, -0.07, 0.21);
-static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.109, -0.073, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.109, -0.068, 0.135);
-static const tf::Vector3 SLOT_DOWN_OFFSET_ARM = tf::Vector3(-0.107, -0.082, 0.137);
-
-static const tf::Quaternion SLOT_DOWN_ROTAT_ARM = tf::Quaternion(0.543, -0.430, 0.415, 0.589);
-static const tf::Vector3 slot_down_rpy_arm = tf::Vector3(1.432, -1.281, 0.077);
-
-
-static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.062, -0.077, 0.1385);
-static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.060, -0.077, 0.21);
-static const tf::Vector3 rpy_vac = tf::Vector3(0.039, -0.052, 0.282);
-
-static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.655, 0.198, 0.685, 0.251);
 
 class ToolChange
 {

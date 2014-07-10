@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
 		result = GoToStartPosition().go_to_start_position_client("vac") 
 		if result.result == True:				
-			#result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default")
+			result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "vac")
 			'''
 			if result2.result == True:
 				result3 = ToolchangerOpen.toolchanger_open_client()

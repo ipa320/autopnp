@@ -164,17 +164,19 @@ void ToolChange::computeMarkerPose(
 				result.board_.translation.getRotation() += orientation;
 			}
 		}
-		/*
+
 		if(fiducial_label.compare(TAG_0)== 0)
 						{
 							ros::Time time = ros::Time::now();
+							tf::Quaternion rotation2 = tf::createIdentityQuaternion();
+									rotation2.setRPY(0.0, M_PI, M_PI/2);
 							tag_0.setOrigin(translation);
-							tag_0.setRotation(orientation);
+							tag_0.setRotation(orientation*rotation2);
 							br_.sendTransform(tf::StampedTransform(tag_0, time,
 																			CAM, TAG_0 ));
 
 						}
-		 */
+
 		if (fiducial_label.compare(ARM)==0)
 		{
 			detected_arm_fiducial = true;
@@ -187,8 +189,17 @@ void ToolChange::computeMarkerPose(
 			stamped_transform_FA_EE.setOrigin(FA_EE_OFFSET);
 
 			tf::Quaternion quat = tf::createIdentityQuaternion();
-			quat.setRPY(M_PI/2, -M_PI/4, M_PI/2);
+			quat.setRPY(M_PI/2, -0.90, M_PI/2);
 			stamped_transform_FA_EE.setRotation(quat);
+			stamped_transform_FA_EE.setOrigin(FA_EE_OFFSET);
+			//stamped_transform_FA_EE.setRotation(FA_EE_ORIENTATION_OFFSET);
+
+
+
+			//tf::StampedTransform stamped_transform_FA_EE2;
+				//		stamped_transform_FA_EE2.setIdentity();
+					//	stamped_transform_FA_EE2.setOrigin(tf::Vector3(-0.109, -0.086, 0.136));
+						//stamped_transform_FA_EE2.setRotation(tf::Quaternion(0.592, -0.379, 0.396, 0.591));
 
 			ros::Time time = ros::Time::now();
 
@@ -201,6 +212,8 @@ void ToolChange::computeMarkerPose(
 
 				br_.sendTransform(tf::StampedTransform(stamped_transform_FA_EE, time,
 						TAG_ARM, ARM_7_LINK_REAL));
+
+
 			}
 			catch (tf::TransformException ex)
 			{
@@ -218,10 +231,12 @@ void ToolChange::computeMarkerPose(
 
 		tf::Quaternion start_point_rotation = tf::createIdentityQuaternion();
 		start_point_rotation.setRPY(M_PI/2, -M_PI/2, 0.0);
-		tf::Transform fidu_board_translated_arm(start_point_rotation,
+		tf::Quaternion quat2 = tf::createIdentityQuaternion();
+						quat2.setRPY(0.0, 0.03, 0.0);
+		tf::Transform fidu_board_translated_arm(start_point_rotation * quat2,
 				START_POINT_OFFSET_ARM);
 
-		tf::Transform fidu_board_translated_vac(start_point_rotation,
+		tf::Transform fidu_board_translated_vac(start_point_rotation * quat2,
 				START_POINT_OFFSET_VAC);
 
 		tf::Quaternion reference_point_rotation = tf::createIdentityQuaternion();
@@ -229,13 +244,16 @@ void ToolChange::computeMarkerPose(
 
 		tf::Transform fidu_reference_translated(reference_point_rotation,
 				tf::Vector3(0.0,0.0,0.0));
+
 		tf::Quaternion quat = tf::createIdentityQuaternion();
-		quat.setRPY(0.0, 0.0, TOOL_CHANGER_OFFSET_ANGLE);
-		tf::Transform slot_arm( start_point_rotation * quat,
+		quat.setRPY(0.0, 0.03, TOOL_CHANGER_OFFSET_ANGLE);
+
+		tf::Transform slot_arm( (start_point_rotation * quat),
 				SLOT_POINT_OFFSET_ARM);
 
-		tf::Transform slot_vac( start_point_rotation,
+		tf::Transform slot_vac( start_point_rotation * quat,
 				SLOT_POINT_OFFSET_VAC);
+
 
 		try
 		{
@@ -264,6 +282,7 @@ void ToolChange::computeMarkerPose(
 		{
 			ROS_ERROR("Broadcaster unavailable %s", ex.what());
 		}
+
 	}
 	detected_all_fiducials_ = detected_arm_fiducial && detected_board_fiducial;
 
@@ -350,13 +369,13 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 
 	if(new_goal.compare(ARM_NAME) == 0)
 	{
-		ROS_WARN("2 GANG");
+		ROS_WARN("2 TRY");
 		if(!optimizeTranslation(ARM_7_LINK_REAL, START_POSE_ARM))
 		{
 			ROS_ERROR("Error occurred optimizing Translation.");
 			return false;
 		}
-		ROS_WARN("3 GANG");
+		ROS_WARN("3 TRY");
 		if(!optimizeTranslation(ARM_7_LINK_REAL, START_POSE_ARM))
 		{
 			ROS_ERROR("Error occurred optimizing Translation.");
@@ -366,13 +385,13 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal)
 
 	if(new_goal.compare(VAC_NAME) == 0)
 		{
-			ROS_WARN("2 GANG");
+			ROS_WARN("2 TRY");
 			if(!optimizeTranslation(ARM_7_LINK_REAL, START_POSE_VAC))
 			{
 				ROS_ERROR("Error occurred optimizing Translation.");
 				return false;
 			}
-			ROS_WARN("3 GANG");
+			ROS_WARN("3 TRY");
 			if(!optimizeTranslation(ARM_7_LINK_REAL, START_POSE_VAC))
 			{
 				ROS_ERROR("Error occurred optimizing Translation.");
@@ -667,8 +686,16 @@ bool ToolChange::executeUncoupleSession(const std::string& tool_name, const tf::
 		return false;
 	}
 
+	//optimize translation
+	if(!optimizeTranslation(source_frame, target_frame))
+	{
+		ROS_ERROR("Couldn't optimize the position.");
+		return false;
+	}
+
+
 	//Go down
-	tf::Vector3 translateZ = tf::Vector3(0.0, 0.0, 0.006);
+	tf::Vector3 translateZ = tf::Vector3(0.0, 0.0, 0.002);
 	if(!executeStraightMoveCommand(translateZ, MAX_STEP_MMIL))
 	{
 		ROS_ERROR("Error occurred executing processGoToSlotAndTuren straight movement");
@@ -748,7 +775,7 @@ bool ToolChange::optimizeTranslation(const std::string& source_frame, const std:
 	 */
 	tf::Vector3 movement = tf::Vector3(x, y, z);
 
-	if(!executeStraightMoveCommand(movement, step))
+	if(!executeStraightMoveCommand(movement, MAX_STEP_MMIL))
 	{
 		ROS_ERROR("Error occurred executing straight command.");
 		return false;

@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
 		result = GoToStartPosition().go_to_start_position_client("arm") 
 		if result.result == True:				
-			#result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "arm")
+			result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "arm")
 			result2 = True
 			if result2.result == True:
 				'''
