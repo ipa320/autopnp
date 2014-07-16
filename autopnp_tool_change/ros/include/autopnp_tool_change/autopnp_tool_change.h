@@ -67,9 +67,15 @@ static const std::string ARM_STATION = "tag_38";
 static const std::string EXTRA_FIDUCIAL = "tag_73";
 
 static const std::string START_POSE_ARM = "/fiducial/start_pose_arm";
+static const std::string START_POSE_COUPLE_ARM = "/fiducial/start_pose_couple_arm";
+
 static const std::string START_POSE_VAC = "/fiducial/start_pose_vac";
+static const std::string START_POSE_COUPLE_VAC = "/fiducial/start_pose_couple_vac";
 static const std::string SLOT_POSE_ARM = "/fiducial/slot_pose_arm";
+static const std::string SLOT_POSE_DOWN_ARM = "/fiducial/slot_pose_down_arm";
+static const std::string SLOT_POSE_COUPLE_ARM = "/fiducial/slot_pose_couple_arm";
 static const std::string SLOT_POSE_VAC = "/fiducial/slot_pose_vac";
+static const std::string SLOT_POSE_COUPLE_VAC = "/fiducial/slot_pose_couple_vac";
 static const std::string REFERENCE = "fiducial/reference";
 static const std::string TAG_BOARD = "fiducial/tag_board";
 static const std::string TAG_ARM = "/fiducial/tag_arm";
@@ -82,6 +88,8 @@ static const std::string DEFAULT = "default";
 static const std::string UP_AND_DOWN = "upAndDown";
 static const std::string UP_AND_MOVE = "upAndMove";
 static const std::string LIFT_AND_BACK = "liftAndBack";
+static const std::string COUPLE = "couple";
+static const std::string UNCOUPLE = "uncouple";
 
 static const std::string PLANNING_GROUP_NAME = "arm";
 static const std::string BASE_LINK = "base_link";
@@ -101,59 +109,51 @@ static const double MAX_STEP_MMIL = 0.0001;
 static const double MAX_STEP_CM = 0.01;
 
 
-static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.30;
+static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.26;
 
-static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.112, -0.072, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.112, -0.072, 0.133);
-static const tf::Vector3 SLOT_DOWN_OFFSET_ARM = tf::Vector3(-0.113, -0.078, 0.133);
 
-static const tf::Vector3 START_POINT_UP_OFFSET_ARM = tf::Vector3(-0.112, -0.060, 0.21);
-static const tf::Vector3 SLOT_POINT_UP_OFFSET_ARM = tf::Vector3(-0.112, -0.062, 0.133);
+
+static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.077, 0.135);
+
+//inportant y-axes
+static const tf::Vector3 SLOT_POINT_DOWN_ARM = tf::Vector3(-0.105, -0.085, 0.136);
+
+static const tf::Vector3 START_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.105, -0.065, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.105, -0.070, 0.135);
 
 
 
 static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.21);
 static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.132);
 
+static const tf::Vector3 START_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.058, -0.063, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.058, -0.063, 0.132);
 
-//tatic const tf::Vector3 rpy_vac = tf::Vector3(0.039, -0.052, 0.282);
+
+
 
 static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.004, -0.038, -0.085);
 static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.643, 0.283, 0.664, 0.257);
 
 ////Fidu arm
-
 /*
- *  /base_link /fiducial/tag_board
-At time 1405001645.991
-- Translation: [-0.656, 0.039, 1.002]
-- Rotation: in Quaternion [0.485, 0.520, 0.502, 0.493]
-            in RPY [1.583, 0.026, 1.615]
-At time 1405001646.975
-- Translation: [-0.656, 0.039, 1.002]
-- Rotation: in Quaternion [0.486, 0.520, 0.501, 0.493]
-            in RPY [1.583, 0.025, 1.613]
-At time 1405001647.988
-- Translation: [-0.656, 0.039, 1.002]
-- Rotation: in Quaternion [0.485, 0.520, 0.501, 0.493]
-            in RPY [1.582, 0.026, 1.614]
- *
+ /base_link /head_cam3d_link
+At time 1405505555.830
+- Translation: [-0.009, -0.016, 1.198]
+- Rotation: in Quaternion [0.566, 0.596, -0.424, -0.381]
+            in RPY [-1.929, 0.025, 1.641]
+
+
+/base_link /fiducial/tag_board
+At time 1405505474.417
+- Translation: [-0.680, -0.010, 1.003]
+- Rotation: in Quaternion [0.473, 0.524, 0.514, 0.487]
+            in RPY [1.568, 0.026, 1.649]
+
  *
  * //Fidu vac
- /base_link /fiducial/tag_board
-At time 1405004214.671
-- Translation: [-0.630, 0.063, 1.003]
-- Rotation: in Quaternion [0.552, 0.435, 0.428, 0.568]
-            in RPY [1.558, 0.022, 1.314]
-At time 1405004215.628
-- Translation: [-0.629, 0.063, 1.003]
-- Rotation: in Quaternion [0.552, 0.435, 0.428, 0.568]
-            in RPY [1.559, 0.022, 1.314]
-At time 1405004216.688
-- Translation: [-0.629, 0.063, 1.003]
-- Rotation: in Quaternion [0.552, 0.436, 0.429, 0.568]
-            in RPY [1.559, 0.022, 1.315]
-^CAt time 1405004217.128
+
 
  */
 
@@ -230,16 +230,17 @@ protected:
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose);
 	bool executeTurn(const tf::Quaternion& quat);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
-	bool moveToStartPosition(const std::string& action, const std::string& tool);
+	bool moveToStartPosition(const std::string& action, const std::string& tool,const std::string& received_state);
 
 	///PROCESS MOVEMENTS
-	bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
-	bool processGoToSlotAndTurn(const std::string& goal, const std::string& tool);
-	bool processGoToStartPosition(const std::string& received_goal);
+	//bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
+	bool processGoToSlotAndTurn(const std::string& tool, const std::string& state);
+	bool processGoToStartPosition(const std::string& received_goal,const std::string& received_state);
 	bool processGoBackLift();
 	bool processGoBackNormal();
 	bool optimizeTranslation(const std::string& source_frame, const std::string& target_frame);
-	bool executeUncoupleSession(const std::string& tool_name, const tf::StampedTransform& transformation,
+	bool executeTranslationZ(const std::string& source_frame, const std::string& target_frame);
+	bool executeSession(const std::string& tool_name, const tf::StampedTransform& transformation,
 			const std::string& source_frame, const std::string& target_frame);
 
     //small functions to split the code

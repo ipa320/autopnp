@@ -1,5 +1,6 @@
 # Define the goal
 string goal
+string state
 ---
 # Define the result
 bool result

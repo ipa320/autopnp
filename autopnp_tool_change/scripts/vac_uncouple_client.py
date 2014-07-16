@@ -15,9 +15,9 @@ if __name__ == '__main__':
 	# publish and subscribe over ROS.
 		rospy.init_node('Vac_uncouple_client_py')
 
-		result = GoToStartPosition().go_to_start_position_client("vac") 
+		result = GoToStartPosition().go_to_start_position_client("vac", "uncouple") 
 		if result.result == True:				
-			result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "vac")
+			#result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "vac")
 			'''
 			if result2.result == True:
 				result3 = ToolchangerOpen.toolchanger_open_client()

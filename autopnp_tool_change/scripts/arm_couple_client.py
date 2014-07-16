@@ -13,16 +13,16 @@ if __name__ == '__main__':
 	# publish and subscribe over ROS.
 		rospy.init_node('Arm_couple_client_py')
 
-		result = GoToStartPosition().go_to_start_position_client("arm") 
+		result = GoToStartPosition().go_to_start_position_client("arm", "couple") 
 		
 		if result.result == True:
-			result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("upAndDown")
+			result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("arm", "couple")
 				
 			if result2.result == True:
-				result3 = ToolchnagerClose.toolchnager_close_client()
+				#result3 = ToolchnagerClose.toolchnager_close_client()
 				
 				if result3 == 'yes':
-					result4 = GoBackToStart().go_back_to_start_client("liftAndBack")
+					#result4 = GoBackToStart().go_back_to_start_client("liftAndBack")
 					
 					if result4.result == True:
 						print "arm coupled OK !" 
