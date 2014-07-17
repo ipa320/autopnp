@@ -3,7 +3,7 @@
 import rospy
 #import go_to_start_position_client
 from go_to_start_position_client import GoToStartPosition
-from go_to_slot_and_turn_client import GoToSlotAndTurn
+from go_to_slot_client import GoToSlot
 from go_back_to_start_client import GoBackToStart
 from toolchanger_open_client import ToolchangerOpen
 
@@ -17,13 +17,13 @@ if __name__ == '__main__':
 
 		result = GoToStartPosition().go_to_start_position_client("vac", "uncouple") 
 		if result.result == True:				
-			#result2 = GoToSlotAndTurn().go_to_slot_and_turn_client("default", "vac")
+			#result2 = GoToSlot().go_to_slot_client("vac", "uncouple")
 			'''
 			if result2.result == True:
 				result3 = ToolchangerOpen.toolchanger_open_client()
 				
 				if result3 == 'yes':
-					result4 = GoBackToStart().go_back_to_start_client("upAndMove")
+					result4 = GoBackToStart().go_back_to_start_client("vac", "upAndMove")
 					
 					if result4 == True:
 						print "arm_uncoupled OK!"

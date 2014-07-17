@@ -38,8 +38,7 @@
 #include <std_msgs/ColorRGBA.h>
 
 #include <vector>
-#include <autopnp_tool_change/GoToStartPositionAction.h>
-#include <autopnp_tool_change/GoToSlotAndTurnAction.h>
+#include <autopnp_tool_change/ToolChangeAction.h>
 #include <actionlib/server/simple_action_server.h>
 #include <actionlib/client/simple_action_client.h>
 
@@ -76,6 +75,7 @@ static const std::string SLOT_POSE_DOWN_ARM = "/fiducial/slot_pose_down_arm";
 static const std::string SLOT_POSE_COUPLE_ARM = "/fiducial/slot_pose_couple_arm";
 static const std::string SLOT_POSE_VAC = "/fiducial/slot_pose_vac";
 static const std::string SLOT_POSE_COUPLE_VAC = "/fiducial/slot_pose_couple_vac";
+static const std::string SLOT_POSE_DOWN_VAC = "/fiducial/slot_pose_down_vac";
 static const std::string REFERENCE = "fiducial/reference";
 static const std::string TAG_BOARD = "fiducial/tag_board";
 static const std::string TAG_ARM = "/fiducial/tag_arm";
@@ -85,7 +85,6 @@ static const std::string CAM = "/head_cam3d_link";
 static const std::string BASE = "/base_link";
 
 static const std::string DEFAULT = "default";
-static const std::string UP_AND_DOWN = "upAndDown";
 static const std::string UP_AND_MOVE = "upAndMove";
 static const std::string LIFT_AND_BACK = "liftAndBack";
 static const std::string COUPLE = "couple";
@@ -97,11 +96,11 @@ static const std::string EE_NAME = "arm_7_link";
 static const std::string MOVE = "move";
 static const std::string TURN = "turn";
 
-static const std::string ARM_NAME = "arm";
+static const std::string ARM_NAME = "gripper";
 static const std::string VAC_NAME = "vac";
 
 static const std::string GO_TO_START_POSITION_ACTION_NAME = "go_to_start_position_action";
-static const std::string GO_TO_SLOT_AND_TURN_ACTION_NAME = "go_to_slot_and_turn_action";
+static const std::string GO_TO_SLOT_ACTION_NAME = "go_to_slot_action";
 static const std::string GO_BACK_TO_START_ACTION_NAME = "go_back_to_start_action";
 
 static const double MAX_STEP_MIL = 0.001;
@@ -112,16 +111,14 @@ static const double MAX_STEP_CM = 0.01;
 static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.26;
 
 
-
 static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.077, 0.135);
+static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.134);
 
 //inportant y-axes
-static const tf::Vector3 SLOT_POINT_DOWN_ARM = tf::Vector3(-0.105, -0.085, 0.136);
+static const tf::Vector3 SLOT_POINT_DOWN_ARM = tf::Vector3(-0.105, -0.087, 0.136);
 
 static const tf::Vector3 START_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.105, -0.065, 0.21);
 static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.105, -0.070, 0.135);
-
 
 
 static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.21);
@@ -130,6 +127,7 @@ static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.13
 static const tf::Vector3 START_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.058, -0.063, 0.21);
 static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.058, -0.063, 0.132);
 
+static const tf::Vector3 SLOT_POINT_DOWN_VAC = tf::Vector3(0.058, -0.080, 0.136);
 
 
 
@@ -193,16 +191,17 @@ protected:
 	message_filters::Subscriber<cob_object_detection_msgs::DetectionArray> input_marker_detection_sub_;
 	message_filters::Subscriber<sensor_msgs::JointState> joint_states_sub_;
 
+	//TF ELEMENTS
 	tf::TransformListener transform_listener_;
-    tf::TransformBroadcaster br_;
+	tf::TransformBroadcaster br_;
 
 	///PUBLISHERS
-	ros::Publisher vis_pub_;
+	//ros::Publisher vis_pub_;
 
 	/// SERVER
-	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_to_start_position_;
-	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToSlotAndTurnAction> > as_go_to_slot_and_turn_;
-	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction> > as_go_back_to_start_;
+	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::ToolChangeAction> > as_go_to_start_position_;
+	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::ToolChangeAction> > as_go_to_slot_;
+	boost::scoped_ptr<actionlib::SimpleActionServer<autopnp_tool_change::ToolChangeAction> > as_go_back_to_start_;
 
 	/// CLIENTS
 	ros::ServiceClient execute_known_traj_client_ ;
@@ -215,44 +214,42 @@ protected:
 
 
 
-	///CALLBACKS
+	///CALLBACK FUNKTION
 	// Callback for the incoming point cloud data stream of fiducials.
 	void markerInputCallback(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
-	///SERVER CALLBACK if goal received
-	void goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
-	void goToSlotAndTurn(const autopnp_tool_change::GoToSlotAndTurnGoalConstPtr& goal);
-	void goBackToStart(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal);
 
-	/// Computes an average pose from multiple detected markers.
-	void computeMarkerPose(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
+	///SERVER CALLBACKS
+	void goToStartPosition(const autopnp_tool_change::ToolChangeGoalConstPtr& goal);
+	void goToSlot(const autopnp_tool_change::ToolChangeGoalConstPtr& goal);
+	void goBackToStart(const autopnp_tool_change::ToolChangeGoalConstPtr& goal);
 
-    ///MOVEMENTS
+
+	///PROCESS COMPONENTS
+	//bool processGoToSlot(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
 	bool executeMoveCommand(const geometry_msgs::PoseStamped& pose);
 	bool executeTurn(const tf::Quaternion& quat);
 	bool executeStraightMoveCommand(const tf::Vector3& vector, const double max_step);
-	bool moveToStartPosition(const std::string& action, const std::string& tool,const std::string& received_state);
-
-	///PROCESS MOVEMENTS
-	//bool processGoToSlotAndTurn(const tf::Vector3& movement1, const tf::Vector3& movement2, const tf::Vector3& movement3);
-	bool processGoToSlotAndTurn(const std::string& tool, const std::string& state);
+	bool processMoveOrTurn(const std::string& action, const std::string& tool,const std::string& received_state);
+	bool processGoToSlot(const std::string& tool, const std::string& state);
 	bool processGoToStartPosition(const std::string& received_goal,const std::string& received_state);
-	bool processGoBackLift();
-	bool processGoBackNormal();
+	bool processGoBackLift(const std::string& tool);
+	bool processGoBackNormal(const std::string& tool);
 	bool optimizeTranslation(const std::string& source_frame, const std::string& target_frame);
 	bool executeTranslationZ(const std::string& source_frame, const std::string& target_frame);
-	bool executeSession(const std::string& tool_name, const tf::StampedTransform& transformation,
+	bool executeGoToSlotSession(const std::string& tool_name, const tf::StampedTransform& transformation,
 			const std::string& source_frame, const std::string& target_frame);
-
-    //small functions to split the code
-	void resetServers();
-	void waitForMoveit();
-
-	tf::Transform executeStartSession(const std::string& action,const tf::StampedTransform& reference,
+	tf::Transform executeGoToStartSession(const std::string& action,const tf::StampedTransform& reference,
 			const tf::StampedTransform& goal_transformation);
 
-	//HELPER VARIABLES AND FUNKTIONS TO PRINT AND DRAW IN RVIZ
-	geometry_msgs::PoseStamped origin;
-	int marker_id_;
+	//small functions to split the code
+	void resetServers();
+	void waitForMoveit();
+	/// Computes an average pose from multiple detected markers.
+	void computeMarkerPose(const cob_object_detection_msgs::DetectionArray::ConstPtr& input_marker_detections_msg);
+
+
+
+	//HELPER VARIABLES AND FUNKTIONS TO PRINT
 	void printPose(tf::Transform& trans_msg);
 	void printMsg(const geometry_msgs::PoseStamped pose);
 	void printVector(const std::vector<double> v);

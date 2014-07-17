@@ -9,13 +9,14 @@ import autopnp_tool_change.msg
 
 class GoBackToStart:
 	
-	def go_back_to_start_client(self, goal_name):
-		go_back_to_start_client = actionlib.SimpleActionClient('go_back_to_start_action', autopnp_tool_change.msg.GoToStartPositionAction)
+	def go_back_to_start_client(self, goal_name, goal_state):
+		go_back_to_start_client = actionlib.SimpleActionClient('go_back_to_start_action', autopnp_tool_change.msg.ToolChangeAction)
 		go_back_to_start_client.wait_for_server()
 
 		# Creates a goal to send to the action server.
-		goal = autopnp_tool_change.msg.GoToStartPositionGoal()
+		goal = autopnp_tool_change.msg.ToolChangeGoal()
 		goal.goal = goal_name
+		goal.state = goal_state
 
 		# Sends the goal to the action server.
 		go_back_to_start_client.send_goal(goal)

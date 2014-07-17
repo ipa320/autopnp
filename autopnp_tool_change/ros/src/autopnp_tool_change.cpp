@@ -23,10 +23,9 @@ ToolChange::ToolChange(ros::NodeHandle nh)
 	input_marker_detection_sub_.unsubscribe();
 	slot_position_detected_ = false;
 	move_action_state_ = false;
-	marker_id_ = 0;
 
 	//SUBSCRIBERS
-	vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
+	//vis_pub_ = node_handle_.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
 	input_marker_detection_sub_.subscribe(node_handle_, "input_marker_detections", 1);
 	input_marker_detection_sub_.registerCallback(boost::bind(&ToolChange::markerInputCallback, this, _1));
 
@@ -51,17 +50,17 @@ void ToolChange::resetServers()
 	ROS_INFO("Reseting servers.");
 	//RESET
 	//moves the arm to a start position in front of the wagon
-	as_go_to_start_position_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
+	as_go_to_start_position_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::ToolChangeAction>(
 			node_handle_, GO_TO_START_POSITION_ACTION_NAME, boost::bind(&ToolChange::goToStartPosition, this, _1), false));
 	as_go_to_start_position_->start();
 
 	//moves the arm to a chosen slot or tool on the wagon
-	as_go_to_slot_and_turn_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToSlotAndTurnAction>(
-			node_handle_, GO_TO_SLOT_AND_TURN_ACTION_NAME, boost::bind(&ToolChange::goToSlotAndTurn, this, _1), false));
-	as_go_to_slot_and_turn_->start();
+	as_go_to_slot_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::ToolChangeAction>(
+			node_handle_, GO_TO_SLOT_ACTION_NAME, boost::bind(&ToolChange::goToSlot, this, _1), false));
+	as_go_to_slot_->start();
 
 	//moves the arm to a chosen slot or tool on the wagon
-	as_go_back_to_start_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::GoToStartPositionAction>(
+	as_go_back_to_start_.reset(new actionlib::SimpleActionServer<autopnp_tool_change::ToolChangeAction>(
 			node_handle_, GO_BACK_TO_START_ACTION_NAME, boost::bind(&ToolChange::goBackToStart, this, _1), false));
 	as_go_back_to_start_->start();
 
@@ -264,6 +263,9 @@ void ToolChange::computeMarkerPose(
 		tf::Transform slot_couple_vac( start_point_rotation * quat,
 				SLOT_POINT_OFFSET_COUPLE_VAC);
 
+		tf::Transform slot_down_vac( (start_point_rotation * quat),
+				SLOT_POINT_DOWN_VAC);
+
 		try
 		{
 			//broadcast pose to tf
@@ -301,7 +303,8 @@ void ToolChange::computeMarkerPose(
 			br_.sendTransform(tf::StampedTransform(slot_couple_vac, time,
 					TAG_BOARD, SLOT_POSE_COUPLE_VAC));
 
-
+			br_.sendTransform(tf::StampedTransform(slot_down_vac, time,
+					TAG_BOARD, SLOT_POSE_DOWN_VAC));
 		}
 		catch (tf::TransformException ex)
 		{
@@ -331,7 +334,7 @@ void ToolChange::computeMarkerPose(
  *================================================
  *
  */
-void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal)
+void ToolChange::goToStartPosition(const autopnp_tool_change::ToolChangeGoalConstPtr& goal)
 {
 
 	ROS_INFO("GoToStartPosition received new goal  %s with state %s", goal->goal.c_str(), goal->state.c_str());
@@ -342,7 +345,7 @@ void ToolChange::goToStartPosition(const autopnp_tool_change::GoToStartPositionG
 	//move to a start position
 	bool success = processGoToStartPosition(received_goal, received_state);
 
-	autopnp_tool_change::GoToStartPositionResult result;
+	autopnp_tool_change::ToolChangeResult result;
 
 	if(success)
 	{
@@ -375,13 +378,13 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal,const
 	ROS_INFO("PROCCESS goal  %s with state %s", received_goal.c_str(), received_state.c_str());
 
 
-	if(!moveToStartPosition(MOVE, received_goal, received_state))
+	if(!processMoveOrTurn(MOVE, received_goal, received_state))
 	{
 		ROS_ERROR("Error occurred executing processGoToStartPosition MOVE.");
 		return false;
 	}
 
-	if(!moveToStartPosition(TURN, received_goal, received_state))
+	else if(!processMoveOrTurn(TURN, received_goal, received_state))
 	{
 		ROS_ERROR("Error occurred executing processGoToStartPosition TURN.");
 		return false;
@@ -410,7 +413,7 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal,const
 		}
 	}
 
-	if(received_goal.compare(ARM_NAME) == 0 && received_state.compare(COUPLE) == 0)
+	else if(received_goal.compare(ARM_NAME) == 0 && received_state.compare(COUPLE) == 0)
 	{
 		ROS_WARN("2 TRY");
 		if(!optimizeTranslation(ARM_7_LINK_REAL, START_POSE_COUPLE_ARM))
@@ -426,7 +429,7 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal,const
 		}
 	}
 
-	if(received_goal.compare(VAC_NAME) == 0 && received_state.compare(UNCOUPLE) == 0)
+	else if(received_goal.compare(VAC_NAME) == 0 && received_state.compare(UNCOUPLE) == 0)
 	{
 		ROS_WARN("2 TRY");
 		if(!optimizeTranslation(ARM_7_LINK_REAL, START_POSE_VAC))
@@ -442,7 +445,7 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal,const
 		}
 	}
 
-	if(received_goal.compare(VAC_NAME) == 0 && received_state.compare(COUPLE) == 0)
+	else if(received_goal.compare(VAC_NAME) == 0 && received_state.compare(COUPLE) == 0)
 	{
 		ROS_WARN("2 TRY");
 		if(!optimizeTranslation(ARM_7_LINK_REAL, START_POSE_COUPLE_VAC))
@@ -457,6 +460,12 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal,const
 			return false;
 		}
 	}
+	else
+	{
+		ROS_ERROR("Error occurred while reading parameters.");
+		return false;
+	}
+
 	return true;
 }
 
@@ -470,12 +479,11 @@ bool ToolChange::processGoToStartPosition(const std::string& received_goal,const
  * comes to the server.
  *
  */
-bool ToolChange::moveToStartPosition(const std::string& action, const std::string& tool,
+bool ToolChange::processMoveOrTurn(const std::string& action, const std::string& tool,
 		const std::string& received_state)
 {
-	ROS_INFO("Execute %s  with tool %s and state %s", action.c_str(), tool.c_str(), received_state.c_str());
+	ROS_INFO("Execute MoveOrTurn:  %s  with tool %s and state %s", action.c_str(), tool.c_str(), received_state.c_str());
 	move_action_state_ = false;
-	bool slot_position_detected = false;
 	geometry_msgs::PoseStamped ee_pose, goal_pose;
 	tf::Transform ee_pose_tf = tf::Transform::getIdentity();
 	tf::Transform goal_pose_tf = tf::Transform::getIdentity();
@@ -549,11 +557,9 @@ bool ToolChange::moveToStartPosition(const std::string& action, const std::strin
 				time, st_BA_FB_COUPLE_VAC);
 
 		ROS_INFO("Transform exists");
-		slot_position_detected = true;
 	}
 	catch (tf::TransformException ex)
 	{
-		slot_position_detected = false;
 		ROS_ERROR("Transform unavailable %s", ex.what());
 		return false;
 	}
@@ -562,29 +568,35 @@ bool ToolChange::moveToStartPosition(const std::string& action, const std::strin
 	//Set the goal for the arm
 	if(tool.compare(ARM_NAME) == 0 && received_state.compare(UNCOUPLE)== 0)
 	{
-		ROS_INFO("Execute state %s for %s and state %s", action.c_str(), ARM_NAME.c_str(), received_state.c_str());
-		goal_pose_tf = executeStartSession(action, reference_offset_arm, st_BA_FB_ARM);
+		ROS_INFO("Execute  %s for %s and state %s", action.c_str(), ARM_NAME.c_str(), received_state.c_str());
+		goal_pose_tf = executeGoToStartSession(action, reference_offset_arm, st_BA_FB_ARM);
 
 	}
 
-	if(tool.compare(ARM_NAME) == 0 && received_state.compare(COUPLE) == 0)
+	else if(tool.compare(ARM_NAME) == 0 && received_state.compare(COUPLE) == 0)
 	{
-		ROS_INFO("Execute state %s for %s and state %s", action.c_str(), ARM_NAME.c_str(), received_state.c_str());
-		goal_pose_tf = executeStartSession(action, reference_offset_couple_arm, st_BA_FB_COUPLE_ARM);
+		ROS_INFO("Execute  %s for %s and state %s", action.c_str(), ARM_NAME.c_str(), received_state.c_str());
+		goal_pose_tf = executeGoToStartSession(action, reference_offset_couple_arm, st_BA_FB_COUPLE_ARM);
 
 	}
 
 	//Set the goal for the vac
-	if (tool.compare(VAC_NAME) == 0 && received_state.compare(UNCOUPLE) == 0)
+	else if (tool.compare(VAC_NAME) == 0 && received_state.compare(UNCOUPLE) == 0)
 	{
-		ROS_INFO("Execute state %s for %s", action.c_str(), VAC_NAME.c_str());
-		goal_pose_tf = executeStartSession(action, reference_offset_vac, st_BA_FB_VAC);
+		ROS_INFO("Execute  %s for %s", action.c_str(), VAC_NAME.c_str());
+		goal_pose_tf = executeGoToStartSession(action, reference_offset_vac, st_BA_FB_VAC);
 	}
 
-	if (tool.compare(VAC_NAME) == 0 && received_state.compare(COUPLE) == 0)
+	else if (tool.compare(VAC_NAME) == 0 && received_state.compare(COUPLE) == 0)
 	{
-		ROS_INFO("Execute state %s for %s", action.c_str(), VAC_NAME.c_str());
-		goal_pose_tf = executeStartSession(action, reference_offset_couple_vac, st_BA_FB_COUPLE_VAC);
+		ROS_INFO("Execute  %s for %s", action.c_str(), VAC_NAME.c_str());
+		goal_pose_tf = executeGoToStartSession(action, reference_offset_couple_vac, st_BA_FB_COUPLE_VAC);
+	}
+
+	else
+	{
+		ROS_ERROR("Error occurred while reading goal parameters.");
+		return false;
 	}
 
 	//tf -> msg
@@ -597,7 +609,7 @@ bool ToolChange::moveToStartPosition(const std::string& action, const std::strin
 	have_plan = group.plan(plan);
 
 	//EXECUTE THE PLAN !!!!!! BE CAREFUL
-	if (have_plan==true && slot_position_detected == true)
+	if (have_plan==true)
 	{
 		group.execute(plan);
 		group.move();
@@ -614,7 +626,7 @@ bool ToolChange::moveToStartPosition(const std::string& action, const std::strin
 	return true;
 }
 
-tf::Transform ToolChange::executeStartSession(const std::string& action,const tf::StampedTransform& reference,
+tf::Transform ToolChange::executeGoToStartSession(const std::string& action,const tf::StampedTransform& reference,
 		const tf::StampedTransform& goal_transformation)
 {
 	tf::Quaternion quat = tf::createIdentityQuaternion();
@@ -647,9 +659,9 @@ tf::Transform ToolChange::executeStartSession(const std::string& action,const tf
 /*
  * Callback funktion.
  */
-void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToSlotAndTurnGoalConstPtr& goal)
+void ToolChange::goToSlot(const autopnp_tool_change::ToolChangeGoalConstPtr& goal)
 {
-	//	ROS_INFO(":goToSlotAndTurn received new goal state  %s for a tool %s", goal->tool.c_str(), goal->.c_str());
+	ROS_INFO(":GoToSlot received new goal state  %s for a tool %s", goal->state.c_str(), goal->goal.c_str());
 
 	bool success = false;
 	std::string state = goal->state;
@@ -659,26 +671,26 @@ void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToSlotAndTurnGoalC
 	if(state.compare(COUPLE) == 0)
 	{
 		//move straight default
-		success = processGoToSlotAndTurn(tool, state);
+		success = processGoToSlot(tool, state);
 	}
 	else if(state.compare(UNCOUPLE) == 0)
 	{
 		// move straight with up and down
-		success = processGoToSlotAndTurn(tool, state);
+		success = processGoToSlot(tool, state);
 	}
-	autopnp_tool_change::GoToSlotAndTurnResult result;
+	autopnp_tool_change::ToolChangeResult result;
 
 	if(success)
 	{
 		result.result = success;
-		ROS_INFO("GoToSlotAndTurn was successful!");
-		as_go_to_slot_and_turn_->setSucceeded(result);
+		ROS_INFO("GoToSlot was successful!");
+		as_go_to_slot_->setSucceeded(result);
 	}
 	else
 	{
 		result.result = success;
-		ROS_ERROR("GoToSlotAndTurn  failed!");
-		as_go_to_slot_and_turn_->setAborted(result);
+		ROS_ERROR("GoToSlot  failed!");
+		as_go_to_slot_->setAborted(result);
 	}
 }
 
@@ -688,7 +700,7 @@ void ToolChange::goToSlotAndTurn(const autopnp_tool_change::GoToSlotAndTurnGoalC
  * from the start position to the slot position of the tool before
  * couple/uncouple action.
  * */
-bool ToolChange::processGoToSlotAndTurn(const std::string& tool, const std::string& state)
+bool ToolChange::processGoToSlot(const std::string& tool, const std::string& state)
 {
 	ros::Time now = ros::Time::now();
 	tf::StampedTransform st_SLOT_POINT_ARM;
@@ -699,7 +711,7 @@ bool ToolChange::processGoToSlotAndTurn(const std::string& tool, const std::stri
 	st_SLOT_POINT_COUPLE_ARM.setIdentity();
 	tf::StampedTransform st_SLOT_POINT_COUPLE_VAC;
 	st_SLOT_POINT_COUPLE_VAC.setIdentity();
-	bool slot_position_detected = false;
+	std::string slot_pose_down = "default";
 
 	try{
 
@@ -720,11 +732,9 @@ bool ToolChange::processGoToSlotAndTurn(const std::string& tool, const std::stri
 				now, st_SLOT_POINT_COUPLE_VAC);
 
 		ROS_INFO("Transform exists");
-		slot_position_detected = true;
 	}
 	catch (tf::TransformException ex)
 	{
-		slot_position_detected = false;
 		ROS_ERROR("Transform unavailable %s", ex.what());
 		return false;
 	}
@@ -732,60 +742,69 @@ bool ToolChange::processGoToSlotAndTurn(const std::string& tool, const std::stri
 	if(tool.compare(ARM_NAME) == 0 && state.compare(UNCOUPLE) == 0)
 	{
 
-		if(!executeSession(ARM_NAME, st_SLOT_POINT_ARM, ARM_7_LINK_REAL, SLOT_POSE_ARM))
+		if(!executeGoToSlotSession(ARM_NAME, st_SLOT_POINT_ARM, ARM_7_LINK_REAL, SLOT_POSE_ARM))
 		{
 			ROS_ERROR("Error occurred executing session");
 			return false;
 		}
-		if(!executeTranslationZ(ARM_7_LINK_REAL, SLOT_POSE_DOWN_ARM))
-		{
-			ROS_ERROR("Couldn't optimize z position.");
-			return false;
-		}
-
+		slot_pose_down = SLOT_POSE_DOWN_ARM;
 	}
 
-	if(tool.compare(VAC_NAME) == 0 && state.compare(UNCOUPLE) == 0)
+	else if(tool.compare(VAC_NAME) == 0 && state.compare(UNCOUPLE) == 0)
 	{
-		if(!executeSession(VAC_NAME, st_SLOT_POINT_VAC, ARM_7_LINK_REAL, SLOT_POSE_VAC))
+		if(!executeGoToSlotSession(VAC_NAME, st_SLOT_POINT_VAC, ARM_7_LINK_REAL, SLOT_POSE_VAC))
 		{
 			ROS_ERROR("Error occurred executing session");
 			return false;
 		}
+		slot_pose_down = SLOT_POSE_DOWN_VAC;
 	}
 
-	if(tool.compare(ARM_NAME) == 0 && state.compare(COUPLE) == 0)
+
+	else if(tool.compare(ARM_NAME) == 0 && state.compare(COUPLE) == 0)
 	{
 
-		if(!executeSession(ARM_NAME, st_SLOT_POINT_COUPLE_ARM, ARM_7_LINK_REAL, SLOT_POSE_COUPLE_ARM))
+		if(!executeGoToSlotSession(ARM_NAME, st_SLOT_POINT_COUPLE_ARM, ARM_7_LINK_REAL, SLOT_POSE_COUPLE_ARM))
 		{
 			ROS_ERROR("Error occurred executing session");
 			return false;
 		}
 
-		if(!executeTranslationZ(ARM_7_LINK_REAL, SLOT_POSE_DOWN_ARM))
-				{
-					ROS_ERROR("Couldn't optimize z position.");
-					return false;
-				}
-
-
-
+		slot_pose_down = SLOT_POSE_DOWN_ARM;
 	}
 
-	if(tool.compare(VAC_NAME) == 0 && state.compare(COUPLE) == 0)
+	else if(tool.compare(VAC_NAME) == 0 && state.compare(COUPLE) == 0)
 	{
-		if(!executeSession(VAC_NAME, st_SLOT_POINT_COUPLE_VAC, ARM_7_LINK_REAL, SLOT_POSE_COUPLE_VAC))
+		if(!executeGoToSlotSession(VAC_NAME, st_SLOT_POINT_COUPLE_VAC, ARM_7_LINK_REAL, SLOT_POSE_COUPLE_VAC))
 		{
 			ROS_ERROR("Error occurred executing session");
 			return false;
 		}
+		slot_pose_down = SLOT_POSE_DOWN_VAC;
+	}
+
+	else
+	{
+		ROS_ERROR("Error occured while reading parameters for goToSlot.");
+		return false;
+	}
+
+	if(slot_pose_down.compare("default") == 0)
+	{
+		ROS_WARN("Slot pose not set.");
+		return false;
+	}
+
+	if(!executeTranslationZ(ARM_7_LINK_REAL, slot_pose_down))
+	{
+		ROS_ERROR("Couldn't optimize z position.");
+		return false;
 	}
 
 	return true;
 }
 
-bool ToolChange::executeSession(const std::string& tool_name, const tf::StampedTransform& transformation,
+bool ToolChange::executeGoToSlotSession(const std::string& tool_name, const tf::StampedTransform& transformation,
 		const std::string& source_frame, const std::string& target_frame)
 {
 	tf::Vector3 translationX = tf::Vector3(0.0, 0.0, 0.0);
@@ -847,7 +866,6 @@ bool ToolChange::optimizeTranslation(const std::string& source_frame, const std:
 	tf::StampedTransform offset_st;
 	std::string err;
 	offset_st.setIdentity();
-	bool slot_position_detected = false;
 
 	try
 	{
@@ -856,16 +874,14 @@ bool ToolChange::optimizeTranslation(const std::string& source_frame, const std:
 		transform_listener_.lookupTransform(source_frame, target_frame, now , offset_st);
 
 		ROS_INFO("Transform exists");
-		slot_position_detected = true;
 	}
 	catch (tf::TransformException ex)
 	{
-		slot_position_detected = false;
 		ROS_ERROR(" Transform unavailable %s", ex.what());
 		return false;
 	}
 
-	ROS_WARN("BE CAREFUL ! OPTOMIZING %f, %f, %f ",
+	ROS_WARN("BE CAREFUL ! OPTOMIZING 3 AXES %f, %f, %f ",
 			offset_st.getOrigin().getX(), offset_st.getOrigin().getY(), offset_st.getOrigin().getZ());
 
 	/*
@@ -896,7 +912,6 @@ bool ToolChange::optimizeTranslation(const std::string& source_frame, const std:
 
 	double path_length = offset_st.getOrigin().length();
 
-	double step = MAX_STEP_MMIL;
 	ROS_INFO("path length %f", path_length);
 	/*
 		 if(path_length > 0.01)
@@ -926,7 +941,6 @@ bool ToolChange::executeTranslationZ(const std::string& source_frame, const std:
 	tf::StampedTransform offset_st;
 	std::string err;
 	offset_st.setIdentity();
-	bool slot_position_detected = false;
 
 	try
 	{
@@ -934,21 +948,18 @@ bool ToolChange::executeTranslationZ(const std::string& source_frame, const std:
 		transform_listener_.lookupTransform(source_frame, target_frame, now , offset_st);
 
 		ROS_INFO("Transform exists");
-		slot_position_detected = true;
 	}
 	catch (tf::TransformException ex)
 	{
-		slot_position_detected = false;
 		ROS_ERROR(" Transform unavailable %s", ex.what());
 		return false;
 	}
 
-	ROS_WARN("BE CAREFUL ! OPTOMIZING z aches %f ", offset_st.getOrigin().getZ());
+	ROS_WARN("BE CAREFUL ! OPTOMIZING Z ACHES %f ", offset_st.getOrigin().getZ());
 
 	double z = offset_st.getOrigin().getZ();
 
-	double step = MAX_STEP_MMIL;
-	ROS_INFO("path down length %f", z);
+	ROS_INFO("path length in z aches is %f", z);
 
 	tf::Vector3 movement = tf::Vector3(0, 0, z);
 
@@ -999,14 +1010,14 @@ bool ToolChange::executeTurn(const tf::Quaternion& quad)
 	ee_pose.pose = group.getCurrentPose(EE_NAME).pose;
 	tf::poseMsgToTF(ee_pose.pose, ee_pose_tf);
 	ros::Time now = ros::Time::now();
-	printPose(ee_pose_tf);
+	//printPose(ee_pose_tf);
 
 
 	current_tf.setOrigin(ee_pose_tf.getOrigin());
 	current_tf.setRotation(ee_pose_tf.getRotation() * quad);
 
 	tf::poseTFToMsg(current_tf, pose.pose);
-	printPose(current_tf);
+	//printPose(current_tf);
 
 	group.setPoseTarget(pose, EE_NAME);
 
@@ -1118,23 +1129,24 @@ Return -1.0 in case of error. */
  * A helper function to slow the execution
  * of the server commands.
  */
-void ToolChange::goBackToStart(const autopnp_tool_change::GoToStartPositionGoalConstPtr& goal)
+void ToolChange::goBackToStart(const autopnp_tool_change::ToolChangeGoalConstPtr& goal)
 {
-	ROS_INFO("GoBackStartPosition received new goal:  %s", goal->goal.c_str());
+	ROS_INFO("GoBackStartPosition received for tool  %s und with state %s ",
+			goal->goal.c_str(), goal->state.c_str());
 
-	std::string state = goal->goal;
+	std::string tool = goal->goal;
+	std::string state = goal->state;
 	bool success = false;
 
 	if(state.compare(UP_AND_MOVE) == 0)
 	{
-		success = processGoBackNormal();
+		success = processGoBackNormal(tool);
 	}
 	else if(state.compare(LIFT_AND_BACK) == 0)
 	{
-
-		success = processGoBackLift();
+		success = processGoBackLift(tool);
 	}
-	autopnp_tool_change::GoToStartPositionResult result;
+	autopnp_tool_change::ToolChangeResult result;
 
 	//set response
 	if(success)
@@ -1151,15 +1163,36 @@ void ToolChange::goBackToStart(const autopnp_tool_change::GoToStartPositionGoalC
 	}
 }
 
-bool ToolChange::processGoBackLift()
+bool ToolChange::processGoBackLift(const std::string& tool)
 {
+	if(tool.compare(ARM_NAME) == 0)
+	{
+		if(!executeTranslationZ(ARM_7_LINK_REAL, SLOT_POSE_ARM))
+		{
+			return false;
+		}
+
+	}
+	else if(tool.compare(VAC_NAME) == 0)
+	{
+		if(!executeTranslationZ(ARM_7_LINK_REAL, SLOT_POSE_VAC))
+		{
+			return false;
+		}
+	}
+	else
+	{
+		ROS_ERROR("Error occurred while reading goal parameters for goBackToStart.");
+		return false;
+	}
+	/*
 	tf::Vector3 translateUp = tf::Vector3(0.0, 0.0, -0.005);
 	if(!executeStraightMoveCommand(translateUp, MAX_STEP_MMIL))
 	{
 		ROS_ERROR("Error occurred executing processGoToSlotAndTuren straight movement");
 		return false;
 	}
-
+	 */
 	tf::Quaternion angle = tf::createIdentityQuaternion();
 	angle.setRPY(0.0, 0.0, -TOOL_CHANGER_OFFSET_ANGLE);
 
@@ -1169,8 +1202,8 @@ bool ToolChange::processGoBackLift()
 		return false;
 	}
 
-	tf::Vector3 translateBack = tf::Vector3(0.11, 0.0, 0.0);
-	if(!executeStraightMoveCommand(translateBack, MAX_STEP_MMIL))
+	tf::Vector3 translate = tf::Vector3(0.11, 0.0, 0.0);
+	if(!executeStraightMoveCommand(translate, MAX_STEP_MMIL))
 	{
 		ROS_ERROR("Error occurred executing processGoToSlotAndTuren straight movement");
 		return false;
@@ -1179,10 +1212,10 @@ bool ToolChange::processGoBackLift()
 	return true;
 }
 
-bool ToolChange::processGoBackNormal()
+bool ToolChange::processGoBackNormal(const std::string& tool)
 {
 
-	tf::Vector3 translateUp = tf::Vector3(0.0, 0.0, -0.02);
+	tf::Vector3 translateUp = tf::Vector3(0.0, 0.0, -0.03);
 	if(!executeStraightMoveCommand(translateUp, MAX_STEP_MIL))
 	{
 		ROS_ERROR("Error occurred executing processGoToSlotAndTuren straight movement");

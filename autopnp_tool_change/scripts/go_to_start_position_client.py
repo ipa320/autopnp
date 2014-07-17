@@ -10,11 +10,11 @@ import autopnp_tool_change.msg
 class GoToStartPosition:
 	
 	def go_to_start_position_client(self, goal_name, goal_state):
-		go_to_start_position_client = actionlib.SimpleActionClient('go_to_start_position_action', autopnp_tool_change.msg.GoToStartPositionAction)
+		go_to_start_position_client = actionlib.SimpleActionClient('go_to_start_position_action', autopnp_tool_change.msg.ToolChangeAction)
 		go_to_start_position_client.wait_for_server()
 
 		# Creates a goal to send to the action server.
-		goal = autopnp_tool_change.msg.GoToStartPositionGoal()
+		goal = autopnp_tool_change.msg.ToolChangeGoal()
 		goal.goal = goal_name
 		goal.state = goal_state
 
