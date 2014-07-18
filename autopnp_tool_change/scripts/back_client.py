@@ -14,7 +14,7 @@ if __name__ == '__main__':
 		rospy.init_node('back_client_py')
 		
 		#result2 = GoBackToStart().go_back_to_start_client("liftAndBack")	
-		result2 = GoBackToStart().go_back_to_start_client("gripper","upAndMove")
+		result2 = GoBackToStart().go_back_to_start_client("vac","upAndMove")
 
 	except rospy.ROSInterruptException:
  		print "program interrupted before completion"

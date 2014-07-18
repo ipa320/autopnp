@@ -13,7 +13,7 @@ if __name__ == '__main__':
 	# publish and subscribe over ROS.
 		rospy.init_node('back_client_py')
 		
-		result2 = GoBackToStart().go_back_to_start_client("gripper","liftAndBack")	
+		result2 = GoBackToStart().go_back_to_start_client("vac","liftAndBack")	
 		#result2 = GoBackToStart().go_back_to_start_client("gripper","upAndMove")
 
 	except rospy.ROSInterruptException:

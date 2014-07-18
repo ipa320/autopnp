@@ -76,7 +76,6 @@ static const std::string SLOT_POSE_COUPLE_ARM = "/fiducial/slot_pose_couple_arm"
 static const std::string SLOT_POSE_VAC = "/fiducial/slot_pose_vac";
 static const std::string SLOT_POSE_COUPLE_VAC = "/fiducial/slot_pose_couple_vac";
 static const std::string SLOT_POSE_DOWN_VAC = "/fiducial/slot_pose_down_vac";
-static const std::string REFERENCE = "fiducial/reference";
 static const std::string TAG_BOARD = "fiducial/tag_board";
 static const std::string TAG_ARM = "/fiducial/tag_arm";
 static const std::string ARM_7_LINK_REAL = "/arm_7_link_real";
@@ -107,40 +106,75 @@ static const double MAX_STEP_MIL = 0.001;
 static const double MAX_STEP_MMIL = 0.0001;
 static const double MAX_STEP_CM = 0.01;
 
-
-static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.26;
-
-
-static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.134);
-
-//inportant y-axes
-static const tf::Vector3 SLOT_POINT_DOWN_ARM = tf::Vector3(-0.105, -0.087, 0.136);
-
-static const tf::Vector3 START_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.105, -0.065, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.105, -0.070, 0.135);
-
-
-static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.058, -0.073, 0.132);
-
-static const tf::Vector3 START_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.058, -0.063, 0.21);
-static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.058, -0.063, 0.132);
-
-static const tf::Vector3 SLOT_POINT_DOWN_VAC = tf::Vector3(0.058, -0.080, 0.136);
+/*fidu = 0
+ *
+ /base_link /fiducial/tag_board
+At time 1405686724.306
+- Translation: [-0.688, -0.011, 1.002]
+- Rotation: in Quaternion [0.479, 0.520, 0.509, 0.491]
+            in RPY [1.571, 0.024, 1.629]
+ /base_link /arm_7_link
+At time 1405686804.878
+- Translation: [-0.459, -0.066, 0.934]
+- Rotation: in Quaternion [0.998, 0.003, 0.021, 0.053]
+            in RPY [3.036, -0.042, 0.008]
+ /base_link /head_cam3d_link
+At time 1405686846.106
+- Translation: [-0.005, -0.016, 1.200]
+- Rotation: in Quaternion [0.562, 0.593, -0.429, -0.386]
+            in RPY [-1.912, 0.024, 1.641]
 
 
+
+/// vac
+  /base_link /fiducial/tag_board
+At time 1405693784.849
+- Translation: [-0.692, -0.011, 1.001]
+- Rotation: in Quaternion [0.523, 0.466, 0.463, 0.543]
+            in RPY [1.552, 0.022, 1.435]
+
+
+*/
+                                       /////   EE    //////
 
 static const tf::Vector3 FA_EE_OFFSET = tf::Vector3(-0.004, -0.038, -0.085);
 static const tf::Quaternion FA_EE_ORIENTATION_OFFSET = tf::Quaternion(0.643, 0.283, 0.664, 0.257);
 
+static const double TOOL_CHANGER_OFFSET_ANGLE = - 0.29;
+
+                                    //////    GRIPPER    /////
+//3 fidu // static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.21);
+static const tf::Vector3 START_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.21);
+//3fidu //static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.105, -0.075, 0.1345);
+static const tf::Vector3 SLOT_POINT_OFFSET_ARM = tf::Vector3(-0.106, -0.075, 0.135);
+
+//inportant y-axes
+//3 fidu // static const tf::Vector3 SLOT_POINT_DOWN_ARM = tf::Vector3(-0.106, -0.086, 0.134);
+static const tf::Vector3 SLOT_POINT_DOWN_ARM = tf::Vector3(-0.108, -0.087, 0.135);
+
+
+static const tf::Vector3 START_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.106, -0.065, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_ARM = tf::Vector3(-0.106, -0.070, 0.135);
+
+                                  /////   VAC   //////
+
+
+static const tf::Vector3 START_POINT_OFFSET_VAC = tf::Vector3(0.064, -0.075, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_VAC = tf::Vector3(0.064, -0.075, 0.137);
+
+static const tf::Vector3 START_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.064, -0.065, 0.21);
+static const tf::Vector3 SLOT_POINT_OFFSET_COUPLE_VAC = tf::Vector3(0.064, -0.070, 0.137);
+
+static const tf::Vector3 SLOT_POINT_DOWN_VAC = tf::Vector3(0.063, -0.087, 0.137);
+
+
 ////Fidu arm
 /*
- /base_link /head_cam3d_link
-At time 1405505555.830
-- Translation: [-0.009, -0.016, 1.198]
-- Rotation: in Quaternion [0.566, 0.596, -0.424, -0.381]
-            in RPY [-1.929, 0.025, 1.641]
+ /base_link /fiducial/tag_board
+At time 1405683169.854
+- Translation: [-0.694, -0.016, 1.003]
+- Rotation: in Quaternion [0.477, 0.526, 0.510, 0.486]
+            in RPY [1.578, 0.024, 1.644]
 
 
 /base_link /fiducial/tag_board

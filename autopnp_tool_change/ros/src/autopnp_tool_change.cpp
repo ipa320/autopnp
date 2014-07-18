@@ -148,8 +148,8 @@ void ToolChange::computeMarkerPose(
 
 
 		// average only the 3 markers from the board. Set the average on initial position of the {@value VAC_CLEANER)
-		if (fiducial_label.compare(VAC_CLEANER)==0 || fiducial_label.compare(ARM_STATION)==0 || fiducial_label.compare(EXTRA_FIDUCIAL)==0)
-			//if (fiducial_label.compare(EXTRA_FIDUCIAL)==0)
+	//	if (fiducial_label.compare(VAC_CLEANER)==0 || fiducial_label.compare(ARM_STATION)==0 || fiducial_label.compare(EXTRA_FIDUCIAL)==0)
+			if (fiducial_label.compare(EXTRA_FIDUCIAL)==0)
 
 		{
 			detected_board_fiducial = true;
@@ -224,29 +224,25 @@ void ToolChange::computeMarkerPose(
 
 		tf::Quaternion start_point_rotation = tf::createIdentityQuaternion();
 		//start_point_rotation.setRPY(M_PI/2, -M_PI/2, 0.0);
-		start_point_rotation = tf::Quaternion(0.481, -0.524, 0.476, 0.518);
-		tf::Quaternion quat2 = tf::createIdentityQuaternion();
-		quat2.setRPY(-0.0, -0.0, 0.0);
-		tf::Transform fidu_board_translated_arm((start_point_rotation * quat2),
+	// gut 	start_point_rotation = tf::Quaternion(0.481, -0.524, 0.476, 0.518);
+		//start_point_rotation = tf::Quaternion(-0.480, 0.528, -0.498, -0.493);
+		start_point_rotation = tf::Quaternion(0.474, -0.532, 0.493, 0.500);
+
+		tf::Transform fidu_board_translated_arm((start_point_rotation),
 				START_POINT_OFFSET_ARM);
 
-		tf::Transform fidu_board_translated_couple_arm((start_point_rotation * quat2),
+		tf::Transform fidu_board_translated_couple_arm((start_point_rotation),
 				START_POINT_OFFSET_COUPLE_ARM);
 
-		tf::Transform fidu_board_translated_vac(start_point_rotation * quat2,
+		tf::Transform fidu_board_translated_vac(start_point_rotation ,
 				START_POINT_OFFSET_VAC);
 
-		tf::Transform fidu_board_translated_couple_vac(start_point_rotation * quat2,
+		tf::Transform fidu_board_translated_couple_vac(start_point_rotation,
 				START_POINT_OFFSET_COUPLE_VAC);
 
-		tf::Quaternion reference_point_rotation = tf::createIdentityQuaternion();
-		reference_point_rotation.setRPY( 0.0, 0.0, -M_PI/2);
-
-		tf::Transform fidu_reference_translated(reference_point_rotation,
-				tf::Vector3(0.0,0.0,0.0));
 
 		tf::Quaternion quat = tf::createIdentityQuaternion();
-		quat.setRPY(-0.0, 0.0, TOOL_CHANGER_OFFSET_ANGLE);
+		quat.setRPY(0.0, 0.0, TOOL_CHANGER_OFFSET_ANGLE);
 
 		tf::Transform slot_down_arm( (start_point_rotation * quat),
 				SLOT_POINT_DOWN_ARM);
@@ -283,9 +279,6 @@ void ToolChange::computeMarkerPose(
 
 			br_.sendTransform(tf::StampedTransform(fidu_board_translated_couple_vac, time,
 					TAG_BOARD, START_POSE_COUPLE_VAC ));
-
-			br_.sendTransform(tf::StampedTransform(fidu_reference_translated, time,
-					TAG_BOARD, REFERENCE));
 
 			br_.sendTransform(tf::StampedTransform(slot_arm, time,
 					TAG_BOARD, SLOT_POSE_ARM));
@@ -847,15 +840,6 @@ bool ToolChange::executeGoToSlotSession(const std::string& tool_name, const tf::
 
 	}
 
-	/*
-	//Go down
-	tf::Vector3 translateZ = tf::Vector3(0.0, 0.0, 0.008);
-	if(!executeStraightMoveCommand(translateZ, MAX_STEP_MMIL))
-	{
-		ROS_ERROR("Error occurred executing processGoToSlotAndTuren straight movement");
-		return false;
-	}
-	 */
 	return true;
 }
 
@@ -869,8 +853,8 @@ bool ToolChange::optimizeTranslation(const std::string& source_frame, const std:
 
 	try
 	{
-
-		transform_listener_.getLatestCommonTime(source_frame, target_frame, now, &err );
+		transform_listener_.waitForTransform(source_frame, target_frame, now, ros::Duration(3.0));
+		//transform_listener_.getLatestCommonTime(source_frame, target_frame, now, &err );
 		transform_listener_.lookupTransform(source_frame, target_frame, now , offset_st);
 
 		ROS_INFO("Transform exists");

@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
 		result = GoToStartPosition().go_to_start_position_client("vac", "uncouple") 
 		if result.result == True:				
-			#result2 = GoToSlot().go_to_slot_client("vac", "uncouple")
+			result2 = GoToSlot().go_to_slot_client("vac", "uncouple")
 			'''
 			if result2.result == True:
 				result3 = ToolchangerOpen.toolchanger_open_client()
