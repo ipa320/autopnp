@@ -19,10 +19,10 @@ if __name__ == '__main__':
 			result2 = GoToSlot().go_to_slot_client("vac", "couple")
 					
 			if result2.result == True:
-				result3 = ToolchnagerClose.toolchnager_close_client()
+				#result3 = ToolchnagerClose.toolchnager_close_client()
 				
 				if result3 == 'yes':
-					result4 = GoBackToStart().go_back_to_start_client("vac", "liftAndBack")
+					#result4 = GoBackToStart().go_back_to_start_client("vac", "liftAndBack")
 					
 					if result4.result == True:
 						print "vac coupled OK !" 

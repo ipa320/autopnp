@@ -28,6 +28,8 @@
 	<depend package="trajectory_msgs"/>
 	<depend package="pr2_controllers_msgs"/>	
 	<depend package="cob_phidgets"/>
+	
+	<depend package="cob_generic_states_experimental"/>
 
 </package>
 
