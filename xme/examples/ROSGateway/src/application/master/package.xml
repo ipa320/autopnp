@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <name>master</name>
+  <version>0.0.0</version>
+  <description>ROS connection for master node.</description>
+
+  <license>Apache-2.0</license>
+
+  <author email="kainz@fortiss.org">Gerd Kainz</author> -->
+  <maintainer email="kainz@fortiss.org">Gerd Kainz</maintainer>
+
+  <url type="website">http://fortiss.org/ros/wiki/xme_ros_adapter</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <!--<build_depend>message_generation</build_depend>-->
+  <build_depend>rostime</build_depend>
+  <build_depend>ros_system</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <!--<run_depend>message_runtime</run_depend>-->
+  <run_depend>rostime</run_depend>
+  <run_depend>ros_system</run_depend>
+</package>

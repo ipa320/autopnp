@@ -1,0 +1,10 @@
+# Define the goal
+string goal
+string state
+
+---
+# Define the result
+bool result
+---
+# Define feedback
+bool feedback

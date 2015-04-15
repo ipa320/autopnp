@@ -1,0 +1,6 @@
+devices:
+  - name: /dev/pcanusb1
+    baudrate: 500K
+    id: 13
+    sync_interval: 10 # 13
+chains: ["vacuum_cleaner_controller"]

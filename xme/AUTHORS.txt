@@ -1,0 +1,21 @@
+CHROMOSOME Authors
+==================
+
+The following people, listed in alphabetical order,
+contributed to this or former versions of CHROMOSOME
+and have provided their consent to be publicly listed:
+
+Simon Barner, fortiss GmbH
+Christian Buckl, fortiss GmbH
+Michael Geisinger, fortiss GmbH
+Dhiraj Gulati, fortiss GmbH
+Gerd Kainz, fortiss GmbH
+Nadine Keddis, fortiss GmbH
+Francisco Ruiz, fortiss GmbH
+Vladimir Rupanov, fortiss GmbH
+Konstantin Schorp, fortiss GmbH
+Hauke Stähle, fortiss GmbH
+Benjamin Wiesmüller, fortiss GmbH
+
+If you feel your name is missing in this list,
+please write to the authors to have your name included.

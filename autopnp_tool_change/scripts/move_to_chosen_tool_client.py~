@@ -1,0 +1,42 @@
+move_to_chosen_tool_client.py
+ Created on: Mar 25, 2014
+     Author: rmb-om
+
+#! /usr/bin/env python
+
+import roslib; roslib.load_manifest('autopnp_tool_change')
+import rospy
+import actionlib
+import autpnp_tool_change.msg
+
+import move_to_chosen_tool_action.msg
+
+def move_to_chosen_tool_client():
+move_to_chosen_tool_client = actionlib.SimpleActionClient('move_to_chosen_tool_action', autpnp_tool_change.msg.MoveToChosenToolAction)
+
+move_to_chosen_tool_client.wait_for_server()
+
+# Creates a goal to send to the action server.
+goal = autopnp_tool_change.msg.MoveToChosenToolGoal()
+goal_goal = "tag_38"
+
+# Sends the goal to the action server.
+move_to_chosen_tool_client.send_goal(goal)
+
+# Waits for the server to finish performing the action.
+finished_before_timeout = move_to_chosen_tool_client.wait_for_result(rospy.Duration(300, 0))
+
+if finished_before_timeout:
+state = move_to_chosen_tool_client.get_state()
+print "Action finished: %s"%state
+# Prints out the result of executing the action
+return state # State after waiting for MoveToChosenToolAction
+
+if __name__ == '__main__':
+try:
+# Initializes a rospy node so that the SimpleActionClient can
+# publish and subscribe over ROS.
+rospy.init_node('MoveToChosenToolAction_client_py')
+result = move_to_chosen_tool_client()
+except rospy.ROSInterruptException:
+print "program interrupted before completion"

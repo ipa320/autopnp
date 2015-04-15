@@ -1,0 +1,172 @@
+%
+% Copyright (c) 2011-2013, fortiss GmbH.
+% Licensed under the Apache License, Version 2.0.
+% 
+% Use, modification and distribution are subject to the terms specified
+% in the accompanying license file LICENSE.txt located at the root directory
+% of this software distribution. A copy is available at
+% http://chromosome.fortiss.org/.
+%
+% This file is part of CHROMOSOME.
+%
+% $Id: prerequisites.tex 6238 2013-12-20 16:59:17Z ruiz $
+%
+% Author:
+%         Dominik Sojer <sojer@fortiss.org>
+%         Michael Geisinger <geisinger@fortiss.org>
+%
+
+\section{Prerequisites (30 minutes)}
+\label{sec:prereq}
+
+\xme has been developed with platform independence in mind.
+This tutorial covers both Linux\footnote{%
+	When we say Linux, we actually mean the many distributions that are out there.
+	\xme has been specifically tested with Debian-like environments such as Ubuntu and Xubuntu.
+	However, we believe that there are no fundamental hurdles that would prevent it from running on other Linux distributions.
+	The \xme runtime system by default has no GUI and should also run on plain UNIX-based systems, provided enough resources are available.
+	For using the \xmt, a graphical desktop environment is required, however.
+	If you experience problems, or got it to work on an exotic platform, please let us know!
+} and Windows development and target platforms.
+%
+While installing the proposed build environment, you might want to start reading Section~\ref{sec:architecture} giving an overview on \xme and its features.
+
+\subsection{Prerequisite Installation on Linux}
+\label{sec:prereq:linux}
+
+Apart from the \xme source archive, the following packages are recommended for building \xme applications on Linux.
+\begin{itemize}
+	\item \textbf{GCC Toolchain}:
+		GCC offers a complete compiler toolchain for various languages
+		and is recommended for compiling C/C++ programs natively on Linux.
+		Install it as well as some tools by issuing the following command:\footnote{%
+			The \texttt{apt-get} command is specific to Debian-like Linux distributions.
+			Use the respective command on other distros.
+		}
+		
+		\verb|sudo apt-get install gcc g++ gdb make|
+	
+	\item \textbf{CMake} (at least version 2.8.5):
+		CMake is a cross-platform Makefile generator and is used to manage the build system.
+		Output of CMake are the build system configurations (here UNIX Makefiles or Eclipse CDT projects).
+		\xme provides a customized set of macros to deal with components, dependencies, executables and documentation.
+		First try whether CMake is available as a package in your distribution:
+		
+		\verb|sudo apt-get install cmake|
+		
+		It is also meaningful to install \verb|ccmake|, an \verb|ncurses|-based GUI for CMake:
+		
+		\verb|sudo apt-get install cmake-curses-gui|
+		
+		If CMake is not available in your distribution, it is very easy to build and install it from source.
+		Download the source package from the Kitware website\footnote{\url{http://www.cmake.org/cmake/resources/software.html}}
+		and follow the instructions.
+		\xme currently requires at least CMake version 2.8.5.
+		If installation worked properly, this command should tell you the installed version of CMake:
+		
+		\verb|cmake --version|
+\end{itemize}
+%
+The following packages are recommended in addition if you plan to develop applications with \xme.
+\begin{itemize}
+	\item \textbf{Perl}:
+		Various maintenance script and tools use the Perl scripting language.
+		Even if not mandatory for \xme, Perl might be worth a look:
+		
+		\verb|sudo apt-get install perl|
+	
+	\item \textbf{Doxygen}:
+		Doxygen is used to automatically generate source code-level documentation that is meaningful for users of a given API.
+		For this purpose, the \xme source files have been annotated with respective comments.
+		If your distro offers the \texttt{doxygen} package, all you have to do is:
+		
+		\verb|sudo apt-get install doxygen|
+		
+		Otherwise, please download and install manually from the Doxygen website.\footnote{%
+			\url{http://doxygen.org/}
+		}
+	
+	\item \textbf{Graphviz}:
+		A graph drawing package.
+		Doxygen uses this to enhance the generated documentation with inclusion graphs, dependency graphs and class diagrams:
+		
+		\verb|sudo apt-get install graphviz|
+		
+		Otherwise, please download and install manually from the Graphviz website.\footnote{%
+			\url{http://www.graphviz.org/}
+		}
+	
+	\item \textbf{Expect}:
+		Some automation tasks for testing the integrity of our example projects interact dynamically with the respective console programs.
+		For this purpose, \verb|expect| is used. Install it as follows:\footnote{%
+			This will also install \texttt{tcl}, the Tool Command Language.
+			If you've never heard of it, you might want to explore it and its graphical user interface (GUI) addon \texttt{tk}.
+			It's great for (GUI) applications that should be nice, platform independent and well scriptable at the same time.
+		}
+		
+		\verb|sudo apt-get install expect|
+		
+		Otherwise, please download and install manually from the Expect website.\footnote{%
+			\url{http://expect.sourceforge.net/}
+		}
+		
+\end{itemize}
+
+\subsection{Prerequisite Installation on Windows}
+\label{sec:prereq:windows}
+
+Apart from the \xme source archive, the following tools are required for building \xme applications on Windows.
+\begin{itemize}
+	\item \textbf{Visual Studio C++} (Express, Professional, Premium or Ultimate, preferably 2008 or 2010 versions):
+		Visual Studio is Microsoft's platform for multi-language development.
+		The so-called ``Express Edition'' is available free for evaluation purposes.\footnote{%
+		\url{http://www.microsoft.com/visualstudio/en-us/products/2010-editions/visual-cpp-express}}
+		Note that \xme has not yet been tested with newer versions of Visual Studio than the 2010 release.
+		You only have to install the C/C++ compiler. Additional packages like Silverlight or SQL Server are not required.
+		Consult Appendix~\ref{appx:install_vs} for details.
+		
+		In case you want to use a different compiler toolchain, you are welcome to try it out.
+		We offer some initial support for building under Cygwin using GCC or MinGW.\footnote{%
+			Let us know about your experiences.
+			If you prefer using different compilers, we may add them to our portfolio.
+		}
+	
+	\item \textbf{CMake} (at least version 2.8.5):
+		CMake is a cross-platform Makefile generator and is used to manage the build system.
+		Output of CMake are the build system configurations (here a Microsoft Visual Studio Solution).
+		\xme provides a customized set of macros to deal with components, dependencies, executables and documentation.
+		CMake can be downloaded for free.\footnote{\url{http://www.cmake.org/cmake/resources/software.html}}
+		\xme currently requires at least CMake version 2.8.5.
+		It is \emph{not} necessary to add CMake to the system search path.
+		Consult Appendix~\ref{appx:install_cmake} for details.
+\end{itemize}
+%
+The following optional tools are recommended in addition if you plan to develop applications with \xme.
+\begin{itemize}
+	\item \textbf{Cygwin}:
+		Cygwin is a UNIX emulation environment that comes with a set of useful tools.
+		You can find the download and installation instructions on its website.\footnote{\url{http://www.cygwin.com/}}
+		Although the tools are based on an emulation layer, the performance is still acceptable and maintenance is simple.
+		The drawback is that the versions offered are typically a little bit outdated.
+		In case this is not acceptable, download and install the tools natively from their respective websites.
+		It is recommended to explicitly install the following Cygwin packages
+		(see respective items in Section~\ref{sec:prereq:linux} for more information):
+		
+		\verb|perl|, \verb|expect|
+	
+	\item \textbf{Doxygen}:
+		Doxygen is used to automatically generate source code-level documentation that is meaningful for users of a given API.
+		For this purpose, the \xme source files have been annotated with respective comments.
+		If you choose not to install \verb|doxygen| as a Cygwin package,
+		please download and install manually from the Doxygen website.\footnote{%
+			\url{http://doxygen.org/}
+		}
+	
+	\item \textbf{Graphviz}:
+		A graph drawing package.
+		Doxygen uses this to enhance the generated documentation with inclusion graphs, dependency graphs and class diagrams.
+		Please download and install manually from the Graphviz website.\footnote{%
+			\url{http://www.graphviz.org/}
+		}
+	
+\end{itemize}

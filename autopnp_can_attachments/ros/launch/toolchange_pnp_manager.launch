@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<arg name="robot" default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/>
+	
+	<!-- parameter  -->
+	<!--rosparam command="load" ns="toolchange_pnp_manager" file="$(find autopnp_can_attachments)/ros/launch/vacuum_cleaner.yaml" /-->
+
+	<!-- tool change pnp manager -->
+	<node ns="toolchange_pnp_manager" name="toolchange_pnp_manager" pkg="autopnp_can_attachments" type="toolchange_pnp_manager" cwd="node" respawn="false" output="screen">
+		<remap from="diagnostics" to="/diagnostics"/>
+		<remap from="attachment_visulization" to="/toolchange_pnp_manager/attachment_visulization"/>
+		<remap from="attachment_status" to="/toolchange_pnp_manager/attachment_status"/>
+	</node> 
+
+</launch>

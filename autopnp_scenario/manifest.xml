@@ -9,9 +9,30 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/autopnp_scenario</url>
 
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="roslib"/>
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="visualization_msgs"/>
+  <depend package="diagnostic_msgs"/>
+  <depend package="opencv2"/>
+  <rosdep name="boost"/>
+  <depend package="message_filters"/>
   <depend package="autopnp_dirt_detection"/>
+  <depend package="cob_srvs"/>
   <depend package="cob_navigation_global"/>
   <depend package="cob_generic_states_experimental"/>
+  <depend package="cob_trajectory_controller"/>
+  <depend package="cob_map_accessibility_analysis"/>
+  <depend package="cob_fiducials"/>
+  <depend package="cob_phidgets"/>
+  
+  <!--depend package="moveit_ros_move_group"/>
+  <depend package="control_msgs"/>
+  <depend package="trajectory_msgs"/-->
 
 </package>
 

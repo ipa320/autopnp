@@ -1,0 +1,41 @@
+1. Get robot out of box
+2. Build up fences in rectangular shape according to plan
+3. Setup tables, chairs, furniture, tool wagon, and trash bin
+4. Place charging station inside cupboard, attach wire with power plug
+5. Setup your laptop.
+
+6. Map environment:  (important: keep map parallel to a (long) fence by starting bringup when robot is aligned parallel to fence, best if robot is started in center, rotate as late as possible, many linear movements first, navigation is not running during mapping!)
+>> roslaunch cob_mapping_slam 2dslam.launch
+>> rosrun map_server map_saver
+Then clean map with gimp if necessary. Copy map to autopnp_scenario/config. Adapt name of map files (pgm, yaml) and change in yaml file. Copy map and create a mask for dirt detection in png format.
+In autopnp_scenario/ros/launch/navigation.launch -> adapt filename for map
+and in autopnp_scenario/ros/launch/dirt_detection/dirt_detection.launch -> adapt mask file name
+
+7. Set parameters at the beginning of scenario file autopnp_scenario/scripts/autopnp_automatica_scenario.py
+
+8. Check cleaning procedure, especially arm positions (put in raw_input commands or use journalist mode in state CleanCellGroup).
+If necessary change position ARM_JOINT_CONFIGURATIONS_VACUUM["cleaning_position"] by moving arm with gamepad and getting the joint states from
+>> rostopic echo /arm_controller/state
+
+9. Check all remaining scripts and test cases
+
+
+
+
+
+
+Todo:
+- BTG: Banden? Welche? Einpacken?   --> (2*3m, 2*2m aus Berlin, Alex fragen: wir müssen noch 3* 2.5m Banden mitnehmen)
+- BTG: Ladegerät?                   --> (ist in Berlin, kommt Freitag wieder)
+- BTG: Wer transportiert Zubehör für uns zur Automatica?   --> (anfordern per Mail)
+- Batterien separat transportieren
+- Steuerlaptop wenn JOSH nicht mehr da?  --> (Damon gibt ihn Birgit mit)
+- RMB: pdf for fiducials
+- JOSH: get rmbs rviz config
+- batterien
+
+- Probleme mit Scenario wenn mit Gamepad gestartet
+
+Video:
+- kurz: 45s  + Schnitt bei 15s-18s  + etwas Text + Hervorherbungen lassen
+- lang: 120s + Schnitt bei schlechter Navi bei Auskippen +Bildschirmausgaben

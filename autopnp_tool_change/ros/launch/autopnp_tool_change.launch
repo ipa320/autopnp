@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<!-- args -->
+	<arg name="robot" value="cob3-2"/>  <!--default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/-->
+	<arg name="pc1" default="$(arg robot)-pc1"/> <!-- "$(arg robot)-pc1" -->
+	<arg name="pc2" default="$(arg robot)-pc2"/>
+	<arg name="pc3" default="$(arg robot)-pc3"/>
+	<arg name="simulation" default="false"/>
+
+
+	<group>
+		<machine name="pc2" address="$(arg pc2)" env-loader="$(find autopnp_scenario)/ros/launch/env.sh" default="true" unless="$(arg simulation)"/>
+
+		<include file="$(find autopnp_tool_change)/ros/launch/fiducials/fiducials.launch"/>
+
+		  <node name="autopnp_tool_change" pkg="autopnp_tool_change" type="autopnp_tool_change" output="screen">
+		    <!--remap from="input_pointcloud" to="/camera/depth/points_xyzrgb"/>
+		    <remap from="input_color_image" to="/camera/rgb/image"/-->
+		    <remap from="input_marker_detections" to="/fiducials/detect_fiducials"/>
+		    <!--remap from="input_color_camera_info" to="/camera/rgb/camera_info"/--> 
+		 
+		  </node>
+	</group>
+	  
+  	<group>
+		<machine name="pc3" address="$(arg pc3)" env-loader="$(find autopnp_scenario)/ros/launch/env.sh" default="true" unless="$(arg simulation)"/>
+	
+		<!-- start cob_phidgets for commanding the tool changer -->
+		<include file="$(find cob_phidgets)/ros/launch/phidgets_toolchanger.launch"/>
+
+	</group>
+  
+</launch>

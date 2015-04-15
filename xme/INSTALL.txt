@@ -1,0 +1,242 @@
+CHROMOSOME Installation Instructions
+====================================
+
+NOTICE: This file is outdated. Please consult the CHROMOSOME Tutorial PDF document
+        which is separately available from http://chromosome.fortiss.org/ for
+        up-to-date and in-depth introduction and usage instructions.
+
+CONTENTS:
+A. Prerequisites
+B. Installing and Using on Linux
+C. Installing and Using on Windows
+D. Running the Sensor Node
+E. Generating Source Code from CHROMOSOME Modeling Tool (XMT)
+
+
+A. Prerequisites
+----------------
+
+CMake (required on all platforms)
+
+    CMake is a cross-platform Makefile generator and is used to manage the build system
+    Input to CMake are a set of CMakeLists.txt files that contain the specifications for the build system
+    Output of CMake are the build system configurations (e.g., a UNIX Makefile, a Microsoft Visual Studio Project, an Eclipse CDT project)
+    CHROMOSOME provides a customized set of macros to deal with components, dependencies, executables and documentation
+    Installation:
+        Windows: Download and install CMake 2.8.9 (do not use CMake 2.8.10.x, it's broken for embedded platforms!) from http://www.cmake.org/
+        Linux: If available, install CMake 2.8.9 (do not use CMake 2.8.10.x, it's broken for embedded platforms!) from your distro (package "cmake");
+        otherwise, download and install the CMake 2.8.9 or newer package from http://www.cmake.org/ and make sure it is in your ${PATH}
+            Links:
+                http://www.cmake.org/Wiki/Eclipse_CDT4_Generator
+    Documentation:
+        Windows/Linux: Online documentation, cmake --help-full > cmake-help.txt
+
+Visual Studio (recommended on Windows)
+
+    Visual Studio is Microsoft's platform for multi-language development
+    Visual Studio is quite heavyweight (installation takes some time), but for XME you only need to install the "Visual C++ development" components
+    Make sure you install the latest service pack after installing Visual Studio and note that, depending on your Windows version, the service pack might not autoatically be offered via Windows Update
+    TUM students and employees can obtain Visual Studio for personal use from MANIAC
+    There is also a so-called "Express Edition" available free for evaluation purposes at http://www.microsoft.com/. You will need the "C++" version.
+    CHROMOSOME has been tested with Visual Studio 2008 and 2010. If you have experience with other versions, please share them.
+    Installation:
+        Windows:
+            If you own Microsoft Visual Studio: You will only need to install C/C++ language support. After finishing installation, install the latest service pack manually (check Microsoft website).
+            Otherwise, install Visual Studio C++ Express Edition. You will have to register the software after 30 days, but it's free. After finishing installation, install the latest service pack manually (check Microsoft website).
+        You should apply the most recent service pack (SP) to your Visual Studio installation (at the time of writing, VS 2008 SP1 and VS 2010 SP1 are available from Microsoft).
+        Furthermore, you should install any related Windows updates.
+        You might want to install the Highlight all occurrences of selected word plugin.
+    Documentation:
+        Use the built-in support tools of Visual Studio
+
+Doxygen (optional)
+
+    Doxygen is a multi-language documentation generator
+    Input to Doxygen are the source files of CHROMOSOME
+    Output of Doxygen is the API documentation (e.g., a set of HTML files, a Windows Compressed Help Manual (*.chm), a LaTeX file)
+    CHROMOSOME includes a CMake macro that can be used to easily generate the API documentation for a project
+    Installation:
+        Windows: Download and install the Doxygen 1.8.1 or newer installer from http://www.doxygen.org/
+        Linux: If available, install a recent version of Doxygen from your distro; otherwise download, build and install the Doxygen 1.8.1 or newer sources from http://www.doxygen.org/
+    Documentation:
+        Windows/Linux: Online documentation
+
+Graphviz (optional for Doxygen)
+
+    Graphviz is a graph drawing library used by Doxygen to create dependency graphs for the API documentation
+    Graphviz is not required to run Doxygen, but it is recommended
+    Installation:
+        Windows: Download GraphViz 2.28 or newer from http://www.graphviz.org/ and install to %PROGRAMFILES%\Graphviz<ver> (the CHROMOSOME CMake script will look for it there)
+        Linux: If available, install a recent version of Graphviz from your distro; otherwise, download, build and install the Graphviz 2.28 or newer package from http://www.graphviz.org/ and make sure it is in your ${PATH}
+
+HTML Help Workshop (optional for Doxygen, Windows only)
+
+    HTML Help Workshop is a tool to compile Windows Compressed Help Manuals (*.chm) from HTML files
+    HTML Help Workshop can be used to automatically generate a *.chm file for your API documentation under Windows
+    HTML Help Workshop is not required to run Doxygen, but it is recommended
+    Installation:
+        Windows: Download htmlhelp.exe from http://microsoft.com/ and install to %PROGRAMFILES%\HTML Help Workshop (the CHROMOSOME CMake script will look for it there)
+
+B. Installing and Using on Linux
+--------------------------------
+
+Extract
+
+    Extract the source archive to a directory of your choice.
+
+Run CMake to generate the build system
+
+    In CHROMOSOME, a different build system tree is generated for every single target node in the network.
+    Since CHROMOSOME is cross-platform we distinguish between a host system (where the compiler toolchain is executed) and a target system (the platform CHROMOSOME is built for).
+    The examples directory contains some ready-to-compile projects for testing:
+        sensorMonitor - Example consisting of two or more nodes with sensor (data acquisition) and monitor (data display) components.
+        testsuite - Collection of all unit tests of components used in CHROMOSOME. Needs GoogleTest. Configure in CMake for more help.
+    Start your exploration of CHROMOSOME with the sensorMonitor example.
+    Use the directory XME_ROOT/examples/sensorMonitor/src/application/sensorNode as CMake source directory and
+    XME_ROOT/examples/sensorMonitor/build/sensorNode as build directory as follows:
+        cd XME_ROOT
+        mkdir -p examples/sensorMonitor/build/sensorNode
+        cd examples/sensorMonitor/build/sensorNode
+        cmake -G "Unix Makefiles" ../../src/application/sensorNode
+    This should generate the necessary Makefiles. Build by issuing:
+        make
+    See the section "D. Running the Sensor Node" for details.
+
+C. Installing and Using on Windows
+----------------------------------
+
+Extract
+
+    Extract the source archive to a directory of your choice.
+
+Run CMake to generate the build system
+
+    In CHROMOSOME, a different build system tree is generated for every single target node in the network.
+    Since CHROMOSOME is cross-platform we distinguish between a host system (where the compiler toolchain is executed) and a target system (the platform CHROMOSOME is built for).
+        sensorMonitor - Example consisting of two or more nodes with sensor (data acquisition) and monitor (data display) components.
+        testsuite - Collection of all unit tests of components used in CHROMOSOME. Needs GoogleTest. Configure in CMake for more help.
+    Start your exploration of CHROMOSOME with the sensorMonitor example.
+    Open CMake GUI from the Start menu.
+    Use the directory XME_ROOT/examples/sensorMonitor/src/application/sensorNode as CMake source directory ("Where is the source code") and
+    XME_ROOT/examples/sensorMonitor/build/sensorNode as build directory ("Where to build the binaries").
+    Click Configure. Select "Visual Studio 10" as generator (or the appropriate IDE in case you have installed a different version) and select "Use default native compilers".
+    Let CMake do its thing. If no error appears, click Generate (notice that the red color background shown in the list above the buttons does not indicate an error).
+    You now have a Visual Studio solution file (*.sln) in the build directory specified above.
+    Open that file in Visual Studio.
+    Set the project "sensorNode" as "StartUp Project".
+    Issue a build all command (Build Solution).
+    See the section "D. Running the Sensor Node" for details.
+
+D. Running the Sensor Node
+--------------------------
+
+    You may now inspect the compiled binary in the binary directory:
+        target/sensorNode (Linux)
+        target/Debug|Release/sensorNode.exe (Windows)
+    This node is a simple data acquisition unit. It measures the amount of free space on one of your disks/partitions
+    and makes this information available to other nodes in the network.
+    On Linux, launch with target/sensorNode.
+    On Windows, launch from within your IDE (press F5 or issue the respective debug command).
+    When started, it first asks which disk/partition to monitor. Enter the respective number and press <Enter>.
+    The speed of the program has been artificially slowed down to allow manual inspection using debugging.
+    The application itself consists of multiple components that run in a time-triggered way.
+    The main program file is sensorNode.c located in XME_ROOT/examples/sensorMonitor/src/application/sensorNode.
+    Inspect that file to find out how to initialize CHROMOSOME and how the individual components are working.
+    Section E. provides a description of how to build the monitorNode to actually display the measured values on a different node.
+
+E. Running the Monitor Node
+---------------------------
+
+    The sensorNode acquires data and displays the acquired data, but of course we would like to see the data on a different node in the network.
+    For this purpose, we configure the monitorNode in ver much the same way than we did in Section B/C for the sensorNode.
+    This time, use XME_ROOT/examples/sensorMonitor/src/application/monitorNode as source directory and XME_ROOT/examples/sensorMonitor/build/monitorNode
+    as binary directory. Build the node using make or Visual Studio.
+
+     You may now inspect the compiled binary in the binary directory:
+        target/monitorNode (Linux)
+        target/Debug|Release/monitorNode.exe (Windows)
+    This node is a simple data display unit. It receives information from the sensorNodes on the same network and displays them.
+    On Linux, launch with target/monitorNode.
+    On Windows, launch from within your IDE (press F5 or issue the respective debug command).
+    As soon as data are acquired from other nodes in the network, the information will be displayed in the console window.
+    For this purpose, launch one or multiple sensorNodes in parallel.
+
+E. Generating Source Code from CHROMOSOME Modeling Tool (XMT)
+-------------------------------------------------------------
+
+    The source code you have compiled in the previous examples has actually been partially been generated from a model.
+    This model can be inspected and modified in CHROMOSOME Modeling Tool (XMT) (see below for installation instructions).
+    We will now set up XMT, use it to modify the model and re-generate the source code that includes the changes.
+
+Installation of XMT
+
+    The CHROMOSOME Modeling Tool (XMT) is provided as an Eclipse plugin. fortiss provides an
+    Eclipse update-site at http://download.fortiss.org/public/xme/xmt/update-site/ from
+    where you can install it. This section will first describe how to install Eclipse and then describe
+    how to install the XMT plugin from the update-site.30Let us start with the installation of Eclipse:
+       1. Point your favorite browser to the following web page:
+          http://www.eclipse.org/downloads/packages/eclipse-modeling-tools/indigosr2
+          and click on the link corresponding to your operating system to download Eclipse.
+       2. After downloading you simply extract the Eclipse archive into a directory of your choice.
+       3. If you do not already have a Java Runtime Environment installed, then go to the following
+          web page and do this now (install the product named Java SE Development Kit found in
+          the Java Platform (JDK) category): http://www.oracle.com/technetwork/java/javase/downloads/
+       4. Go into the Eclipse directory and start the Eclipse executable. When asked for a workspace
+          directory, either accept the proposed location or enter a directory of your choice. Eclipse
+          will store your settings and projects in that directory.
+
+    Now we can install the XMT plugin into Eclipse    
+       1. In Eclipse select Help → Install New Software.... This will show the install dialog.
+       2. Click on the Add... button and enter as location:
+          http://download.fortiss.org/public/xme/xmt/update-site/
+          and press OK. Loading may take some time.
+       3. You will see a long list of categories. Select the category 'CHROMOSOME Modeling Tool (XMT)'.
+       4. Make sure that you have the option 'Contact all update sites during install to find required
+          software' selected.
+       5. Press 'Next' to continue. Eclipse will show that it is about to install the XMT plugin.
+          There shouldn't be any errors.
+       6. Press 'Next' again. The licenses of the XMT plugin will be displayed. If you want to
+          continue you must accept it and press Finish. This will start the installation.
+       7. During installation Eclipse will warn about unsigned content. Press OK to continue.
+       8. After the installation you will be prompted to restart Eclipse. Do this and you are done.
+    To verify if the tool has been installed correctly go to 'Window -> Open Perspective -> Other...'.
+    You should see an entry 'XMT'.
+
+Tool usage:
+
+    When you have successfully installed the tool, you can open the XMT perspective via 'Window -> Open Perspective -> Other... -> XMT'.
+    Now we will try the code generation for the sensorMonitor example. To do this you can import the existing sensorMonitor project via
+    'File -> Import... -> General -> Existing Projects into Workspace... -> Next...'. Select the XME_ROOT/examples/sensorMonitor folder
+    and press 'Finish'. The project should appear on the left side in the Project Explorer view.
+    Expand the project. You will see two directories 'models' and 'src'.
+    The 'src' directory contains the code, generated by the tool.
+    The 'models' directory contains the XMT models used to describe the application. Here you can also start the code generation.
+    In this example we have four models:
+        * deployment.xmn contains the definition of CHROMOSOME nodes (each node corresponds to a CHROMOSOME process) and the mapping
+          to physical devices, which components are deployed on a node, and the structure of the network (how devices are connected)
+        * deviceTypes.xmh containing a simple definition of the hardware platforms that can be used in deployment
+        * dictionary.xmd containing the definition of all topics used in the example
+        * manifest.xmm containing the definition of all components and their interfaces (publications/subscriptions)
+
+    The models are displayed in a tree editor. Open a model by double-clicking.
+    There are four code generation commands available. All can be started by the context menu of the top-level element
+    of the respective model.
+        * dictionary.xmd
+            * 'Generate Topic Dictionary Headers...' This will generate the header files for the topic definitions.
+            * 'Generate (De-)Marshaller Waypoints...' This will generate a marshaller and demarshaller, that is used by CHROMOSOME
+              to transform sent/received data from the network into/from a platform independent format. These component are
+              topic dictionary-specific and therefore need to be generated for your application.
+        * manfiest.xmm
+            * 'Generate Component Wrappers...' This allows to generate the glue code that is necessary to implement a CHROMOSOME
+              component. For each component a component and function wrapper will be generated. Generally you do not need to modify
+              these. Additionally a function stub (called <function_name>Function.c) is generated. Here you can enter the actual
+              implementation of a component's function.
+        * deployment.xmn
+              * 'Generate Application Code...' This generates the build system scripts and main configuration file for each node.
+
+    So for example to start the topic header generation double-click on 'sensorMonitor/models/dictionary.xmd'. An editor window will
+    open. There right-click on the top-level element 'Topic Dictionary: dictionary' and select 'Generate Topic Dictionary Headers...'.
+    A dialog will be shown that displays all files that will be generated.
+
+    Please consult the CHROMOSOME Tutorial PDF document which is separately available
+    from http://chromosome.fortiss.org/ for in-depth introduction and usage instructions.

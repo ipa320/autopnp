@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- start laser driver -->
+	<node name="laser_filter" pkg="cob_laser_scanner_filter" type="filter" respawn="false" output="screen">
+		<remap from="/laser_filter/scan_in" to="/scan"/>	
+		<rosparam command="load" file="$(find cob_laser_scanner_filter)/launch/dummy_config.yaml"/>
+	</node>
+
+</launch>

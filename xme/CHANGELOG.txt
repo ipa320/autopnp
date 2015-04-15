@@ -1,0 +1,176 @@
+CHROMOSOME Changelog
+====================
+
+Version 0.8 RC1 (2014-03-14)
+----------------------------
+Breaking Changes:
+- CHG: XMT: The protected region for global variables in generated function
+       stubs and component stubs has been renamed. These regions previously
+       had an ID with a suffix "_STATIC_VARIABLES", which now has been renamed
+       to just "_VARIABLES". Users need to manually copy any code in these
+       regions to the newly generated ones. (Issue #3927)
+- CHG: XMT: Removed protected region from component wrapper header files
+       (Issue #3970)
+- CHG: XMT: The generated CMakeXmeComponents.txt file which contained the build
+       system component definitions for a node has been removed.
+       A CMakeLists.txt file is generated _per_ component instead, directly
+       in the "src" folder of the respective component. The protected regions
+       in these files have also been renamed. Users therefore need to manually
+       copy any content to the new regions. (Issues #3860)
+- CHG: XMT: Restrict the search for protected regions to the file which are
+       going to be generated (Issue #3852)
+- CHG: "testsuite" example CMakeLists.txt now located directly in
+       examples/testsuite (Issue #3984)
+- CHG: Function xme_core_pnp_pnpManager_instantiateComponentOnNode() has been
+       deprecated. Use xme_core_pnp_pnpManager_plugInNewComponent() instead.
+       (Issues #3974)
+- CHG: Function xme_core_pnp_pnpClient_instantiateComponentOnThisNode() has
+       been deprecated. Use xme_core_pnp_pnpClient_plugInNewComponent()
+       instead. (Issues #3974)
+- CHG: Data Handler has been completely redesigned. Subtle changes in behavior
+       might be present. (Issue #3817)
+
+Other Changes:
+- NEW: A new core component called Component Repository has been added
+       (located in xme/core/nodeManager/...). This component can be used to
+       retrieve information about all component instances on the current node.
+       On the node with the Plug And Play Manager it will have information
+       about all component instances in the system. (Issues #3974, #3881)
+- NEW: It is now possible to specify port queue sizes and function execution
+       periods for new component instances at runtime and in XMT. At runtime
+       this can be done by using a component builder
+       (xme/core/nodeManager/include/componentRepositoryBuilder.h) and the
+       new *_plugInNewComponent() function (see above). (Issues #3960, #3943)
+- NEW: Main CMakeLists.txt for building all nodes of an example now located
+       directly in examples/<example> (Issue #3984)
+- NEW: Asynchronous Data Handler port access when XME_MULTITHREAD is defined
+       (Issue #4001, #4061)
+- NEW: XME/XMT: Support for automatically obtaining IP address from operating
+       system (Issue #3651)
+- NEW: Print determined IP address to console (Issue #4269)
+- NEW: Emit warning when data is lost due to overwrites (Issue #4014)
+- NEW: XMT: Also search for protected regions in *.cmake (Issue #3947)
+- NEW: Build system: Include CMake files specifying components into the
+       "Build System" folder of the respective component in Visual Studio
+       (Issue #4032)
+- NEW: Build system: Support CALLBACK parameter in xme_add_components()
+       (Issue #4098)
+- NEW: Build system: Support generated files in xme_add_components()
+       (Issue #4133)
+- NEW: Build system: Support variable value templates in xme_add_components()
+       (Issue #4099)
+- NEW: XMT: Allow specification of XME_ROOT for generated CMakeLists.txt
+       (Issue #3810)
+- NEW: XMT: Support for multiple topic dictionaries (Issue #3758)
+- NEW: XMT: Constraint field for component types (Issue #4202)
+- NEW: Added changelog (CHANGELOG.txt, this document!) (Issue #3972)
+- NEW: Added author list (AUTHORS.txt) (Issue #3269)
+- NEW: xme_core_pnp_pnpManager_updateConfiguration() function to re-trigger
+       plug and play (Issue #3976)
+- NEW: Common state structure for a component and its functions (Issue #3657)
+- NEW: xme_hal_safeString_strnlen() function (Issue #3690)
+- NEW: XMT: Allow to specify the required CMake version in the model
+       (Issue #3724)
+- NEW: XMT: Protected region at end of CMakeLists.txt for XME nodes
+       (Issue #3726)
+- NEW: Generic createComponentInstance function in Plug and Play Client
+       (Issue #3880)
+- NEW: Provide functions to access to argc and argv in xme_hal_cmdLine
+       (Issue #3895)
+- NEW: Destroy component on node (Issue #3953)
+- NEW: Configurator extension supports destruction of components (Issue #4216)
+- NEW: xme_hal_qt abstraction (Issues #3977, #4051)
+- NEW: xme_hal_graphviz abstraction (Issue #4051)
+- NEW: XMT: Add PROJECT_NAME variable to generated CMake scripts (Issue #3725)
+- NEW: XMT: Add flag for static configuration to component instances
+       (Issue #3917)
+- NEW: Support for "statically configured" components in login component
+       instance manifest (Issue #3788)
+- NEW: XMT: Generate constants for functions of component (Issue #4137)
+- NEW: Support for reading/writing multiple data packets in one step
+       (writeNextPacket() and readNextPacket() in component wrapper)
+       (Issues #4209, #4259)
+- NEW: Independent reading/writing of data and attributes
+       (Issues #3993, #4075, #4079, #4185)
+- CHG: Some API changes to reduce the usage of bool data type
+       (Issues #3933, #4274)
+- CHG: Updated configuratorExtension example to demonstrate Component
+       Repository builder usage (Issue #3960)
+- CHG: Build system: Improve automatic evaluation of meaningful target
+       identifier if it is not explicitly specified (Issue #2127)
+- CHG: XMT: Use WCET of 1ns for functions when generating an event-driven
+       system (Issue #3946)
+- CHG: XMT: Sort generated data types by their dependencies among each other
+       (Issue #3801)
+- CHG: XMT: Reduce WCET of waypoints to allow shorter cycle times
+       (Issue #3495)
+- CHG: XMT: Specification of queueSize on component instance instead of type
+       (Issue #3943)
+- FIX: Crash on defining node without node ID in same deployment model than
+       master node with node ID 1 (Issue #4016)
+- FIX: xme_core_exec_stop(1) not working when permanently executed in last
+       schedule slot (Issue #4275)
+- FIX: Build system: Overwriting XME build options not working (Issue #3892)
+- FIX: XMT: Nondeterminism in code generation leads to spurious diffs
+       (Issue #3936)
+- FIX: xme_hal_net creating a connected socket for UDP send (Issue #4028)
+- FIX: XMT: C++ node files generated by XMT do not compile due to missing
+       __STDC_FORMAT_MACROS definition (Issue #3837)
+- FIX: shutdown() in xme_hal_net_closeSocket() causing SIGSEV under Linux
+       (Issue #3838)
+- FIX: Channel ID construction not taking node IDs of source/destination into
+       account (Issue #3939)
+- FIX: Plug-in of component with multiple ports (e.g., 1 subscription and 1
+       publication each) does not work (Issues #4142, #3682)
+- FIX: Combining nodes of different projects not working (Issue #4033)
+- FIX: For consistency, stop node when invoking logout without being logged in
+       (Issue #4262)
+- FIX: XMT: Sporadic NPE during code generation (Issue #3108)
+
+Version 0.7 (2013-12-20)
+------------------------
+(TODO)
+
+Version 0.7 RC1 (2013-12-13)
+----------------------------
+(TODO)
+
+Version 0.6 (2013-10-31)
+------------------------
+(TODO)
+
+Version 0.6 RC2 (2013-10-16)
+----------------------------
+(TODO)
+
+Version 0.6 RC1 (2013-10-01)
+----------------------------
+(TODO)
+
+Version 0.5 (2013-09-02)
+------------------------
+(TODO)
+
+Version 0.5 RC2 (2013-08-27)
+----------------------------
+(TODO)
+
+Version 0.5 RC1 (2013-08-02)
+----------------------------
+(TODO)
+
+Version 0.4 (2013-07-17)
+------------------------
+(TODO)
+
+Version 0.4 RC1 (2013-07-04)
+----------------------------
+(TODO)
+
+Version 0.3 (2013-05-29)
+------------------------
+(TODO)
+
+Version 0.2 (2013-04-02)
+------------------------
+(TODO)

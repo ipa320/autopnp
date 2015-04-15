@@ -12,11 +12,11 @@ spectralResidualNormalizationHighestMaxValue: 1500.0
 
 # dirt threshold (in [0,1])
 # double
-dirtThreshold: 0.15 #0.09 #0.2  #0.35 #0.5
+dirtThreshold: 0.2 #0.09 #0.2  #0.35 #0.5
 
 # number of time steps used for the detection history logging (in [1,10000])
 # int
-detectionHistoryDepth: 30
+detectionHistoryDepth: 15 #30
 
 # checks whether the mean intensity in potential dirt spots is high enough compared to the rest of the spectral residual image
 # double
@@ -25,6 +25,10 @@ dirtCheckStdDevFactor: 3.0   #3.6
 # chooses a mode of operation: 0=detection, 1=labeling, 2=database test
 # int
 modeOfOperation: 0
+
+# for normal operation mode, specifies whether dirt detection is on right from the beginning
+# bool
+dirtDetectionActivatedOnStartup: true
 
 # if true, image warping to a bird's eye perspective is enabled
 # bool
@@ -43,13 +47,19 @@ maxDistanceToCamera: 3.00
 removeLines: true
 
 # spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 10-20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
+# if set <0 then the grid resolution of the navigation map is used if available
 # double
-gridResolution: 10.0
+gridResolution: 5.0
 
-# these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode
+# these two coordinates represent the center of your area of operation, they can be determined by observation of the robot coordinates in rviz (or to be exact the coordinates where the robot's view meets the floor), these coordinates are set automatically in database testing mode or when a map is available
 # double
 gridOrigin_x: 0.0
 gridOrigin_y: 0.0
+
+# number of grid cells in x and y direction = width and height [in number grid cells], these dimensions are set automatically in database testing mode or when a map is available
+# int
+gridDimensions_x: 100
+gridDimensions_y: 100
 
 # the number of attempts to segment the floor plane in the image
 # int
@@ -75,13 +85,13 @@ experimentSubFolder: test
 # all flags are of type bool
 
 # displays the original source image that comes with the point cloud data
-showOriginalImage: true
+showOriginalImage: false #true
 
 # shows only the part of the color image that belongs to the plane, the remainder is masked black
-showPlaneColorImage: true
+showPlaneColorImage: false #true
 
 # shows the warped color image of the plane
-showWarpedOriginalImage: false
+showWarpedOriginalImage: true
 
 # displays the saliency image before rescaling
 showSaliencyBadScale: false
@@ -93,13 +103,16 @@ showColorWithArtificialDirt: false
 showSaliencyWithArtificialDirt: false
 
 # displays the rescaled saliency image
-showSaliencyDetection: true
+showSaliencyDetection: false #true
 
 # displays the detected lines in the image that might be used to shadow false positives
 showDetectedLines: false
 
 # displays the dirt detection results drawn into the color image
-showDirtDetections: true
+showDirtDetections: true #true
+
+# publishes a ROS message with the dirt detection results drawn into the color image
+publishDirtDetections: true #true
 
 # displays the grid that illustrates the number of observations of each floor cell (the image might be displayed rotated)
 showObservationsGrid: false

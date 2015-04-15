@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topic:TopicDictionary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dataType="http://chromosome.fortiss.org/metamodel/dataType/1.0" xmlns:topic="http://chromosome.fortiss.org/metamodel/topic/1.0" xmi:id="_bivycX6uEeOTYsuXGbEhJQ" name="dictionary" projectName="detector">
+  <topics xmi:id="_05LPMH6uEeOTYsuXGbEhJQ" name="device_info" id="4098">
+    <dataTypeDefinition xmi:id="_-m6f0H6uEeOTYsuXGbEhJQ">
+      <dataType xsi:type="dataType:StructuredDataType" xmi:id="_-oiQcH6uEeOTYsuXGbEhJQ">
+        <members xmi:id="_GS8-cH6vEeOTYsuXGbEhJQ" dataTypeDefRef="_AbVDwH6vEeOTYsuXGbEhJQ" identifier="name"/>
+        <members xmi:id="_KHKP4H6vEeOTYsuXGbEhJQ" identifier="counter">
+          <dataTypeDefRef href="basicXmeModel:basic_dataTypeLibrary#uint16_t"/>
+        </members>
+      </dataType>
+    </dataTypeDefinition>
+  </topics>
+  <dataTypeDefinitions xmi:id="_AbVDwH6vEeOTYsuXGbEhJQ" identifier="deviceName">
+    <dataType xsi:type="dataType:Array" xmi:id="_E8zq4H6vEeOTYsuXGbEhJQ" count="50">
+      <dataType xsi:type="dataType:Char" xmi:id="_E85xgH6vEeOTYsuXGbEhJQ"/>
+    </dataType>
+  </dataTypeDefinitions>
+</topic:TopicDictionary>

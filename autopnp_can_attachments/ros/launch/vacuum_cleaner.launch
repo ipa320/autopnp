@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<arg name="robot" default="$(optenv ROBOT !!NO_ROBOT_SET!!)"/>
+	
+	<!-- parameters for CANopen node -->
+	<!--rosparam command="load" ns="vacuum_cleaner_canopen" file="$(find autopnp_can_attachments)/ros/launch/vacuum_cleaner_canopenmaster.yaml" /-->
+
+	<!-- parameter description of the CAN modules and for the corresponding trajectory controller -->
+	<rosparam command="load" ns="vacuum_cleaner_controller" file="$(find autopnp_can_attachments)/ros/launch/vacuum_cleaner.yaml" />
+
+	<!-- This is the CANopen ROS driver for the vacuum cleaner -->
+	<node ns="vacuum_cleaner_controller" name="vacuum_cleaner" pkg="autopnp_can_attachments" type="vacuum_cleaner" cwd="node" respawn="false" output="screen" /> 
+
+</launch>

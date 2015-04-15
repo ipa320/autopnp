@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<txcop:outputProfiles version="1" xmlns:txcop="http://schemas.ToolsCenter.org/TeXnicCenter/OutputProfiles.xsd">
+	<outputProfileList>
+		<outputProfile name="LaTeX =&gt; HTML" stopOnLatexError="false">
+			<texCommand execute="true" path="cmd.exe" arguments="/C C:\chromosome\trunk\tools\latex\latex2html-cygwin.bat &quot;%pm&quot;"/>
+			<bibTexCommand execute="true" path="bibtex.exe" arguments="&quot;%bm&quot;"/>
+			<makeIndexCommand execute="true" path="makeindex.exe" arguments="&quot;%bm&quot;"/>
+			<postProcessors/>
+			<viewer path="firefox.exe" closeBeforeCompilation="false">
+				<viewProjectCommand type="commandLine">
+					<commandLineCommand path="C:\Program Files (x86)\Mozilla Firefox\firefox.exe" arguments="&quot;%tm/%tm.html&quot;"/>
+					<ddeCommand path="" server="" topic="" command=""/>
+				</viewProjectCommand>
+				<viewCurrentFileCommand type="commandLine">
+					<commandLineCommand path="firefox.exe" arguments=""/>
+					<ddeCommand path="" server="" topic="" command=""/>
+				</viewCurrentFileCommand>
+				<viewCloseCommand type="commandLine">
+					<commandLineCommand path="firefox.exe" arguments=""/>
+					<ddeCommand path="" server="" topic="" command=""/>
+				</viewCloseCommand>
+			</viewer>
+		</outputProfile>
+	</outputProfileList>
+</txcop:outputProfiles>

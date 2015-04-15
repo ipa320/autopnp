@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find autopnp_scenario)/ros/launch/fiducials/fiducials.launch"/>
+
+  <node pkg="autopnp_scenario" type="trash_bin_detection_service_server" name="trash_bin_detection_server" output="screen">
+  	<param name="publish_marker_array" value="true"/>
+  	<param name="trash_bin_radius" value="0.12"/>
+  </node>	
+  
+  <!-- hack for use with a pc and simulation -->
+  <!--node pkg="tf" type="static_transform_publisher" name="cam3d_broadcaster" args="0 0 0 0 -1.570796327 1.570796327 head_cam3d_link cam3d_link 100" /-->
+
+</launch>

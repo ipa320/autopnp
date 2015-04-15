@@ -1,4 +1,4 @@
-image: map.pgm
+image: map-ipa-apartment.pgm
 resolution: 0.050000
 origin: [-22.400000, -19.200000, 0.000000]
 negate: 0
