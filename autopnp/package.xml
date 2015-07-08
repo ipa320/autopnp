@@ -1,0 +1,24 @@
+<package>
+	<name>autopnp</name>
+	<version>0.1.0</version>
+	<description>This meta-package includes open source software for the autopnp project.</description>
+	<license>LGPL</license>
+	<url type="website">http://ros.org/wiki/autopnp</url>
+	<!-- <url type="bugtracker"></url> -->
+	<maintainer email="richard.bormann@ipa.fraunhofer.de">Richard Bormann</maintainer>
+
+	<buildtool_depend>catkin</buildtool_depend>
+
+	<run_depend>autopnp_can_attachments</run_depend>
+	<!--run_depend>autopnp_dirt_detection</run_depend>
+	<run_depend>autopnp_gui</run_depend>
+	<run_depend>autopnp_moveit_config</run_depend>
+	<run_depend>autopnp_scenario</run_depend>
+	<run_depend>autopnp_tool_change</run_depend>
+	<run_depend>cob_laser_scanner_filter</run_depend-->
+
+	<export>
+		<metapackage/>
+	</export>
+</package>
+
