@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(autopnp_can_attachments)
+project(autopnp_moveit_config)
 
 set(catkin_RUN_PACKAGES
 	moveit_ros_move_group

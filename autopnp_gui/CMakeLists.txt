@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(autopnp_can_attachments)
+project(autopnp_gui)
 
 set(catkin_RUN_PACKAGES
 	rospy

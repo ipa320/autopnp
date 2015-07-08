@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(autopnp_dirt_detection)
+project(autopnp_scenario)
 
 set(catkin_RUN_PACKAGES
 	roscpp
