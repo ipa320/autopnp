@@ -123,6 +123,8 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 include_directories(
+	common/include
+	ros/include
 	${catkin_INCLUDE_DIRS}
 	${OpenCV_INCLUDE_DIRS}
 	${Boost_INCLUDE_DIRS}
@@ -139,6 +141,7 @@ target_link_libraries(dirt_detection
 	${Boost_LIBRARIES}
 )
 add_dependencies(dirt_detection ${catkin_EXPORTED_TARGETS})
+
 
 
 # dirt_detection_client

@@ -7,6 +7,7 @@ set(catkin_RUN_PACKAGES
 	roslib
 	actionlib
 	actionlib_msgs
+	std_msgs
 	geometry_msgs
 	control_msgs
 	trajectory_msgs
@@ -90,6 +91,8 @@ add_action_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
 	DEPENDENCIES
+		std_msgs
+		actionlib_msgs
 )
 
 # dynamic reconfigure
@@ -124,6 +127,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 include_directories(
+	ros/include
 	${catkin_INCLUDE_DIRS}
 	${OpenCV_INCLUDE_DIRS}
 )

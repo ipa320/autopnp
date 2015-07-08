@@ -110,7 +110,7 @@
 #include <sensor_msgs/image_encodings.h>
 
 // PCL
-#include <pcl/ros/conversions.h>
+#include <pcl/conversions.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
@@ -381,7 +381,7 @@ public:
 	 *	@param [in] 	point_cloud2_rgb_msg 		Point cloud message from camera.
 	 *	@param [out] 	point_cloud_XYZRG 			Point cloud representation in PCL.
 	 */
-	void convertPointCloudMessageToPointCloudPcl(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg, pcl::PointCloud<pcl::PointXYZRGB>::Ptr &point_cloud_XYZRGB);
+	void convertPointCloudMessageToPointCloudPcl(const sensor_msgs::PointCloud2::ConstPtr& point_cloud2_rgb_msg, pcl::PointCloud<pcl::PointXYZRGB>::Ptr &point_cloud_XYZRGB);
 
 
 	/**
@@ -519,7 +519,7 @@ public:
 	 * This function illustrates how to use/implement openCV-SVM.
 	 * The function has no other purpose than to illustrate how to use/implement openCV-SVM.
 	 */
-	void SVMTestFunction();
+	//void SVMTestFunction();
 
 	/**
 	 * Reads the carpet features and the class of the carpet from a file and saves them to the corresponding vectors.

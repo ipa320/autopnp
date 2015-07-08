@@ -61,6 +61,7 @@
 #include <autopnp_dirt_detection/dirt_detection.h>
 #include <autopnp_dirt_detection/timer.h>
 
+#include <pcl_ros/point_cloud.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/point_types.h>
 #include <pcl/filters/extract_indices.h>
@@ -1264,7 +1265,7 @@ void DirtDetection::createOccupancyGridMapFromDirtDetections(nav_msgs::Occupancy
 // Convert functions
 /////////////////////////////////////////////////
 
-void DirtDetection::convertPointCloudMessageToPointCloudPcl(const sensor_msgs::PointCloud2ConstPtr& point_cloud2_rgb_msg, pcl::PointCloud<pcl::PointXYZRGB>::Ptr &point_cloud_XYZRGB)
+void DirtDetection::convertPointCloudMessageToPointCloudPcl(const sensor_msgs::PointCloud2::ConstPtr& point_cloud2_rgb_msg, pcl::PointCloud<pcl::PointXYZRGB>::Ptr &point_cloud_XYZRGB)
 {
 	//conversion Ros message->Pcl point cloud
 	pcl::fromROSMsg(*point_cloud2_rgb_msg, *point_cloud_XYZRGB);
@@ -3572,6 +3573,7 @@ void DirtDetection::SVMExampleCode()
 
 }
 
+/*
 void DirtDetection::SVMTestFunction()
 {
     const int s = 1000;
@@ -3681,6 +3683,7 @@ void DirtDetection::SVMTestFunction()
     cvDestroyWindow ("SVM");
     cvReleaseImage (&img);
 }
+*/
 
 
 /////////////////////////////////////////////////

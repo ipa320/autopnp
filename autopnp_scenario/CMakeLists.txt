@@ -5,12 +5,15 @@ set(catkin_RUN_PACKAGES
 	roscpp
 	rospy
 	roslib
+	actionlib
+	actionlib_msgs
 	std_msgs
 	std_srvs
 	sensor_msgs
 	geometry_msgs
 	visualization_msgs
 	diagnostic_msgs
+	cob_object_detection_msgs
 	cob_srvs
 	message_filters
 	cob_navigation_global
@@ -20,7 +23,6 @@ set(catkin_RUN_PACKAGES
 	cob_fiducials
 	cob_phidgets
 	autopnp_dirt_detection
-	message_generation
 )
 
 set(catkin_BUILD_PACKAGES
@@ -72,6 +74,8 @@ add_message_files(
 
 # Generate services in the 'srv' folder
 add_service_files(
+	DIRECTORY
+		srv
 	FILES
 		ActivateTrashBinDetection.srv
 		DeactivateTrashBinDetection.srv
@@ -95,10 +99,13 @@ add_action_files(
 generate_messages(
 	DEPENDENCIES
 		std_msgs
+		std_srvs
 		sensor_msgs
 		geometry_msgs
 		visualization_msgs
 		diagnostic_msgs
+		actionlib_msgs
+		cob_object_detection_msgs
 )
 
 # dynamic reconfigure
@@ -133,6 +140,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 include_directories(
+	ros/include
 	${catkin_INCLUDE_DIRS}
 	${OpenCV_INCLUDE_DIRS}
 )

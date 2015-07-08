@@ -55,18 +55,18 @@ target_link_libraries(filter
 add_dependencies(filter ${catkin_EXPORTED_TARGETS})
 
 
-add_executable(check src/check.cpp)
-target_link_libraries(check
-	${catkin_LIBRARIES}
-)
-add_dependencies(check ${catkin_EXPORTED_TARGETS})
+#add_executable(check src/check.cpp)
+#target_link_libraries(check
+#	${catkin_LIBRARIES}
+#)
+#add_dependencies(check ${catkin_EXPORTED_TARGETS})
 
 
 #############
 ## Install ##
 #############
 ## Mark executables and/or libraries for installation
-install(TARGETS filter check
+install(TARGETS filter #check
 	ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
