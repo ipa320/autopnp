@@ -1,155 +1,246 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8.3)
+project(autopnp_dirt_detection)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
+set(catkin_RUN_PACKAGES
+	roscpp
+	rospy
+	roslib
+	std_msgs
+	std_srvs
+	sensor_msgs
+	geometry_msgs
+	visualization_msgs
+	diagnostic_msgs
+	cob_srvs
+	message_filters
+	cob_navigation_global
+	cob_generic_states_experimental
+	cob_trajectory_controller
+	cob_map_accessibility_analysis
+	cob_fiducials
+	cob_phidgets
+	autopnp_dirt_detection
+	message_generation
+)
 
-rosbuild_find_ros_package(actionlib_msgs)
-include(${actionlib_msgs_PACKAGE_PATH}/cmake/actionbuild.cmake)
-genaction()
+set(catkin_BUILD_PACKAGES
+	${catkin_RUN_PACKAGES}
+	cmake_modules
+	message_generation
+)
 
-rosbuild_init()
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+## Creates a bunch of environment variables that may be used later in the script
+## e.g. catkin_INCLUDE_DIRS
+find_package(catkin REQUIRED COMPONENTS
+	${catkin_BUILD_PACKAGES}
+)
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-
-#uncomment if you have defined messages
-rosbuild_genmsg()
-#uncomment if you have defined services
-rosbuild_gensrv()
-
-#common commands for building c++ executables and libraries
-#rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
-
-
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
-					${PROJECT_SOURCE_DIR}/common/include)
-					
-#rosbuild_add_executable(send_Goal_nav ros/src/send_Goal_nav.cpp)
-#rosbuild_add_executable(Exploration_Algorithm ros/src/Exploration_Algorithm.cpp)
-#rosbuild_add_executable(myBWlabel ros/src/myBWlabel.cpp)
-#rosbuild_add_executable(tf_data ros/src/tf_data.cpp)
-#rosbuild_add_executable(help ros/src/help.cpp)
-#rosbuild_add_executable(test_test ros/src/test.cpp)
-
-			#Exploration Algorithm Executable
-#rosbuild_add_executable(Exploration_Algorithm_2nd_version ros/src/Exploration_Algorithm_2nd_version.cpp)
-
-			#Exploration Algorithm Library executable
-#rosbuild_add_library(exploration_algorithm_action_server_library ros/src/exploration_algorithm_action_server_library.cpp)
-#rosbuild_link_boost(exploration_algorithm_action_server_library thread)
-
-			#Analyze Map Server and Client
-#rosbuild_add_executable(analyze_map_server ros/src/analyze_map_server.cpp)
-
-#target_link_libraries(analyze_map_server exploration_algorithm_action_server_library)
-
-			#Next Room Server and Client
-#rosbuild_add_executable(next_room_server ros/src/next_room_server.cpp)
-
-#target_link_libraries(next_room_server exploration_algorithm_action_server_library)
-
-#rosbuild_add_executable(next_room_client ros/src/next_room_client.cpp)
-
-#rosbuild_link_boost(next_room_client thread)
+find_package(OpenCV REQUIRED)
 
 
-			#Inspect Room Server and Client
-#rosbuild_add_executable(inspect_room_server ros/src/inspect_room_server.cpp)
+################################################
+## Declare ROS messages, services and actions ##
+################################################
+## To declare and build messages, services or actions from within this
+## package, follow these steps:
+## * Let MSG_DEP_SET be the set of packages whose message types you use in
+## your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
+## * In the file package.xml:
+## * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
+## * If MSG_DEP_SET isn't empty the following dependencies might have been
+## pulled in transitively but can be declared for certainty nonetheless:
+## * add a build_depend tag for "message_generation"
+## * add a run_depend tag for "message_runtime"
+## * In this file (CMakeLists.txt):
+## * add "message_generation" and every package in MSG_DEP_SET to
+## find_package(catkin REQUIRED COMPONENTS ...)
+## * add "message_runtime" and every package in MSG_DEP_SET to
+## catkin_package(CATKIN_DEPENDS ...)
+## * uncomment the add_*_files sections below as needed
+## and list every .msg/.srv/.action file to be processed
+## * uncomment the generate_messages entry below
+## * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
-#target_link_libraries(inspect_room_server exploration_algorithm_action_server_library)
+## Generate messages in the 'msg' folder
+add_message_files(
+	FILES
+		TrashBinDetection.msg
+)
 
-#rosbuild_add_executable(inspect_room_client ros/src/inspect_room_client.cpp)
+# Generate services in the 'srv' folder
+add_service_files(
+	FILES
+		ActivateTrashBinDetection.srv
+		DeactivateTrashBinDetection.srv
+		DetectFiducials.srv
+)
 
-#rosbuild_link_boost(inspect_room_client thread)
+## Generate actions in the 'action' folder
+add_action_files(
+	DIRECTORY
+		action
+	FILES
+		FindNextUnprocessedRoom.action
+		GoToRoomLocation.action
+		GraspTrashBin.action
+		InspectRoom.action
+		MapSegmentation.action
+		RandomLocationFinder.action
+)
+
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+	DEPENDENCIES
+		std_msgs
+		sensor_msgs
+		geometry_msgs
+		visualization_msgs
+		diagnostic_msgs
+)
+
+# dynamic reconfigure
+#generate_dynamic_reconfigure_options(
+#	cfg/DirtDetection.cfg
+#)
+
+###################################
+## catkin specific configuration ##
+###################################
+## The catkin_package macro generates cmake config files for your package
+## Declare things to be passed to dependent projects
+## INCLUDE_DIRS: uncomment this if you package contains header files
+## LIBRARIES: libraries you create in this project that dependent projects also need
+## CATKIN_DEPENDS: catkin_packages dependent projects also need
+## DEPENDS: system dependencies of this project that dependent projects also need
+catkin_package(
+	INCLUDE_DIRS
+		ros/include
+	LIBRARIES
+	CATKIN_DEPENDS
+		${catkin_RUN_PACKAGES}
+		message_runtime
+	DEPENDS
+		OpenCV
+)
+
+###########
+## Build ##
+###########
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+# include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(
+	${catkin_INCLUDE_DIRS}
+	${OpenCV_INCLUDE_DIRS}
+)
 
 
-			#to location Server and Client
-#rosbuild_add_executable(to_location_server ros/src/to_location_server.cpp)
+# map segmentation action server and client
+add_executable(map_segmentation_action_server ros/src/map_segmentation_action_server.cpp)
+target_link_libraries(map_segmentation_action_server
+	${catkin_LIBRARIES}
+	${OpenCV_LIBRARIES}
+)
+add_dependencies(map_segmentation_action_server ${catkin_EXPORTED_TARGETS})
 
-#target_link_libraries(to_location_server exploration_algorithm_action_server_library)
-
-#rosbuild_add_executable(to_location_client ros/src/to_location_client.cpp)
-
-#rosbuild_link_boost(to_location_client thread)
-
-
-			#Random Location Server and Client
-#rosbuild_add_executable(random_location_server ros/src/random_location_server.cpp)
-
-#target_link_libraries(random_location_server exploration_algorithm_action_server_library)
-
-#rosbuild_add_executable(random_location_client ros/src/random_location_client.cpp)
-
-#rosbuild_link_boost(random_location_client thread)
+add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
+target_link_libraries(map_segmentation_action_client
+	${catkin_LIBRARIES}
+)
+add_dependencies(map_segmentation_action_client ${catkin_EXPORTED_TARGETS})
 
 
-			#move_base_location_on_perimeter executable
-#rosbuild_add_executable(move_base_location_on_perimeter_cpp ros/src/move_base_location_on_perimeter.cpp)
-#rosbuild_add_library(move_base_location_on_perimeter ros/src/move_base_location_on_perimeter.cpp)
-#rosbuild_link_boost(move_base_location_on_perimeter thread)		
+# find next room action server
+add_executable(find_next_unprocessed_room_action_server ros/src/find_next_unprocessed_room_action_server.cpp)
+target_link_libraries(find_next_unprocessed_room_action_server
+	${catkin_LIBRARIES}
+)
+add_dependencies(find_next_unprocessed_room_action_server ${catkin_EXPORTED_TARGETS})
+		
 
-			#Get Obstacle free point server and client executable
-#rosbuild_add_executable(get_obstacle_free_point_server ros/src/get_obstacle_free_point_server.cpp)	
-#target_link_libraries(get_obstacle_free_point_server move_base_location_on_perimeter)	
+# go to room location action server
+add_executable(go_to_room_location_action_server ros/src/go_to_room_location_action_server.cpp)
+target_link_libraries(go_to_room_location_action_server
+	${catkin_LIBRARIES}
+)
+add_dependencies(go_to_room_location_action_server ${catkin_EXPORTED_TARGETS})
 
-#rosbuild_add_executable(get_obstacle_free_point_client ros/src/get_obstacle_free_point_client.cpp)	
-#target_link_libraries(get_obstacle_free_point_client move_base_location_on_perimeter)				
+
+# random location finder server
+add_executable(random_location_finder_action_server ros/src/random_location_finder_action_server.cpp)
+target_link_libraries(random_location_finder_action_server
+	${catkin_LIBRARIES}
+)
+add_dependencies(random_location_finder_action_server ${catkin_EXPORTED_TARGETS})
 
 
-			#Move Arm Client
-#rosbuild_add_executable(Move_Arm_Client ros/src/Move_Arm_Client.cpp)
+# inspect room server
+add_executable(inspect_room_action_server ros/src/inspect_room_action_server.cpp)
+target_link_libraries(inspect_room_action_server
+	${catkin_LIBRARIES}
+)
+add_dependencies(inspect_room_action_server ${catkin_EXPORTED_TARGETS})
 
-			#Inflation Data Test CPP	
-#rosbuild_add_executable(Inflation_Data_test ros/src/Inflation_Data_test.cpp)
 
-			#Check Point accessibility
-#rosbuild_add_executable(map_point_accessibility_check_server ros/src/map_point_accessibility_check_server.cpp)
-#rosbuild_add_executable(map_point_accessibility_check_client ros/src/map_point_accessibility_check_client.cpp)
-
-			#detect fiducials service server		
-#rosbuild_add_executable(detect_fiducials_service_server ros/src/detect_fiducials_service_server.cpp)
-
-			#map segmentation action server and client
-rosbuild_add_executable(map_segmentation_action_server ros/src/map_segmentation_action_server.cpp)
-
-rosbuild_add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
-
-rosbuild_link_boost(map_segmentation_action_client thread)
-
-			#find next room action server
-rosbuild_add_executable(find_next_unprocessed_room_action_server ros/src/find_next_unprocessed_room_action_server.cpp)		
-
-			#go to room location action server
-rosbuild_add_executable(go_to_room_location_action_server ros/src/go_to_room_location_action_server.cpp)		
-
-			#Random Location Finder Server
-rosbuild_add_executable(random_location_finder_action_server ros/src/random_location_finder_action_server.cpp)	
-
-			#Inspect Room Server			
-rosbuild_add_executable(inspect_room_action_server ros/src/inspect_room_action_server.cpp)
-
-			#Trash Bin detection Server			
-rosbuild_add_executable(trash_bin_detection_service_server ros/src/trash_bin_detection_service_server.cpp)
+# trash bin detection server
+add_executable(trash_bin_detection_service_server ros/src/trash_bin_detection_service_server.cpp)
+target_link_libraries(trash_bin_detection_service_server
+	${catkin_LIBRARIES}
+)
 #target_link_libraries(trash_bin_detection_service_server moveit_move_group_interface)
-
-			#Activate Trash Bin Detection Client 			
-rosbuild_add_executable(activate_trash_bin_detection_client ros/src/activate_trash_bin_detection_client.cpp)
-
-			#Deactivate Trash Bin Detection Client 		
-rosbuild_add_executable(deactivate_trash_bin_detection_client ros/src/deactivate_trash_bin_detection_client.cpp)
+add_dependencies(trash_bin_detection_service_server ${catkin_EXPORTED_TARGETS})
 
 
+# activate trash bin detection client
+add_executable(activate_trash_bin_detection_client ros/src/activate_trash_bin_detection_client.cpp)
+target_link_libraries(activate_trash_bin_detection_client
+	${catkin_LIBRARIES}
+)
+add_dependencies(activate_trash_bin_detection_client ${catkin_EXPORTED_TARGETS})
 
+
+# deactivate trash bin detection client
+add_executable(deactivate_trash_bin_detection_client ros/src/deactivate_trash_bin_detection_client.cpp)
+target_link_libraries(deactivate_trash_bin_detection_client
+	${catkin_LIBRARIES}
+)
+add_dependencies(deactivate_trash_bin_detection_client ${catkin_EXPORTED_TARGETS})
+
+
+
+#############
+## Install ##
+#############
+## Mark executables and/or libraries for installation
+install(TARGETS map_segmentation_action_server map_segmentation_action_client find_next_unprocessed_room_action_server
+		go_to_room_location_action_server random_location_finder_action_server inspect_room_action_server
+		trash_bin_detection_service_server activate_trash_bin_detection_client
+		deactivate_trash_bin_detection_client
+	ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY ros/include/${PROJECT_NAME}/
+	DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+	FILES_MATCHING PATTERN "*.h"
+	PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY ros/launch
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/ros
+	PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY common/files
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/common
+	PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY scripts
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+	PATTERN ".svn" EXCLUDE
+)

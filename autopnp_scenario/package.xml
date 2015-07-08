@@ -1,0 +1,58 @@
+<package>
+	<name>autopnp_scenario</name>
+	<version>0.1.0</version>
+	<description>
+		AutoPnP scenario files.
+	</description>
+	<author email="richard.bormann@ipa.fraunhofer.de">Richard Bormann</author>
+	<maintainer email="richard.bormann@ipa.fraunhofer.de">Richard Bormann</maintainer>
+	<license>LGPL</license>
+	<url>http://ros.org/wiki/autopnp_scenario</url>
+
+	<buildtool_depend>catkin</buildtool_depend>
+
+	<build_depend>cmake_modules</build_depend>
+	<build_depend>libopencv-dev</build_depend>
+	<build_depend>roscpp</build_depend>
+	<build_depend>rospy</build_depend>
+	<build_depend>roslib</build_depend>
+	<build_depend>std_msgs</build_depend>
+	<build_depend>std_srvs</build_depend>
+	<build_depend>sensor_msgs</build_depend>
+	<build_depend>geometry_msgs</build_depend>
+	<build_depend>visualization_msgs</build_depend>
+	<build_depend>diagnostic_msgs</build_depend>
+	<build_depend>cob_srvs</build_depend>
+	<build_depend>message_filters</build_depend>
+	<build_depend>cob_navigation_global</build_depend>
+	<build_depend>cob_generic_states_experimental</build_depend>
+	<build_depend>cob_trajectory_controller</build_depend>
+	<build_depend>cob_map_accessibility_analysis</build_depend>
+	<build_depend>cob_fiducials</build_depend>
+	<build_depend>cob_phidgets</build_depend>
+	<build_depend>autopnp_dirt_detection</build_depend>
+	<build_depend>message_generation</build_depend>
+
+	<run_depend>libopencv-dev</run_depend>
+	<run_depend>roscpp</run_depend>
+	<run_depend>rospy</run_depend>
+	<run_depend>roslib</run_depend>
+	<run_depend>std_msgs</run_depend>
+	<run_depend>std_srvs</run_depend>
+	<run_depend>sensor_msgs</run_depend>
+	<run_depend>geometry_msgs</run_depend>
+	<run_depend>visualization_msgs</run_depend>
+	<run_depend>diagnostic_msgs</run_depend>
+	<run_depend>cob_srvs</run_depend>
+	<run_depend>message_filters</run_depend>
+	<run_depend>cob_navigation_global</run_depend>
+	<run_depend>cob_generic_states_experimental</run_depend>
+	<run_depend>cob_trajectory_controller</run_depend>
+	<run_depend>cob_map_accessibility_analysis</run_depend>
+	<run_depend>cob_fiducials</run_depend>
+	<run_depend>cob_phidgets</run_depend>
+	<run_depend>autopnp_dirt_detection</run_depend>
+	<run_depend>message_runtime</run_depend>
+
+</package>
+

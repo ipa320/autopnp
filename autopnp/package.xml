@@ -10,12 +10,12 @@
 	<buildtool_depend>catkin</buildtool_depend>
 
 	<run_depend>autopnp_can_attachments</run_depend>
-	<!--run_depend>autopnp_dirt_detection</run_depend>
+	<run_depend>autopnp_dirt_detection</run_depend>
 	<run_depend>autopnp_gui</run_depend>
 	<run_depend>autopnp_moveit_config</run_depend>
 	<run_depend>autopnp_scenario</run_depend>
 	<run_depend>autopnp_tool_change</run_depend>
-	<run_depend>cob_laser_scanner_filter</run_depend-->
+	<run_depend>cob_laser_scanner_filter</run_depend>
 
 	<export>
 		<metapackage/>

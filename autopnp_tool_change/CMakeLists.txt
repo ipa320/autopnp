@@ -1,50 +1,167 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8.3)
+project(autopnp_dirt_detection)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
+set(catkin_RUN_PACKAGES
+	roscpp
+	rospy
+	roslib
+	actionlib
+	actionlib_msgs
+	geometry_msgs
+	control_msgs
+	trajectory_msgs
+	pr2_controllers_msgs
+	cv_bridge
+	message_filters
+	cob_object_detection_msgs
+	tf
+	moveit_ros_move_group
+	moveit_ros_planning_interface
+	moveit_ros_manipulation
+	joint_trajectory_action
+	cob_phidgets
+	cob_generic_states_experimental
+)
 
-#rosbuild_add_boost_directories()
+set(catkin_BUILD_PACKAGES
+	${catkin_RUN_PACKAGES}
+	cmake_modules
+	message_generation
+)
 
-rosbuild_find_ros_package(actionlib_msgs)
-include(${actionlib_msgs_PACKAGE_PATH}/cmake/actionbuild.cmake)
-genaction()
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+## Creates a bunch of environment variables that may be used later in the script
+## e.g. catkin_INCLUDE_DIRS
+find_package(catkin REQUIRED COMPONENTS
+	${catkin_BUILD_PACKAGES}
+)
 
-rosbuild_init()
-
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-
-#uncomment if you have defined messages
-rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
-
-list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
-
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/ros/include
-		    ${PROJECT_SOURCE_DIR}/common/include)		    		    
-#rosbuild_add_boost_directories()
-rosbuild_add_executable(autopnp_tool_change ros/src/autopnp_tool_change.cpp)
-#rosbuild_add_executable(autopnp_tool_change_client ros/src/autopnp_tool_change_client.cpp)
-
-target_link_libraries(autopnp_tool_change moveit_move_group_interface)
-#rosbuild_link_boost(autopnp_tool_change signals)
-
-#common commands for building c++ executables and libraries
-#rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
+find_package(OpenCV REQUIRED)
 
 
+################################################
+## Declare ROS messages, services and actions ##
+################################################
+## To declare and build messages, services or actions from within this
+## package, follow these steps:
+## * Let MSG_DEP_SET be the set of packages whose message types you use in
+## your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
+## * In the file package.xml:
+## * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
+## * If MSG_DEP_SET isn't empty the following dependencies might have been
+## pulled in transitively but can be declared for certainty nonetheless:
+## * add a build_depend tag for "message_generation"
+## * add a run_depend tag for "message_runtime"
+## * In this file (CMakeLists.txt):
+## * add "message_generation" and every package in MSG_DEP_SET to
+## find_package(catkin REQUIRED COMPONENTS ...)
+## * add "message_runtime" and every package in MSG_DEP_SET to
+## catkin_package(CATKIN_DEPENDS ...)
+## * uncomment the add_*_files sections below as needed
+## and list every .msg/.srv/.action file to be processed
+## * uncomment the generate_messages entry below
+## * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
+## Generate messages in the 'msg' folder
+#add_message_files(
+#	FILES
+#		Dirt.msg
+#)
+
+# Generate services in the 'srv' folder
+#add_service_files(
+#	FILES
+#		ActivateDirtDetection.srv
+#		DeactivateDirtDetection.srv
+#		GetDirtMap.srv
+#		ValidateCleaningResult.srv
+#)
+
+## Generate actions in the 'action' folder
+add_action_files(
+	DIRECTORY
+		action
+	FILES
+		ToolChange.action
+)
+
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+	DEPENDENCIES
+)
+
+# dynamic reconfigure
+#generate_dynamic_reconfigure_options(
+#	cfg/DirtDetection.cfg
+#)
+
+###################################
+## catkin specific configuration ##
+###################################
+## The catkin_package macro generates cmake config files for your package
+## Declare things to be passed to dependent projects
+## INCLUDE_DIRS: uncomment this if you package contains header files
+## LIBRARIES: libraries you create in this project that dependent projects also need
+## CATKIN_DEPENDS: catkin_packages dependent projects also need
+## DEPENDS: system dependencies of this project that dependent projects also need
+catkin_package(
+	INCLUDE_DIRS
+		ros/include
+	LIBRARIES
+	CATKIN_DEPENDS
+		${catkin_RUN_PACKAGES}
+		message_runtime
+	DEPENDS
+		OpenCV
+)
+
+###########
+## Build ##
+###########
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+# include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(
+	${catkin_INCLUDE_DIRS}
+	${OpenCV_INCLUDE_DIRS}
+)
+
+
+#list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
+
+add_executable(autopnp_tool_change ros/src/autopnp_tool_change.cpp)
+target_link_libraries(autopnp_tool_change
+	${catkin_LIBRARIES}
+	${OpenCV_LIBRARIES}
+)
+add_dependencies(autopnp_tool_change ${catkin_EXPORTED_TARGETS} moveit_move_group_interface)
+#add_executable(autopnp_tool_change_client ros/src/autopnp_tool_change_client.cpp)
+
+
+#############
+## Install ##
+#############
+## Mark executables and/or libraries for installation
+install(TARGETS autopnp_tool_change
+	ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY ros/include/${PROJECT_NAME}/
+	DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+	FILES_MATCHING PATTERN "*.h"
+	PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY ros/launch
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/ros
+	PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY common/files
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/common
+	PATTERN ".svn" EXCLUDE
+)
