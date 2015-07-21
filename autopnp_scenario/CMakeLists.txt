@@ -14,6 +14,7 @@ set(catkin_RUN_PACKAGES
 	visualization_msgs
 	diagnostic_msgs
 	cob_object_detection_msgs
+	cv_bridge
 	cob_srvs
 	message_filters
 	cob_navigation_global
