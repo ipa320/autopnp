@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include <cob_srvs/Trigger.h>
+#include <std_srvs/Trigger.h>
 #include <diagnostic_updater/diagnostic_updater.h>
 #include <diagnostic_updater/publisher.h>
 #include <libpcan/libpcan.h>
@@ -111,37 +111,37 @@ void nmt_timer(const ros::TimerEvent&)
 	check_nmt();
 }
 
-bool power_on(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& response)
+bool power_on(std_srvs::Trigger::Request& request, std_srvs::Trigger::Response& response)
 {
 	boost::mutex::scoped_lock lock(mutex);
-	response.success.data = running && device && transmit(0x200 + modid, 8, 0xff, 0x7F); // without pwm
+	response.success = running && device && transmit(0x200 + modid, 8, 0xff, 0x7F); // without pwm
 	//response.success.data = running && device && transmit(0x200 + modid,8,0,80); //pwm: 80*256 / 0x8000 (why?)
 	return true;
 }
-bool power_off(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& response)
+bool power_off(std_srvs::Trigger::Request& request, std_srvs::Trigger::Response& response)
 {
 	boost::mutex::scoped_lock lock(mutex);
-	response.success.data = running && device && transmit(0x200 + modid, 8, 0, 0);
+	response.success = running && device && transmit(0x200 + modid, 8, 0, 0);
 	return true;
 }
 
-bool shutdown(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& response)
+bool shutdown(std_srvs::Trigger::Request& request, std_srvs::Trigger::Response& response)
 {
 	boost::mutex::scoped_lock lock(mutex);
 	close();
-	response.success.data = true;
+	response.success = true;
 	return true;
 }
 
-bool init(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& response)
+bool init(std_srvs::Trigger::Request& request, std_srvs::Trigger::Response& response)
 {
 	boost::mutex::scoped_lock lock(mutex);
 
-	response.success.data = false;
+	response.success = false;
 
 	if (running)
 	{
-		response.success.data = true;
+		response.success = true;
 		return true;
 	}
 
@@ -164,17 +164,17 @@ bool init(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& resp
 			}
 			else
 			{
-				response.error_message.data = "Could not transmit";
+				response.message = "Could not transmit";
 			}
 		}
 		else
 		{
-			response.error_message.data = "Could not initialize";
+			response.message = "Could not initialize";
 		}
 	}
 	else
 	{
-		response.error_message.data = "Could not open";
+		response.message = "Could not open";
 	}
 
 	if (!running && device)
@@ -184,20 +184,20 @@ bool init(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& resp
 		device = 0;
 	}
 
-	response.success.data = running;
+	response.success = running;
 
 	return true;
 }
 
-bool recover(cob_srvs::Trigger::Request& request, cob_srvs::Trigger::Response& response)
+bool recover(std_srvs::Trigger::Request& request, std_srvs::Trigger::Response& response)
 {
 	boost::mutex::scoped_lock lock(mutex);
 
-	response.success.data = false;
+	response.success = false;
 
 	if (running && device)
 	{
-		response.success.data = transmit(0, 2, 0x81, 0) && transmit(0, 2, 0x01, 0);
+		response.success = transmit(0, 2, 0x81, 0) && transmit(0, 2, 0x01, 0);
 	}
 	return true;
 }

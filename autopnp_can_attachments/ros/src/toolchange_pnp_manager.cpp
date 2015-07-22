@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 #include <diagnostic_msgs/DiagnosticArray.h>
-#include <cob_srvs/Trigger.h>
+#include <std_srvs/Trigger.h>
 #include <visualization_msgs/Marker.h>
 #include <std_msgs/String.h>
 
@@ -207,10 +207,10 @@ int main(int argc, char** argv)
 		// check for vacuum cleaner
 		if (any_device_initialized==false && tPnP.getVacuumStatus()==-1)
 		{
-			cob_srvs::Trigger::Request req;
-			cob_srvs::Trigger::Response res;
+			std_srvs::Trigger::Request req;
+			std_srvs::Trigger::Response res;
 			bool success = ros::service::call(vacuum_init_service_name, req, res);
-			if (success == false || res.success.data == false)
+			if (success == false || res.success == false)
 				ROS_WARN("\nVacuum cleaner init service call failed.\n");
 			else
 			{
@@ -228,10 +228,10 @@ int main(int argc, char** argv)
 		// check for SDH
 		if (any_device_initialized==false && tPnP.getHandStatus()==-1)// && tPnP.getVacuumStatus()== -1 && lastCheckedDevice==1)
 		{
-			cob_srvs::Trigger::Request req;
-			cob_srvs::Trigger::Response res;
+			std_srvs::Trigger::Request req;
+			std_srvs::Trigger::Response res;
 			bool success = ros::service::call(sdh_init_service_name, req, res);
-			if (success == false || res.success.data == false)
+			if (success == false || res.success == false)
 				ROS_WARN("\nSDH init service call failed.\n");
 			else
 			{

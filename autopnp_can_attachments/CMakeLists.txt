@@ -4,7 +4,7 @@ project(autopnp_can_attachments)
 set(catkin_RUN_PACKAGES
 	roscpp
 	libpcan
-	cob_srvs
+	std_srvs
 	diagnostic_updater
 )
 
