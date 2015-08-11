@@ -1,0 +1,71 @@
+# This file is a shell script that caches the results of configure
+# tests run on this system so they can be shared between configure
+# scripts and configure runs.  It is not useful on other systems.
+# If it contains results you don't want to keep, you may remove or edit it.
+#
+# By default, configure uses ./config.cache as the cache file,
+# creating it if it does not exist already.  You can give configure
+# the --cache-file=FILE option to use a different cache file; that is
+# what configure does when it calls configure scripts in
+# subdirectories, so they share the cache.
+# Giving --cache-file=/dev/null disables caching, for debugging configure.
+# config.status only pays attention to the cache file if you give it the
+# --recheck option to rerun configure.
+#
+ac_cv_c_const=${ac_cv_c_const='yes'}
+ac_cv_func_clock=${ac_cv_func_clock='yes'}
+ac_cv_func_gethostname=${ac_cv_func_gethostname='yes'}
+ac_cv_func_getrusage=${ac_cv_func_getrusage='yes'}
+ac_cv_func_sigaction=${ac_cv_func_sigaction='yes'}
+ac_cv_func_signal=${ac_cv_func_signal='yes'}
+ac_cv_func_sleep=${ac_cv_func_sleep='yes'}
+ac_cv_func_socket=${ac_cv_func_socket='yes'}
+ac_cv_func_strdup=${ac_cv_func_strdup='yes'}
+ac_cv_func_times=${ac_cv_func_times='yes'}
+ac_cv_header_assert_h=${ac_cv_header_assert_h='yes'}
+ac_cv_header_errno_h=${ac_cv_header_errno_h='yes'}
+ac_cv_header_fcntl_h=${ac_cv_header_fcntl_h='yes'}
+ac_cv_header_malloc_h=${ac_cv_header_malloc_h='yes'}
+ac_cv_header_math_h=${ac_cv_header_math_h='yes'}
+ac_cv_header_netdb_h=${ac_cv_header_netdb_h='yes'}
+ac_cv_header_netinet_in_h=${ac_cv_header_netinet_in_h='yes'}
+ac_cv_header_signal_h=${ac_cv_header_signal_h='yes'}
+ac_cv_header_stdc=${ac_cv_header_stdc='yes'}
+ac_cv_header_stddef_h=${ac_cv_header_stddef_h='yes'}
+ac_cv_header_stdlib_h=${ac_cv_header_stdlib_h='yes'}
+ac_cv_header_string_h=${ac_cv_header_string_h='yes'}
+ac_cv_header_strings_h=${ac_cv_header_strings_h='yes'}
+ac_cv_header_sys_param_h=${ac_cv_header_sys_param_h='yes'}
+ac_cv_header_sys_resource_h=${ac_cv_header_sys_resource_h='yes'}
+ac_cv_header_sys_socket_h=${ac_cv_header_sys_socket_h='yes'}
+ac_cv_header_sys_stat_h=${ac_cv_header_sys_stat_h='yes'}
+ac_cv_header_sys_time_h=${ac_cv_header_sys_time_h='yes'}
+ac_cv_header_sys_times_h=${ac_cv_header_sys_times_h='yes'}
+ac_cv_header_sys_types_h=${ac_cv_header_sys_types_h='yes'}
+ac_cv_header_time=${ac_cv_header_time='yes'}
+ac_cv_header_time_h=${ac_cv_header_time_h='yes'}
+ac_cv_header_unistd_h=${ac_cv_header_unistd_h='yes'}
+ac_cv_lib_bfd_bfd_open_file=${ac_cv_lib_bfd_bfd_open_file='no'}
+ac_cv_lib_iberty_xstrerror=${ac_cv_lib_iberty_xstrerror='no'}
+ac_cv_lib_m_sqrt=${ac_cv_lib_m_sqrt='yes'}
+ac_cv_path_MAKESHELL=${ac_cv_path_MAKESHELL='/bin/sh'}
+ac_cv_prog_CC=${ac_cv_prog_CC='gcc'}
+ac_cv_prog_CPP=${ac_cv_prog_CPP='gcc -E'}
+ac_cv_prog_RANLIB=${ac_cv_prog_RANLIB='ranlib'}
+ac_cv_prog_cc_cross=${ac_cv_prog_cc_cross='no'}
+ac_cv_prog_cc_g=${ac_cv_prog_cc_g='yes'}
+ac_cv_prog_cc_works=${ac_cv_prog_cc_works='yes'}
+ac_cv_prog_gcc=${ac_cv_prog_gcc='yes'}
+ac_cv_prog_make_make_set=${ac_cv_prog_make_make_set='yes'}
+ac_cv_type_pid_t=${ac_cv_type_pid_t='yes'}
+ac_cv_type_signal=${ac_cv_type_signal='void'}
+ac_cv_type_size_t=${ac_cv_type_size_t='yes'}
+ac_cv_type_u_char=${ac_cv_type_u_char='yes'}
+cc_cv_attributes=${cc_cv_attributes='yes'}
+cc_cv_c_void=${cc_cv_c_void='yes'}
+cc_cv_lib_nsl_gethostbyname=${cc_cv_lib_nsl_gethostbyname='no'}
+cc_cv_lib_socket_socket=${cc_cv_lib_socket_socket='no'}
+cc_cv_proto_gethostname=${cc_cv_proto_gethostname='no'}
+cc_cv_proto_getrusage=${cc_cv_proto_getrusage='no'}
+cc_cv_proto_printf=${cc_cv_proto_printf='no'}
+cc_cv_signal_sigaction=${cc_cv_signal_sigaction='yes'}

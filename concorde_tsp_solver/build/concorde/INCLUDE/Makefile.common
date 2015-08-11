@@ -1,0 +1,99 @@
+# Generated automatically from Makefile.common.in by configure.
+#
+#   This file is part of CONCORDE
+#
+#   (c) Copyright 1995--1999 by David Applegate, Robert Bixby,
+#   Vasek Chvatal, and William Cook
+#
+#   Permission is granted for academic research use.  For other uses,
+#   contact the authors for licensing options.
+#
+#   Use at your own risk.  We make no guarantees about the
+#   correctness or usefulness of this code.
+#
+
+# 
+# rules common to most of the makefiles
+#
+
+depend.in:
+	mv Makefile.in Makefile.in.orig
+	sed -e '/^# DO NOT DELETE THIS LINE -- make depend depends on it.$$/,$$d' < Makefile.in.orig > Makefile.in
+	echo "# DO NOT DELETE THIS LINE -- make depend depends on it." >> Makefile.in
+	echo >> Makefile.in
+	echo 'I=$$(CCINCDIR)' >> Makefile.in
+	echo 'I2=$$(BLDROOT)/INCLUDE' >> Makefile.in
+	echo >> Makefile.in
+	$(CC) $(CFLAGS) -MM \
+            `echo $(ALLSRCS) | tr ' ' '\012' | sort -u` | \
+            sed -e 's,../INCLUDE/config.h,$$(I2)/config.h,' \
+                -e 's,../INCLUDE,$$(I),g' -e 's,\.o,.$$o,g' | \
+            awk '{for(i=1;i<=NF;i++){if($$i=="\\"){next;}if(ecnt==0){ \
+            printf("%-12s ",$$i);}else if(ecnt==1){printf("%-10s ",$$i);} \
+            else{if(ecnt>=5&&ecnt%4==1)printf("\\\n        "); \
+            if(substr($$i,1,5)=="$$(I)/"||substr($$i,1,6)=="$$(I2)/") \
+            printf("%-15s ",$$i);else printf ("     %-10s ",$$i);}ecnt++;} \
+            printf("\n");ecnt=0;}' >> Makefile.in
+
+.PHONY: concorde.a
+concorde.a: $(BLDROOT)/concorde.a
+
+.PHONY: $(BLDROOT)/BIGGUY/bigguy.a
+$(BLDROOT)/BIGGUY/bigguy.a:
+	cd $(BLDROOT)/BIGGUY; $(MAKE) bigguy.a
+
+.PHONY: $(BLDROOT)/LOCALCUT/localcut.a
+$(BLDROOT)/LOCALCUT/localcut.a:
+	cd $(BLDROOT)/LOCALCUT; $(MAKE) localcut.a
+
+.PHONY: $(BLDROOT)/CUT/cut.a
+$(BLDROOT)/CUT/cut.a:
+	cd $(BLDROOT)/CUT; $(MAKE) cut.a
+
+.PHONY: $(BLDROOT)/EDGEGEN/edgegen.a
+$(BLDROOT)/EDGEGEN/edgegen.a:
+	cd $(BLDROOT)/EDGEGEN; $(MAKE) edgegen.a
+
+.PHONY: $(BLDROOT)/FMATCH/fmatch.a
+$(BLDROOT)/FMATCH/fmatch.a:
+	cd $(BLDROOT)/FMATCH; $(MAKE) fmatch.a
+
+.PHONY: $(BLDROOT)/HELDKARP/heldkarp.a
+$(BLDROOT)/HELDKARP/heldkarp.a:
+	cd $(BLDROOT)/HELDKARP; $(MAKE) heldkarp.a
+
+.PHONY: $(BLDROOT)/KDTREE/kdtree.a
+$(BLDROOT)/KDTREE/kdtree.a:
+	cd $(BLDROOT)/KDTREE; $(MAKE) kdtree.a
+
+.PHONY: $(BLDROOT)/LINKERN/linkern.a
+$(BLDROOT)/LINKERN/linkern.a:
+	cd $(BLDROOT)/LINKERN; $(MAKE) linkern.a
+
+.PHONY: $(BLDROOT)/LP/lp.a
+$(BLDROOT)/LP/lp.a:
+	cd $(BLDROOT)/LP; $(MAKE) lp.a
+
+.PHONY: $(BLDROOT)/PQ/pq.a
+$(BLDROOT)/PQ/pq.a:
+	cd $(BLDROOT)/PQ; $(MAKE) pq.a
+
+.PHONY: $(BLDROOT)/TINY/tiny.a
+$(BLDROOT)/TINY/tiny.a:
+	cd $(BLDROOT)/TINY; $(MAKE) tiny.a
+
+.PHONY: $(BLDROOT)/TSP/tsp.a
+$(BLDROOT)/TSP/tsp.a:
+	cd $(BLDROOT)/TSP; $(MAKE) tsp.a
+
+.PHONY: $(BLDROOT)/COMBS/combs.a
+$(BLDROOT)/COMBS/combs.a:
+	cd $(BLDROOT)/COMBS; $(MAKE) combs.a
+
+.PHONY: $(BLDROOT)/UTIL/util.a
+$(BLDROOT)/UTIL/util.a:
+	cd $(BLDROOT)/UTIL; $(MAKE) util.a
+
+.PHONY: $(BLDROOT)/VERIFY/verify.a
+$(BLDROOT)/VERIFY/verify.a:
+	cd $(BLDROOT)/VERIFY; $(MAKE) verify.a
