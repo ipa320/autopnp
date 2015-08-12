@@ -62,11 +62,11 @@ import smach
 import smach_ros
 import sys, os
 
-from exploration_detection_cleaning import *
+from autopnp_scenario_states_sim import *
 
 
 def main(confirm):
-	rospy.init_node('autopnp_scenario')
+	rospy.init_node('exploration_detection_cleaning')
 	
 	'''
 	# approach tool waggon
@@ -158,7 +158,8 @@ N', GraspTrashBin(),
 										'failed':'failed'})
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
-							transitions={'list_of_rooms':'GO_TO_NEXT_UNPROCESSED_ROOM'},
+							transitions={'list_of_rooms':'GO_TO_NEXT_UNPROCESSED_ROOM',
+										 'failed':'ANALYZE_MAP'},
 							remapping={'analyze_map_data_img_':'sm_img'})
 
 		sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],

@@ -94,7 +94,7 @@ class MapSegmentationActionClient():
             for u in range(0,map_msg.info.width):
                 if map_msg.data[i] != 0:
                     self.map_[v][u] = 0
-                i += 1                
+                i += 1
         
     def map_segmentation_action_client_(self):                      ######## this function is called
         mat = cv.fromarray(self.map_)
