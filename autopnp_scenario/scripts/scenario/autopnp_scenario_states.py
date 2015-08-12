@@ -65,10 +65,8 @@ import tf
 
 import dynamic_reconfigure.client
 
-from autopnp_common import *
+from common.autopnp_common import *
 
-from map_segmentation_action_client import MapSegmentationActionClient
-from find_next_unprocessed_room_action_client import find_next_unprocessed_room
 from go_to_room_location_action_client import go_to_room_location
 from random_location_finder_action_client import random_location_finder_client
 from inspect_room_action_client import inspect_room
@@ -266,26 +264,77 @@ class AnalyzeMap(smach.State):
 																			'analyze_map_data_room_max_x_',
 																			'analyze_map_data_room_min_y_',
 																			'analyze_map_data_room_max_y_'])
+		#Subscribe to the map topic to get the navigation map
+		rospy.Subscriber('/map', OccupancyGrid, self.update_map)
+		self.map_ = None
+		self.map_origin_ = None
+		self.map_resolution_ = None
+		self.map_origin_x_ = None
+		self.map_origin_y_ = None
+		
+	#receive data and creates a cv map for the goal of map segmentation action server		  
+	def update_map(self, map_msg):		
+		self.map_resolution_ = map_msg.info.resolution		
+		self.map_origin_x_ = map_msg.info.origin.position.x
+		self.map_origin_y_ = map_msg.info.origin.position.y		
+		self.map_origin_ = ( map_msg.info.origin.position.x , map_msg.info.origin.position.y )
+		#accessible areas are white color and have a value of 255
+		self.map_ = 255*np.ones(( map_msg.info.height , map_msg.info.width) , np.uint8 )		
+		i = 0
+		#obstacles are black color and have a value of 0
+		for v in range(0,map_msg.info.height):
+			for u in range(0,map_msg.info.width):
+				if map_msg.data[i] != 0:
+					self.map_[v][u] = 0
+				i += 1
 
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
-		# todo: simplify
-		map_segmentation_action_client_object_ = MapSegmentationActionClient()
-		rospy.sleep(1)
+		# wait until map received
+		while self.map_ == None:
+			rospy.sleep(1.)
+		mat = cv.fromarray(self.map_)
+#		cv.ShowImage( "map_image", mat )
+#		cv.WaitKey()   
 
-		map_segmentation_action_server_result_ = map_segmentation_action_client_object_.map_segmentation_action_client_()
+		# creates a action client object and triggers a room segmentation on the current map
+		client = actionlib.SimpleActionClient('/room_segmentation/room_segmentation_server', ipa_room_segmentation.msg.MapSegmentationAction)			   
+		cv_image = CvBridge()
+		#filling the goal msg format for map segmentation action server		
+		goal = ipa_room_segmentation.msg.MapSegmentationGoal(input_map = cv_image.cv_to_imgmsg( mat , "mono8"), 
+														map_resolution = self.map_resolution_, 
+														map_origin_x = self.map_origin_x_ , 
+														map_origin_y = self.map_origin_y_,
+														return_format_in_pixel = True)
+		rospy.loginfo("waiting for the map segmentation action server to start.....")
+		client.wait_for_server()		
+		rospy.loginfo("map segmentation action server started, sending goal.....")		
+		client.send_goal(goal)		
+		finished_before_timeout = client.wait_for_result(rospy.Duration(200.0))		
+		if finished_before_timeout:
+			state = client.get_state()
+			if state is 3:				
+				state = 'SUCCEEDED'
+				rospy.loginfo("action finished: %s " % state)
+			else:
+				rospy.loginfo("action finished: %s " % state)
+		else:
+			rospy.loginfo("Action did not finish before the time out.")
+			return 'failed'				
+		map_segmentation_action_server_result = client.get_result()
 		
-		userdata.analyze_map_data_img_ = map_segmentation_action_server_result_.output_map
-		userdata.analyze_map_data_map_resolution_ = map_segmentation_action_server_result_.map_resolution
-		userdata.analyze_map_data_map_origin_x_ = map_segmentation_action_server_result_.map_origin_x
-		userdata.analyze_map_data_map_origin_y_ = map_segmentation_action_server_result_.map_origin_y
-		userdata.analyze_map_data_room_center_x_ = map_segmentation_action_server_result_.room_center_x_in_pixel
-		userdata.analyze_map_data_room_center_y_ = map_segmentation_action_server_result_.room_center_y_in_pixel
-		userdata.analyze_map_data_room_min_x_ = map_segmentation_action_server_result_.room_min_x_in_pixel
-		userdata.analyze_map_data_room_max_x_ = map_segmentation_action_server_result_.room_max_x_in_pixel
-		userdata.analyze_map_data_room_min_y_ = map_segmentation_action_server_result_.room_min_y_in_pixel
-		userdata.analyze_map_data_room_max_y_ = map_segmentation_action_server_result_.room_max_y_in_pixel
+		# copy data to userdata
+		userdata.analyze_map_data_img_ = map_segmentation_action_server_result.output_map
+		userdata.analyze_map_data_map_resolution_ = map_segmentation_action_server_result.map_resolution
+		userdata.analyze_map_data_map_origin_x_ = map_segmentation_action_server_result.map_origin_x
+		userdata.analyze_map_data_map_origin_y_ = map_segmentation_action_server_result.map_origin_y
+		userdata.analyze_map_data_room_center_x_ = map_segmentation_action_server_result.room_center_x_in_pixel
+		userdata.analyze_map_data_room_center_y_ = map_segmentation_action_server_result.room_center_y_in_pixel
+		userdata.analyze_map_data_room_min_x_ = map_segmentation_action_server_result.room_min_x_in_pixel
+		userdata.analyze_map_data_room_max_x_ = map_segmentation_action_server_result.room_max_x_in_pixel
+		userdata.analyze_map_data_room_min_y_ = map_segmentation_action_server_result.room_min_y_in_pixel
+		userdata.analyze_map_data_room_max_y_ = map_segmentation_action_server_result.room_max_y_in_pixel
 		
 		return 'list_of_rooms'
 
@@ -310,20 +359,37 @@ class NextUnprocessedRoom(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 
-		# hack:
-		if userdata.find_next_unprocessed_room_loop_counter_in_ <= 1:  # len(userdata.analyze_map_data_room_center_x_):
-			find_next_unprocessed_room_action_server_result_ = find_next_unprocessed_room(userdata.find_next_unprocessed_room_data_img_,
-																							userdata.analyze_map_data_room_center_x_,  # in pixel
-																							userdata.analyze_map_data_room_center_y_,  # in pixel
-																							userdata.analyze_map_data_map_resolution_,
-																							userdata.analyze_map_data_map_origin_x_,
-																							userdata.analyze_map_data_map_origin_y_)
-			# rospy.sleep(10)
-			userdata.find_next_unprocessed_room_number_out_ = find_next_unprocessed_room_action_server_result_.room_number  # list of already processed rooms and next room at the back
+		if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_data_room_center_x_):
+						
+			client = actionlib.SimpleActionClient('find_next_unprocessed_room', autopnp_scenario.msg.FindNextUnprocessedRoomAction)
+			rospy.loginfo("Waiting for the find next unprocessed room action server to start......")
+			client.wait_for_server()	
+			rospy.loginfo("find next unprocessed room action server started, sending goal.....")		  
+			goal = autopnp_scenario.msg.FindNextUnprocessedRoomGoal(input_map=userdata.find_next_unprocessed_room_data_img_,
+																	 room_center_x=userdata.analyze_map_data_room_center_x_,  # in pixel
+																	 room_center_y=userdata.analyze_map_data_room_center_y_,  # in pixel
+																	 map_resolution=userdata.analyze_map_data_map_resolution_,
+																	 map_origin_x=userdata.analyze_map_data_map_origin_x_,
+																	 map_origin_y=userdata.analyze_map_data_map_origin_y_)
+			
+			client.send_goal(goal)	
+			finished_before_timeout = client.wait_for_result()
+			if finished_before_timeout:
+				state = client.get_state()
+				if state is 3:
+					state = 'SUCCEEDED'
+					rospy.loginfo("Action finished: %s " % state)
+				else:
+					rospy.loginfo("Action finished: %s " % state)
+			else:
+				rospy.loginfo("Action did not finish before the time out.")		
+			result = client.get_result()
+			
+			userdata.find_next_unprocessed_room_number_out_ = result.room_number  # list of already processed rooms and next room at the back
 			rospy.loginfo('Current room No: %d' % userdata.find_next_unprocessed_room_loop_counter_in_)
 			userdata.find_next_unprocessed_room_loop_counter_out_ = userdata.find_next_unprocessed_room_loop_counter_in_ + 1
-			userdata.find_next_unprocessed_room_center_x_ = find_next_unprocessed_room_action_server_result_.center_position_x
-			userdata.find_next_unprocessed_room_center_y_ = find_next_unprocessed_room_action_server_result_.center_position_y
+			userdata.find_next_unprocessed_room_center_x_ = result.center_position_x
+			userdata.find_next_unprocessed_room_center_y_ = result.center_position_y
 			return 'location'
 		else:
 			return 'no_rooms'

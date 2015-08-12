@@ -62,16 +62,16 @@ import rospy
 import smach
 import smach_ros
 import tf
-import cv
-from cv_bridge import CvBridge
+import cv2
+from cv_bridge import CvBridge, CvBridgeError
 import numpy as np
+import math
 import actionlib
 
 import dynamic_reconfigure.client
 
-from autopnp_common import *
+from common.autopnp_common import *
 
-from find_next_unprocessed_room_action_client import find_next_unprocessed_room
 from go_to_room_location_action_client import go_to_room_location
 from random_location_finder_action_client import random_location_finder_client
 from inspect_room_action_client import inspect_room
@@ -82,15 +82,14 @@ from ipa_room_segmentation.msg import *
 from autopnp_dirt_detection.srv import *
 from cob_object_detection_msgs.msg import DetectionArray, Detection
 from geometry_msgs import *
-from geometry_msgs.msg import Pose2D
+from geometry_msgs.msg import Pose2D, Transform, Vector3, Quaternion
 from cob_phidgets.srv import SetDigitalSensor
-from cob_srvs.srv import Trigger
+from std_srvs.srv import Trigger, Empty
 from std_msgs.msg import Bool, String
-from std_srvs.srv import Empty
 from sensor_msgs.msg import Joy
 from nav_msgs.msg import OccupancyGrid
 
-from ApproachPerimeter import *
+from cob_generic_states_experimental.ApproachPerimeter import *
 from cob_map_accessibility_analysis.srv import CheckPointAccessibility
 
 from simple_script_server import simple_script_server
@@ -105,7 +104,7 @@ global CONFIRM_MODE  # safety confirmation necessary during script?
 CONFIRM_MODE = 0
 
 global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
-MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 200.0  # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
+MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 20.0  # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
 
 global TOOL_WAGON_LOCATIONS
 TOOL_WAGON_LOCATIONS = []  # valid parking positions of tool wagon in current map [in m and rad]
@@ -190,7 +189,7 @@ class InitAutoPnPScenario(smach.State):
 			outcomes=['initialized', 'failed'],
 			input_keys=[],
 			output_keys=['tool_wagon_pose'])
-		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+#		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		self.dwa_planner_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
 		print "confirm_mode", confirm_mode
 		self.CONFIRM_MODE = confirm_mode
@@ -263,7 +262,7 @@ class InitAutoPnPScenario(smach.State):
 # of action client to communicate with action server
 class AnalyzeMap(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['list_of_rooms'], output_keys=['analyze_map_data_img_',
+		smach.State.__init__(self, outcomes=['list_of_rooms', 'failed'], output_keys=['analyze_map_data_img_',
 																			'analyze_map_data_map_resolution_',  # in m/cell
 																			'analyze_map_data_map_origin_x_',  # in m (pose of cell 0,0 in real world)
 																			'analyze_map_data_map_origin_y_',
@@ -303,15 +302,15 @@ class AnalyzeMap(smach.State):
 		# wait until map received
 		while self.map_ == None:
 			rospy.sleep(1.)
-		mat = cv.fromarray(self.map_)
+		mat = self.map_
 #		cv.ShowImage( "map_image", mat )
 #		cv.WaitKey()   
 
 		# creates a action client object and triggers a room segmentation on the current map
 		client = actionlib.SimpleActionClient('/room_segmentation/room_segmentation_server', ipa_room_segmentation.msg.MapSegmentationAction)			   
-		cv_image = CvBridge()
+		cv_bridge = CvBridge()
 		#filling the goal msg format for map segmentation action server		
-		goal = ipa_room_segmentation.msg.MapSegmentationGoal(input_map = cv_image.cv_to_imgmsg( mat , "mono8"), 
+		goal = ipa_room_segmentation.msg.MapSegmentationGoal(input_map = cv_bridge.cv2_to_imgmsg( mat , "mono8"), 
 														map_resolution = self.map_resolution_, 
 														map_origin_x = self.map_origin_x_ , 
 														map_origin_y = self.map_origin_y_,
@@ -325,11 +324,12 @@ class AnalyzeMap(smach.State):
 			state = client.get_state()
 			if state is 3:				
 				state = 'SUCCEEDED'
-				rospy.loginfo("action finished: %s " % state)				
+				rospy.loginfo("action finished: %s " % state)
 			else:
-				rospy.loginfo("action finished: %s " % state)	
+				rospy.loginfo("action finished: %s " % state)
 		else:
-			rospy.loginfo("Action did not finish before the time out.")				
+			rospy.loginfo("Action did not finish before the time out.")
+			return 'failed'				
 		map_segmentation_action_server_result = client.get_result()
 		
 		# copy data to userdata
@@ -367,20 +367,37 @@ class NextUnprocessedRoom(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 
-		# hack:
-		if userdata.find_next_unprocessed_room_loop_counter_in_ <= 1:  # len(userdata.analyze_map_data_room_center_x_):
-			find_next_unprocessed_room_action_server_result_ = find_next_unprocessed_room(userdata.find_next_unprocessed_room_data_img_,
-																							userdata.analyze_map_data_room_center_x_,  # in pixel
-																							userdata.analyze_map_data_room_center_y_,  # in pixel
-																							userdata.analyze_map_data_map_resolution_,
-																							userdata.analyze_map_data_map_origin_x_,
-																							userdata.analyze_map_data_map_origin_y_)
-			# rospy.sleep(10)
-			userdata.find_next_unprocessed_room_number_out_ = find_next_unprocessed_room_action_server_result_.room_number  # list of already processed rooms and next room at the back
+		if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_data_room_center_x_):
+						
+			client = actionlib.SimpleActionClient('find_next_unprocessed_room', autopnp_scenario.msg.FindNextUnprocessedRoomAction)
+			rospy.loginfo("Waiting for the find next unprocessed room action server to start......")
+			client.wait_for_server()	
+			rospy.loginfo("find next unprocessed room action server started, sending goal.....")		  
+			goal = autopnp_scenario.msg.FindNextUnprocessedRoomGoal(input_map=userdata.find_next_unprocessed_room_data_img_,
+																	 room_center_x=userdata.analyze_map_data_room_center_x_,  # in pixel
+																	 room_center_y=userdata.analyze_map_data_room_center_y_,  # in pixel
+																	 map_resolution=userdata.analyze_map_data_map_resolution_,
+																	 map_origin_x=userdata.analyze_map_data_map_origin_x_,
+																	 map_origin_y=userdata.analyze_map_data_map_origin_y_)
+			
+			client.send_goal(goal)	
+			finished_before_timeout = client.wait_for_result()
+			if finished_before_timeout:
+				state = client.get_state()
+				if state is 3:
+					state = 'SUCCEEDED'
+					rospy.loginfo("Action finished: %s " % state)
+				else:
+					rospy.loginfo("Action finished: %s " % state)
+			else:
+				rospy.loginfo("Action did not finish before the time out.")		
+			result = client.get_result()
+			
+			userdata.find_next_unprocessed_room_number_out_ = result.room_number  # list of already processed rooms and next room at the back
 			rospy.loginfo('Current room No: %d' % userdata.find_next_unprocessed_room_loop_counter_in_)
 			userdata.find_next_unprocessed_room_loop_counter_out_ = userdata.find_next_unprocessed_room_loop_counter_in_ + 1
-			userdata.find_next_unprocessed_room_center_x_ = find_next_unprocessed_room_action_server_result_.center_position_x
-			userdata.find_next_unprocessed_room_center_y_ = find_next_unprocessed_room_action_server_result_.center_position_y
+			userdata.find_next_unprocessed_room_center_x_ = result.center_position_x
+			userdata.find_next_unprocessed_room_center_y_ = result.center_position_y
 			return 'location'
 		else:
 			return 'no_rooms'
@@ -924,7 +941,7 @@ class MoveToToolWaggonFrontFrontalFar(smach.State):
 class MoveToToolWaggonFrontTrashClearing(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'])  # , input_keys=['tool_wagon_pose'])
-		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+#		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		# self.move_base_local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/local_costmap")
 		self.tool_wagon_pose = None
 		self.last_callback_time = rospy.Time.now()
@@ -946,9 +963,9 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
 		
 		# 1. adjust base footprint
-		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+#		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
 	# 	move_base_local_config = self.move_base_local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"})  # [[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]#[[0.1,0.1],[0.1,-0.1],[-0.1,-0.1],[-0.1,0.1]]
+#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]"})  # [[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]#[[0.1,0.1],[0.1,-0.1],[-0.1,-0.1],[-0.1,0.1]]
 	# 	self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": "0.3"})
 		# self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.36],[-0.20,0.16],[-0.20,-0.16],[0.45,-0.36]]"})
 		# [[0.56,0.36],[-0.56,0.36],[-0.56,-0.36],[0.56,-0.36]]
@@ -987,11 +1004,11 @@ class MoveToToolWaggonFrontTrashClearing(smach.State):
 		fiducials_sub.unregister()
 		
 		# 4. reset footprint
-		if local_config["footprint"] != None:
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
-		else:
-			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+#		if local_config["footprint"] != None:
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+#		else:
+#			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 	# 	if move_base_local_config["inflation_radius"]!=None:
 	# 		self.move_base_local_costmap_dynamic_reconfigure_client.update_configuration({"inflation_radius": move_base_local_config["inflation_radius"]})
 	# 	else:
@@ -1481,7 +1498,7 @@ class GraspTrashBin(smach.State):
 class Turn180(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['arrived'])
-		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+#		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 
 	def checkAngleDiff(self, goal_angle):
 		robot_pose_translation = None
@@ -2326,7 +2343,7 @@ class MoveLocationPerimeterCleaning(smach.State):
 class Clean(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['cleaning_done'])
-		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+#		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 	
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
@@ -2339,8 +2356,8 @@ class Clean(smach.State):
 			raw_input("cleaning position ok?")
 
 		# 1. adjust base footprint
-		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"})  # [[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
+#		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"})  # [[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
 		
 		rospy.sleep(0.5)
 		rospy.wait_for_service('/update_footprint') 
@@ -2443,11 +2460,11 @@ class Clean(smach.State):
 		handle_arm = sss.move("arm", [ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
 		# 4. reset footprint
-		if local_config["footprint"] != None:
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
-		else:
-			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+#		if local_config["footprint"] != None:
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+#		else:
+#			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 
 		rospy.sleep(0.5)
 		rospy.wait_for_service('/update_footprint') 
@@ -2463,7 +2480,7 @@ class Clean(smach.State):
 class CleanCellGroup(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['cleaning_done'], input_keys=['next_dirt_location'])
-		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
+#		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		self.laser_scanner_mode_pub = rospy.Publisher("/laser_top/laser_top_filter_mode/mode", String)
 	
 	def computeClosestPoint(self, grid_robot, next_point):
@@ -2681,8 +2698,8 @@ class CleanCellGroup(smach.State):
 		sss.move("base", trajectory[0][0], mode='linear')
 
 		# 1. adjust base footprint
-		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
-		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"})  # [[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
+#		local_config = self.local_costmap_dynamic_reconfigure_client.get_configuration(5.0)
+#		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]"})  # [[0.25,-0.25],[-0.25,-0.25],[-0.25,0.25]]#[[0.3,0.3],[0.3,-0.3],[-0.3,-0.3],[-0.3,0.3]]
 		
 		rospy.sleep(0.5)
 		rospy.wait_for_service('/update_footprint') 
@@ -2770,11 +2787,11 @@ class CleanCellGroup(smach.State):
 		handle_arm = sss.move("arm", [ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 		
 		# 4. reset footprint
-		if local_config["footprint"] != None:
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
-		else:
-			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
-			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
+#		if local_config["footprint"] != None:
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": local_config["footprint"]})
+#		else:
+#			rospy.logwarn("Could not read previous local footprint configuration of /local_costmap_node/costmap, resetting to standard value: [[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]].")
+#			self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.37],[0.45,-0.37],[-0.45,-0.37],[-0.45,0.37]]"})
 
 		rospy.sleep(0.5)
 		rospy.wait_for_service('/update_footprint') 

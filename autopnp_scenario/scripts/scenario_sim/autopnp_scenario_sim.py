@@ -62,91 +62,12 @@ import smach
 import smach_ros
 import sys, os
 
-from exploration_detection_cleaning import *
+from autopnp_scenario_states_sim import *
 
 
 def main(confirm):
-	rospy.init_node('autopnp_scenario')
-	
-	'''
-	# approach tool waggon
-	sm_scenario = smach.StateMachine(outcomes=['finished'])
-	with sm_scenario:
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
-								transitions={'arrived':'finished'})
-	'''
-	'''
-	# clean
-	sm_scenario = smach.StateMachine(outcomes=['cleaning_done'])
-	with sm_scenario:
-		smach.StateMachine.add('CLEAN', Clean(),
-								transitions={'cleaning_done':'cleaning_done'})
-	'''
-	
-	'''
-	# manual tool change
-	sm_scenario = smach.StateMachine(outcomes=['tool_change_done'])
-	with sm_scenario:
-		smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManual(),
-								transitions={'CTM_done':'tool_change_done'})
-	'''
-	
-	
-	'''
-	# trash bin clearing stand alone
-	sm_scenario = smach.StateMachine(outcomes=['CWB_done', 'failed'],input_keys=['detection_pose'])
-	with sm_scenario:
-		smach.StateMachine.add('INITIALIZE_AUTOPNP_SCENARIO', InitAutoPnPScenario(),
-					transitions={'initialized':'GRASP_TRASH_BIN',
-								'failed':'failed'})
+	rospy.init_node('exploration_detection_cleaning')
 		
-# 		smach.StateMachine.add('MOVE_TO_TRASH_BIN_LOCATION', MoveToTrashBinLocation(),
-# 							transitions={'MTTBL_success':'APPROACH_PERIMETER'},
-# 								remapping = {'trash_bin_pose_':'detection_pose'})
-		
-# 		smach.StateMachine.add('APPROACH_PERIMETER', ApproachPerimeter(),
-# 							transitions={'reached':'GRASP_TRASH_BIN', 
-# 										 'not_reached':'failed',
-# 										 'failed':'failed'},
-# 								remapping = {'trash_bin_pose_':'detection_pose'})
-		
-		smach.StateMachine.add('GRASP_TRASH_BI	"front_trash_clearing":Pose2D(x=-1.05, y=0.0, theta=0.0)}
-N', GraspTrashBin(),
-							transitions={'GTB_success':'MOVE_TO_TOOL_WAGON_FRONTAL',
-										 'failed':'failed'})
-		
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL', MoveToToolWaggonFrontFrontalFar(),
-							transitions={'arrived':'MOVE_TO_TOOL_WAGON_TURN180'})
-		
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_TURN180', Turn180(),
-							transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART1'})
-		
-		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART1', ClearTrashBinIntoToolWagonPart1(),
-							transitions={'finished':'MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING'})
-			"front_trash_clearing":Pose2D(x=-1.05, y=0.0, theta=0.0)}
-
-		smach.StateMachine.add('MOVE_TO_TOOL_WAGON_FRONTAL_TRASH_BIN_CLEARING', MoveToToolWaggonFrontTrashClearing(),
-							transitions={'arrived':'CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2'})
-		
-		smach.StateMachine.add('CLEAR_TRASH_BIN_INTO_TOOL_WAGON_PART2', ClearTrashBinIntoToolWagonPart2(),
-							transitions={'finished':'RELEASE_TRASH_BIN'})
-		
-# 		smach.StateMachine.add('MOVE_TO_TRASH_BIN_PICKING_LOCATION', MoveToTrashBinPickingLocation(),
-# 							transitions={'MTTBPL_done':'APPROACH_PERIMETER_2'},
-# 							remapping = {'trash_bin_pose_':'detection_pose'})
-		
-# 		smach.StateMachine.add('APPROACH_PERIMETER_2', ApproachPerimeter(),
-# 							transitions={'reached':'RELEASE_TRASH_BIN', 
-# 										 'not_reached':'failed',
-# 										 'failed':'failed'},
-# 							remapping = {'trash_bin_pose_':'detection_pose'})
-		
-		smach.StateMachine.add('RELEASE_TRASH_BIN', ReleaseTrashBin(),
-							transitions={'RTB_finished':'CWB_done'})
-	'''
-	
-	
-	
 	# full scenario
 	sm_scenario = smach.StateMachine(outcomes=['finished', 'failed'])
 	sm_scenario.userdata.sm_trash_bin_counter = 0
@@ -158,7 +79,8 @@ N', GraspTrashBin(),
 										'failed':'failed'})
 		
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
-							transitions={'list_of_rooms':'GO_TO_NEXT_UNPROCESSED_ROOM'},
+							transitions={'list_of_rooms':'GO_TO_NEXT_UNPROCESSED_ROOM',
+										 'failed':'ANALYZE_MAP'},
 							remapping={'analyze_map_data_img_':'sm_img'})
 
 		sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],
@@ -355,17 +277,20 @@ N', GraspTrashBin(),
 							transitions={'CTH_done':'GET_DIRT_MAP'})
 
 
-		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['tool_change_done'],
+		sm_sub_change_tool_manual = smach.StateMachine(outcomes=['tool_change_done','failed'],
 														input_keys=['tool_wagon_pose'])
 		with sm_sub_change_tool_manual:
 			smach.StateMachine.add('GO_TO_TOOL_WAGON_LOCATION', MoveToToolWaggonFrontFar(),
 								transitions={'arrived':'CHANGE_TOOL_MANUAL_IMPLEMENTATION'})
 			
 			smach.StateMachine.add('CHANGE_TOOL_MANUAL_IMPLEMENTATION', ChangeToolManualPnP(),
-								transitions={'CTM_done':'tool_change_done'})
+								transitions={'CTM_done_vacuum':'tool_change_done',
+											 'CTM_done_sdh':'tool_change_done',
+											 'failed':'failed'})
 		
 		smach.StateMachine.add('CHANGE_TOOL_MANUAL', sm_sub_change_tool_manual,
-							transitions={'tool_change_done':'GET_DIRT_MAP'})
+							transitions={'tool_change_done':'GET_DIRT_MAP',
+										 'failed':'failed'})
 		
 		
 		smach.StateMachine.add('GET_DIRT_MAP', ReceiveDirtMap(),

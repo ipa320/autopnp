@@ -36,6 +36,8 @@
 	<build_depend>cob_fiducials</build_depend>
 	<build_depend>cob_phidgets</build_depend>
 	<build_depend>autopnp_dirt_detection</build_depend>
+	<build_depend>ipa_room_segmentation</build_depend>
+	<build_depend>ipa_building_navigation</build_depend>
 	<build_depend>message_generation</build_depend>
 
 	<run_depend>libopencv-dev</run_depend>
@@ -61,6 +63,8 @@
 	<run_depend>cob_fiducials</run_depend>
 	<run_depend>cob_phidgets</run_depend>
 	<run_depend>autopnp_dirt_detection</run_depend>
+	<run_depend>ipa_room_segmentation</run_depend>
+	<run_depend>ipa_building_navigation</run_depend>
 	<run_depend>message_runtime</run_depend>
 
 </package>

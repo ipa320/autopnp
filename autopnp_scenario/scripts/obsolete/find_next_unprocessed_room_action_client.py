@@ -67,16 +67,16 @@ import autopnp_scenario.msg
 
 # The function creates a goal definition for the find next unprocessed room action server    
 def find_next_unprocessed_room( input_img, x_coordinate_of_room_center, y_coordinate_of_room_center , map_resolution , map_origin_x , map_origin_y ):      
-    client = actionlib.SimpleActionClient( 'find_next_unprocessed_room', autopnp_scenario.msg.FindNextUnprocessedRoomAction )
+    client = actionlib.SimpleActionClient('find_next_unprocessed_room', autopnp_scenario.msg.FindNextUnprocessedRoomAction)
     rospy.loginfo("Waiting for the find next unprocessed room action server to start......")
     client.wait_for_server()    
     rospy.loginfo("find next unprocessed room action server started, sending goal.....")          
-    goal = autopnp_scenario.msg.FindNextUnprocessedRoomGoal( input_map = input_img, 
-                                                             room_center_x = x_coordinate_of_room_center, # in pixel
-                                                             room_center_y = y_coordinate_of_room_center, # in pixel
-                                                             map_resolution = map_resolution,
-                                                             map_origin_x = map_origin_x,
-                                                             map_origin_y = map_origin_y )
+    goal = autopnp_scenario.msg.FindNextUnprocessedRoomGoal(input_map=input_img,
+                                                             room_center_x=x_coordinate_of_room_center,  # in pixel
+                                                             room_center_y=y_coordinate_of_room_center,  # in pixel
+                                                             map_resolution=map_resolution,
+                                                             map_origin_x=map_origin_x,
+                                                             map_origin_y=map_origin_y)
     
     client.send_goal(goal)    
     finished_before_timeout = client.wait_for_result()

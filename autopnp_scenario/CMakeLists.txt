@@ -24,6 +24,8 @@ set(catkin_RUN_PACKAGES
 	cob_fiducials
 	cob_phidgets
 	autopnp_dirt_detection
+	ipa_room_segmentation
+	ipa_building_navigation
 )
 
 set(catkin_BUILD_PACKAGES
@@ -43,6 +45,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED)
 
+catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##

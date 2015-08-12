@@ -62,11 +62,11 @@ import smach
 import smach_ros
 import sys, os
 
-from autopnp_scenario_states_sim import *
+from autopnp_scenario_states import *
 
 
 def main(confirm):
-	rospy.init_node('exploration_detection_cleaning')
+	rospy.init_node('autopnp_scenario')
 	
 	'''
 	# approach tool waggon
