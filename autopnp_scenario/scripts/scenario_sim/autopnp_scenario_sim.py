@@ -81,19 +81,13 @@ def main(confirm):
 		smach.StateMachine.add('ANALYZE_MAP', AnalyzeMap(),
 							transitions={'list_of_rooms':'GO_TO_NEXT_UNPROCESSED_ROOM',
 										 'failed':'ANALYZE_MAP'},
-							remapping={'analyze_map_data_img_':'sm_img'})
+							remapping={'analyze_map_segmented_map_':'sm_img'})
 
 		sm_sub_go_to_next_unproccessed_room = smach.StateMachine(outcomes=['arrived','no_more_rooms_left'],
 																input_keys=['sm_img',
-																			'analyze_map_data_map_resolution_',
-																			'analyze_map_data_map_origin_x_',
-																			'analyze_map_data_map_origin_y_',
-																			'analyze_map_data_room_center_x_', 
-																			'analyze_map_data_room_center_y_',
-																			'analyze_map_data_room_min_x_',
-																			'analyze_map_data_room_max_x_',
-																			'analyze_map_data_room_min_y_',
-																			'analyze_map_data_room_max_y_',
+																			'analyze_map_map_resolution_',
+																			'analyze_map_map_origin_',
+																			'analyze_map_room_information_in_pixel',
 																			'tool_wagon_pose'],
 																output_keys=['sm_RoomNo'])
 		

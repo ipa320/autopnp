@@ -262,32 +262,23 @@ class InitAutoPnPScenario(smach.State):
 # of action client to communicate with action server
 class AnalyzeMap(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['list_of_rooms', 'failed'], output_keys=['analyze_map_data_img_',
-																			'analyze_map_data_map_resolution_',  # in m/cell
-																			'analyze_map_data_map_origin_x_',  # in m (pose of cell 0,0 in real world)
-																			'analyze_map_data_map_origin_y_',
-																			'analyze_map_data_room_center_x_',
-																			'analyze_map_data_room_center_y_',
-																			'analyze_map_data_room_min_x_',
-																			'analyze_map_data_room_max_x_',
-																			'analyze_map_data_room_min_y_',
-																			'analyze_map_data_room_max_y_'])
+		smach.State.__init__(self, outcomes=['list_of_rooms', 'failed'], output_keys=['analyze_map_segmented_map_',
+																			'analyze_map_map_resolution_',  # in m/cell
+																			'analyze_map_map_origin_',  # in m (pose of cell 0,0 in real world)
+																			'analyze_map_room_information_in_pixel'])
 		#Subscribe to the map topic to get the navigation map
 		rospy.Subscriber('/map', OccupancyGrid, self.update_map)
 		self.map_ = None
-		self.map_origin_ = None
 		self.map_resolution_ = None
 		self.map_origin_x_ = None
 		self.map_origin_y_ = None
 		
 	#receive data and creates a cv map for the goal of map segmentation action server		  
-	def update_map(self, map_msg):		
-		self.map_resolution_ = map_msg.info.resolution		
-		self.map_origin_x_ = map_msg.info.origin.position.x
-		self.map_origin_y_ = map_msg.info.origin.position.y		
-		self.map_origin_ = ( map_msg.info.origin.position.x , map_msg.info.origin.position.y )
+	def update_map(self, map_msg):
+		self.map_resolution_ = map_msg.info.resolution
+		self.map_origin = map_msg.info.origin
 		#accessible areas are white color and have a value of 255
-		self.map_ = 255*np.ones(( map_msg.info.height , map_msg.info.width) , np.uint8 )		
+		self.map_ = 255*np.ones((map_msg.info.height, map_msg.info.width), np.uint8)
 		i = 0
 		#obstacles are black color and have a value of 0
 		for v in range(0,map_msg.info.height):
@@ -307,42 +298,36 @@ class AnalyzeMap(smach.State):
 #		cv.WaitKey()   
 
 		# creates a action client object and triggers a room segmentation on the current map
-		client = actionlib.SimpleActionClient('/room_segmentation/room_segmentation_server', ipa_room_segmentation.msg.MapSegmentationAction)			   
+		client = actionlib.SimpleActionClient('/room_segmentation/room_segmentation_server', ipa_room_segmentation.msg.MapSegmentationAction)
 		cv_bridge = CvBridge()
 		#filling the goal msg format for map segmentation action server		
-		goal = ipa_room_segmentation.msg.MapSegmentationGoal(input_map = cv_bridge.cv2_to_imgmsg( mat , "mono8"), 
-														map_resolution = self.map_resolution_, 
-														map_origin_x = self.map_origin_x_ , 
-														map_origin_y = self.map_origin_y_,
+		goal = ipa_room_segmentation.msg.MapSegmentationGoal(input_map = cv_bridge.cv2_to_imgmsg(mat , "mono8"),
+														map_resolution = self.map_resolution_,
+														map_origin = self.map_origin_,
 														return_format_in_pixel = True)
 		rospy.loginfo("waiting for the map segmentation action server to start.....")
-		client.wait_for_server()		
-		rospy.loginfo("map segmentation action server started, sending goal.....")		
-		client.send_goal(goal)		
-		finished_before_timeout = client.wait_for_result(rospy.Duration(200.0))		
+		client.wait_for_server()
+		rospy.loginfo("map segmentation action server started, sending goal.....")
+		client.send_goal(goal)
+		finished_before_timeout = client.wait_for_result(rospy.Duration(200.0))
 		if finished_before_timeout:
 			state = client.get_state()
-			if state is 3:				
+			if state is 3:
 				state = 'SUCCEEDED'
 				rospy.loginfo("action finished: %s " % state)
 			else:
 				rospy.loginfo("action finished: %s " % state)
 		else:
 			rospy.loginfo("Action did not finish before the time out.")
-			return 'failed'				
+			return 'failed'
 		map_segmentation_action_server_result = client.get_result()
 		
 		# copy data to userdata
-		userdata.analyze_map_data_img_ = map_segmentation_action_server_result.output_map
-		userdata.analyze_map_data_map_resolution_ = map_segmentation_action_server_result.map_resolution
-		userdata.analyze_map_data_map_origin_x_ = map_segmentation_action_server_result.map_origin_x
-		userdata.analyze_map_data_map_origin_y_ = map_segmentation_action_server_result.map_origin_y
-		userdata.analyze_map_data_room_center_x_ = map_segmentation_action_server_result.room_center_x_in_pixel
-		userdata.analyze_map_data_room_center_y_ = map_segmentation_action_server_result.room_center_y_in_pixel
-		userdata.analyze_map_data_room_min_x_ = map_segmentation_action_server_result.room_min_x_in_pixel
-		userdata.analyze_map_data_room_max_x_ = map_segmentation_action_server_result.room_max_x_in_pixel
-		userdata.analyze_map_data_room_min_y_ = map_segmentation_action_server_result.room_min_y_in_pixel
-		userdata.analyze_map_data_room_max_y_ = map_segmentation_action_server_result.room_max_y_in_pixel
+		userdata.analyze_map_segmented_map_ = map_segmentation_action_server_result.segmented_map
+		userdata.analyze_map_map_resolution_ = map_segmentation_action_server_result.map_resolution
+		userdata.analyze_map_map_origin_ = map_segmentation_action_server_result.map_origin
+		userdata.analyze_map_room_information_in_pixel_ = map_segmentation_action_server_result.room_information_in_pixel
+		userdata.analyze_map_room_information_in_meter_ = map_segmentation_action_server_result.room_information_in_meter
 		
 		return 'list_of_rooms'
 
@@ -352,11 +337,9 @@ class AnalyzeMap(smach.State):
 class NextUnprocessedRoom(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['location', 'no_rooms', 'arrived'], input_keys=['find_next_unprocessed_room_data_img_',
-																						'analyze_map_data_map_resolution_',
-																						'analyze_map_data_map_origin_x_',
-																						'analyze_map_data_map_origin_y_',
-																						'analyze_map_data_room_center_x_',  # in pixel
-																						'analyze_map_data_room_center_y_',  # in pixel
+																						'analyze_map_map_resolution_',
+																						'analyze_map_map_origin_',
+																						'analyze_map_room_information_in_pixel'
 																						'find_next_unprocessed_room_number_in_',
 																						'find_next_unprocessed_room_loop_counter_in_'],
 																			output_keys=['find_next_unprocessed_room_number_out_',  # a vector with next target room at back
@@ -367,18 +350,17 @@ class NextUnprocessedRoom(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 
-		if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_data_room_center_x_):
+		if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_room_information_in_pixel):
 						
 			client = actionlib.SimpleActionClient('find_next_unprocessed_room', autopnp_scenario.msg.FindNextUnprocessedRoomAction)
 			rospy.loginfo("Waiting for the find next unprocessed room action server to start......")
 			client.wait_for_server()	
 			rospy.loginfo("find next unprocessed room action server started, sending goal.....")		  
 			goal = autopnp_scenario.msg.FindNextUnprocessedRoomGoal(input_map=userdata.find_next_unprocessed_room_data_img_,
-																	 room_center_x=userdata.analyze_map_data_room_center_x_,  # in pixel
-																	 room_center_y=userdata.analyze_map_data_room_center_y_,  # in pixel
-																	 map_resolution=userdata.analyze_map_data_map_resolution_,
-																	 map_origin_x=userdata.analyze_map_data_map_origin_x_,
-																	 map_origin_y=userdata.analyze_map_data_map_origin_y_)
+																	 room_center_x=userdata.analyze_map_room_information_in_pixel[userdata.find_next_unprocessed_room_loop_counter_in_].room_center.x,  # in pixel
+																	 room_center_y=userdata.analyze_map_room_information_in_pixel[userdata.find_next_unprocessed_room_loop_counter_in_].room_center.y,  # in pixel
+																	 map_resolution=userdata.analyze_map_map_resolution_,
+																	 map_origin_x=userdata.analyze_map_map_origin_)
 			
 			client.send_goal(goal)	
 			finished_before_timeout = client.wait_for_result()
@@ -409,9 +391,8 @@ class NextUnprocessedRoom(smach.State):
 class GoToRoomLocation(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['successful', 'unsuccessful'], input_keys=['go_to_room_location_data_img_',
-																					'analyze_map_data_map_resolution_',
-																					'analyze_map_data_map_origin_x_',
-																					'analyze_map_data_map_origin_y_',
+																					'analyze_map_map_resolution_',
+																					'analyze_map_map_origin_',
 																					'find_next_unprocessed_room_center_x_',  # in pixel
 																					'find_next_unprocessed_room_center_y_',  # in pixel
 																					'random_location_finder_random_location_x_',
@@ -427,16 +408,14 @@ class GoToRoomLocation(smach.State):
 			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
 																			userdata.find_next_unprocessed_room_center_x_ ,
 																			userdata.find_next_unprocessed_room_center_y_,
-																			userdata.analyze_map_data_map_resolution_,
-																			userdata.analyze_map_data_map_origin_x_,
-																			userdata.analyze_map_data_map_origin_y_)
+																			userdata.analyze_map_map_resolution_,
+																			userdata.analyze_map_map_origin_)
 		else:
 			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
 																			userdata.random_location_finder_random_location_x_,
 																			userdata.random_location_finder_random_location_y_,
-																			userdata.analyze_map_data_map_resolution_,
-																			userdata.analyze_map_data_map_origin_x_,
-																			userdata.analyze_map_data_map_origin_y_)
+																			userdata.analyze_map_map_resolution_,
+																			userdata.analyze_map_map_origin_)
 
 		if go_to_room_location_action_server_result_.output_flag == 'True':
 			return 'successful'
@@ -451,14 +430,10 @@ class GoToRoomLocation(smach.State):
 class FindRandomLocation(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['re_locate', 'unsuccessful_five_times'], input_keys=['random_location_finder_data_img_in_',
-																								'analyze_map_data_map_resolution_',
-																								'analyze_map_data_map_origin_x_',
-																								'analyze_map_data_map_origin_y_',
+																								'analyze_map_map_resolution_',
+																								'analyze_map_map_origin_',
 																								'random_location_finder_room_number_',
-																								'analyze_map_data_room_min_x_',
-																								'analyze_map_data_room_max_x_',
-																								'analyze_map_data_room_min_y_',
-																								'analyze_map_data_room_max_y_',
+																								'analyze_map_room_information_in_pixel',
 																								'random_location_finder_counter_in_'],
 																					output_keys=['random_location_finder_random_location_x_',
 																								'random_location_finder_random_location_y_',
@@ -471,14 +446,13 @@ class FindRandomLocation(smach.State):
 		# todo: replace by something simple in the py script
 		
 		random_location_finder_action_server_result_ = random_location_finder_client(userdata.random_location_finder_data_img_in_,
-																					userdata.analyze_map_data_map_resolution_,
-																					userdata.analyze_map_data_map_origin_x_,
-																					userdata.analyze_map_data_map_origin_y_ ,
+																					userdata.analyze_map_map_resolution_,
+																					userdata.analyze_map_map_origin_,
 																					userdata.random_location_finder_room_number_,
-																					userdata.analyze_map_data_room_min_x_,
-																					userdata.analyze_map_data_room_max_x_,
-																					userdata.analyze_map_data_room_min_y_,
-																					userdata.analyze_map_data_room_max_y_,
+																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[0].x,
+																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[1].x,
+																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[0].y,
+																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[1].y,
 																					userdata.random_location_finder_counter_in_)
 
 		userdata.random_location_finder_random_location_x_ = random_location_finder_action_server_result_.random_location_x
@@ -499,15 +473,9 @@ class InspectRoom(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['finished'], input_keys=['inspect_room_data_img_in_',
 																	'inspect_room_room_number_',  # vector of already visited rooms and current room at back
-																	'analyze_map_data_room_center_x_',
-																	'analyze_map_data_room_center_y_',
-																	'analyze_map_data_room_min_x_',
-																	'analyze_map_data_room_max_x_',
-																	'analyze_map_data_room_min_y_',
-																	'analyze_map_data_room_max_y_',
-																	'analyze_map_data_map_resolution_',
-																	'analyze_map_data_map_origin_x_',
-																	'analyze_map_data_map_origin_y_'],
+																	'analyze_map_room_information_in_pixel',
+																	'analyze_map_map_resolution_',
+																	'analyze_map_map_origin_'],
 														output_keys=['inspect_room_img_out_'])
 
 	def execute(self, userdata):
@@ -515,15 +483,14 @@ class InspectRoom(smach.State):
 		
 		inspect_room_action_server_result_ = inspect_room(userdata.inspect_room_data_img_in_,
 														userdata.inspect_room_room_number_,
-														userdata.analyze_map_data_room_center_x_,
-														userdata.analyze_map_data_room_center_y_,
-														userdata.analyze_map_data_room_min_x_,
-														userdata.analyze_map_data_room_max_x_,
-														userdata.analyze_map_data_room_min_y_,
-														userdata.analyze_map_data_room_max_y_,
-														userdata.analyze_map_data_map_resolution_,
-														userdata.analyze_map_data_map_origin_x_,
-														userdata.analyze_map_data_map_origin_y_)
+														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_center.x,
+														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_center.y,
+														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[0].x,
+														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[1].x,
+														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[0].y,
+														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[1].y,
+														userdata.analyze_map_map_resolution_,
+														userdata.analyze_map_map_origin_)
 		# rospy.sleep(10)
 		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
 
@@ -561,15 +528,9 @@ class InspectRoomManual(smach.State):
 	def __init__(self):
 		smach.State.__init__(self, outcomes=['finished'], input_keys=['inspect_room_data_img_in_',
 																	'inspect_room_room_number_',  # vector of already visited rooms and current room at back
-																	'analyze_map_data_room_center_x_',
-																	'analyze_map_data_room_center_y_',
-																	'analyze_map_data_room_min_x_',
-																	'analyze_map_data_room_max_x_',
-																	'analyze_map_data_room_min_y_',
-																	'analyze_map_data_room_max_y_',
-																	'analyze_map_data_map_resolution_',
-																	'analyze_map_data_map_origin_x_',
-																	'analyze_map_data_map_origin_y_'],
+																	'analyze_map_room_information_in_pixel',
+																	'analyze_map_map_resolution_',
+																	'analyze_map_map_origin_'],
 														output_keys=['inspect_room_img_out_'])
 
 	def execute(self, userdata):
@@ -593,17 +554,16 @@ class VerifyToolCarLocation(smach.State):
 							input_keys=['find_next_unprocessed_room_center_x_',  # in pixel
 										'find_next_unprocessed_room_center_y_',  # in pixel
 										'tool_wagon_pose',  # in m
-										'analyze_map_data_map_resolution_',
-										'analyze_map_data_map_origin_x_',
-										'analyze_map_data_map_origin_y_', ],
+										'analyze_map_map_resolution_',
+										'analyze_map_map_origin_'],
 							output_keys=['tool_wagon_goal_pose'])  # in m
 
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# compare tool wagon location with next goal position (find_next_unprocessed_room_center_x_/y_) -> if to far, move tool wagon
-		next_room_center_x_m = userdata.find_next_unprocessed_room_center_x_ * userdata.analyze_map_data_map_resolution_ + userdata.analyze_map_data_map_origin_x_
-		next_room_center_y_m = userdata.find_next_unprocessed_room_center_y_ * userdata.analyze_map_data_map_resolution_ + userdata.analyze_map_data_map_origin_y_
+		next_room_center_x_m = userdata.find_next_unprocessed_room_center_x_ * userdata.analyze_map_map_resolution_ + userdata.analyze_map_map_origin_.position.x
+		next_room_center_y_m = userdata.find_next_unprocessed_room_center_y_ * userdata.analyze_map_map_resolution_ + userdata.analyze_map_map_origin_.position.y
 		dist = math.sqrt((userdata.tool_wagon_pose.x - next_room_center_x_m) * (userdata.tool_wagon_pose.x - next_room_center_x_m) + (userdata.tool_wagon_pose.y - next_room_center_y_m) * (userdata.tool_wagon_pose.y - next_room_center_y_m))
 		
 		# compare to maximally allowed tool wagon distance
