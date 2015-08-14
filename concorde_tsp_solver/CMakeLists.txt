@@ -58,3 +58,8 @@ set_target_properties(build_concorde_tsp_solver PROPERTIES LINKER_LANGUAGE CXX)
 #install(DIRECTORY common/include
 #	DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
 #)
+
+install(DIRECTORY common/files
+	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/common
+	PATTERN ".svn" EXCLUDE
+)
