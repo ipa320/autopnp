@@ -72,17 +72,16 @@ import dynamic_reconfigure.client
 
 from common.autopnp_common import *
 
-from go_to_room_location_action_client import go_to_room_location
-from random_location_finder_action_client import random_location_finder_client
 from inspect_room_action_client import inspect_room
 
 from autopnp_scenario.srv import *
 from autopnp_scenario.msg import *
 from ipa_room_segmentation.msg import *
+from ipa_building_navigation.msg import *
 from autopnp_dirt_detection.srv import *
 from cob_object_detection_msgs.msg import DetectionArray, Detection
 from geometry_msgs import *
-from geometry_msgs.msg import Pose2D, Transform, Vector3, Quaternion
+from geometry_msgs.msg import Pose2D, Pose, Transform, Vector3, Quaternion, Point32
 from cob_phidgets.srv import SetDigitalSensor
 from std_srvs.srv import Trigger, Empty
 from std_msgs.msg import Bool, String
@@ -90,6 +89,7 @@ from sensor_msgs.msg import Joy
 from nav_msgs.msg import OccupancyGrid
 
 from cob_generic_states_experimental.ApproachPerimeter import *
+from cob_generic_states_experimental.ApproachPoses import *
 from cob_map_accessibility_analysis.srv import CheckPointAccessibility
 
 from simple_script_server import simple_script_server
@@ -102,6 +102,15 @@ JOURNALIST_MODE = False  # set to true to have breaks within all movements for p
 
 global CONFIRM_MODE  # safety confirmation necessary during script?
 CONFIRM_MODE = 0
+
+global ROBOT_RADIUS
+ROBOT_RADIUS = 0.6
+
+global MAX_CLIQUE_PATH_LENGTH
+MAX_CLIQUE_PATH_LENGTH = 12.0
+
+global MAP_DOWNSAMPLING_FACTOR
+MAP_DOWNSAMPLING_FACTOR = 0.25
 
 global MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM
 MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM = 20.0  # maximum allowed distance of tool wagon to next target room center, if exceeded, tool wagon needs to be moved [in m]
@@ -181,6 +190,11 @@ ARM_JOINT_CONFIGURATIONS_VACUUM = {
 # lift up:
 #sss.move("arm",[ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_5cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["above_cleaning_20cm_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate2_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["intermediate1_position"], ARM_JOINT_CONFIGURATIONS_VACUUM["carrying_position"]])
 
+class RoomProtocol():
+	def __init__(self):
+		self.visited = False
+		self.room_center = Point32()
+
 #-------------------------------------------------------- Exploration Algorithm ---------------------------------------------------------------------------------------
 
 class InitAutoPnPScenario(smach.State):
@@ -188,7 +202,7 @@ class InitAutoPnPScenario(smach.State):
 		smach.State.__init__(self,
 			outcomes=['initialized', 'failed'],
 			input_keys=[],
-			output_keys=['tool_wagon_pose'])
+			output_keys=['tool_wagon_pose', 'current_clique_index', 'current_room_index'])
 #		self.local_costmap_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/local_costmap_node/costmap")
 		self.dwa_planner_dynamic_reconfigure_client = dynamic_reconfigure.client.Client("/move_base/DWAPlannerROS")
 		print "confirm_mode", confirm_mode
@@ -226,7 +240,7 @@ class InitAutoPnPScenario(smach.State):
 # 		self.local_costmap_dynamic_reconfigure_client.update_configuration({"footprint": "[[0.45,0.25],[0.45,-0.25],[0.25,-0.45],[-0.25,-0.45],[-0.45,-0.25],[-0.45,0.25],[-0.25,0.45],[0.25,0.45]]"})
 		
 		# set acceleration
-		self.dwa_planner_dynamic_reconfigure_client.update_configuration({"acc_lim_x": 1.0, "acc_lim_y": 1.0, "acc_lim_theta": 1.0, "xy_goal_tolerance": 0.05, "yaw_goal_tolerance": 0.06})
+#		self.dwa_planner_dynamic_reconfigure_client.update_configuration({"acc_lim_x": 1.0, "acc_lim_y": 1.0, "acc_lim_theta": 1.0, "xy_goal_tolerance": 0.05, "yaw_goal_tolerance": 0.06})
 
 		# compute tool wagon pose from robot starting point
 		tool_wagon_pose = Pose2D()
@@ -252,6 +266,10 @@ class InitAutoPnPScenario(smach.State):
 			tool_wagon_pose = self.tool_wagon_pose
 		
 		userdata.tool_wagon_pose = tool_wagon_pose
+	
+		# reset indices for room visiting sequence	
+		userdata.current_clique_index = 0
+		userdata.current_room_index = -1
 
 		return 'initialized'
 			
@@ -265,18 +283,24 @@ class AnalyzeMap(smach.State):
 		smach.State.__init__(self, outcomes=['list_of_rooms', 'failed'], output_keys=['analyze_map_segmented_map_',
 																			'analyze_map_map_resolution_',  # in m/cell
 																			'analyze_map_map_origin_',  # in m (pose of cell 0,0 in real world)
-																			'analyze_map_room_information_in_pixel'])
+																			'analyze_map_room_information_in_pixel_',
+																			'analyze_map_room_information_in_meter_',
+																			'analyze_map_room_sequence_'])
 		#Subscribe to the map topic to get the navigation map
 		rospy.Subscriber('/map', OccupancyGrid, self.update_map)
 		self.map_ = None
 		self.map_resolution_ = None
+		self.map_origin_ = None
 		self.map_origin_x_ = None
 		self.map_origin_y_ = None
 		
 	#receive data and creates a cv map for the goal of map segmentation action server		  
 	def update_map(self, map_msg):
 		self.map_resolution_ = map_msg.info.resolution
-		self.map_origin = map_msg.info.origin
+		self.map_origin_ = map_msg.info.origin
+		
+		print "self.map_origin_: ", self.map_origin_
+		
 		#accessible areas are white color and have a value of 255
 		self.map_ = 255*np.ones((map_msg.info.height, map_msg.info.width), np.uint8)
 		i = 0
@@ -297,21 +321,22 @@ class AnalyzeMap(smach.State):
 #		cv.ShowImage( "map_image", mat )
 #		cv.WaitKey()   
 
-		# creates a action client object and triggers a room segmentation on the current map
-		client = actionlib.SimpleActionClient('/room_segmentation/room_segmentation_server', ipa_room_segmentation.msg.MapSegmentationAction)
+		# creates an action client object and triggers a room segmentation on the current map
+		client_seg = actionlib.SimpleActionClient('/room_segmentation/room_segmentation_server', ipa_room_segmentation.msg.MapSegmentationAction)
 		cv_bridge = CvBridge()
 		#filling the goal msg format for map segmentation action server		
 		goal = ipa_room_segmentation.msg.MapSegmentationGoal(input_map = cv_bridge.cv2_to_imgmsg(mat , "mono8"),
 														map_resolution = self.map_resolution_,
 														map_origin = self.map_origin_,
-														return_format_in_pixel = True)
+														return_format_in_pixel = True,
+														return_format_in_meter = True)
 		rospy.loginfo("waiting for the map segmentation action server to start.....")
-		client.wait_for_server()
+		client_seg.wait_for_server()
 		rospy.loginfo("map segmentation action server started, sending goal.....")
-		client.send_goal(goal)
-		finished_before_timeout = client.wait_for_result(rospy.Duration(200.0))
+		client_seg.send_goal(goal)
+		finished_before_timeout = client_seg.wait_for_result(rospy.Duration(200.0))
 		if finished_before_timeout:
-			state = client.get_state()
+			state = client_seg.get_state()
 			if state is 3:
 				state = 'SUCCEEDED'
 				rospy.loginfo("action finished: %s " % state)
@@ -320,7 +345,7 @@ class AnalyzeMap(smach.State):
 		else:
 			rospy.loginfo("Action did not finish before the time out.")
 			return 'failed'
-		map_segmentation_action_server_result = client.get_result()
+		map_segmentation_action_server_result = client_seg.get_result()
 		
 		# copy data to userdata
 		userdata.analyze_map_segmented_map_ = map_segmentation_action_server_result.segmented_map
@@ -329,6 +354,48 @@ class AnalyzeMap(smach.State):
 		userdata.analyze_map_room_information_in_pixel_ = map_segmentation_action_server_result.room_information_in_pixel
 		userdata.analyze_map_room_information_in_meter_ = map_segmentation_action_server_result.room_information_in_meter
 		
+		# creates an action client object and triggers planning for the room sequence on the segmented map
+		try:
+			listener = get_transform_listener()
+			t = rospy.Time(0)
+			listener.waitForTransform('/map', '/base_link', t, rospy.Duration(10))
+			(robot_pose_translation, robot_pose_rotation) = listener.lookupTransform('/map', '/base_link', t)
+			robot_start_coordinate = Pose()
+			robot_start_coordinate.position.x = robot_pose_translation[0]
+			robot_start_coordinate.position.y = robot_pose_translation[1]
+		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException), e:
+			print "Could not lookup robot pose: %s" % e
+			return 'failed'
+		client_seq = actionlib.SimpleActionClient('/room_sequence_planning/room_sequence_planning_server', ipa_building_navigation.msg.FindRoomSequenceWithCheckpointsAction)
+		#filling the goal msg format for map segmentation action server		
+		goal = ipa_building_navigation.msg.FindRoomSequenceWithCheckpointsGoal(input_map = cv_bridge.cv2_to_imgmsg(mat , "mono8"),
+														map_resolution = self.map_resolution_,
+														map_origin = self.map_origin_,
+														room_information_in_pixel = map_segmentation_action_server_result.room_information_in_pixel,
+														max_clique_path_length = MAX_CLIQUE_PATH_LENGTH,
+														map_downsampling_factor = MAP_DOWNSAMPLING_FACTOR,
+														robot_radius = ROBOT_RADIUS,
+														robot_start_coordinate = robot_start_coordinate)
+		rospy.loginfo("waiting for the map segmentation action server to start.....")
+		client_seq.wait_for_server()
+		rospy.loginfo("map segmentation action server started, sending goal.....")
+		client_seq.send_goal(goal)
+		finished_before_timeout = client_seq.wait_for_result(rospy.Duration(200.0))
+		if finished_before_timeout:
+			state = client_seq.get_state()
+			if state is 3:
+				state = 'SUCCEEDED'
+				rospy.loginfo("action finished: %s " % state)
+			else:
+				rospy.loginfo("action finished: %s " % state)
+		else:
+			rospy.loginfo("Action did not finish before the time out.")
+			return 'failed'
+		room_sequence_planning_action_server_result = client_seq.get_result()
+		
+		# copy data to userdata
+		userdata.analyze_map_room_sequence_ = room_sequence_planning_action_server_result.checkpoints
+		
 		return 'list_of_rooms'
 
 # The NextUnprocessedRoom class defines a state machine of smach which basically 
@@ -336,134 +403,82 @@ class AnalyzeMap(smach.State):
 # of action client to communicate with action server
 class NextUnprocessedRoom(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['location', 'no_rooms', 'arrived'], input_keys=['find_next_unprocessed_room_data_img_',
-																						'analyze_map_map_resolution_',
-																						'analyze_map_map_origin_',
-																						'analyze_map_room_information_in_pixel'
-																						'find_next_unprocessed_room_number_in_',
-																						'find_next_unprocessed_room_loop_counter_in_'],
-																			output_keys=['find_next_unprocessed_room_number_out_',  # a vector with next target room at back
-																						'find_next_unprocessed_room_loop_counter_out_',
-																						'find_next_unprocessed_room_center_x_',  # in pixel
-																						'find_next_unprocessed_room_center_y_'])  # in pixel
+		smach.State.__init__(self, outcomes=['next_room', 'move_trolley', 'no_rooms_left'], input_keys=['room_sequence',
+																						'room_information_in_meter',
+																						'current_clique_index',
+																						'current_room_index'],
+																			output_keys=['tool_wagon_goal_pose',
+																						'navigation_goal',
+																						'current_clique_index',
+																						'current_room_index'])  # in meter
 
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 
-		if userdata.find_next_unprocessed_room_loop_counter_in_ <= len(userdata.analyze_map_room_information_in_pixel):
-						
-			client = actionlib.SimpleActionClient('find_next_unprocessed_room', autopnp_scenario.msg.FindNextUnprocessedRoomAction)
-			rospy.loginfo("Waiting for the find next unprocessed room action server to start......")
-			client.wait_for_server()	
-			rospy.loginfo("find next unprocessed room action server started, sending goal.....")		  
-			goal = autopnp_scenario.msg.FindNextUnprocessedRoomGoal(input_map=userdata.find_next_unprocessed_room_data_img_,
-																	 room_center_x=userdata.analyze_map_room_information_in_pixel[userdata.find_next_unprocessed_room_loop_counter_in_].room_center.x,  # in pixel
-																	 room_center_y=userdata.analyze_map_room_information_in_pixel[userdata.find_next_unprocessed_room_loop_counter_in_].room_center.y,  # in pixel
-																	 map_resolution=userdata.analyze_map_map_resolution_,
-																	 map_origin_x=userdata.analyze_map_map_origin_)
+		print "len(userdata.room_sequence): ", len(userdata.room_sequence), "   len(userdata.room_sequence[userdata.current_clique_index].room_indices): ", len(userdata.room_sequence[userdata.current_clique_index].room_indices)
+		print "userdata.current_clique_index: ", userdata.current_clique_index, "   userdata.current_room_index: ", userdata.current_room_index
+
+		if userdata.current_room_index >= len(userdata.room_sequence[userdata.current_clique_index].room_indices):
+			userdata.current_room_index = -1
+			userdata.current_clique_index += 1
 			
-			client.send_goal(goal)	
-			finished_before_timeout = client.wait_for_result()
-			if finished_before_timeout:
-				state = client.get_state()
-				if state is 3:
-					state = 'SUCCEEDED'
-					rospy.loginfo("Action finished: %s " % state)
-				else:
-					rospy.loginfo("Action finished: %s " % state)
-			else:
-				rospy.loginfo("Action did not finish before the time out.")		
-			result = client.get_result()
+		if userdata.current_clique_index >= len(userdata.room_sequence):
+			return 'no_rooms_left'
+
+		if userdata.current_room_index == -1:
+			# move trolley to next group
+			userdata.current_room_index = 0
+			tool_wagon_goal_pose = Pose2D()
+			tool_wagon_goal_pose.x = userdata.room_sequence[userdata.current_clique_index].checkpoint_position_in_meter.x
+			tool_wagon_goal_pose.y = userdata.room_sequence[userdata.current_clique_index].checkpoint_position_in_meter.y
+			tool_wagon_goal_pose.theta = 0.
+			userdata.tool_wagon_goal_pose = tool_wagon_goal_pose
 			
-			userdata.find_next_unprocessed_room_number_out_ = result.room_number  # list of already processed rooms and next room at the back
-			rospy.loginfo('Current room No: %d' % userdata.find_next_unprocessed_room_loop_counter_in_)
-			userdata.find_next_unprocessed_room_loop_counter_out_ = userdata.find_next_unprocessed_room_loop_counter_in_ + 1
-			userdata.find_next_unprocessed_room_center_x_ = result.center_position_x
-			userdata.find_next_unprocessed_room_center_y_ = result.center_position_y
-			return 'location'
-		else:
-			return 'no_rooms'
+			print "tool_wagon_goal_pose: ", tool_wagon_goal_pose
+			
+			return 'move_trolley'
+		
+		# set room coordinates
+		room_index = userdata.room_sequence[userdata.current_clique_index].room_indices[userdata.current_room_index]
+		print "room_index: ", room_index
+		navigation_goal = Pose2D()
+		navigation_goal.x = userdata.room_information_in_meter[room_index].room_center.x
+		navigation_goal.y = userdata.room_information_in_meter[room_index].room_center.y
+		navigation_goal.theta = 0.
+		userdata.navigation_goal = navigation_goal
+		userdata.current_room_index += 1
+		
+		return 'next_room'
 
 
-# The GoToRoomLocation class defines a state machine of smach which basically 
+# The ComputeNavigationGoals class defines a state machine of smach which basically 
 # call the go to room location action client object and execute the function
-# of action client to communicate with action server     
-class GoToRoomLocation(smach.State):
+# of action client to communicate with action server
+class ComputeNavigationGoals(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['successful', 'unsuccessful'], input_keys=['go_to_room_location_data_img_',
-																					'analyze_map_map_resolution_',
-																					'analyze_map_map_origin_',
-																					'find_next_unprocessed_room_center_x_',  # in pixel
-																					'find_next_unprocessed_room_center_y_',  # in pixel
-																					'random_location_finder_random_location_x_',
-																					'random_location_finder_random_location_y_',
-																					'go_to_room_location_loop_counter_in_'],
-																		output_keys=['go_to_room_location_loop_counter_out_'])
+		smach.State.__init__(self, outcomes=['successful'], input_keys=['navigation_goal', 'map_resolution'],
+															output_keys=['goal_poses',
+																		 'goal_pose_application',
+																		 'new_computation_flag',
+																		 'approach_path_accessibility_check'])
 
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
-		# todo: replace movement command by some standard script
-		if userdata.go_to_room_location_loop_counter_in_ == 0 :
-			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
-																			userdata.find_next_unprocessed_room_center_x_ ,
-																			userdata.find_next_unprocessed_room_center_y_,
-																			userdata.analyze_map_map_resolution_,
-																			userdata.analyze_map_map_origin_)
-		else:
-			go_to_room_location_action_server_result_ = go_to_room_location(userdata.go_to_room_location_data_img_,
-																			userdata.random_location_finder_random_location_x_,
-																			userdata.random_location_finder_random_location_y_,
-																			userdata.analyze_map_map_resolution_,
-																			userdata.analyze_map_map_origin_)
+		# create a list of potential goal poses, in increasing distance to original goal pose
+		goal_poses = [userdata.navigation_goal];
+		for r in np.arange(0.2, 2.0, 0.2):		# metric radius
+			radius = r / userdata.map_resolution
+			for v in np.arange(-r, r, 1):
+				for u in np.arange(-r, r, 1):
+					goal_poses.append(Pose2D(x=userdata.navigation_goal.x+u, y=userdata.navigation_goal.y+v, theta=0))
+		userdata.goal_poses = goal_poses
+					
+		userdata.goal_pose_application = 'use_as_alternatives'
+		userdata.new_computation_flag = True
+		userdata.approach_path_accessibility_check = False
 
-		if go_to_room_location_action_server_result_.output_flag == 'True':
-			return 'successful'
-		else:
-			userdata.go_to_room_location_loop_counter_out_ = userdata.go_to_room_location_loop_counter_in_ + 1
-			return 'unsuccessful'
-
-
-# The FindRandomLocation class defines a state machine of smach which basically 
-# call the random location finder action client object and execute the function
-# of action client to communicate with action server        
-class FindRandomLocation(smach.State):
-	def __init__(self):
-		smach.State.__init__(self, outcomes=['re_locate', 'unsuccessful_five_times'], input_keys=['random_location_finder_data_img_in_',
-																								'analyze_map_map_resolution_',
-																								'analyze_map_map_origin_',
-																								'random_location_finder_room_number_',
-																								'analyze_map_room_information_in_pixel',
-																								'random_location_finder_counter_in_'],
-																					output_keys=['random_location_finder_random_location_x_',
-																								'random_location_finder_random_location_y_',
-																								'random_location_finder_counter_out_',
-																								'random_location_finder_data_img_out_'])
-
-	def execute(self, userdata):
-		sf = ScreenFormat(self.__class__.__name__)
-
-		# todo: replace by something simple in the py script
-		
-		random_location_finder_action_server_result_ = random_location_finder_client(userdata.random_location_finder_data_img_in_,
-																					userdata.analyze_map_map_resolution_,
-																					userdata.analyze_map_map_origin_,
-																					userdata.random_location_finder_room_number_,
-																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[0].x,
-																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[1].x,
-																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[0].y,
-																					userdata.analyze_map_room_information_in_pixel[random_location_finder_room_number_].room_min_max[1].y,
-																					userdata.random_location_finder_counter_in_)
-
-		userdata.random_location_finder_random_location_x_ = random_location_finder_action_server_result_.random_location_x
-		userdata.random_location_finder_random_location_y_ = random_location_finder_action_server_result_.random_location_y
-		if userdata.random_location_finder_counter_in_ < 6:
-			return 're_locate'
-		else:
-			rospy.loginfo("unsuccessful rate: %d", userdata.random_location_finder_counter_in_)
-			userdata.random_location_finder_counter_out_ = 0 ;
-			userdata.random_location_finder_data_img_out_ = random_location_finder_action_server_result_.output_img
-			return 'unsuccessful_five_times'
+		return 'successful'
 
 
 # The InspectRoom class defines a state machine of smach which basically 
@@ -481,18 +496,18 @@ class InspectRoom(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
-		inspect_room_action_server_result_ = inspect_room(userdata.inspect_room_data_img_in_,
-														userdata.inspect_room_room_number_,
-														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_center.x,
-														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_center.y,
-														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[0].x,
-														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[1].x,
-														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[0].y,
-														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[1].y,
-														userdata.analyze_map_map_resolution_,
-														userdata.analyze_map_map_origin_)
-		# rospy.sleep(10)
-		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
+# 		inspect_room_action_server_result_ = inspect_room(userdata.inspect_room_data_img_in_,
+# 														userdata.inspect_room_room_number_,
+# 														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_center.x,
+# 														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_center.y,
+# 														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[0].x,
+# 														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[1].x,
+# 														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[0].y,
+# 														userdata.analyze_map_room_information_in_pixel[inspect_room_room_number_].room_min_max[1].y,
+# 														userdata.analyze_map_map_resolution_,
+# 														userdata.analyze_map_map_origin_)
+# 		# rospy.sleep(10)
+# 		userdata.inspect_room_img_out_ = inspect_room_action_server_result_.output_img
 
 		return 'finished'
 
@@ -547,41 +562,6 @@ class InspectRoomManual(smach.State):
 
 
 #-------------------------------------------------------- Move Tool Wagon ---------------------------------------------------------------------------------------
-
-class VerifyToolCarLocation(smach.State):
-	def __init__(self):
-		smach.State.__init__(self, outcomes=['no_need_to_move_it', 'tool_wagon_needs_to_be_moved'],
-							input_keys=['find_next_unprocessed_room_center_x_',  # in pixel
-										'find_next_unprocessed_room_center_y_',  # in pixel
-										'tool_wagon_pose',  # in m
-										'analyze_map_map_resolution_',
-										'analyze_map_map_origin_'],
-							output_keys=['tool_wagon_goal_pose'])  # in m
-
-	def execute(self, userdata):
-		sf = ScreenFormat(self.__class__.__name__)
-
-		# compare tool wagon location with next goal position (find_next_unprocessed_room_center_x_/y_) -> if to far, move tool wagon
-		next_room_center_x_m = userdata.find_next_unprocessed_room_center_x_ * userdata.analyze_map_map_resolution_ + userdata.analyze_map_map_origin_.position.x
-		next_room_center_y_m = userdata.find_next_unprocessed_room_center_y_ * userdata.analyze_map_map_resolution_ + userdata.analyze_map_map_origin_.position.y
-		dist = math.sqrt((userdata.tool_wagon_pose.x - next_room_center_x_m) * (userdata.tool_wagon_pose.x - next_room_center_x_m) + (userdata.tool_wagon_pose.y - next_room_center_y_m) * (userdata.tool_wagon_pose.y - next_room_center_y_m))
-		
-		# compare to maximally allowed tool wagon distance
-		if (dist > MAX_TOOL_WAGON_DISTANCE_TO_NEXT_ROOM):
-			# select closest position where to move the tool wagon
-			tool_wagon_goal_pose = Pose2D
-			closest_goal_pose = 1e10
-			for location in TOOL_WAGON_LOCATIONS:
-				dist = math.sqrt((next_room_center_x_m - location.x) * (next_room_center_x_m - location.x) + (next_room_center_y_m - location.y) * (next_room_center_y_m - location.y))
-				if closest_goal_pose > dist:
-					closest_goal_pose = dist
-					tool_wagon_goal_pose = location
-			userdata.tool_wagon_goal_pose = tool_wagon_goal_pose
-			return 'tool_wagon_needs_to_be_moved'
-		
-		return 'no_need_to_move_it'
-
-
 def computeToolWagonPoseFromFiducials(fiducials):
 	trROS = tf.TransformerROS(True, rospy.Duration(10.0))
 	averaged_tool_wagon_pose = None
@@ -719,11 +699,14 @@ class MoveToToolWaggonFront(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 
-		sss.move("head", "back", False)
-		sss.move("torso", "back", False)
+		#hack: turned off for simple simulation
+#		sss.move("head", "back", False)
+#		sss.move("torso", "back", False)
 
-		self.tool_wagon_pose = None
-		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
+#		self.tool_wagon_pose = None
+#		fiducials_sub = rospy.Subscriber("/fiducials/detect_fiducials", DetectionArray, self.fiducial_callback)
+		
+		print "tool_wagon_pose: ", userdata.tool_wagon_pose
 		
 		# 1. move to last known position (i.e. move_base to tool_wagon_pose + robot offset)
 		robot_offset = Pose2D(x=TOOL_WAGON_ROBOT_OFFSETS["front"].x - 0.2, y=TOOL_WAGON_ROBOT_OFFSETS["front"].y, theta=TOOL_WAGON_ROBOT_OFFSETS["front"].theta)
@@ -733,23 +716,24 @@ class MoveToToolWaggonFront(smach.State):
 							y=userdata.tool_wagon_pose.y + dx * math.sin(userdata.tool_wagon_pose.theta) + dy * math.cos(userdata.tool_wagon_pose.theta),
 							theta=userdata.tool_wagon_pose.theta - robot_offset.theta)
 		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta], mode='omni')  # hack
-		
-		# 2. detect fiducials and move to corrected pose
-		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
-		dx = -(robot_offset.x * math.cos(robot_offset.theta) + robot_offset.y * math.sin(robot_offset.theta))
-		dy = -(-robot_offset.x * math.sin(robot_offset.theta) + robot_offset.y * math.cos(robot_offset.theta))
-		# wait until wagon is detected
-		robot_approximately_well_positioned = False
-		while robot_approximately_well_positioned == False:
-			while self.tool_wagon_pose == None:
-				rospy.sleep(0.2)
-			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
-			if robot_approximately_well_positioned == False:
-				self.tool_wagon_pose = None
-		
-		# 3. unsubscribe to fiducials
-		fiducials_sub.unregister()
-		sss.move("torso", "home")
+
+		#hack: turned off for simple simulation
+# 		# 2. detect fiducials and move to corrected pose
+# 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
+# 		dx = -(robot_offset.x * math.cos(robot_offset.theta) + robot_offset.y * math.sin(robot_offset.theta))
+# 		dy = -(-robot_offset.x * math.sin(robot_offset.theta) + robot_offset.y * math.cos(robot_offset.theta))
+# 		# wait until wagon is detected
+# 		robot_approximately_well_positioned = False
+# 		while robot_approximately_well_positioned == False:
+# 			while self.tool_wagon_pose == None:
+# 				rospy.sleep(0.2)
+# 			robot_approximately_well_positioned = positionControlLoopLinear(self.tool_wagon_pose, dx, dy, robot_offset.theta)
+# 			if robot_approximately_well_positioned == False:
+# 				self.tool_wagon_pose = None
+# 		
+# 		# 3. unsubscribe to fiducials
+# 		fiducials_sub.unregister()
+# 		sss.move("torso", "home")
 		
 		return 'arrived'
 
@@ -996,6 +980,9 @@ class GraspHandle(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
+		#hack: not needed in simulation
+		return 'grasped'
+		
 		# #intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate2_folded2overhandle_position = [2.412481358569162, -0.8013330194681565, -0.6911678370822745, -1.3406223050418844, 2.81319150153454, -1.5754563558977213, -1.4741399928194505]
@@ -1034,7 +1021,7 @@ class GraspHandle(smach.State):
 		if JOURNALIST_MODE == True:
 			raw_input("Press <Enter>.")
 		
-		return 'grasped' 
+		return 'grasped'
 
 
 class GoToNextToolWaggonLocation(smach.State):
@@ -1045,8 +1032,11 @@ class GoToNextToolWaggonLocation(smach.State):
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 		
+		# hack: turned off for simulation
 		# 1. adjust base movement speeds
-		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.01, "min_vel_y":-0.01, "max_rot_vel":0.1})
+#		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.01, "min_vel_y":-0.01, "max_rot_vel":0.1})
+		
+		print "tool_wagon_goal_pose: ", userdata.tool_wagon_goal_pose
 		
 		# 2. move robot to new position (robot offset to tool_wagon_goal_pose)
 		robot_offset = TOOL_WAGON_ROBOT_OFFSETS["front"]
@@ -1058,7 +1048,7 @@ class GoToNextToolWaggonLocation(smach.State):
 		handle_base = sss.move("base", [robot_pose.x, robot_pose.y, robot_pose.theta], mode='omni')  # hack
 		
 		# 3. reset base movement speeds
-		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2, "max_rot_vel":0.6})
+#		self.navigation_dynamic_reconfigure_client.update_configuration({"max_vel_y": 0.2, "min_vel_y":-0.2, "max_rot_vel":0.6})
 		userdata.tool_wagon_pose = userdata.tool_wagon_goal_pose
 		
 		return 'arrived' 
@@ -1071,6 +1061,9 @@ class ReleaseGrasp(smach.State):
 
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
+		
+		# hack: not implemented in sim
+		return 'released'
 		
 		# #intermediate_folded2overhandle_position = [2.1915052219741598, -1.0823484823317635, -0.6911678370822745, -1.671606544390089, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
 		intermediate1_folded2overhandle_position = [2.4124988118616817, -0.8013330194681565, -0.6911678370822745, -1.6716239976826088, 3.0001860775932125, -1.3194340079226734, -0.00013962634015954637]
@@ -1115,26 +1108,26 @@ class DirtDetectionOn(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# move torso and head to frontal inspection perspective
-		sss.say(["By bowing my head I can look at the ground to search for dirt spots."], False)
-		sss.move("torso", "front_extreme", False)
-		sss.move("head", "front")
+#		sss.say(["By bowing my head I can look at the ground to search for dirt spots."], False)
+#		sss.move("torso", "front_extreme", False)
+#		sss.move("head", "front")
 
-		# hack: reset dirt map from previous runs 
-		rospy.wait_for_service('/dirt_detection/reset_dirt_maps') 
-		try:
-			req = rospy.ServiceProxy('/dirt_detection/reset_dirt_maps', Empty)
-			resp = req()
-		except rospy.ServiceException, e:
-			print "Service call failed: %s" % e
+# 		# hack: reset dirt map from previous runs 
+# 		rospy.wait_for_service('/dirt_detection/reset_dirt_maps') 
+# 		try:
+# 			req = rospy.ServiceProxy('/dirt_detection/reset_dirt_maps', Empty)
+# 			resp = req()
+# 		except rospy.ServiceException, e:
+# 			print "Service call failed: %s" % e
 
+		#hack: not in simulation
+# 		rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
+# 		try:
+# 			req = rospy.ServiceProxy('/dirt_detection/activate_dirt_detection', ActivateDirtDetection)
+# 			resp = req()
+# 		except rospy.ServiceException, e:
+# 			print "Service call failed: %s" % e
 
-
-		rospy.wait_for_service('/dirt_detection/activate_dirt_detection') 
-		try:
-			req = rospy.ServiceProxy('/dirt_detection/activate_dirt_detection', ActivateDirtDetection)
-			resp = req()
-		except rospy.ServiceException, e:
-			print "Service call failed: %s" % e
 		return 'dirt_detection_on'
 
 
@@ -1148,18 +1141,20 @@ class TrashBinDetectionOn(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 		
 		# move torso and head to frontal inspection perspective
-		sss.say(["By bowing my head I can search for trash bins with my cameras."], False)
-		sss.move("torso", "front_extreme", False)
-		sss.move("head", "front", False)
+#		sss.say(["By bowing my head I can search for trash bins with my cameras."], False)
+#		sss.move("torso", "front_extreme", False)
+#		sss.move("head", "front", False)
 		
-		try:
-			rospy.wait_for_service('/activate_trash_bin_detection_service')
-			req = rospy.ServiceProxy('/activate_trash_bin_detection_service', ActivateTrashBinDetection)
-			resp = req()
-		except rospy.ServiceException, e:
-			print "Service call failed: %s" % e
-		except ee:
-			print "Service call failed: %s" % ee
+		#hack: not in simulation
+# 		try:
+# 			rospy.wait_for_service('/activate_trash_bin_detection_service')
+# 			req = rospy.ServiceProxy('/activate_trash_bin_detection_service', ActivateTrashBinDetection)
+# 			resp = req()
+# 		except rospy.ServiceException, e:
+# 			print "Service call failed: %s" % e
+# 		except ee:
+# 			print "Service call failed: %s" % ee
+		
 		return 'trash_bin_detection_on'
 
 
@@ -1172,14 +1167,16 @@ class DirtDetectionOff(smach.State):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# move torso back to normal position
-		sss.move("torso", "home", False)
+#		sss.move("torso", "home", False)
 
-		rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
-		try:
-			req = rospy.ServiceProxy('/dirt_detection/deactivate_dirt_detection', DeactivateDirtDetection)
-			resp = req()
-		except rospy.ServiceException, e:
-			print "Service call failed: %s" % e
+		# hack: not in simulation
+# 		rospy.wait_for_service('/dirt_detection/deactivate_dirt_detection') 
+# 		try:
+# 			req = rospy.ServiceProxy('/dirt_detection/deactivate_dirt_detection', DeactivateDirtDetection)
+# 			resp = req()
+# 		except rospy.ServiceException, e:
+# 			print "Service call failed: %s" % e
+
 		return 'dirt_detection_off'
 
 
@@ -1187,32 +1184,35 @@ class DirtDetectionOff(smach.State):
 # use the DeactivateTrashBinDetection service to deactivate Trash Bin Detection
 class TrashBinDetectionOff(smach.State):
 	def __init__(self):
-		smach.State.__init__(self, outcomes=['trash_can_found', 'trash_can_not_found'], output_keys=['detected_waste_bin_poses_', 'sm_trash_bin_counter'])
+		smach.State.__init__(self, outcomes=['trash_can_found', 'trash_can_not_found'], output_keys=['trash_detection_poses', 'sm_trash_bin_counter'])
 	
 	def execute(self, userdata):
 		sf = ScreenFormat(self.__class__.__name__)
 
 		# move torso back to normal position
-		sss.move("torso", "home", False)
+#		sss.move("torso", "home", False)
 		
-		try:
-			rospy.wait_for_service('/deactivate_trash_bin_detection_service')
-			req = rospy.ServiceProxy('/deactivate_trash_bin_detection_service', DeactivateTrashBinDetection)
-			resp = req()
-		except rospy.ServiceException, e:
-			print "Service call failed: %s" % e
+		# hack: not in simulation
+# 		try:
+# 			rospy.wait_for_service('/deactivate_trash_bin_detection_service')
+# 			req = rospy.ServiceProxy('/deactivate_trash_bin_detection_service', DeactivateTrashBinDetection)
+# 			resp = req()
+# 		except rospy.ServiceException, e:
+# 			print "Service call failed: %s" % e
 
-		userdata.detected_waste_bin_poses_ = resp.detected_trash_bin_poses.detections
-		
-		print "userdata.detected_waste_bin_poses: ", resp.detected_trash_bin_poses.detections
-		
- 		# kind of hack: reset processed trash bin counter (implies that respective trash bins are always directly cleared after each search)
-		userdata.sm_trash_bin_counter = 0
+# 		userdata.detected_waste_bin_poses_ = resp.detected_trash_bin_poses.detections
+# 		
+# 		print "userdata.detected_waste_bin_poses: ", resp.detected_trash_bin_poses.detections
+# 		
+#  		# kind of hack: reset processed trash bin counter (implies that respective trash bins are always directly cleared after each search)
+# 		userdata.sm_trash_bin_counter = 0
+# 
+# 		if len(resp.detected_trash_bin_poses.detections) == 0:
+# 			return 'trash_can_not_found'
+# 		else:
+# 			return 'trash_can_found'
 
-		if len(resp.detected_trash_bin_poses.detections) == 0:
-			return 'trash_can_not_found'
-		else:
-			return 'trash_can_found'
+		return 'trash_can_found'
 
 
 

@@ -150,43 +150,43 @@ include_directories(
 )
 
 
-# map segmentation action server and client
-add_executable(map_segmentation_action_server ros/src/map_segmentation_action_server.cpp)
-target_link_libraries(map_segmentation_action_server
-	${catkin_LIBRARIES}
-	${OpenCV_LIBRARIES}
-)
-add_dependencies(map_segmentation_action_server ${catkin_EXPORTED_TARGETS})
+## map segmentation action server and client
+#add_executable(map_segmentation_action_server ros/src/map_segmentation_action_server.cpp)
+#target_link_libraries(map_segmentation_action_server
+#	${catkin_LIBRARIES}
+#	${OpenCV_LIBRARIES}
+#)
+#add_dependencies(map_segmentation_action_server ${catkin_EXPORTED_TARGETS})
 
-add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
-target_link_libraries(map_segmentation_action_client
-	${catkin_LIBRARIES}
-)
-add_dependencies(map_segmentation_action_client ${catkin_EXPORTED_TARGETS})
+#add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
+#target_link_libraries(map_segmentation_action_client
+#	${catkin_LIBRARIES}
+#)
+#add_dependencies(map_segmentation_action_client ${catkin_EXPORTED_TARGETS})
 
 
 # find next room action server
-add_executable(find_next_unprocessed_room_action_server ros/src/find_next_unprocessed_room_action_server.cpp)
-target_link_libraries(find_next_unprocessed_room_action_server
-	${catkin_LIBRARIES}
-)
-add_dependencies(find_next_unprocessed_room_action_server ${catkin_EXPORTED_TARGETS})
+#add_executable(find_next_unprocessed_room_action_server ros/src/find_next_unprocessed_room_action_server.cpp)
+#target_link_libraries(find_next_unprocessed_room_action_server
+#	${catkin_LIBRARIES}
+#)
+#add_dependencies(find_next_unprocessed_room_action_server ${catkin_EXPORTED_TARGETS})
 		
 
 # go to room location action server
-add_executable(go_to_room_location_action_server ros/src/go_to_room_location_action_server.cpp)
-target_link_libraries(go_to_room_location_action_server
-	${catkin_LIBRARIES}
-)
-add_dependencies(go_to_room_location_action_server ${catkin_EXPORTED_TARGETS})
+#add_executable(go_to_room_location_action_server ros/src/go_to_room_location_action_server.cpp)
+#target_link_libraries(go_to_room_location_action_server
+#	${catkin_LIBRARIES}
+#)
+#add_dependencies(go_to_room_location_action_server ${catkin_EXPORTED_TARGETS})
 
 
 # random location finder server
-add_executable(random_location_finder_action_server ros/src/random_location_finder_action_server.cpp)
-target_link_libraries(random_location_finder_action_server
-	${catkin_LIBRARIES}
-)
-add_dependencies(random_location_finder_action_server ${catkin_EXPORTED_TARGETS})
+#add_executable(random_location_finder_action_server ros/src/random_location_finder_action_server.cpp)
+#target_link_libraries(random_location_finder_action_server
+#	${catkin_LIBRARIES}
+#)
+#add_dependencies(random_location_finder_action_server ${catkin_EXPORTED_TARGETS})
 
 
 # inspect room server
@@ -227,10 +227,8 @@ add_dependencies(deactivate_trash_bin_detection_client ${catkin_EXPORTED_TARGETS
 ## Install ##
 #############
 ## Mark executables and/or libraries for installation
-install(TARGETS map_segmentation_action_server map_segmentation_action_client find_next_unprocessed_room_action_server
-		go_to_room_location_action_server random_location_finder_action_server inspect_room_action_server
-		trash_bin_detection_service_server activate_trash_bin_detection_client
-		deactivate_trash_bin_detection_client
+install(TARGETS inspect_room_action_server trash_bin_detection_service_server activate_trash_bin_detection_client
+		deactivate_trash_bin_detection_client  #go_to_room_location_action_server random_location_finder_action_server find_next_unprocessed_room_action_server map_segmentation_action_server map_segmentation_action_client
 	ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
