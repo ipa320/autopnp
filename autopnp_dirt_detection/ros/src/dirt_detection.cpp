@@ -74,7 +74,7 @@ using namespace ipa_DirtDetection;
 using namespace std;
 using namespace cv;
 
-#define WITH_MAP   // enables the usage of robot localization
+//#define WITH_MAP   // enables the usage of robot localization
 
 
 struct lessPoint2i : public binary_function<cv::Point2i, cv::Point2i, bool>
