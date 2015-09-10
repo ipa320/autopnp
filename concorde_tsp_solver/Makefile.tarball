@@ -1,11 +1,11 @@
 all: installed
 
 TARBALL = build/concorde-tsp-solver-20031219.tar.gz
-TARBALL_URL = https://github.com/ipa320/thirdparty/raw/master/concorde-tsp-solver-20031219.tar.gz
+TARBALL_URL = https://github.com/ipa-rmb/thirdparty/raw/master/concorde-tsp-solver-20031219.tar.gz
 # http://www.math.uwaterloo.ca/tsp/concorde/downloads/downloads.htm
 SOURCE_DIR = build/concorde
 UNPACK_CMD = tar xzf
-MD5SUM_FILE = concorde-tsp-solver-20031219.tar.gz.md5sum
+#MD5SUM_FILE = concorde-tsp-solver-20031219.tar.gz.md5sum
 include $(shell rospack find mk)/download_unpack_build.mk
 
 installed: $(SOURCE_DIR)/unpacked
