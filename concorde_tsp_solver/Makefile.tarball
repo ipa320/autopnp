@@ -1,7 +1,7 @@
 all: installed
 
 TARBALL = build/concorde-tsp-solver-20031219.tar.gz
-TARBALL_URL = https://github.com/ipa320/thirdparty/raw/master/concorde-tsp-solver-20031219.tar.gz
+TARBALL_URL = https://github.com/ipa-rmb/thirdparty/raw/master/concorde-tsp-solver-20031219.tar.gz
 # http://www.math.uwaterloo.ca/tsp/concorde/downloads/downloads.htm
 SOURCE_DIR = build/concorde
 UNPACK_CMD = tar xzf
