@@ -25,7 +25,7 @@ endforeach()
 
 catkin_package(
 	INCLUDE_DIRS
-		build/dlib-18.17
+		common/include
 	LIBRARIES
 		dlib
 	CATKIN_DEPENDS
@@ -33,7 +33,7 @@ catkin_package(
 )
 
 include_directories(
-	build/dlib-18.17
+	common/include
 )
 
 foreach(library ${libraries})
@@ -55,6 +55,6 @@ install(TARGETS dlib
 	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-#install(DIRECTORY build/dlib-18.17/dlib
-#	DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
-#)
+install(DIRECTORY common/include
+	DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+)
