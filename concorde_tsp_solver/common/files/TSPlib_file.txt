@@ -1,13 +1,11 @@
 NAME: ipa-building-navigation
 TYPE: TSP
 COMMENT: This is the TSPlib file for using concorde. See http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/ for documentation.
-DIMENSION: 5
+DIMENSION: 3
 EDGE_WEIGHT_TYPE: EXPLICIT
 EDGE_WEIGHT_FORMAT: FULL_MATRIX
 EDGE_WEIGHT_SECTION
- 0 107 107 108 104
- 107 0 197 177 212
- 107 197 0 216 175
- 108 177 216 0 190
- 104 212 175 190 0
+ 0 100 185
+ 100 0 84
+ 185 84 0
 EOF
