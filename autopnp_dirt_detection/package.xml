@@ -7,7 +7,7 @@
 	</description>
 	<author email="richard.bormann@ipa.fraunhofer.de">Richard Bormann</author>
 	<maintainer email="richard.bormann@ipa.fraunhofer.de">Richard Bormann</maintainer>
-	<license>LGPL</license>
+	<license>LGPL for academic and non-commercial use; for commercial use, please contact Fraunhofer IPA</license>
 	<url>http://ros.org/wiki/autopnp_dirt_detection</url>
 
 	<buildtool_depend>catkin</buildtool_depend>
