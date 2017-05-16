@@ -156,13 +156,13 @@ include_directories(
 #	${catkin_LIBRARIES}
 #	${OpenCV_LIBRARIES}
 #)
-#add_dependencies(map_segmentation_action_server ${catkin_EXPORTED_TARGETS})
+#add_dependencies(map_segmentation_action_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 #add_executable(map_segmentation_action_client ros/src/map_segmentation_action_client.cpp)
 #target_link_libraries(map_segmentation_action_client
 #	${catkin_LIBRARIES}
 #)
-#add_dependencies(map_segmentation_action_client ${catkin_EXPORTED_TARGETS})
+#add_dependencies(map_segmentation_action_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 # find next room action server
@@ -170,7 +170,7 @@ include_directories(
 #target_link_libraries(find_next_unprocessed_room_action_server
 #	${catkin_LIBRARIES}
 #)
-#add_dependencies(find_next_unprocessed_room_action_server ${catkin_EXPORTED_TARGETS})
+#add_dependencies(find_next_unprocessed_room_action_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 		
 
 # go to room location action server
@@ -178,7 +178,7 @@ include_directories(
 #target_link_libraries(go_to_room_location_action_server
 #	${catkin_LIBRARIES}
 #)
-#add_dependencies(go_to_room_location_action_server ${catkin_EXPORTED_TARGETS})
+#add_dependencies(go_to_room_location_action_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 # random location finder server
@@ -186,7 +186,7 @@ include_directories(
 #target_link_libraries(random_location_finder_action_server
 #	${catkin_LIBRARIES}
 #)
-#add_dependencies(random_location_finder_action_server ${catkin_EXPORTED_TARGETS})
+#add_dependencies(random_location_finder_action_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 # inspect room server
@@ -194,7 +194,7 @@ add_executable(inspect_room_action_server ros/src/inspect_room_action_server.cpp
 target_link_libraries(inspect_room_action_server
 	${catkin_LIBRARIES}
 )
-add_dependencies(inspect_room_action_server ${catkin_EXPORTED_TARGETS})
+add_dependencies(inspect_room_action_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 # trash bin detection server
@@ -203,7 +203,7 @@ target_link_libraries(trash_bin_detection_service_server
 	${catkin_LIBRARIES}
 )
 #target_link_libraries(trash_bin_detection_service_server moveit_move_group_interface)
-add_dependencies(trash_bin_detection_service_server ${catkin_EXPORTED_TARGETS})
+add_dependencies(trash_bin_detection_service_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 # activate trash bin detection client
@@ -211,7 +211,7 @@ add_executable(activate_trash_bin_detection_client ros/src/activate_trash_bin_de
 target_link_libraries(activate_trash_bin_detection_client
 	${catkin_LIBRARIES}
 )
-add_dependencies(activate_trash_bin_detection_client ${catkin_EXPORTED_TARGETS})
+add_dependencies(activate_trash_bin_detection_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 # deactivate trash bin detection client
@@ -219,7 +219,7 @@ add_executable(deactivate_trash_bin_detection_client ros/src/deactivate_trash_bi
 target_link_libraries(deactivate_trash_bin_detection_client
 	${catkin_LIBRARIES}
 )
-add_dependencies(deactivate_trash_bin_detection_client ${catkin_EXPORTED_TARGETS})
+add_dependencies(deactivate_trash_bin_detection_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
 

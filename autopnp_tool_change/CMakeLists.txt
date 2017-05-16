@@ -140,7 +140,7 @@ target_link_libraries(autopnp_tool_change
 	${catkin_LIBRARIES}
 	${OpenCV_LIBRARIES}
 )
-add_dependencies(autopnp_tool_change ${catkin_EXPORTED_TARGETS} moveit_move_group_interface)
+add_dependencies(autopnp_tool_change ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} moveit_move_group_interface)
 #add_executable(autopnp_tool_change_client ros/src/autopnp_tool_change_client.cpp)
 
 
