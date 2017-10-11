@@ -3,7 +3,7 @@
 	<name>autopnp</name>
 	<version>0.1.0</version>
 	<description>This meta-package includes open source software for the autopnp project.</description>
-	<license>LGPL</license>
+	<license>LGPL for academic and non-commercial use; for commercial use, please contact Fraunhofer IPA</license>
 	<url type="website">http://ros.org/wiki/autopnp</url>
 	<!-- <url type="bugtracker"></url> -->
 	<maintainer email="richard.bormann@ipa.fraunhofer.de">Richard Bormann</maintainer>
@@ -17,6 +17,9 @@
 	<run_depend>autopnp_scenario</run_depend>
 	<run_depend>autopnp_tool_change</run_depend>
 	<run_depend>cob_laser_scanner_filter</run_depend>
+	<run_depend>ipa_building_msgs</run_depend>
+	<run_depend>ipa_building_navigation</run_depend>
+	<run_depend>ipa_room_exploration</run_depend>
 	<run_depend>ipa_room_segmentation</run_depend>
 
 	<export>

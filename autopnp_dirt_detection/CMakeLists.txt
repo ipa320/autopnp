@@ -140,7 +140,7 @@ target_link_libraries(dirt_detection
 	${OpenCV_LIBRARIES}
 	${Boost_LIBRARIES}
 )
-add_dependencies(dirt_detection ${catkin_EXPORTED_TARGETS})
+add_dependencies(dirt_detection ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
 
 
@@ -149,7 +149,7 @@ add_executable(dirt_detection_client  ros/src/dirt_detection_client_main.cpp)
 target_link_libraries(dirt_detection_client
 	${catkin_LIBRARIES}
 )
-add_dependencies(dirt_detection_client ${catkin_EXPORTED_TARGETS})
+add_dependencies(dirt_detection_client ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
 
 # appearance_check
@@ -157,7 +157,7 @@ add_executable(appearance_check  ros/src/appearance_check.cpp)
 target_link_libraries(appearance_check
 	${catkin_LIBRARIES}
 )
-add_dependencies(appearance_check ${catkin_EXPORTED_TARGETS})
+add_dependencies(appearance_check ${catkin_EXPORTED_TARGETS} ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
 
 #############
