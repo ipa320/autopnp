@@ -88,13 +88,10 @@ double RoomRotator::computeRoomRotationMatrix(const cv::Mat& room_map, cv::Mat& 
 	cv::Point center_of_rotation;
 	if (center == 0)
 	{
-		std::vector < std::vector<cv::Point> > contour;
-		cv::Mat contour_map = room_map.clone();
-		cv::findContours(contour_map, contour, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-		// get the moment--> for a given map, there should only be one contour
-		cv::Moments moment = cv::moments(contour[0], false);
-		// calculate rotation center
-		center_of_rotation = cv::Point(moment.m10/moment.m00 , moment.m01/moment.m00 );
+		cv::Point min_room, max_room;
+		getMinMaxCoordinates(room_map, min_room, max_room);
+		center_of_rotation.x = 0.5*(min_room.x+max_room.x);
+		center_of_rotation.y = 0.5*(min_room.y+max_room.y);
 	}
 	else
 		center_of_rotation = *center;
@@ -104,10 +101,9 @@ double RoomRotator::computeRoomRotationMatrix(const cv::Mat& room_map, cv::Mat& 
 
 	// determine bounding rectangle to find the size of the new image
 	bounding_rect = cv::RotatedRect(center_of_rotation, room_map.size(), (rotation_angle*180)/CV_PI).boundingRect();
-
 	// adjust transformation matrix
-	R.at<double>(0,2) += bounding_rect.width/2.0 - center_of_rotation.x;
-	R.at<double>(1,2) += bounding_rect.height/2.0 - center_of_rotation.y;
+	R.at<double>(0,2) += 0.5*bounding_rect.width - center_of_rotation.x;
+	R.at<double>(1,2) += 0.5*bounding_rect.height - center_of_rotation.y;
 
 	return rotation_angle;
 }
@@ -154,45 +150,43 @@ double RoomRotator::computeRoomMainDirection(const cv::Mat& room_map, const doub
 	return direction_histogram.getMaxBinPreciseVal();
 }
 
-void RoomRotator::transformPathBackToOriginalRotation(const std::vector<cv::Point>& fov_middlepoint_path, std::vector<geometry_msgs::Pose2D>& path_fov_poses, const cv::Mat& R)
+void RoomRotator::transformPathBackToOriginalRotation(const std::vector<cv::Point2f>& fov_middlepoint_path, std::vector<geometry_msgs::Pose2D>& path_fov_poses, const cv::Mat& R)
 {
 	path_fov_poses.clear();
 
 	// transform the calculated path back to the originally rotated map
 	cv::Mat R_inv;
 	cv::invertAffineTransform(R, R_inv);
-	std::vector<cv::Point> fov_middlepoint_path_transformed;
+	std::vector<cv::Point2f> fov_middlepoint_path_transformed;
 	cv::transform(fov_middlepoint_path, fov_middlepoint_path_transformed, R_inv);
 
 	// create poses with an angle
 	transformPointPathToPosePath(fov_middlepoint_path_transformed, path_fov_poses);
 }
 
-void RoomRotator::transformPointPathToPosePath(const std::vector<cv::Point>& point_path, std::vector<geometry_msgs::Pose2D>& pose_path)
+void RoomRotator::transformPointPathToPosePath(const std::vector<cv::Point2f>& point_path, std::vector<geometry_msgs::Pose2D>& pose_path)
 {
 	// create poses with an angle
 	for(size_t point_index = 0; point_index < point_path.size(); ++point_index)
 	{
 		// get the vector from the previous to the current point
-		const cv::Point& current_point = point_path[point_index];
+		const cv::Point2f& current_point = point_path[point_index];
 
 		// add the next navigation goal to the path
 		geometry_msgs::Pose2D current_pose;
 		current_pose.x = current_point.x;
 		current_pose.y = current_point.y;
 		current_pose.theta = 0.;
-		cv::Point vector(0,0);
+		cv::Point2f vector(0,0);
 		if (point_index > 0)
 		{
 			// compute the direction as the line from the previous point to the current point
-			cv::Point previous_point = point_path[point_index-1];
-			vector = current_point - previous_point;
+			vector = current_point - point_path[point_index-1];
 		}
 		else if (point_path.size() >= 2)
 		{
 			// for the first point take the direction between first and second point
-			cv::Point next_point = point_path[point_index+1];
-			vector = next_point - current_point;
+			vector = point_path[point_index+1] - current_point;
 		}
 		// only sample different points
 		if (vector.x!=0 || vector.y!=0)
@@ -206,11 +200,32 @@ void RoomRotator::transformPointPathToPosePath(const std::vector<cv::Point>& poi
 void RoomRotator::transformPointPathToPosePath(std::vector<geometry_msgs::Pose2D>& pose_path)
 {
 	// create point vector
-	std::vector<cv::Point> point_path;
+	std::vector<cv::Point2f> point_path;
 	for (size_t i=0; i<pose_path.size(); ++i)
-		point_path.push_back(cv::Point(pose_path[i].x, pose_path[i].y));
+		point_path.push_back(cv::Point2f(pose_path[i].x, pose_path[i].y));
 
 	// create poses with an angle
 	pose_path.clear();
 	transformPointPathToPosePath(point_path, pose_path);
+}
+
+void RoomRotator::getMinMaxCoordinates(const cv::Mat& map, cv::Point& min_room, cv::Point& max_room)
+{
+	min_room.x = std::numeric_limits<int>::max();
+	min_room.y = std::numeric_limits<int>::max();
+	max_room.x = 0;
+	max_room.y = 0;
+	for (int v=0; v<map.rows; ++v)
+	{
+		for (int u=0; u<map.cols; ++u)
+		{
+			if (map.at<uchar>(v,u)==255)
+			{
+				min_room.x = std::min(min_room.x, u);
+				min_room.y = std::min(min_room.y, v);
+				max_room.x = std::max(max_room.x, u);
+				max_room.y = std::max(max_room.y, v);
+			}
+		}
+	}
 }
