@@ -6,6 +6,7 @@ set(catkin_RUN_PACKAGES
 	cv_bridge
 	ipa_building_msgs
 	libdlib
+	nav_msgs
 	opengm
 	roscpp
 	roslib
@@ -14,7 +15,6 @@ set(catkin_RUN_PACKAGES
 
 set(catkin_BUILD_PACKAGES
 	${catkin_RUN_PACKAGES}
-	cmake_modules
 	dynamic_reconfigure
 )
 

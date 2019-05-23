@@ -6,6 +6,73 @@ convexSPPExplorator::convexSPPExplorator()
 
 }
 
+// function that is used to create and solve a Gurobi optimization problem out of the given matrices and vectors, if
+// Gurobi was found on the computer
+template<typename T>
+void convexSPPExplorator::solveGurobiOptimizationProblem(std::vector<T>& C, const cv::Mat& V, const std::vector<double>* W)
+{
+#ifdef GUROBI_FOUND
+	std::cout << "Creating and solving linear program with Gurobi." << std::endl;
+	// initialize the problem
+	GRBEnv *env = new GRBEnv();
+	GRBModel model = GRBModel(*env);
+
+	// vector that stores the variables of the problem
+	std::vector<GRBVar> optimization_variables;
+
+	// add the optimization variables to the problem
+	int number_of_variables = 0;
+	for(size_t var=0; var<C.size(); ++var) // initial stage
+	{
+		if(W != NULL) // if a weight-vector is provided, use it to set the weights for the variables
+		{
+			GRBVar current_variable = model.addVar(0.0, 1.0, W->operator[](var), GRB_CONTINUOUS);
+			optimization_variables.push_back(current_variable);
+			++number_of_variables;
+		}
+		else
+		{
+			GRBVar current_variable = model.addVar(0.0, 1.0, 1.0, GRB_BINARY);
+			optimization_variables.push_back(current_variable);
+			++number_of_variables;
+		}
+	}
+	std::cout << "number of variables in the problem: " << number_of_variables << std::endl;
+
+	// inequality constraints to ensure that every position has been seen at least once
+	for(size_t row=0; row<V.rows; ++row)
+	{
+		// gather the indices of the variables that are used in this constraint (row), i.e. where V[row][column] == 1
+		std::vector<int> variable_indices;
+		for(size_t col=0; col<V.cols; ++col)
+			if(V.at<uchar>(row, col) == 1)
+				variable_indices.push_back((int) col);
+
+		// add the constraint, if the current cell can be covered by the given arcs, indices=1 in this constraint
+		if(variable_indices.size()>0)
+		{
+			GRBLinExpr current_coverage_constraint;
+			for(size_t var=0; var<variable_indices.size(); ++var)
+				current_coverage_constraint += optimization_variables[variable_indices[var]];
+			model.addConstr(current_coverage_constraint>=1);
+		}
+	}
+
+	// solve the optimization
+	model.optimize();
+
+	// retrieve solution
+	std::cout << "retrieving solution" << std::endl;
+	for(size_t var=0; var<number_of_variables; ++var)
+	{
+		C[var]= optimization_variables[var].get(GRB_DoubleAttr_X);
+	}
+
+	// garbage collection
+	delete env;
+#endif
+}
+
 // Function that creates a Qsopt optimization problem and solves it, using the given matrices and vectors.
 template<typename T>
 void convexSPPExplorator::solveOptimizationProblem(std::vector<T>& C, const cv::Mat& V, const std::vector<double>* W)
@@ -19,7 +86,7 @@ void convexSPPExplorator::solveOptimizationProblem(std::vector<T>& C, const cv::
 	int rval;
 	for(size_t variable=0; variable<C.size(); ++variable)
 	{
-		if(W != NULL) // if a weight-vector is provided, use it to set the weights for the var>iables
+		if(W != NULL) // if a weight-vector is provided, use it to set the weights for the variables
 		{
 			problem_builder.setColBounds(variable, 0.0, 1.0);
 			problem_builder.setObjective(variable, W->operator[](variable));
@@ -30,7 +97,6 @@ void convexSPPExplorator::solveOptimizationProblem(std::vector<T>& C, const cv::
 			problem_builder.setObjective(variable, 1.0);
 			problem_builder.setInteger(variable);
 		}
-
 	}
 
 	// inequality constraints to ensure that every position has been seen at least once
@@ -62,9 +128,6 @@ void convexSPPExplorator::solveOptimizationProblem(std::vector<T>& C, const cv::
 	CbcModel model(*solver_pointer);
 	model.solver()->setHintParam(OsiDoReducePrint, true, OsiHintTry);
 
-//	CbcHeuristicLocal heuristic2(model);
-//	model.addHeuristic(&heuristic2);
-
 	model.initialSolve();
 	model.branchAndBound();
 
@@ -73,7 +136,6 @@ void convexSPPExplorator::solveOptimizationProblem(std::vector<T>& C, const cv::
 
 	for(size_t res=0; res<C.size(); ++res)
 	{
-//		std::cout << solution[i] << std::endl;
 		C[res] = solution[res];
 	}
 }
@@ -136,7 +198,7 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 	std::vector<cv::Point> cell_centers_rotated, cell_centers;	// in [pixels]
 	cv::Mat inflated_rotated_room_map;
 	BoustrophedonGrid grid_lines;
-	GridGenerator::generateBoustrophedonGrid(rotated_room_map, inflated_rotated_room_map, half_cell_size, grid_lines, cv::Vec4i(0, 0, 0, 0),
+	GridGenerator::generateBoustrophedonGrid(rotated_room_map, inflated_rotated_room_map, half_cell_size, grid_lines, cv::Vec4i(-1, -1, -1, -1),
 			cell_size_pixel, half_cell_size, cell_size_pixel);
 	// convert grid points format
 	for (BoustrophedonGrid::iterator line=grid_lines.begin(); line!=grid_lines.end(); ++line)
@@ -243,9 +305,6 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 		// than the min distance, also only check points that span an angle to the robot-to-fov vector smaller than the
 		// max found angle to the corners
 		// when planning for the robot footprint simply check if its distance to the pose is at most the given coverage radius
-//		cv::Mat black_map = cv::Mat(room_map.rows, room_map.cols, room_map.type(), cv::Scalar(0));
-//		cv::circle(black_map, cv::Point(pose->x, pose->y), 3, cv::Scalar(200), CV_FILLED);
-//		cv::fillConvexPoly(black_map, transformed_fov_points, cv::Scalar(150));
 		for(std::vector<cv::Point>::iterator neighbor=cell_centers.begin(); neighbor!=cell_centers.end(); ++neighbor)
 		{
 			// compute pose to neighbor vector
@@ -256,7 +315,6 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 			// if neighbor is in the possible distance range check it further, distances given in [pixel]
 			if(plan_for_footprint==false && distance<=largest_robot_to_footprint_distance_pixel)
 			{
-//				cv::circle(black_map, *neighbor, 2, cv::Scalar(50), CV_FILLED);
 
 				if(cv::pointPolygonTest(transformed_fov_points, *neighbor, false) >= 0) // point inside
 				{
@@ -270,7 +328,6 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 					if(hit_obstacle == false)
 					{
 						V.at<uchar>(neighbor-cell_centers.begin(), pose-candidate_sensing_poses.begin()) = 1;
-//						cv::circle(black_map, *neighbor, 2, cv::Scalar(100), CV_FILLED);
 					}
 					else	// neighbor cell not observable
 						V.at<uchar>(neighbor-cell_centers.begin(), pose-candidate_sensing_poses.begin()) = 0;
@@ -279,7 +336,6 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 					V.at<uchar>(neighbor-cell_centers.begin(), pose-candidate_sensing_poses.begin()) = 0;
 			}
 			// check if neighbor is covered by footprint when planning for it
-			// todo: check: by adding cell_outcircle_radius_pixel to the distance, we ensure that the entire cell lies within the footprint
 			else if(plan_for_footprint==true && (distance+cell_outcircle_radius_pixel)<=largest_robot_to_footprint_distance_pixel)
 			{
 				// check if the line from the robot pose to the neighbor crosses an obstacle, if so it is not observable from the pose
@@ -296,8 +352,6 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 			else // point not in the right range to be inside the fov
 				V.at<uchar>(neighbor-cell_centers.begin(), pose-candidate_sensing_poses.begin()) = 0;
 		}
-//		cv::imshow("observable cells", black_map);
-//		cv::waitKey();
 	}
 	std::cout << "number of optimization variables: " << W.size() << std::endl;
 
@@ -333,7 +387,11 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 		++number_of_iterations;
 
 		// solve optimization of the current step
-		solveOptimizationProblem(C, V, &W);
+		#ifdef GUROBI_FOUND
+			solveGurobiOptimizationProblem(C, V, &W);
+		#else
+			solveOptimizationProblem(C, V, &W);
+		#endif
 
 		// update epsilon and W
 		const int exponent = 1 + (number_of_iterations - 1)*0.1;
@@ -391,8 +449,11 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 	// solve the final optimization problem
 	std::cout << "new_number_of_variables=" << new_number_of_variables << std::endl;
 	std::vector<int> C_reduced(new_number_of_variables);
+#ifdef GUROBI_FOUND
+	solveGurobiOptimizationProblem(C_reduced, V_reduced, NULL);
+#else
 	solveOptimizationProblem(C_reduced, V_reduced, NULL);
-
+#endif
 
 	// ************* V. Retrieve solution and find a path trough the chosen poses. *************
 	// read out solution
@@ -406,12 +467,6 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 			chosen_positions.push_back(cv::Point(reduced_sensing_candidates[result-C_reduced.begin()].x, reduced_sensing_candidates[result-C_reduced.begin()].y));
 		}
 	}
-
-//	// NOT NECESSARY, rotation back was done earlier after grid generation
-//	// rotate back the chosen view points to the original map
-//	room_rotation.transformPathBackToOriginalRotation(chosen_positions, chosen_poses, R);
-//	for (size_t i=0; i<chosen_poses.size(); ++i)
-//		chosen_positions[i] = cv::Point(chosen_poses[i].x, chosen_poses[i].y);
 
 	if (chosen_positions.size()==0)
 	{
@@ -458,8 +513,13 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 	ROS_INFO("Solving TSP with repetitive nearest neighbor");
 	std::vector<int> best_order;
 	double min_distance = 1e9;
+	if (chosen_positions.size()>100)
+		std::cout << "0         10        20        30        40        50        60        70        80        90        100" << std::endl;
 	for(int start=0; start<chosen_positions.size(); ++start)
 	{
+		if (chosen_positions.size()>500 && start%(std::max(1,(int)chosen_positions.size()/100))==0)
+			std::cout << "." << std::flush;
+
 		// obtain nearest neighbor solution for this start
 		std::vector<int> current_order = tsp_solver_.solveNearestTSP(distance_matrix, start);
 
@@ -475,6 +535,7 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 			best_order = current_order;
 		}
 	}
+	std::cout << std::endl;
 
 	// find the node that is closest to the starting position
 	min_distance = 1e9;
@@ -493,7 +554,7 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 	}
 
 	// create the path starting from the found start
-	std::vector<cv::Point> fov_poses;
+	std::vector<cv::Point2f> fov_poses;
 	std::vector<int>::iterator start = std::find(best_order.begin(), best_order.end(), starting_index); // obtain iterator to index in best order to start path creation from there
 	for(size_t pose=start-best_order.begin(); path.size()!=chosen_poses.size() && fov_poses.size()!=chosen_poses.size(); ++pose)
 	{
@@ -515,7 +576,7 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 		else
 		{
 			// for footprint planning the viewing direction has to be computed from the trajectory
-			fov_poses.push_back(cv::Point(chosen_poses[best_order[pose]].x, chosen_poses[best_order[pose]].y));
+			fov_poses.push_back(cv::Point2f(chosen_poses[best_order[pose]].x, chosen_poses[best_order[pose]].y));
 		}
 	}
 
@@ -532,65 +593,4 @@ void convexSPPExplorator::getExplorationPath(const cv::Mat& room_map, std::vecto
 			path[i].y = path[i].y * map_resolution + map_origin.y;
 		}
 	}
-//	if (plan_for_footprint == true) //todo: ?
-//	{
-//		// go trough all computed fov poses and compute the corresponding robot pose
-//		ROS_INFO("Starting to map from field of view pose to robot pose");
-//		mapPath(room_map, path, fov_poses, robot_to_fov_vector_meter, map_resolution, map_origin, starting_position);
-//	}
-
-
-
-
-
-
-
-//	testing
-//	cv::Mat test_map = room_map.clone();
-//	for(std::vector<geometry_msgs::Pose2D>::iterator pose=chosen_poses.begin(); pose!=chosen_poses.end(); ++pose)
-//	{
-//		float sin_theta = std::sin(pose->theta);
-//		float cos_theta = std::cos(pose->theta);
-//		Eigen::Matrix<float, 2, 2> R_fov;
-//		R_fov << cos_theta, -sin_theta, sin_theta, cos_theta;
-//
-//		// transform field of view points
-//		std::vector<cv::Point> transformed_fov_points;
-//		Eigen::Matrix<float, 2, 1> pose_as_matrix;
-//		pose_as_matrix << (pose->x*map_resolution)+map_origin.x, (pose->y*map_resolution)+map_origin.y; // convert to [meter]
-//		for(size_t point = 0; point < field_of_view.size(); ++point)
-//		{
-//			// transform fov-point from geometry_msgs::Point32 to Eigen::Matrix
-//			Eigen::Matrix<float, 2, 1> fov_point;
-//			fov_point << field_of_view[point].x, field_of_view[point].y;
-//
-//			// linear transformation
-//			Eigen::Matrix<float, 2, 1> transformed_vector = pose_as_matrix + R_fov * fov_point;
-//
-//			// save the transformed point as cv::Point, also check if map borders are satisfied and transform it into pixel
-//			// values
-//			cv::Point current_point = cv::Point((transformed_vector(0, 0) - map_origin.x)/map_resolution, (transformed_vector(1, 0) - map_origin.y)/map_resolution);
-//			current_point.x = std::max(current_point.x, 0);
-//			current_point.y = std::max(current_point.y, 0);
-//			current_point.x = std::min(current_point.x, room_map.cols);
-//			current_point.y = std::min(current_point.y, room_map.rows);
-//			transformed_fov_points.push_back(current_point);
-//		}
-//
-//		// rotate the vector from the robot to the field of view middle point
-//		Eigen::Matrix<float, 2, 1> transformed_robot_to_middlepoint_vector = R_fov * robot_to_fov_middlepoint_vector;
-//
-//		cv::fillConvexPoly(test_map, transformed_fov_points, cv::Scalar(200));
-//	}
-//	for(size_t i=0; i<cell_centers.size(); ++i)
-//		cv::circle(test_map, cell_centers[i], 2, cv::Scalar(100), CV_FILLED);
-//	for(size_t i=0; i<path.size()-1; ++i)
-//	{
-//		cv::circle(test_map, cv::Point(path[i].x/map_resolution, path[i].y/map_resolution), 5, cv::Scalar(100), CV_FILLED);
-//		cv::line(test_map, cv::Point(path[i].x/map_resolution, path[i].y/map_resolution), cv::Point(path[i+1].x/map_resolution, path[i+1].y/map_resolution), cv::Scalar(127), 2);
-//	}
-//	cv::circle(test_map, cv::Point(path.back().x/map_resolution, path.back().y/map_resolution), 5, cv::Scalar(100), CV_FILLED);
-
-//	cv::imshow("seen areas", test_map);
-//	cv::waitKey();
 }

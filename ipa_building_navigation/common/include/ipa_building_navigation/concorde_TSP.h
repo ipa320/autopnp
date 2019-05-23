@@ -10,8 +10,8 @@
 #include <cstdlib>
 #include <stdio.h>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <fstream>
 
@@ -50,16 +50,17 @@ protected:
 	AStarPlanner pathplanner_;
 
 	//Function to create neccessary TSPlib file to tell concorde what the problem is.
-	void writeToFile(const cv::Mat& pathlength_matrix);
+	void writeToFile(const cv::Mat& pathlength_matrix, const std::string& tsp_lib_filename, const std::string& tsp_order_filename);
 
 	//Function to read the saved TSP order.
-	std::vector<int> readFromFile();
+	std::vector<int> readFromFile(const std::string& tsp_order_filename);
 
 	void distance_matrix_thread(DistanceMatrix& distance_matrix_computation, cv::Mat& distance_matrix,
 			const cv::Mat& original_map, const std::vector<cv::Point>& points, double downsampling_factor,
 			double robot_radius, double map_resolution, AStarPlanner& path_planner);
 
 	bool abort_computation_;
+	std::string unique_file_identifier_;
 
 public:
 	//Constructor
@@ -76,7 +77,16 @@ public:
 	//with given distance matrix
 	std::vector<int> solveConcordeTSP(const cv::Mat& path_length_Matrix, const int start_Node);
 
-	//compute distance matrix and maybe return it
+	// compute distance matrix and maybe return it
+	// this version does not exclude infinite paths from the TSP ordering
 	std::vector<int> solveConcordeTSP(const cv::Mat& original_map, const std::vector<cv::Point>& points, double downsampling_factor,
 			double robot_radius, double map_resolution, const int start_Node, cv::Mat* distance_matrix = 0);
+
+	// compute TSP from a cleaned distance matrix (does not contain any infinity paths) that has to be computed
+	std::vector<int> solveConcordeTSPClean(const cv::Mat& original_map, const std::vector<cv::Point>& points,
+			double downsampling_factor, double robot_radius, double map_resolution, const int start_node);
+
+	// compute TSP with pre-computed cleaned distance matrix (does not contain any infinity paths)
+	std::vector<int> solveConcordeTSPWithCleanedDistanceMatrix(const cv::Mat& distance_matrix,
+			const std::map<int,int>& cleaned_index_to_original_index_mapping, const int start_node);
 };

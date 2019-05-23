@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ipa_room_exploration)
 
+add_compile_options(-std=c++11)
+
 set(catkin_RUN_PACKAGES
+	angles
 	cob_map_accessibility_analysis
 	cv_bridge
 	eigen_conversions
@@ -16,13 +19,13 @@ set(catkin_RUN_PACKAGES
 	roslib
 	sensor_msgs
 	std_msgs
+	std_srvs
 	tf
 	visualization_msgs
 )
 
 set(catkin_BUILD_PACKAGES
 	${catkin_RUN_PACKAGES}
-	cmake_modules
 	dynamic_reconfigure
 )
 
@@ -33,11 +36,23 @@ find_package(catkin REQUIRED COMPONENTS
 
 generate_dynamic_reconfigure_options(
 	cfg/RoomExploration.cfg
+	cfg/CoverageMonitor.cfg
 )
 
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system chrono thread)
-find_package(Eigen REQUIRED)
+
+find_package(Eigen3)
+if(NOT EIGEN3_FOUND)
+	# Fallback to cmake_modules
+	find_package(cmake_modules REQUIRED)
+	find_package(Eigen REQUIRED)
+	set(EIGEN3_INCLUDE_DIRS ${EIGEN_INCLUDE_DIRS})
+	set(EIGEN3_LIBRARIES ${EIGEN_LIBRARIES})  # Not strictly necessary as Eigen is head only
+	# Possibly map additional variables to the EIGEN3_ prefix.
+else()
+	set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
 
 # include the FindGUROBI.cmake file to search for Gurobi on the system
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake/")  
@@ -81,6 +96,7 @@ INCLUDE_DIRS
 	common/include
 	ros/include
 LIBRARIES
+	libcoverage_check_server
 CATKIN_DEPENDS
 	${catkin_RUN_PACKAGES}
 DEPENDS
@@ -107,7 +123,7 @@ include_directories(
 	${catkin_INCLUDE_DIRS}
 	${OpenCV_INCLUDE_DIRS}
 	${Boost_INCLUDE_DIRS}
-	${Eigen_INCLUDE_DIRS}
+	${EIGEN3_INCLUDE_DIRS}
 	${GUROBI_INCLUDE_DIRS}
 	${CoinUtils_INCLUDE_DIRS}
 	${OsiClp_INCLUDE_DIRS}
@@ -117,7 +133,7 @@ include_directories(
 	${Cbc-lib_INCLUDE_DIRS}
 )
 
-# room exploration action server, note: order of linking the Coin-Or packages important
+### room exploration action server, note: order of linking the Coin-Or packages important
 add_executable(room_exploration_server
 	ros/src/room_exploration_action_server.cpp
 	common/src/grid_point_explorator.cpp
@@ -141,24 +157,49 @@ target_link_libraries(room_exploration_server
 	${Cgl_LIBRARIES}
 	${Cbc-lib_LIBRARIES}
 	${GUROBI_LIBRARIES}
+	libcoverage_check_server
 )
 add_dependencies(room_exploration_server
 	${catkin_EXPORTED_TARGETS}
 	${${PROJECT_NAME}_EXPORTED_TARGETS}
 )
 
-# server for coverage checking
-add_executable(coverage_check_server
+### library for coverage checking
+add_library(libcoverage_check_server
 	ros/src/coverage_check_server.cpp
+)
+target_link_libraries(libcoverage_check_server
+	${catkin_LIBRARIES} 
+	${OpenCV_LIBS}
+	${Boost_LIBRARIES}
+)
+add_dependencies(libcoverage_check_server ${catkin_EXPORTED_TARGETS})
+
+### server for coverage checking
+add_executable(coverage_check_server
+	ros/src/coverage_check_server_main.cpp
 )
 target_link_libraries(coverage_check_server
 	${catkin_LIBRARIES} 
 	${OpenCV_LIBS}
 	${Boost_LIBRARIES}
+	libcoverage_check_server
 )
 add_dependencies(coverage_check_server ${catkin_EXPORTED_TARGETS})
 
-# room exploration client
+### server for coverage monitoring
+add_executable(coverage_monitor_server
+	ros/src/coverage_monitor_server.cpp
+)
+target_link_libraries(coverage_monitor_server
+	${catkin_LIBRARIES} 
+	${OpenCV_LIBS}
+	${Boost_LIBRARIES}
+	libcoverage_check_server
+)
+add_dependencies(coverage_monitor_server ${catkin_EXPORTED_TARGETS})
+
+### room exploration client
 add_executable(room_exploration_client
 	ros/src/room_exploration_action_client.cpp
 )
@@ -172,7 +213,7 @@ add_dependencies(room_exploration_client
 	${${PROJECT_NAME}_EXPORTED_TARGETS}
 )
 
-# evaluation of room exploration algorithms
+### evaluation of room exploration algorithms
 add_executable(room_exploration_evaluation
 	ros/src/room_exploration_evaluation.cpp
 	ros/src/fov_to_robot_mapper.cpp
@@ -180,11 +221,13 @@ add_executable(room_exploration_evaluation
 target_link_libraries(room_exploration_evaluation
 	${catkin_LIBRARIES} 
 	${OpenCV_LIBS}
+	libcoverage_check_server
 )
 add_dependencies(room_exploration_evaluation 
 	${catkin_EXPORTED_TARGETS}
 	${${PROJECT_NAME}_EXPORTED_TARGETS}
 )
+
 
 #############
 ## Install ##

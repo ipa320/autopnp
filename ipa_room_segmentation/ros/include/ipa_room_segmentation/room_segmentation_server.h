@@ -59,11 +59,12 @@
 
 #include "ros/ros.h"
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
 #include <sensor_msgs/image_encodings.h>
+#include <nav_msgs/OccupancyGrid.h>
 #include <actionlib/server/simple_action_server.h>
 
 #include <dynamic_reconfigure/server.h>
@@ -99,6 +100,7 @@ protected:
 										// 3 = Voronoi segmentation
 										// 4 = semantic segmentation
 										// 5 = voronoi-random-field segmentation
+										// 99 = pass through segmentation
 
 	bool train_semantic_, train_vrf_; //Boolean to say if the algorithm needs to be trained
 
@@ -111,6 +113,7 @@ protected:
 	double min_critical_point_distance_factor_; //Variable that sets the minimal distance between two critical Points before one gets eliminated
 	double max_area_for_merging_; //Variable that shows the maximal area of a room that should be merged with its surrounding rooms
 	bool display_segmented_map_;	// displays the segmented map upon service call
+	bool publish_segmented_map_;	// publishes the segmented map as grid map upon service call
 	std::vector<cv::Point> doorway_points_; // vector that saves the found doorway points, when using the 5th algorithm (vrf)
 
 	std::vector<std::string> semantic_training_maps_room_file_list_;	// list of files containing maps with room labels for training the semantic segmentation
@@ -150,6 +153,7 @@ protected:
 	// define the Nodehandle before the action server, or else the server won't start
 	//
 	ros::NodeHandle node_handle_;
+	ros::Publisher map_pub_;
 	ros::ServiceServer extract_area_map_from_labeled_map_server_;
 	actionlib::SimpleActionServer<ipa_building_msgs::MapSegmentationAction> room_segmentation_server_;
 	dynamic_reconfigure::Server<ipa_room_segmentation::RoomSegmentationConfig> room_segmentation_dynamic_reconfigure_server_;
