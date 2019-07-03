@@ -121,6 +121,7 @@ public:
 		// setup services
 		start_coverage_monitoring_srv_ = node_handle_.advertiseService("start_coverage_monitoring", &CoverageMonitor::startCoverageMonitoringCallback, this);
 		stop_coverage_monitoring_srv_ = node_handle_.advertiseService("stop_coverage_monitoring", &CoverageMonitor::stopCoverageMonitoringCallback, this);
+		reset_coverage_monitoring_srv_ = node_handle_.advertiseService("reset_coverage_monitoring", &CoverageMonitor::resetCoverageMonitoringCallback, this);
 		get_coverage_image_srv_ = node_handle_.advertiseService("get_coverage_image", &CoverageMonitor::getCoverageImageCallback, this);
 
 		// prepare coverage_marker_msg message
@@ -329,6 +330,15 @@ public:
 		return true;
 	}
 
+	bool resetCoverageMonitoringCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
+	{
+		std::cout << "CoverageMonitor::resetCoverageMonitoringCallback." << std::endl;
+		boost::mutex::scoped_lock lock(robot_trajectory_vector_mutex_);
+		robot_trajectory_vector_.clear();
+		res.success = true;
+		return true;
+	}
+
 	void internalDynamicReconfigureUpdate()
 	{
 		// update dynamic reconfigure
@@ -430,6 +440,7 @@ protected:
 
 	ros::ServiceServer start_coverage_monitoring_srv_;	// service for starting monitoring the robot trajectory
 	ros::ServiceServer stop_coverage_monitoring_srv_;	// service for stopping monitoring the robot trajectory
+	ros::ServiceServer reset_coverage_monitoring_srv_;  // service for resetting monitoring the robot trajectory
 	ros::ServiceServer get_coverage_image_srv_;			// service for returning an image of the covered area
 
 	dynamic_reconfigure::Server<ipa_room_exploration::CoverageMonitorConfig> coverage_monitor_dynamic_reconfigure_server_;
