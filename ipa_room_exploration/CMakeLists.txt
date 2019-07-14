@@ -173,7 +173,10 @@ target_link_libraries(libcoverage_check_server
 	${OpenCV_LIBS}
 	${Boost_LIBRARIES}
 )
-add_dependencies(libcoverage_check_server ${catkin_EXPORTED_TARGETS})
+add_dependencies(libcoverage_check_server
+	${catkin_EXPORTED_TARGETS}
+	${${PROJECT_NAME}_EXPORTED_TARGETS}
+)
 
 ### server for coverage checking
 add_executable(coverage_check_server
@@ -185,7 +188,10 @@ target_link_libraries(coverage_check_server
 	${Boost_LIBRARIES}
 	libcoverage_check_server
 )
-add_dependencies(coverage_check_server ${catkin_EXPORTED_TARGETS})
+add_dependencies(coverage_check_server
+	${catkin_EXPORTED_TARGETS}
+	${${PROJECT_NAME}_EXPORTED_TARGETS}
+)
 
 ### server for coverage monitoring
 add_executable(coverage_monitor_server
@@ -197,7 +203,10 @@ target_link_libraries(coverage_monitor_server
 	${Boost_LIBRARIES}
 	libcoverage_check_server
 )
-add_dependencies(coverage_monitor_server ${catkin_EXPORTED_TARGETS})
+add_dependencies(coverage_monitor_server
+	${catkin_EXPORTED_TARGETS}
+	${${PROJECT_NAME}_EXPORTED_TARGETS}
+)
 
 ### room exploration client
 add_executable(room_exploration_client
