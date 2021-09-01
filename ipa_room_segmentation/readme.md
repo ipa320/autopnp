@@ -1,3 +1,5 @@
+# Please notice: the package has moved to https://github.com/ipa320/ipa_coverage_planning !
+
 # General Procedure
 
 1. Change the algorithm parameters in ros/launch/room_segmentation_action_server_params.yaml in ros/launch to the wanted algorithms and settings.
