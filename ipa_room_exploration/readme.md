@@ -1,4 +1,4 @@
-# Please Notice: the package has moved to https://github.com/ipa320/ipa_coverage_planning !
+# Please notice: the package has moved to https://github.com/ipa320/ipa_coverage_planning !
 
 # General Procedure
 
